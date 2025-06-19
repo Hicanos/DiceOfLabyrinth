@@ -1,6 +1,16 @@
 # DiceOfLabyrinth
 가제: 미궁 다이스
 
+![A_fantasy_game_cover_art_for_Dungeon_Dic-1749807749062](https://github.com/user-attachments/assets/ce5e1e7f-e704-4cc0-8e3c-67152778e568)
+
+
+
+## 개발 정보
+* **엔진:** Unity 2022.3.17f   
+* **장르:** Roguelike   
+* **플랫폼:** Mobile   
+
+
 ## GitHub Commit Convention
 
 GitHub Desktop에 Commit 시 사용하는 Commit 스타일 가이드입니다.
