@@ -21,11 +21,13 @@ GitHub Desktop에 Commit 시 사용하는 Commit 스타일 가이드입니다.
 *   **type:** 커밋의 종류를 나타냅니다.
     *   :white_check_mark:`Add`: 새로운 파일 추가
     *   :wastebasket:`Remove`: 기존 파일 삭제
+    *   🚚: `Move`: 파일 옮김/정리
     *   :sparkles:`Feat`: 새로운 기능 추가
     *   :hammer:`Fix`: 버그 수정
     *   :twisted_rightwards_arrows:`merge`: 머지 작업
     *   :rewind:`Revert`: 리버트
     *   :memo:`Docs`: 문서 수정
+    *   🗒️ `Script` : package.json 변경(npm 설치 등)
     *   :art:`Style`: 코드 포맷, 세미콜론 등 (코드 내용 변경 없음)
     *   :recycle:`Refactor`: 코드 리팩토링 (기능 변경 없음)
     *   :test_tube:`Test`: 테스트 코드 추가/수정
