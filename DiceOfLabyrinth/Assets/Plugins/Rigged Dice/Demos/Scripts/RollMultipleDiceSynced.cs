@@ -30,6 +30,14 @@ namespace PredictedDice.Demo
         {
             diceAndOutcomeArray[2].outcome = (int)outcome;
         }
+        public void SetGreenDiceOutcome(float outcome)
+        {
+            diceAndOutcomeArray[3].outcome = (int)outcome;
+        }
+        public void SetPurpleDiceOutcome(float outcome)
+        {
+            diceAndOutcomeArray[4].outcome = (int)outcome;
+        }
 
         public void RollAll()
         {
