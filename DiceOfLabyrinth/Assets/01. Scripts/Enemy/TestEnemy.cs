@@ -12,14 +12,30 @@ public class TestEnemy : MonoBehaviour, IEnemy // 테스트에너미 클래스�
     [SerializeField] private RectTransform healthBarContainer;
     [SerializeField] private float healthBarWidth = 100f; // 기본 너비 설정
 
+    private bool isDead = false;
     public EnemyData EnemyData
     {
         get => enemyData;
         set => enemyData = value;
     }
-    public void EnemyInit(EnemyData enemyData)
+
+    private void Awake()
+    {
+        if (enemyData == null)
+        {
+            Debug.LogError("EnemyData is not assigned in the inspector!");
+        }
+        else
+        {
+            currentHp = enemyData.BaseMaxHp; // 초기 HP 설정
+            UpdateHealthBar();
+            UpdateEnemyName();
+        }
+    }
+    public void Init(EnemyData enemyData)
     {
         this.enemyData = enemyData;
+        currentHp = enemyData.MaxHp; // 초기 HP 설정
         Debug.Log($"Enemy Initialized: {enemyData.EnemyName}, Level: {enemyData.EnemyLevel}");
 
         SetState(EnemyState.Patrol);

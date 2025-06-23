@@ -4,6 +4,6 @@ public interface IEnemy //모든 에너미 클래스는 이 인터페이스를 �
 {
     public EnemyData EnemyData { get; set; }
 
-    public void EnemyInit(EnemyData enemyData);
+    public void Init(EnemyData enemyData);
 }
 

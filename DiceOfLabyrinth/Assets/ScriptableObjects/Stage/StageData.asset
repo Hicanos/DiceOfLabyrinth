@@ -29,19 +29,24 @@ MonoBehaviour:
       enemies:
       - enemyPrefab: {fileID: 0}
         spawnPosition: {x: 0, y: 0, z: 0}
-      GemReward: 0
+      phaseRewardObjects: []
+      gemReward: 0
     - phaseName: 2
       enemies: []
-      GemReward: 0
+      phaseRewardObjects: []
+      gemReward: 0
     - phaseName: 3
       enemies: []
-      GemReward: 0
+      phaseRewardObjects: []
+      gemReward: 0
     - phaseName: 4
       enemies: []
-      GemReward: 0
+      phaseRewardObjects: []
+      gemReward: 0
     - phaseName: "\uBCF4\uC2A4"
       enemies: []
-      GemReward: 0
+      phaseRewardObjects: []
+      gemReward: 0
     choose:
     - chooseName: "\uC120\uD0DD\uC9C01"
       description: "\uC120\uD0DD\uC9C01\uC758 \uD6A8\uACFC\uAC00 \uB4E4\uC5B4\uAC08
@@ -59,31 +64,42 @@ MonoBehaviour:
     description: "1 \uC2A4\uD14C\uC774\uC9C0\uC758 \uB514\uC2A4\uD06C\uB9BD\uC158\uC774
       \uB4E4\uC5B4\uAC08 \uC608\uC815\uC785\uB2C8\uB2E4"
     backgroundImage: {fileID: 0}
-    stageIndex: 0
+    stageIndex: 1
     stageCost: 0
     expReward: 0
     goldReward: 0
     jewelReward: 0
     isCompleted: 0
-    isLocked: 0
+    isLocked: 1
     phases:
     - phaseName: 1
       enemies:
       - enemyPrefab: {fileID: 0}
         spawnPosition: {x: 0, y: 0, z: 0}
-      GemReward: 0
+      phaseRewardObjects:
+      - rewardName: "\uC544\uC774\uD15C \uD615\uC2DD\uC758 \uC778\uAC8C\uC784 \uB9AC\uC6CC\uB4DC"
+        rewardAmount: 0
+      gemReward: 0
     - phaseName: 2
-      enemies: []
-      GemReward: 0
+      enemies:
+      - enemyPrefab: {fileID: 0}
+        spawnPosition: {x: 0, y: 0, z: 0}
+      phaseRewardObjects:
+      - rewardName: "\uC544\uC774\uD15C \uD615\uC2DD\uC758 \uC778\uAC8C\uC784 \uB9AC\uC6CC\uB4DC"
+        rewardAmount: 0
+      gemReward: 0
     - phaseName: 3
       enemies: []
-      GemReward: 0
+      phaseRewardObjects: []
+      gemReward: 0
     - phaseName: 4
       enemies: []
-      GemReward: 0
+      phaseRewardObjects: []
+      gemReward: 0
     - phaseName: "\uBCF4\uC2A4"
       enemies: []
-      GemReward: 0
+      phaseRewardObjects: []
+      gemReward: 0
     choose:
     - chooseName: "\uC120\uD0DD\uC9C01"
       description: "\uC120\uD0DD\uC9C01\uC758 \uD6A8\uACFC\uAC00 \uB4E4\uC5B4\uAC08

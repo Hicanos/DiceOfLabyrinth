@@ -36,8 +36,16 @@ public class StageInfo
     public int ExpReward => expReward;
     public int GoldReward => goldReward;
     public int JewelReward => jewelReward;
-    public bool IsCompleted => isCompleted;
-    public bool IsLocked => isLocked;
+    public bool IsCompleted
+    {
+        get => isCompleted;
+        set => isCompleted = value; // 외부에서 스테이지 완료 상태를 변경할 수 있도록 허용
+    }
+    public bool IsLocked
+    {
+        get => isLocked;
+        set => isLocked = value; // 외부에서 스테이지 잠금 상태를 변경할 수 있도록 허용
+    }
     public PhaseData[] Phases => phases;
     public List<ChooseOptions> Choose => choose;
 }
