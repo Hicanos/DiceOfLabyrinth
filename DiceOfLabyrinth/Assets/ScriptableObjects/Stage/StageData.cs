@@ -48,12 +48,15 @@ public class PhaseData
     // Phase 정보 필드들
     [SerializeField] private string phaseName;
     [SerializeField] private List<EnemySpawnData> enemies;
-    [SerializeField] private List<PhaseRewardData> phaseRewardDatas;
+    [SerializeField] private List<PhaseRewardData> phaseRewardObjects;
+    [SerializeField] private int gemReward;
 
     // 읽기 전용 프로퍼티들
     public string PhaseName => phaseName;
     public List<EnemySpawnData> Enemies => enemies;
-    public List<PhaseRewardData> PhaseRewardDatas => phaseRewardDatas;
+    public List<PhaseRewardData> PhaseRewardObjects => phaseRewardObjects;
+
+    public int GemReward => gemReward;
 }
 [System.Serializable]
 public class EnemySpawnData
@@ -67,6 +70,7 @@ public class EnemySpawnData
     public Vector3 SpawnPosition => spawnPosition;
 }
 
+[System.Serializable]
 public class PhaseRewardData
 {
     // Phase 보상 정보 필드들
@@ -86,7 +90,7 @@ public class ChooseOptions
     [SerializeField] private string description;
     [SerializeField] private Sprite iconImage;
 
-    // 읽기 전용 프로퍼티들--
+    // 읽기 전용 프로퍼티들
     public string ChooseName => chooseName;
     public string Description => description;
     public Sprite IconImage => iconImage;

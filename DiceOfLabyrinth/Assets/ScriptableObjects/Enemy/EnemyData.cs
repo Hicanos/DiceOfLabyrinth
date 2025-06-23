@@ -25,6 +25,8 @@ public class EnemyData: ScriptableObject
         Fire,
         Water,
         Earth,
+        Grass,
+        Electric,
         Wind,
         Light,
         Dark,

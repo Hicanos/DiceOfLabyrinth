@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
 
-public class TestEnemy : MonoBehaviour, IEnemy
+public class TestEnemy : MonoBehaviour, IEnemy // 테스트에너미 클래스는 모든 에너미 클래스들이 구현해야하는 메서드들의 디폴트를 제공합니다. IEnemy 인터페이스를 상속받고 구체적인 구현을 해주세요
 {
     [SerializeField] private EnemyData enemyData;
     [SerializeField] private int currentHp;
@@ -22,18 +22,19 @@ public class TestEnemy : MonoBehaviour, IEnemy
         this.enemyData = enemyData;
         Debug.Log($"Enemy Initialized: {enemyData.EnemyName}, Level: {enemyData.EnemyLevel}");
 
-        SetState(EnemyState.Idle);
+        SetState(EnemyState.Patrol);
         UpdateHealthBar();
         UpdateEnemyName();
     }
 
     public enum EnemyState
     {
-        Idle,
-        Patrol,
-        Attack,
-        Defend,
-        Dead
+        Idle,// 대기 상태
+        Patrol,// 순찰 상태
+        Attack,// 공격 상태
+        Defend,// 방어 상태
+        Dead,// 사망 상태
+        // 추가적인 상태를 여기에 정의할 수 있습니다.
     }
 
     private void SetState(EnemyState state)
