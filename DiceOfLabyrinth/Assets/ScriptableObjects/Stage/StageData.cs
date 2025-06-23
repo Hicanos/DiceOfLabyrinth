@@ -60,11 +60,11 @@ public class EnemySpawnData
 {
     // 적 스폰 정보 필드들
     [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private Vector2 spawnPosition;
+    [SerializeField] private Vector3 spawnPosition;
 
     // 읽기 전용 프로퍼티들
     public GameObject EnemyPrefab => enemyPrefab;
-    public Vector2 SpawnPosition => spawnPosition;
+    public Vector3 SpawnPosition => spawnPosition;
 }
 
 public class PhaseRewardData
