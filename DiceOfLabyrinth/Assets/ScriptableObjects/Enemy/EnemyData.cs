@@ -1,7 +1,8 @@
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "EnemyData", menuName = "ScriptableObjects/Enemy/EnemyData", order = 1)]
 [System.Serializable]
-public class EnemyData
+public class EnemyData: ScriptableObject
 {
     public enum EnemyType
     {
