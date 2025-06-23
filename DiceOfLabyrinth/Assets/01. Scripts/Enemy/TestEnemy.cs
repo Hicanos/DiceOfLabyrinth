@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
@@ -10,7 +10,7 @@ public class TestEnemy : MonoBehaviour, IEnemy
     [SerializeField] private int currentHp;
 
     [SerializeField] private RectTransform healthBarContainer;
-    [SerializeField] private float healthBarWidth = 100f; // ±âº» ³Êºñ ¼³Á¤
+    [SerializeField] private float healthBarWidth = 100f; // ê¸°ë³¸ ë„ˆë¹„ ì„¤ì •
 
     public EnemyData EnemyData
     {

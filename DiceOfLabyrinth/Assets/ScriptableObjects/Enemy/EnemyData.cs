@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [CreateAssetMenu(fileName = "EnemyData", menuName = "ScriptableObjects/Enemy/EnemyData", order = 1)]
 [System.Serializable]
@@ -65,7 +65,7 @@ public class EnemyData: ScriptableObject
     public EnemyPattern Pattern => enemyPattern;
     public string Description => description;
 
-    // ±âÃÊ°ª
+    // ê¸°ì´ˆê°’
     public int BaseMaxHp => baseMaxHp;
     public int BaseAtk => baseAtk;
     public int BaseDef => baseDef;
@@ -73,7 +73,7 @@ public class EnemyData: ScriptableObject
     public int AtkPerLevel => atkPerLevel;
     public int DefPerLevel => defPerLevel;
 
-    // ½ÇÁ¦ ´É·ÂÄ¡ (·¹º§ ¹Ý¿µ)
+    // ì‹¤ì œ ëŠ¥ë ¥ì¹˜ (ë ˆë²¨ ë°˜ì˜)
     public int MaxHp => baseMaxHp + hpPerLevel * (enemyLevel - 1);
     public int Atk => baseAtk + atkPerLevel * (enemyLevel - 1);
     public int Def => baseDef + defPerLevel * (enemyLevel - 1);

@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
 
@@ -13,7 +13,7 @@ public class StageData : ScriptableObject
 [System.Serializable]
 public class StageInfo
 {
-    // ½ºÅ×ÀÌÁö Á¤º¸ ÇÊµåµé
+    // ìŠ¤í…Œì´ì§€ ì •ë³´ í•„ë“œë“¤
     [SerializeField] private string stageName;
     [SerializeField] private string description;
     [SerializeField] private Sprite backgroundImage;
@@ -27,7 +27,7 @@ public class StageInfo
     [SerializeField] private PhaseData[] phases = new PhaseData[5];
     [SerializeField] private List<ChooseOptions> choose;
 
-    // ÀĞ±â Àü¿ë ÇÁ·ÎÆÛÆ¼µé
+    // ì½ê¸° ì „ìš© í”„ë¡œí¼í‹°ë“¤
     public string StageName => stageName;
     public string Description => description;
     public Sprite BackgroundImage => backgroundImage;
@@ -45,12 +45,12 @@ public class StageInfo
 [System.Serializable]
 public class PhaseData
 {
-    // Phase Á¤º¸ ÇÊµåµé
+    // Phase ì •ë³´ í•„ë“œë“¤
     [SerializeField] private string phaseName;
     [SerializeField] private List<EnemySpawnData> enemies;
     [SerializeField] private List<PhaseRewardData> phaseRewardDatas;
 
-    // ÀĞ±â Àü¿ë ÇÁ·ÎÆÛÆ¼µé
+    // ì½ê¸° ì „ìš© í”„ë¡œí¼í‹°ë“¤
     public string PhaseName => phaseName;
     public List<EnemySpawnData> Enemies => enemies;
     public List<PhaseRewardData> PhaseRewardDatas => phaseRewardDatas;
@@ -58,22 +58,22 @@ public class PhaseData
 [System.Serializable]
 public class EnemySpawnData
 {
-    // Àû ½ºÆù Á¤º¸ ÇÊµåµé
+    // ì  ìŠ¤í° ì •ë³´ í•„ë“œë“¤
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private Vector3 spawnPosition;
 
-    // ÀĞ±â Àü¿ë ÇÁ·ÎÆÛÆ¼µé
+    // ì½ê¸° ì „ìš© í”„ë¡œí¼í‹°ë“¤
     public GameObject EnemyPrefab => enemyPrefab;
     public Vector3 SpawnPosition => spawnPosition;
 }
 
 public class PhaseRewardData
 {
-    // Phase º¸»ó Á¤º¸ ÇÊµåµé
+    // Phase ë³´ìƒ ì •ë³´ í•„ë“œë“¤
     [SerializeField] private string rewardName;
     [SerializeField] private int rewardAmount;
 
-    // ÀĞ±â Àü¿ë ÇÁ·ÎÆÛÆ¼µé
+    // ì½ê¸° ì „ìš© í”„ë¡œí¼í‹°ë“¤
     public string RewardName => rewardName;
     public int RewardAmount => rewardAmount;
 }
@@ -81,12 +81,12 @@ public class PhaseRewardData
 [System.Serializable]
 public class ChooseOptions
 {
-    // ¼±ÅÃÁö Á¤º¸ ÇÊµåµé
+    // ì„ íƒì§€ ì •ë³´ í•„ë“œë“¤
     [SerializeField] private string chooseName;
     [SerializeField] private string description;
     [SerializeField] private Sprite iconImage;
 
-    // ÀĞ±â Àü¿ë ÇÁ·ÎÆÛÆ¼µé--
+    // ì½ê¸° ì „ìš© í”„ë¡œí¼í‹°ë“¤--
     public string ChooseName => chooseName;
     public string Description => description;
     public Sprite IconImage => iconImage;
