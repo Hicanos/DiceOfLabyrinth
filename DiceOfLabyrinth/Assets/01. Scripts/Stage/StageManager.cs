@@ -1,15 +1,17 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using TMPro;
 
 public class StageManager : MonoBehaviour
 {
-    public StageData stageData; // ½ºÅ×ÀÌÁö µ¥ÀÌÅÍ¸¦ ´ã´Â º¯¼ö
+    public StageData stageData; // ìŠ¤í…Œì´ì§€ ë°ì´í„°ë¥¼ ë‹´ëŠ” ë³€ìˆ˜
 
-    private int currentStageIndex; // ÇöÀç ½ºÅ×ÀÌÁö ÀÎµ¦½º
-    private int currentPhaseIndex; // ÇöÀç ÆäÀÌÁî ÀÎµ¦½º
-    private int gem; // ½ºÅ×ÀÌÁö ³»¿¡¼­¸¸ ¾²ÀÌ´Â ÀçÈ­, ½ºÅ×ÀÌÁö¸¦ ¹ş¾î³ª¸é ÃÊ±âÈ­µË´Ï´Ù.
+    private int currentStageIndex; // í˜„ì¬ ìŠ¤í…Œì´ì§€ ì¸ë±ìŠ¤
+    private int currentPhaseIndex; // í˜„ì¬ í˜ì´ì¦ˆ ì¸ë±ìŠ¤
+    private int gem; // ìŠ¤í…Œì´ì§€ ë‚´ì—ì„œë§Œ ì“°ì´ëŠ” ì¬í™”, ìŠ¤í…Œì´ì§€ë¥¼ ë²—ì–´ë‚˜ë©´ ì´ˆê¸°í™”ë©ë‹ˆë‹¤.
+    private GameObject artifact; // ì•„í‹°íŒ©íŠ¸ ì˜¤ë¸Œì íŠ¸, ìŠ¤í…Œì´ì§€ ë‚´ì—ì„œë§Œ ì“°ì´ëŠ” ì˜¤ë¸Œì íŠ¸, ìŠ¤í…Œì´ì§€ë¥¼ ë²—ì–´ë‚˜ë©´ ì´ˆê¸°í™”ë©ë‹ˆë‹¤.
+    private GameObject stagma; // ìŠ¤íƒœê·¸ë§ˆ ì˜¤ë¸Œì íŠ¸, ìŠ¤í…Œì´ì§€ ë‚´ì—ì„œë§Œ ì“°ì´ëŠ” ì˜¤ë¸Œì íŠ¸, ìŠ¤í…Œì´ì§€ë¥¼ ë²—ì–´ë‚˜ë©´ ì´ˆê¸°í™”ë©ë‹ˆë‹¤.
     public static StageManager Instance { get; private set; }
 
     // Awake is called when the script instance is being loaded
@@ -18,30 +20,30 @@ public class StageManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // ÀÌ ¿ÀºêÁ§Æ®¸¦ ¾À ÀüÈ¯ ½Ã ÆÄ±«µÇÁö ¾Êµµ·Ï ¼³Á¤
+            DontDestroyOnLoad(gameObject); // ì´ ì˜¤ë¸Œì íŠ¸ë¥¼ ì”¬ ì „í™˜ ì‹œ íŒŒê´´ë˜ì§€ ì•Šë„ë¡ ì„¤ì •
         }
         else
         {
-            Destroy(gameObject); // ÀÌ¹Ì ÀÎ½ºÅÏ½º°¡ Á¸ÀçÇÏ¸é Áßº¹ »ı¼º ¹æÁö
+            Destroy(gameObject); // ì´ë¯¸ ì¸ìŠ¤í„´ìŠ¤ê°€ ì¡´ì¬í•˜ë©´ ì¤‘ë³µ ìƒì„± ë°©ì§€
         }
 
-        // ½ºÅ×ÀÌÁö µ¥ÀÌÅÍ°¡ ÇÒ´çµÇÁö ¾ÊÀº °æ¿ì ¿¡·¯ ¸Ş½ÃÁö¸¦ Ãâ·ÂÇÕ´Ï´Ù.
+        // ìŠ¤í…Œì´ì§€ ë°ì´í„°ê°€ í• ë‹¹ë˜ì§€ ì•Šì€ ê²½ìš° ì—ëŸ¬ ë©”ì‹œì§€ë¥¼ ì¶œë ¥í•©ë‹ˆë‹¤.
         if (stageData == null)
         {
             Debug.LogError("StageData is not assigned in the inspector!");
         }
 
-        // Json ÆÄÀÏ¿¡¼­ Å¬¸®¾îµÈ ½ºÅ×ÀÌÁö µ¥ÀÌÅÍ¸¦ ·ÎµåÇÏ´Â ¸Ş¼­µå°¡ ¸¸µé¾îÁö¸é ¿©±â¼­ È£ÃâÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
+        // Json íŒŒì¼ì—ì„œ í´ë¦¬ì–´ëœ ìŠ¤í…Œì´ì§€ ë°ì´í„°ë¥¼ ë¡œë“œí•˜ëŠ” ë©”ì„œë“œê°€ ë§Œë“¤ì–´ì§€ë©´ ì—¬ê¸°ì„œ í˜¸ì¶œí•  ì˜ˆì •ì…ë‹ˆë‹¤.
     }
 
     public void StartStage(int stageIndex)
     {
-        // ½ºÅ×ÀÌÁö ½ÃÀÛ ·ÎÁ÷À» ±¸ÇöÇÕ´Ï´Ù.
+        // ìŠ¤í…Œì´ì§€ ì‹œì‘ ë¡œì§ì„ êµ¬í˜„í•©ë‹ˆë‹¤.
         if (stageData.StageIndex[stageIndex].IsCompleted)
         {
             Debug.Log($"Stage {stageIndex} is already completed.");
-            // ÀÌ¹Ì ¿Ï·áµÈ ½ºÅ×ÀÌÁö¸¦ ÀçµµÀü ÇÒÁö ¿©ºÎ¸¦ ¹¯´Â UI¸¦ Ç¥½ÃÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
-            //if() // ÀçµµÀüÀ» °ÅÀıÇÏ´Â °æ¿ì ¸®ÅÏ, UI ÀÔ·Â¿¡ µû¸¥ ºÒ¸®¾ğ ¸Ş¼­µå°¡ ¸¸µé¾îÁö¸é Ãß°¡ÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
+            // ì´ë¯¸ ì™„ë£Œëœ ìŠ¤í…Œì´ì§€ë¥¼ ì¬ë„ì „ í• ì§€ ì—¬ë¶€ë¥¼ ë¬»ëŠ” UIë¥¼ í‘œì‹œí•  ì˜ˆì •ì…ë‹ˆë‹¤.
+            //if() // ì¬ë„ì „ì„ ê±°ì ˆí•˜ëŠ” ê²½ìš° ë¦¬í„´, UI ì…ë ¥ì— ë”°ë¥¸ ë¶ˆë¦¬ì–¸ ë©”ì„œë“œê°€ ë§Œë“¤ì–´ì§€ë©´ ì¶”ê°€í•  ì˜ˆì •ì…ë‹ˆë‹¤.
             //{
             //    return;
             //}
@@ -49,59 +51,60 @@ public class StageManager : MonoBehaviour
         else if (stageData.StageIndex[stageIndex].IsLocked)
         {
             Debug.Log($"Stage {stageIndex} is locked. Please complete previous stages.");
-            // Àá±İµÈ ½ºÅ×ÀÌÁö¸¦ ½ÃÀÛÇÒ ¼ö ¾ø´Ù´Â UI ¸Ş½ÃÁö¸¦ Ç¥½ÃÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
+            // ì ê¸ˆëœ ìŠ¤í…Œì´ì§€ë¥¼ ì‹œì‘í•  ìˆ˜ ì—†ë‹¤ëŠ” UI ë©”ì‹œì§€ë¥¼ í‘œì‹œí•  ì˜ˆì •ì…ë‹ˆë‹¤.
             return;
         }
-        // ÇÃ·¹ÀÌ¾î µ¥ÀÌÅÍ¿¡ ÀÔÀå ÄÚ½ºÆ®°¡ ¸¸µé¾îÁö¸é ÄÚ½ºÆ® ºñ±³¸¦ Ãß°¡ÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
-        //else if (stageData.StageIndex[stageIndex].StageCost > ÇÃ·¹ÀÌ¾îÀÇ ÀÔÀå ÄÚ½ºÆ®)
+        // í”Œë ˆì´ì–´ ë°ì´í„°ì— ì…ì¥ ì½”ìŠ¤íŠ¸ê°€ ë§Œë“¤ì–´ì§€ë©´ ì½”ìŠ¤íŠ¸ ë¹„êµë¥¼ ì¶”ê°€í•  ì˜ˆì •ì…ë‹ˆë‹¤.
+        //else if (stageData.StageIndex[stageIndex].StageCost > í”Œë ˆì´ì–´ì˜ ì…ì¥ ì½”ìŠ¤íŠ¸)
         //{
-        //    // ÀÚ¿øÀÌ ºÎÁ·ÇÏ´Ù´Â UI ¸Ş½ÃÁö¸¦ Ç¥½ÃÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
+        //    // ìì›ì´ ë¶€ì¡±í•˜ë‹¤ëŠ” UI ë©”ì‹œì§€ë¥¼ í‘œì‹œí•  ì˜ˆì •ì…ë‹ˆë‹¤.
         //    return;
         //}
-        SceneManager.LoadScene("BattleScene");//SceneManagerEX.cs°¡ ¸¸µé¾îÁö¸é ¼öÁ¤ÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
-        currentStageIndex = stageIndex; // ÇöÀç ½ºÅ×ÀÌÁö ÀÎµ¦½º ¼³Á¤
-        currentPhaseIndex = 0; // ÇöÀç ÆäÀÌÁî ÀÎµ¦½º ÃÊ±âÈ­
+        SceneManager.LoadScene("BattleScene");//SceneManagerEX.csê°€ ë§Œë“¤ì–´ì§€ë©´ ìˆ˜ì •í•  ì˜ˆì •ì…ë‹ˆë‹¤.
+        currentStageIndex = stageIndex; // í˜„ì¬ ìŠ¤í…Œì´ì§€ ì¸ë±ìŠ¤ ì„¤ì •
+        currentPhaseIndex = 0; // í˜„ì¬ í˜ì´ì¦ˆ ì¸ë±ìŠ¤ ì´ˆê¸°í™”
         gem = 0;
         StandbyPhase();
     }
 
     public void EndStage(int stageIndex, bool isSuccess)
     {
-        // ½ºÅ×ÀÌÁö Á¾·á ·ÎÁ÷À» ±¸ÇöÇÕ´Ï´Ù.
-        // isSuccess¿¡ µû¶ó Å¬¸®¾î ¿©ºÎ¸¦ Ã³¸®ÇÏ°í, Json ÆÄÀÏ¿¡ µ¥ÀÌÅÍ¸¦ ÀúÀåÇÏ´Â ¸Ş¼­µå¸¦ È£ÃâÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
+        // ìŠ¤í…Œì´ì§€ ì¢…ë£Œ ë¡œì§ì„ êµ¬í˜„í•©ë‹ˆë‹¤.
+        // isSuccessì— ë”°ë¼ í´ë¦¬ì–´ ì—¬ë¶€ë¥¼ ì²˜ë¦¬í•˜ê³ , Json íŒŒì¼ì— ë°ì´í„°ë¥¼ ì €ì¥í•˜ëŠ” ë©”ì„œë“œë¥¼ í˜¸ì¶œí•  ì˜ˆì •ì…ë‹ˆë‹¤.
         if (isSuccess)
         {
             Debug.Log($"Stage {stageIndex} cleared!");
-            // Å¬¸®¾îµÈ ½ºÅ×ÀÌÁö Á¤º¸¸¦ ÀúÀåÇÏ´Â ·ÎÁ÷À» Ãß°¡ÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
-            stageData.StageIndex[stageIndex].IsCompleted = true; // ½ºÅ×ÀÌÁö ¿Ï·á »óÅÂ ¾÷µ¥ÀÌÆ®
-            stageData.StageIndex[stageIndex+1].IsLocked = false; // ´ÙÀ½ ½ºÅ×ÀÌÁö Àá±İ ÇØÁ¦
-            //º¸»ó ·ÎÁ÷ Ãß°¡ ¿¹Á¤ÀÔ´Ï´Ù. ¿¹: °æÇèÄ¡, °ñµå, º¸¼® µî, ÇÃ·¹ÀÌ¾î µ¥ÀÌÅÍ°¡ ¸¸µé¾îÁö¸é += ÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
+            // í´ë¦¬ì–´ëœ ìŠ¤í…Œì´ì§€ ì •ë³´ë¥¼ ì €ì¥í•˜ëŠ” ë¡œì§ì„ ì¶”ê°€í•  ì˜ˆì •ì…ë‹ˆë‹¤.
+            stageData.StageIndex[stageIndex].IsCompleted = true; // ìŠ¤í…Œì´ì§€ ì™„ë£Œ ìƒíƒœ ì—…ë°ì´íŠ¸
+            stageData.StageIndex[stageIndex+1].IsLocked = false; // ë‹¤ìŒ ìŠ¤í…Œì´ì§€ ì ê¸ˆ í•´ì œ
+            //ë³´ìƒ ë¡œì§ ì¶”ê°€ ì˜ˆì •ì…ë‹ˆë‹¤. ì˜ˆ: ê²½í—˜ì¹˜, ê³¨ë“œ, ë³´ì„ ë“±, í”Œë ˆì´ì–´ ë°ì´í„°ê°€ ë§Œë“¤ì–´ì§€ë©´ += í•  ì˜ˆì •ì…ë‹ˆë‹¤.
 
         }
         else
         {
             Debug.Log($"Stage {stageIndex} failed.");
-            // ½ÇÆĞ ½Ã Ã³¸® ·ÎÁ÷À» Ãß°¡ÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
+            // ì‹¤íŒ¨ ì‹œ ì²˜ë¦¬ ë¡œì§ì„ ì¶”ê°€í•  ì˜ˆì •ì…ë‹ˆë‹¤.
         }
-        SceneManager.LoadScene("MainMenu"); // ¸ŞÀÎ ¸Ş´º·Î µ¹¾Æ°¡±â, // SceneManagerEX.cs°¡ ¸¸µé¾îÁö¸é ¼öÁ¤ÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
+        SceneManager.LoadScene("MainMenu"); // ë©”ì¸ ë©”ë‰´ë¡œ ëŒì•„ê°€ê¸°, // SceneManagerEX.csê°€ ë§Œë“¤ì–´ì§€ë©´ ìˆ˜ì •í•  ì˜ˆì •ì…ë‹ˆë‹¤.
     }
 
     private void StandbyPhase()
     {
-        //ÀüÅõ ÆäÀÌÁî ÀÌÀü¿¡ ´É·ÂÄ¡ ¼¼ÆÃ ·ÎÁ÷À» ±¸ÇöÇÕ´Ï´Ù.
-        BattlePhase(0); // Ã¹ ¹øÂ° ÆäÀÌÁî·Î ÀÌµ¿
+        //ì „íˆ¬ í˜ì´ì¦ˆ ì´ì „ì— ëŠ¥ë ¥ì¹˜ ì„¸íŒ… ë¡œì§ì„ êµ¬í˜„í•©ë‹ˆë‹¤.
+        BattlePhase(0); // ì²« ë²ˆì§¸ í˜ì´ì¦ˆë¡œ ì´ë™
     }
 
     public void BattlePhase(int phaseIndex)
     {
-        // ÀüÅõ ÆäÀÌÁî ½ÃÀÛ ·ÎÁ÷À» ±¸ÇöÇÕ´Ï´Ù.
+        // ì „íˆ¬ í˜ì´ì¦ˆ ì‹œì‘ ë¡œì§ì„ êµ¬í˜„í•©ë‹ˆë‹¤.
         if (phaseIndex < stageData.StageIndex[currentStageIndex].Phases.Length)
         {
             currentPhaseIndex = phaseIndex;
             PhaseData phaseData = stageData.StageIndex[currentStageIndex].Phases[currentPhaseIndex];
             Debug.Log($"Starting Battle Phase {phaseIndex} with {phaseData.Enemies.Count} enemies.");
-            // Àû ½ºÆù ·ÎÁ÷À» Ãß°¡ÇÒ ¿¹Á¤ÀÔ´Ï´Ù.
-            // ¿¹: SpawnEnemies(phaseData.Enemies);
+            // ì  ìŠ¤í° ë¡œì§ì„ ì¶”ê°€í•  ì˜ˆì •ì…ë‹ˆë‹¤.
+            stageData.StageIndex[currentStageIndex].Phases[currentPhaseIndex].
+            // ì˜ˆ: SpawnEnemies(phaseData.Enemies);
         }
         else
         {
@@ -112,19 +115,19 @@ public class StageManager : MonoBehaviour
 
     private void ShopPhase()
     {
-        //»óÁ¡ÆäÀÌÁî ·ÎÁ÷
+        //ìƒì í˜ì´ì¦ˆ ë¡œì§
 
         BattlePhase(4);
     }
     private void PhaseSuccess(bool isSuccess)
     {
-        // ÆäÀÌÁî ¼º°ø ¿©ºÎ¿¡ µû¶ó ´ÙÀ½ ÆäÀÌÁî·Î ÀÌµ¿ÇÏ°Å³ª ½ºÅ×ÀÌÁö Á¾·á ·ÎÁ÷À» È£ÃâÇÕ´Ï´Ù.
+        // í˜ì´ì¦ˆ ì„±ê³µ ì—¬ë¶€ì— ë”°ë¼ ë‹¤ìŒ í˜ì´ì¦ˆë¡œ ì´ë™í•˜ê±°ë‚˜ ìŠ¤í…Œì´ì§€ ì¢…ë£Œ ë¡œì§ì„ í˜¸ì¶œí•©ë‹ˆë‹¤.
         if (isSuccess)
         {
             Debug.Log($"Phase {currentPhaseIndex} cleared!");
             if (currentPhaseIndex < stageData.StageIndex[currentStageIndex].Phases.Length - 2)
             {
-                BattlePhase(currentPhaseIndex + 1); // ´ÙÀ½ ÆäÀÌÁî·Î ÀÌµ¿
+                BattlePhase(currentPhaseIndex + 1); // ë‹¤ìŒ í˜ì´ì¦ˆë¡œ ì´ë™
             }
             else if (currentPhaseIndex == stageData.StageIndex[currentStageIndex].Phases.Length - 2)
             {
@@ -132,13 +135,13 @@ public class StageManager : MonoBehaviour
             }
             else // 
             {
-                EndStage(currentStageIndex, true); // ½ºÅ×ÀÌÁö Å¬¸®¾î
+                EndStage(currentStageIndex, true); // ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´
             }
         }
         else
         {
             Debug.Log($"Phase {currentPhaseIndex} failed.");
-            EndStage(currentStageIndex, false); // ½ºÅ×ÀÌÁö ½ÇÆĞ
+            EndStage(currentStageIndex, false); // ìŠ¤í…Œì´ì§€ ì‹¤íŒ¨
         }
     }
 }
