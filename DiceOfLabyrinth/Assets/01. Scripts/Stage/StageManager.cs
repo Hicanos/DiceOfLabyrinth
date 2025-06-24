@@ -103,7 +103,6 @@ public class StageManager : MonoBehaviour
             PhaseData phaseData = stageData.StageIndex[currentStageIndex].Phases[currentPhaseIndex];
             Debug.Log($"Starting Battle Phase {phaseIndex} with {phaseData.Enemies.Count} enemies.");
             // 적 스폰 로직을 추가할 예정입니다.
-            stageData.StageIndex[currentStageIndex].Phases[currentPhaseIndex].
             // 예: SpawnEnemies(phaseData.Enemies);
         }
         else
