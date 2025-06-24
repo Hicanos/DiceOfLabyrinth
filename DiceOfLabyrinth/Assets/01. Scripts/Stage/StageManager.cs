@@ -117,7 +117,7 @@ public class StageManager : MonoBehaviour
 
         BattlePhase(4);
     }
-    private void PhaseSuccess(bool isSuccess)
+    public void PhaseSuccess(bool isSuccess)
     {
         // 페이즈 성공 여부에 따라 다음 페이즈로 이동하거나 스테이지 종료 로직을 호출합니다.
         if (isSuccess)
@@ -125,7 +125,7 @@ public class StageManager : MonoBehaviour
             Debug.Log($"Phase {currentPhaseIndex} cleared!");
             if (currentPhaseIndex < stageData.StageIndex[currentStageIndex].Phases.Length - 2)
             {
-                BattlePhase(currentPhaseIndex + 1); // 다음 페이즈로 이동
+                PhaseReward(currentPhaseIndex);
             }
             else if (currentPhaseIndex == stageData.StageIndex[currentStageIndex].Phases.Length - 2)
             {
@@ -141,5 +141,18 @@ public class StageManager : MonoBehaviour
             Debug.Log($"Phase {currentPhaseIndex} failed.");
             EndStage(currentStageIndex, false); // 스테이지 실패
         }
+    }
+
+    private void PhaseReward(int currentPhaseIndex)
+    {
+        //리워드
+        //버튼로직
+        //if () // 로비로 나가거나 스테이지를 재도전하는 경우, UI 입력에 따른 불리언 메서드가 만들어지면 추가할 예정입니다.
+        //{
+        //    return;
+        //}
+
+
+        BattlePhase(currentPhaseIndex + 1);
     }
 }

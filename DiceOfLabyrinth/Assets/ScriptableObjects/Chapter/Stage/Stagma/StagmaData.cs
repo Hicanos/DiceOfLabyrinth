@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "StagmaData", menuName = "ScriptableObjects/StagmaData")]
+[CreateAssetMenu(fileName = "StagmaData", menuName = "ScriptableObjects/Stages/StagmaData")]
 public class StagmaData : ScriptableObject
 {
     public string stagmaName;

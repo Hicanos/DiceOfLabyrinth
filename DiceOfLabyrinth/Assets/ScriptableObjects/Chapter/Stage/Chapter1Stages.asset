@@ -10,14 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bcbe1ee2cb632b745a1273d3c4bc25d5, type: 3}
-  m_Name: StageData
+  m_Name: Chapter1Stages
   m_EditorClassIdentifier: 
   stageIndex:
   - stageName: "0 \uC2A4\uD14C\uC774\uC9C0"
     description: "0 \uC2A4\uD14C\uC774\uC9C0\uC758 \uB514\uC2A4\uD06C\uB9BD\uC158\uC774
       \uB4E4\uC5B4\uAC08 \uC608\uC815\uC785\uB2C8\uB2E4"
     backgroundImage: {fileID: 0}
-    stageIndex: 0
     stageCost: 0
     expReward: 0
     goldReward: 0
@@ -31,22 +30,27 @@ MonoBehaviour:
         spawnPosition: {x: 0, y: 0, z: 0}
       phaseRewardObjects: []
       gemReward: 0
+      phaseType: 0
     - phaseName: 2
       enemies: []
       phaseRewardObjects: []
       gemReward: 0
+      phaseType: 0
     - phaseName: 3
       enemies: []
       phaseRewardObjects: []
       gemReward: 0
+      phaseType: 0
     - phaseName: 4
       enemies: []
       phaseRewardObjects: []
       gemReward: 0
+      phaseType: 0
     - phaseName: "\uBCF4\uC2A4"
       enemies: []
       phaseRewardObjects: []
       gemReward: 0
+      phaseType: 1
     choose:
     - chooseName: "\uC120\uD0DD\uC9C01"
       description: "\uC120\uD0DD\uC9C01\uC758 \uD6A8\uACFC\uAC00 \uB4E4\uC5B4\uAC08
@@ -60,11 +64,17 @@ MonoBehaviour:
       description: "\uC120\uD0DD\uC9C03\uC758 \uD6A8\uACFC\uAC00 \uB4E4\uC5B4\uAC08
         \uB514\uC2A4\uD06C\uB9BD\uC158\uC785\uB2C8\uB2E4"
       iconImage: {fileID: 0}
+    stagmaList:
+    - {fileID: 11400000, guid: 8a6e111eeb1661245aa7b53b0633b523, type: 2}
+    - {fileID: 11400000, guid: 8a6e111eeb1661245aa7b53b0633b523, type: 2}
+    artifactList:
+    - {fileID: 11400000, guid: 2f8d4e60227dfe842bb317af16fccdd3, type: 2}
+    - {fileID: 11400000, guid: 2f8d4e60227dfe842bb317af16fccdd3, type: 2}
+    - {fileID: 11400000, guid: 2f8d4e60227dfe842bb317af16fccdd3, type: 2}
   - stageName: "1 \uC2A4\uD14C\uC774\uC9C0"
     description: "1 \uC2A4\uD14C\uC774\uC9C0\uC758 \uB514\uC2A4\uD06C\uB9BD\uC158\uC774
       \uB4E4\uC5B4\uAC08 \uC608\uC815\uC785\uB2C8\uB2E4"
     backgroundImage: {fileID: 0}
-    stageIndex: 1
     stageCost: 0
     expReward: 0
     goldReward: 0
@@ -80,6 +90,7 @@ MonoBehaviour:
       - rewardName: "\uC544\uC774\uD15C \uD615\uC2DD\uC758 \uC778\uAC8C\uC784 \uB9AC\uC6CC\uB4DC"
         rewardAmount: 0
       gemReward: 0
+      phaseType: 0
     - phaseName: 2
       enemies:
       - enemyPrefab: {fileID: 0}
@@ -88,18 +99,22 @@ MonoBehaviour:
       - rewardName: "\uC544\uC774\uD15C \uD615\uC2DD\uC758 \uC778\uAC8C\uC784 \uB9AC\uC6CC\uB4DC"
         rewardAmount: 0
       gemReward: 0
+      phaseType: 0
     - phaseName: 3
       enemies: []
       phaseRewardObjects: []
       gemReward: 0
+      phaseType: 0
     - phaseName: 4
       enemies: []
       phaseRewardObjects: []
       gemReward: 0
+      phaseType: 0
     - phaseName: "\uBCF4\uC2A4"
       enemies: []
       phaseRewardObjects: []
       gemReward: 0
+      phaseType: 0
     choose:
     - chooseName: "\uC120\uD0DD\uC9C01"
       description: "\uC120\uD0DD\uC9C01\uC758 \uD6A8\uACFC\uAC00 \uB4E4\uC5B4\uAC08
@@ -113,3 +128,5 @@ MonoBehaviour:
       description: "\uC120\uD0DD\uC9C03\uC758 \uD6A8\uACFC\uAC00 \uB4E4\uC5B4\uAC08
         \uB514\uC2A4\uD06C\uB9BD\uC158\uC785\uB2C8\uB2E4"
       iconImage: {fileID: 0}
+    stagmaList: []
+    artifactList: []
