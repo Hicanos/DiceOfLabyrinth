@@ -102,8 +102,7 @@ public class StageManager : MonoBehaviour
             currentPhaseIndex = phaseIndex;
             PhaseData phaseData = stageData.StageIndex[currentStageIndex].Phases[currentPhaseIndex];
             Debug.Log($"Starting Battle Phase {phaseIndex} with {phaseData.Enemies.Count} enemies.");
-            // 적 스폰 로직을 추가할 예정입니다.
-            // 예: SpawnEnemies(phaseData.Enemies);
+            //배틀로직은 별도의 cs로 분리할 예정입니다. 배틀 스크립트에서 승패를 판단하고 PhaseSuccess 메서드를 호출합니다.
         }
         else
         {
@@ -114,7 +113,7 @@ public class StageManager : MonoBehaviour
 
     private void ShopPhase()
     {
-        //상점페이즈 로직
+        //상점페이즈 로직, 예를 들어, 플레이어가 아이템을 구매하거나 판매할 수 있는 UI를 표시합니다. 
 
         BattlePhase(4);
     }
