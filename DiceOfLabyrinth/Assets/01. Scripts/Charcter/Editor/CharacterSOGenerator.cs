@@ -60,7 +60,7 @@ public class CharacterSOGenerator : EditorWindow
         }
 
         // JSON 파일 읽기 후 역직렬화
-        string json = File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
+        string json = File.ReadAllText(jsonPath);
         CharDataListWrapper wrapper = JsonConvert.DeserializeObject<CharDataListWrapper>(json);
 
         // 역직렬화 실패 또는 데이터 없음
@@ -96,17 +96,29 @@ public class CharacterSOGenerator : EditorWindow
             so.diceID = data.DiceID;
 
             // SO 파일 경로 설정
-            string assetPath = $"{soOutputPath}{so.charID}_SO.asset";
+            string assetPath = $"{soOutputPath}{so.nameEn}_SO.asset";
+
+            // 기존 SO 파일이 있으면 삭제
+            if (File.Exists(assetPath))
+                AssetDatabase.DeleteAsset(assetPath);
+
             AssetDatabase.CreateAsset(so, assetPath);
 
             // Addressable 등록
             var Asettings = AddressableAssetSettingsDefaultObject.Settings;
             if (Asettings != null)
             {
-                // 기본 그룹에 등록(임시) (이후 그룹명 변경)
+                // "Character SO Group" 그룹 찾기 또는 생성
+                var groupName = "Character SO Group";
+                var group = Asettings.FindGroup(groupName);
+                if (group == null)
+                {
+                    group = Asettings.CreateGroup(groupName, false, false, false, null, typeof(BundledAssetGroupSchema));
+                }
+
                 string guid = AssetDatabase.AssetPathToGUID(assetPath);
-                var entry = Asettings.CreateOrMoveEntry(guid, Asettings.DefaultGroup); // 기본 그룹에 등록. 차후 그룹명 변경 필요
-                entry.address = so.charID; // address로 charID 사용 (원하는 값으로 변경 가능)
+                var entry = Asettings.CreateOrMoveEntry(guid, group);
+                entry.address = so.nameEn; // address로 nameEn 사용
             }
         }
 
