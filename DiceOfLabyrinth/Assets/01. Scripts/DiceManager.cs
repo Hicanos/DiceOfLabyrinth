@@ -82,17 +82,15 @@ public class DiceManager : MonoBehaviour
         }
     }
 
-    public float RollDice()
-    {        
+    public void RollDice()
+    {
         GetRandomDiceNum(fixedDiceList);
 
-        roll.SetDiceOutcome(diceResult);        
+        roll.SetDiceOutcome(diceResult);
 
-        roll.RollAll();
-        Debug.Log(diceRank);
-
-        return DamageWeighting();
+        roll.RollAll();        
     }
+
     private void GetRandomDiceNum(List<int> fixedDiceList)
     {
         diceResultCount = defaultDiceResultCount.ToArray();
@@ -111,13 +109,13 @@ public class DiceManager : MonoBehaviour
             diceResult[i] = Random.Range(1, maxDiceNum);
             diceResultCount[diceResult[i] - 1]++;
         }
-        DiceRankingJudgement(diceResultCount);
+
         Debug.Log($"{diceResult[0]}, {diceResult[1]}, {diceResult[2]}, {diceResult[3]}, {diceResult[4]}");
-        
+        DiceRankingJudgement(diceResultCount); Debug.Log(diceRank); //테스트용 나중에 지울것
         rollCount++;
         if (rollCount == maxRollCount)
         {
-            //BattleManager.Instance.DiceRollButton.interactable = false; //버튼 만들면 활성화
+            BattleManager.Instance.DiceRollButton.interactable = false;
         }
         Debug.Log($"남은 리롤 횟수 : {maxRollCount - rollCount}");
     }
@@ -125,7 +123,7 @@ public class DiceManager : MonoBehaviour
     public void DiceFixed(DiceMy dice)
     {
         int index = dice.MyIndex;
-        
+
         if (fixedDiceList == null || fixedDiceList.Contains<int>(index) == false)
         {
             fixedDiceList.Add(index);
@@ -145,7 +143,7 @@ public class DiceManager : MonoBehaviour
         if (Input.touchCount > 0)
         {
             Camera camera = Camera.main;
-            
+
             RaycastHit hit;
 
             Ray ray = camera.ScreenPointToRay(Input.touches[0].position);
@@ -164,7 +162,7 @@ public class DiceManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Camera camera = Camera.main;
-            
+
             RaycastHit hit;
 
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
@@ -272,5 +270,27 @@ public class DiceManager : MonoBehaviour
     private float DamageWeighting()
     {
         return damageWighting[(int)diceRank];
+    }
+
+
+    public float GetDiceWeighting()
+    {
+        DiceRankingJudgement(diceResultCount);
+
+        return DamageWeighting();
+    }
+
+    public int GetSignitureAmount()
+    {
+        int iNum = 0;
+        foreach (GameObject diceGO in dices)
+        {
+            DiceMy dice = diceGO.GetComponent<DiceMy>();
+            if (diceResultCount.Contains<int>(dice.diceSO.C_No))
+            {
+                iNum++;
+            }
+        }
+        return iNum;
     }
 }
