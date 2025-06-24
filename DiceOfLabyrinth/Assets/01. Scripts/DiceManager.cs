@@ -76,7 +76,7 @@ public class DiceManager : MonoBehaviour
     {
         SelectDice();
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space)) //테스트용
         {
             RollDice();
         }

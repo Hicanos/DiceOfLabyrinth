@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattlePlayerTurnState : IBattleTurnState
 {
@@ -6,8 +7,8 @@ public class BattlePlayerTurnState : IBattleTurnState
     public void Enter()
     {
         GetCost();
-        battleManager.DiceRollButton.enabled = true;
-        battleManager.TurnEndButton.enabled = true;
+        battleManager.DiceRollButton.interactable = true;        
+        battleManager.TurnEndButton.interactable = true;
     }
 
     public void BattleUpdate()
@@ -17,8 +18,8 @@ public class BattlePlayerTurnState : IBattleTurnState
 
     public void Exit()
     {
-        battleManager.DiceRollButton.enabled = false;
-        battleManager.TurnEndButton.enabled = false;
+        battleManager.DiceRollButton.interactable = false;
+        battleManager.TurnEndButton.interactable = false;
     }
 
     public void Roll()

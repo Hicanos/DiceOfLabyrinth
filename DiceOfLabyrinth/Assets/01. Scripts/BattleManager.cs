@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
@@ -34,6 +35,12 @@ public class BattleManager : MonoBehaviour
     BattleStateMachine stateMachine;
     IBattleTurnState playerTurnState;
     IBattleTurnState enemyTurnState;
+
+    public Button DiceRollButton;
+    public Button TurnEndButton;
+
+    public int CurrnetCost = 0;
+    public readonly int MaxCost = 12;
 
     void Start()
     {
