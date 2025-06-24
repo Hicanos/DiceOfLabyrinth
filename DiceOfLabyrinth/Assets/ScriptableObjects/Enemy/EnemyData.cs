@@ -27,9 +27,6 @@ public class EnemyData: ScriptableObject
         Earth,
         Grass,
         Electric,
-        Wind,
-        Light,
-        Dark,
     }
     public enum EnemyPattern
     {

@@ -17,7 +17,6 @@ public class StageInfo
     [SerializeField] private string stageName;
     [SerializeField] private string description;
     [SerializeField] private Sprite backgroundImage;
-    [SerializeField] private int stageIndex;
     [SerializeField] private int stageCost;
     [SerializeField] private int expReward;
     [SerializeField] private int goldReward;
@@ -31,7 +30,6 @@ public class StageInfo
     public string StageName => stageName;
     public string Description => description;
     public Sprite BackgroundImage => backgroundImage;
-    public int StageIndex => stageIndex;
     public int StageCost => stageCost;
     public int ExpReward => expReward;
     public int GoldReward => goldReward;
