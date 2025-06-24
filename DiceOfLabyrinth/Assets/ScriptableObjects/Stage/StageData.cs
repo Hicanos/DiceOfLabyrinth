@@ -13,6 +13,7 @@ public class StageData : ScriptableObject
 [System.Serializable]
 public class StageInfo
 {
+    
     // 스테이지 정보 필드들
     [SerializeField] private string stageName;
     [SerializeField] private string description;
@@ -25,6 +26,9 @@ public class StageInfo
     [SerializeField] private bool isLocked = true;
     [SerializeField] private PhaseData[] phases = new PhaseData[5];
     [SerializeField] private List<ChooseOptions> choose;
+
+    [SerializeField] private List<StagmaData> stagmaList;
+    [SerializeField] private List<ArtifactData> artifactList;
 
     // 읽기 전용 프로퍼티들
     public string StageName => stageName;
@@ -46,16 +50,25 @@ public class StageInfo
     }
     public PhaseData[] Phases => phases;
     public List<ChooseOptions> Choose => choose;
+
+    public List<StagmaData> StagmaList => stagmaList;
+    public List<ArtifactData> ArtifactList => artifactList;
 }
 
 [System.Serializable]
 public class PhaseData
 {
+    public enum PhaseType
+    {
+        Normal, // 일반 페이즈
+        Boss,   // 보스 페이즈
+    }
     // Phase 정보 필드들
     [SerializeField] private string phaseName;
     [SerializeField] private List<EnemySpawnData> enemies;
     [SerializeField] private List<PhaseRewardData> phaseRewardObjects;
     [SerializeField] private int gemReward;
+    [SerializeField] private PhaseType phaseType; // 페이즈 타입 (일반, 보스 등)
 
     // 읽기 전용 프로퍼티들
     public string PhaseName => phaseName;
@@ -63,6 +76,7 @@ public class PhaseData
     public List<PhaseRewardData> PhaseRewardObjects => phaseRewardObjects;
 
     public int GemReward => gemReward;
+    public PhaseType Type => phaseType; // 페이즈 타입을 외부에서 읽을 수 있도록 허용
 }
 [System.Serializable]
 public class EnemySpawnData
