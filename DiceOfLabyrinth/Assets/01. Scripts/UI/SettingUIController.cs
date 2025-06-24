@@ -1,16 +1,17 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SettingUIController : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private GameObject settingPanel;
+    [SerializeField] private GameObject settingPopup;
+
+    public void OpenSetting()
     {
-        
+        settingPanel.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void CloseSetting()
     {
-        
+        settingPanel.SetActive(false);
     }
 }
