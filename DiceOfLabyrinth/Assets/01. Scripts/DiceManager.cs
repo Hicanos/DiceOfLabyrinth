@@ -76,16 +76,23 @@ public class DiceManager : MonoBehaviour
     {
         SelectDice();
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space)) //테스트용
         {
-            GetRandomDiceNum(fixedDiceList);
+            RollDice();
         }
     }
 
-    public void GetRandomDiceNum(List<int> fixedDiceList)
+    public void RollDice()
     {
-        if (rollCount == maxRollCount) return;
+        GetRandomDiceNum(fixedDiceList);
 
+        roll.SetDiceOutcome(diceResult);
+
+        roll.RollAll();        
+    }
+
+    private void GetRandomDiceNum(List<int> fixedDiceList)
+    {
         diceResultCount = defaultDiceResultCount.ToArray();
 
         for (int i = 0; i < diceResult.Length; i++)
@@ -102,26 +109,25 @@ public class DiceManager : MonoBehaviour
             diceResult[i] = Random.Range(1, maxDiceNum);
             diceResultCount[diceResult[i] - 1]++;
         }
-        DiceRankingJudgement(diceResultCount);
-        //Debug.Log($"{diceResult[0]}, {diceResult[1]}, {diceResult[2]}, {diceResult[3]}, {diceResult[4]}");
-        //Debug.Log($"{diceResultCount[0]}, {diceResultCount[1]}, {diceResultCount[2]}, {diceResultCount[3]}, {diceResultCount[4]}, {diceResultCount[5]}");
-        rollCount++;
-        Debug.Log($"남은 리롤 횟수 : {maxRollCount -  rollCount}");
-        roll.SetWhiteDiceOutcome(diceResult[0]);
-        roll.SetBlueDiceOutcome(diceResult[1]);
-        roll.SetRedDiceOutcome(diceResult[2]);
-        roll.SetGreenDiceOutcome(diceResult[3]);
-        roll.SetPurpleDiceOutcome(diceResult[4]);
 
-        roll.RollAll();
-        Debug.Log(diceRank);
+        Debug.Log($"{diceResult[0]}, {diceResult[1]}, {diceResult[2]}, {diceResult[3]}, {diceResult[4]}");
+        DiceRankingJudgement(diceResultCount); Debug.Log(diceRank); //테스트용 나중에 지울것
+        rollCount++;
+        if (rollCount == maxRollCount)
+        {
+            BattleManager.Instance.DiceRollButton.interactable = false;
+        }
+        Debug.Log($"남은 리롤 횟수 : {maxRollCount - rollCount}");
     }
 
-    public void DiceFixed(int index)
+    public void DiceFixed(DiceMy dice)
     {
+        int index = dice.MyIndex;
+
         if (fixedDiceList == null || fixedDiceList.Contains<int>(index) == false)
         {
             fixedDiceList.Add(index);
+            roll.diceAndOutcomeArray[index].dice = null;
         }
         else if (fixedDiceList.Contains<int>(index) == true)
         {
@@ -132,10 +138,12 @@ public class DiceManager : MonoBehaviour
     private void SelectDice()
     {
         //전투상태에서만 작동하도록 추가 조건 달기
+        if (rollCount == 0) return;
+        DiceMy dice;
         if (Input.touchCount > 0)
         {
             Camera camera = Camera.main;
-            DiceMy dice;
+
             RaycastHit hit;
 
             Ray ray = camera.ScreenPointToRay(Input.touches[0].position);
@@ -144,7 +152,8 @@ public class DiceManager : MonoBehaviour
             {
                 if (hit.collider.gameObject.TryGetComponent<DiceMy>(out dice))
                 {
-                    DiceFixed(dice.MyIndex);
+                    dice.SetIndex();
+                    DiceFixed(dice);
                     Debug.Log("주사위 감지");
                 }
             }
@@ -153,7 +162,7 @@ public class DiceManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Camera camera = Camera.main;
-            DiceMy dice;
+
             RaycastHit hit;
 
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
@@ -162,8 +171,9 @@ public class DiceManager : MonoBehaviour
             {
                 if (hit.collider.gameObject.TryGetComponent<DiceMy>(out dice))
                 {
-                    DiceFixed(dice.MyIndex);
-                    Debug.Log("주사위 감지");
+                    dice.SetIndex();
+                    DiceFixed(dice);
+                    Debug.Log("주사위 감지" + dice.name + dice.MyIndex);
                 }
             }
         }
@@ -232,6 +242,9 @@ public class DiceManager : MonoBehaviour
                 if ((i == 2 || i == 3) == true)
                 {
                     isSS = false;
+                }
+                if (i != 5)
+                {
                     SSCount = 0;
                 }
 
@@ -254,8 +267,30 @@ public class DiceManager : MonoBehaviour
         }
     }
 
-    private void DamageWeighting(DiceRankingEnum diceRanking)
+    private float DamageWeighting()
     {
-        float damage = damageWighting[(int)diceRanking];
+        return damageWighting[(int)diceRank];
+    }
+
+
+    public float GetDiceWeighting()
+    {
+        DiceRankingJudgement(diceResultCount);
+
+        return DamageWeighting();
+    }
+
+    public int GetSignitureAmount()
+    {
+        int iNum = 0;
+        foreach (GameObject diceGO in dices)
+        {
+            DiceMy dice = diceGO.GetComponent<DiceMy>();
+            if (diceResultCount.Contains<int>(dice.diceSO.C_No))
+            {
+                iNum++;
+            }
+        }
+        return iNum;
     }
 }
