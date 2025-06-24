@@ -1,9 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
-    #region �̱��� ����
+    #region 싱글톤 구현
     private static BattleManager instance;
 
     private void Awake()
@@ -32,22 +32,25 @@ public class BattleManager : MonoBehaviour
     }
 #endregion
 
-    BattleStateMachine stateMachine;
-    IBattleTurnState playerTurnState;
-    IBattleTurnState enemyTurnState;
+    public BattleStateMachine stateMachine;
+    public IBattleTurnState playerTurnState;
+    public IBattleTurnState enemyTurnState;
 
     public Button DiceRollButton;
-    public Button TurnEndButton;
+    public Button ConfirmButton; //공격 -> 턴 넘어감
 
     public int CurrnetCost = 0;
     public readonly int MaxCost = 12;
+    public int BattleTurn = 0;
 
     void Start()
     {
         playerTurnState = new BattlePlayerTurnState();
+        
         enemyTurnState = new BattleEnemyTurnState();
 
         stateMachine = new BattleStateMachine(playerTurnState);
+        playerTurnState.Enter(); //테스트용
     }
 
     
