@@ -82,22 +82,19 @@ public class DiceManager : MonoBehaviour
         }
     }
 
-    public void RollDice()
-    {
-        if (rollCount == maxRollCount) return;
+    public float RollDice()
+    {        
         GetRandomDiceNum(fixedDiceList);
-        
-        roll.SetWhiteDiceOutcome(diceResult[0]);
-        roll.SetBlueDiceOutcome(diceResult[1]);
-        roll.SetRedDiceOutcome(diceResult[2]);
-        roll.SetGreenDiceOutcome(diceResult[3]);
-        roll.SetPurpleDiceOutcome(diceResult[4]);
+
+        roll.SetDiceOutcome(diceResult);        
 
         roll.RollAll();
         Debug.Log(diceRank);
+
+        return DamageWeighting();
     }
     private void GetRandomDiceNum(List<int> fixedDiceList)
-    {        
+    {
         diceResultCount = defaultDiceResultCount.ToArray();
 
         for (int i = 0; i < diceResult.Length; i++)
@@ -115,17 +112,24 @@ public class DiceManager : MonoBehaviour
             diceResultCount[diceResult[i] - 1]++;
         }
         DiceRankingJudgement(diceResultCount);
-        //Debug.Log($"{diceResult[0]}, {diceResult[1]}, {diceResult[2]}, {diceResult[3]}, {diceResult[4]}");
-        //Debug.Log($"{diceResultCount[0]}, {diceResultCount[1]}, {diceResultCount[2]}, {diceResultCount[3]}, {diceResultCount[4]}, {diceResultCount[5]}");
+        Debug.Log($"{diceResult[0]}, {diceResult[1]}, {diceResult[2]}, {diceResult[3]}, {diceResult[4]}");
+        
         rollCount++;
+        if (rollCount == maxRollCount)
+        {
+            //BattleManager.Instance.DiceRollButton.interactable = false; //버튼 만들면 활성화
+        }
         Debug.Log($"남은 리롤 횟수 : {maxRollCount - rollCount}");
     }
 
-    public void DiceFixed(int index)
+    public void DiceFixed(DiceMy dice)
     {
+        int index = dice.MyIndex;
+        
         if (fixedDiceList == null || fixedDiceList.Contains<int>(index) == false)
         {
             fixedDiceList.Add(index);
+            roll.diceAndOutcomeArray[index].dice = null;
         }
         else if (fixedDiceList.Contains<int>(index) == true)
         {
@@ -136,10 +140,12 @@ public class DiceManager : MonoBehaviour
     private void SelectDice()
     {
         //전투상태에서만 작동하도록 추가 조건 달기
+        if (rollCount == 0) return;
+        DiceMy dice;
         if (Input.touchCount > 0)
         {
             Camera camera = Camera.main;
-            DiceMy dice;
+            
             RaycastHit hit;
 
             Ray ray = camera.ScreenPointToRay(Input.touches[0].position);
@@ -148,7 +154,8 @@ public class DiceManager : MonoBehaviour
             {
                 if (hit.collider.gameObject.TryGetComponent<DiceMy>(out dice))
                 {
-                    DiceFixed(dice.MyIndex);
+                    dice.SetIndex();
+                    DiceFixed(dice);
                     Debug.Log("주사위 감지");
                 }
             }
@@ -157,7 +164,7 @@ public class DiceManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Camera camera = Camera.main;
-            DiceMy dice;
+            
             RaycastHit hit;
 
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
@@ -166,8 +173,9 @@ public class DiceManager : MonoBehaviour
             {
                 if (hit.collider.gameObject.TryGetComponent<DiceMy>(out dice))
                 {
-                    DiceFixed(dice.MyIndex);
-                    Debug.Log("주사위 감지");
+                    dice.SetIndex();
+                    DiceFixed(dice);
+                    Debug.Log("주사위 감지" + dice.name + dice.MyIndex);
                 }
             }
         }
@@ -236,6 +244,9 @@ public class DiceManager : MonoBehaviour
                 if ((i == 2 || i == 3) == true)
                 {
                     isSS = false;
+                }
+                if (i != 5)
+                {
                     SSCount = 0;
                 }
 
@@ -258,8 +269,8 @@ public class DiceManager : MonoBehaviour
         }
     }
 
-    private void DamageWeighting(DiceRankingEnum diceRanking)
+    private float DamageWeighting()
     {
-        float damage = damageWighting[(int)diceRanking];
+        return damageWighting[(int)diceRank];
     }
 }
