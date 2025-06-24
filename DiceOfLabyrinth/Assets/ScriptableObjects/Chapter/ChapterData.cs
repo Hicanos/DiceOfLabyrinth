@@ -11,9 +11,8 @@ public class ChapterInfo
 {
     [SerializeField] private string chapterName;
     [SerializeField] private string description;
-    [SerializeField] private StageData stageData;
+    public StageData stageData;
 
     public string ChapterName => chapterName;
     public string Description => description;
-    public StageData StageData => stageData;
 }

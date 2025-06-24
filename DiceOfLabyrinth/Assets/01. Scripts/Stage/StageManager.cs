@@ -5,8 +5,9 @@ using TMPro;
 
 public class StageManager : MonoBehaviour
 {
-    public StageData stageData; // 스테이지 데이터를 담는 변수
+    public ChapterData chapterData; // ChapterData 스크립터블 오브젝트, 에디터에서 할당해야 합니다.
 
+    private int currentChapterIndex; // 현재 챕터 인덱스
     private int currentStageIndex; // 현재 스테이지 인덱스
     private int currentPhaseIndex; // 현재 페이즈 인덱스
     private int gem; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
@@ -27,19 +28,18 @@ public class StageManager : MonoBehaviour
             Destroy(gameObject); // 이미 인스턴스가 존재하면 중복 생성 방지
         }
 
-        // 스테이지 데이터가 할당되지 않은 경우 에러 메시지를 출력합니다.
-        if (stageData == null)
+        if (chapterData == null)
         {
-            Debug.LogError("StageData is not assigned in the inspector!");
+            Debug.LogError("ChapterData is not assigned in StageManager. Please assign it in the inspector.");
         }
 
         // Json 파일에서 클리어된 스테이지 데이터를 로드하는 메서드가 만들어지면 여기서 호출할 예정입니다.
     }
 
-    public void StartStage(int stageIndex)
+    public void StartStage(int chapterIndex, int stageIndex)
     {
         // 스테이지 시작 로직을 구현합니다.
-        if (stageData.StageIndex[stageIndex].IsCompleted)
+        if (chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsCompleted)
         {
             Debug.Log($"Stage {stageIndex} is already completed.");
             // 이미 완료된 스테이지를 재도전 할지 여부를 묻는 UI를 표시할 예정입니다.
@@ -48,7 +48,7 @@ public class StageManager : MonoBehaviour
             //    return;
             //}
         }
-        else if (stageData.StageIndex[stageIndex].IsLocked)
+        else if (chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsLocked)
         {
             Debug.Log($"Stage {stageIndex} is locked. Please complete previous stages.");
             // 잠금된 스테이지를 시작할 수 없다는 UI 메시지를 표시할 예정입니다.
@@ -67,7 +67,7 @@ public class StageManager : MonoBehaviour
         StandbyPhase();
     }
 
-    public void EndStage(int stageIndex, bool isSuccess)
+    public void EndStage(int chapterIndex, int stageIndex, bool isSuccess)
     {
         // 스테이지 종료 로직을 구현합니다.
         // isSuccess에 따라 클리어 여부를 처리하고, Json 파일에 데이터를 저장하는 메서드를 호출할 예정입니다.
@@ -75,9 +75,10 @@ public class StageManager : MonoBehaviour
         {
             Debug.Log($"Stage {stageIndex} cleared!");
             // 클리어된 스테이지 정보를 저장하는 로직을 추가할 예정입니다.
-            stageData.StageIndex[stageIndex].IsCompleted = true; // 스테이지 완료 상태 업데이트
-            stageData.StageIndex[stageIndex+1].IsLocked = false; // 다음 스테이지 잠금 해제
+            chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsCompleted = true; // 스테이지 완료 상태 업데이트
+            chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex+1].IsLocked = false; // 다음 스테이지 잠금 해제
             //보상 로직 추가 예정입니다. 예: 경험치, 골드, 보석 등, 플레이어 데이터가 만들어지면 += 할 예정입니다.
+            //
 
         }
         else
@@ -97,12 +98,13 @@ public class StageManager : MonoBehaviour
     public void BattlePhase(int phaseIndex)
     {
         // 전투 페이즈 시작 로직을 구현합니다.
-        if (phaseIndex < stageData.StageIndex[currentStageIndex].Phases.Length)
+        if (phaseIndex < chapterData.chapterIndex[currentChapterIndex].stageData.stageIndex[currentStageIndex].Phases.Length)
         {
             currentPhaseIndex = phaseIndex;
-            PhaseData phaseData = stageData.StageIndex[currentStageIndex].Phases[currentPhaseIndex];
+            PhaseData phaseData = chapterData.chapterIndex[currentChapterIndex].stageData.stageIndex[currentStageIndex].Phases[currentPhaseIndex];
             Debug.Log($"Starting Battle Phase {phaseIndex} with {phaseData.Enemies.Count} enemies.");
             //배틀로직은 별도의 cs로 분리할 예정입니다. 배틀 스크립트에서 승패를 판단하고 PhaseSuccess 메서드를 호출합니다.
+            
         }
         else
         {
@@ -123,23 +125,23 @@ public class StageManager : MonoBehaviour
         if (isSuccess)
         {
             Debug.Log($"Phase {currentPhaseIndex} cleared!");
-            if (currentPhaseIndex < stageData.StageIndex[currentStageIndex].Phases.Length - 2)
+            if (currentPhaseIndex < chapterData.chapterIndex[currentChapterIndex].stageData.stageIndex[currentStageIndex].Phases.Length - 2)
             {
                 PhaseReward(currentPhaseIndex);
             }
-            else if (currentPhaseIndex == stageData.StageIndex[currentStageIndex].Phases.Length - 2)
+            else if (currentPhaseIndex == chapterData.chapterIndex[currentChapterIndex].stageData.stageIndex[currentStageIndex].Phases.Length - 2)
             {
                 ShopPhase(); //
             }
             else // 
             {
-                EndStage(currentStageIndex, true); // 스테이지 클리어
+                EndStage(currentChapterIndex, currentStageIndex, true); // 스테이지 클리어
             }
         }
         else
         {
             Debug.Log($"Phase {currentPhaseIndex} failed.");
-            EndStage(currentStageIndex, false); // 스테이지 실패
+            EndStage(currentChapterIndex, currentStageIndex, false); // 스테이지 실패
         }
     }
 
@@ -151,8 +153,6 @@ public class StageManager : MonoBehaviour
         //{
         //    return;
         //}
-
-
         BattlePhase(currentPhaseIndex + 1);
     }
 }
