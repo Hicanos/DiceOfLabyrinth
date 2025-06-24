@@ -78,14 +78,26 @@ public class DiceManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            GetRandomDiceNum(fixedDiceList);
+            RollDice();
         }
     }
 
-    public void GetRandomDiceNum(List<int> fixedDiceList)
+    public void RollDice()
     {
         if (rollCount == maxRollCount) return;
+        GetRandomDiceNum(fixedDiceList);
+        
+        roll.SetWhiteDiceOutcome(diceResult[0]);
+        roll.SetBlueDiceOutcome(diceResult[1]);
+        roll.SetRedDiceOutcome(diceResult[2]);
+        roll.SetGreenDiceOutcome(diceResult[3]);
+        roll.SetPurpleDiceOutcome(diceResult[4]);
 
+        roll.RollAll();
+        Debug.Log(diceRank);
+    }
+    private void GetRandomDiceNum(List<int> fixedDiceList)
+    {        
         diceResultCount = defaultDiceResultCount.ToArray();
 
         for (int i = 0; i < diceResult.Length; i++)
@@ -106,15 +118,7 @@ public class DiceManager : MonoBehaviour
         //Debug.Log($"{diceResult[0]}, {diceResult[1]}, {diceResult[2]}, {diceResult[3]}, {diceResult[4]}");
         //Debug.Log($"{diceResultCount[0]}, {diceResultCount[1]}, {diceResultCount[2]}, {diceResultCount[3]}, {diceResultCount[4]}, {diceResultCount[5]}");
         rollCount++;
-        Debug.Log($"남은 리롤 횟수 : {maxRollCount -  rollCount}");
-        roll.SetWhiteDiceOutcome(diceResult[0]);
-        roll.SetBlueDiceOutcome(diceResult[1]);
-        roll.SetRedDiceOutcome(diceResult[2]);
-        roll.SetGreenDiceOutcome(diceResult[3]);
-        roll.SetPurpleDiceOutcome(diceResult[4]);
-
-        roll.RollAll();
-        Debug.Log(diceRank);
+        Debug.Log($"남은 리롤 횟수 : {maxRollCount - rollCount}");
     }
 
     public void DiceFixed(int index)
