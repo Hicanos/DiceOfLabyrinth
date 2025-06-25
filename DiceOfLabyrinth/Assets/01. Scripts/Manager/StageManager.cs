@@ -121,6 +121,21 @@ public class StageManager : MonoBehaviour
         //BattleUIController.cs에서 능력치 세팅 UI 메서드를 호출할 예정입니다.
     }
 
+    public void AddArtifact(string artifactName)
+    {
+        // 아티팩트 추가 로직을 구현합니다.
+        if (!artifacts.Contains(artifactName))
+        {
+            artifacts.Add(artifactName);
+            Debug.Log($"Artifact {artifactName} added.");
+            // 아티팩트 추가 UI 업데이트 메서드를 호출할 예정입니다.
+        }
+        else
+        {
+            Debug.LogWarning($"Artifact {artifactName} is already in the list.");
+        }
+    }
+
 
 
     public void BattlePhaseNormalRoom(int phaseIndex)
@@ -129,7 +144,15 @@ public class StageManager : MonoBehaviour
         if (phaseIndex < 4)
         {
             currentPhaseIndex = phaseIndex;
-            NormalPhaseData phaseData = chapterData.chapterIndex[currentChapterIndex].stageData.stageIndex[currentStageIndex].NormalPhase[phaseIndex];
+            var normalPhases = chapterData.chapterIndex[currentChapterIndex].stageData.stageIndex[currentStageIndex].NormalPhases;
+            if (normalPhases == null || normalPhases.Count == 0)
+            {
+                Debug.LogError("NormalPhase 리스트가 비어 있습니다.");
+                return;
+            }
+            int randomIndex = Random.Range(0, normalPhases.Count);
+            currentPhaseIndex = randomIndex;
+            NormalPhaseData phaseData = normalPhases[randomIndex];
             foreach (var enemyInfo in phaseData.Enemies)
             {
                 Vector2 spawnPosition = enemyInfo.SpawnPosition;
@@ -147,10 +170,19 @@ public class StageManager : MonoBehaviour
                 }
             }
         }
+        else if (phaseIndex == 4)
+        {
+            Debug.Log("4페이즈 인덱스는 보스룸을 위한 인덱스입니다. 잘못된 페이즈 인덱스입니다.");
+        }
         else
         {
             Debug.LogError("Invalid phase index.");
         }
+
+    }
+
+    public void BattlePhaseEliteRoom(int phaseIndex)
+    {
 
     }
 
@@ -164,11 +196,11 @@ public class StageManager : MonoBehaviour
         if (isSuccess)
         {
             Debug.Log($"Phase {currentPhaseIndex} cleared!");
-            if (currentPhaseIndex < chapterData.chapterIndex[currentChapterIndex].stageData.stageIndex[currentStageIndex].Phases.Length - 2)
+            if (currentPhaseIndex < 3)
             {
-                PhaseReward(currentPhaseIndex);
+                RewardPhase(currentPhaseIndex);
             }
-            else if (currentPhaseIndex == chapterData.chapterIndex[currentChapterIndex].stageData.stageIndex[currentStageIndex].Phases.Length - 2)
+            else if (currentPhaseIndex == 3)
             {
                 ShopPhase(); //
             }
@@ -184,14 +216,8 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    private void PhaseReward(int currentPhaseIndex)
+    private void RewardPhase(int currentPhaseIndex)
     {
-        //리워드
-        //버튼로직
-        //if () // 로비로 나가거나 스테이지를 재도전하는 경우, UI 입력에 따른 불리언 메서드가 만들어지면 추가할 예정입니다.
-        //{
-        //    return;
-        //}
-        BattlePhase(currentPhaseIndex + 1);
+        //BattlePhase(currentPhaseIndex + 1);
     }
 }
