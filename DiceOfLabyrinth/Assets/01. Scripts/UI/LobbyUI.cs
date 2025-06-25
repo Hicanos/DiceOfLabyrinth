@@ -7,6 +7,6 @@ public class LobbyUI : MonoBehaviour
 
     private void Start()
     {
-        adventureButton.onClick.AddListener(() => SceneManagerEx.Instance.LoadScene("DungeonSelectScene"));
+        adventureButton.onClick.AddListener(() => SceneManagerEx.Instance.OnAdventureClicked());
     }
 }
