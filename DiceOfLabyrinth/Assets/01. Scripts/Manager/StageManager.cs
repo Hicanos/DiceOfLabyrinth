@@ -16,7 +16,7 @@ public class StageManager : MonoBehaviour
     private List<string> stagma = new List<string>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public static StageManager Instance { get; private set; }
 
-    //public static StageManager SafeInstance // null에 대비한 방어용 프로퍼티, 필요시 주석 해제하여 사용하세요. 어드레서블 등으로 챕터 데이터를 할당해야 합니다.
+    //public static StageManager SafeInstance // null에 대비한 방어용 프로퍼티, 필요시 주석 해제하여 사용하세요. 이걸 사용할거면 어드레서블 등으로 챕터 데이터를 불러와야 합니다.
     //{
     //    get
     //    {
@@ -61,7 +61,7 @@ public class StageManager : MonoBehaviour
 
     public void StartStage(int chapterIndex, int stageIndex)
     {
-        // 스테이지 시작 로직을 구현합니다.
+        // 스테이지 시작 로직을 구현합니다. 아래의 If 문은 UI를 다루는 cs가 만들어지면 수정할 예정입니다.
         if (chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsCompleted)
         {
             Debug.Log($"Stage {stageIndex} is already completed.");
@@ -103,7 +103,7 @@ public class StageManager : MonoBehaviour
             // 클리어된 스테이지 정보를 저장하는 로직을 추가할 예정입니다.
             chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsCompleted = true; // 스테이지 완료 상태 업데이트
             chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex+1].IsLocked = false; // 다음 스테이지 잠금 해제
-            //보상 로직 추가 예정입니다. 예: 경험치, 골드, 보석 등, 플레이어 데이터가 만들어지면 += 할 예정입니다.
+            //보상 로직 추가 예정입니다. 예: 경험치, 골드, 보석 등, 플레이어 데이터가 만들어지면 += 할 예정입니다./
             //
 
         }
@@ -115,22 +115,37 @@ public class StageManager : MonoBehaviour
         SceneManager.LoadScene("MainMenu"); // 메인 메뉴로 돌아가기, // SceneManagerEX.cs가 만들어지면 수정할 예정입니다.
     }
 
-    private void StandbyPhase()
+    public void StandbyPhase()
     {
         //전투 페이즈 이전에 능력치 세팅 로직을 구현합니다.
-        BattlePhase(0); // 첫 번째 페이즈로 이동
+        //BattleUIController.cs에서 능력치 세팅 UI 메서드를 호출할 예정입니다.
     }
 
-    public void BattlePhase(int phaseIndex)
+
+
+    public void BattlePhaseNormalRoom(int phaseIndex)
     {
         // 전투 페이즈 시작 로직을 구현합니다.
-        if (phaseIndex < chapterData.chapterIndex[currentChapterIndex].stageData.stageIndex[currentStageIndex].Phases.Length)
+        if (phaseIndex < 4)
         {
             currentPhaseIndex = phaseIndex;
-            PhaseData phaseData = chapterData.chapterIndex[currentChapterIndex].stageData.stageIndex[currentStageIndex].Phases[currentPhaseIndex];
-            Debug.Log($"Starting Battle Phase {phaseIndex} with {phaseData.Enemies.Count} enemies.");
-            //배틀로직은 별도의 cs로 분리할 예정입니다. 배틀 스크립트에서 승패를 판단하고 PhaseSuccess 메서드를 호출합니다.
-            
+            NormalPhaseData phaseData = chapterData.chapterIndex[currentChapterIndex].stageData.stageIndex[currentStageIndex].NormalPhase[phaseIndex];
+            foreach (var enemyInfo in phaseData.Enemies)
+            {
+                Vector2 spawnPosition = enemyInfo.SpawnPosition;
+                var enemyPrefab = enemyInfo.EnemyPrefab;
+
+                GameObject enemyObj = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+                IEnemy enemy = enemyObj.GetComponent<IEnemy>();
+                if (enemy != null)
+                {
+                    enemy.Init();
+                }
+                else
+                {
+                    Debug.LogError($"{enemyPrefab.name}에 IEnemy가 구현되어 있지 않습니다.");
+                }
+            }
         }
         else
         {
@@ -141,9 +156,7 @@ public class StageManager : MonoBehaviour
 
     private void ShopPhase()
     {
-        //상점페이즈 로직, 예를 들어, 플레이어가 아이템을 구매하거나 판매할 수 있는 UI를 표시합니다. 
-
-        BattlePhase(4);
+        //상점페이즈 로직, 예를 들어, 플레이어가 아이템을 구매하거나 판매할 수 있는 UI를 표시합니다.
     }
     public void PhaseSuccess(bool isSuccess)
     {
