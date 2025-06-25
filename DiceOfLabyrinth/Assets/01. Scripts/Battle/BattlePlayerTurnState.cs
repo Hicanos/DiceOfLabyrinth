@@ -51,8 +51,7 @@ public class BattlePlayerTurnState : IBattleTurnState
         battleManager.DiceRollButton.interactable = false;
         battleManager.ConfirmButton.interactable = false;
 
-        GetCost(signitureCount);
-        Debug.Log($"코스트 {signitureCount}개 획득");
+        GetCost(signitureCount);        
 
         //공격 애니메이션실행
 

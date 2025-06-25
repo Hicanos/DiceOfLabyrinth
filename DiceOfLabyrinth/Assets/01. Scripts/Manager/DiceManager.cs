@@ -1,6 +1,5 @@
 ﻿using PredictedDice;
 using PredictedDice.Demo;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -46,9 +45,10 @@ public class DiceManager : MonoBehaviour
     }
     #endregion
     [SerializeField] GameObject diceContainer;
-    GameObject[] dices;
     [SerializeField] RollMultipleDiceSynced roll;
     [SerializeField] Camera diceCamera;
+    GameObject[] dices;
+
     int[] diceResult;
     int[] diceResultCount;
     int[] defaultDiceResultCount;
@@ -61,16 +61,20 @@ public class DiceManager : MonoBehaviour
 
     DiceRankingEnum diceRank;
     float[] damageWighting;
-
+    
     void Start()
     {
         diceResult = new int[5];
         diceResultCount = new int[6];
         defaultDiceResultCount = new int[6] { 0, 0, 0, 0, 0, 0 };
-        damageWighting = new float[7] { 1, 3, 6.5f, 10, 4, 6, 7.5f }; //추후 값을 받아올수 있도록 수정
+
         dices = new GameObject[diceContainer.transform.childCount];
+
         fixedDiceList = new List<int>();
         tempFixedDiceList = new List<int>();
+
+        damageWighting = new float[7] { 1, 3, 6.5f, 10, 4, 6, 7.5f }; //추후 값을 받아올수 있도록 수정
+
         for (int i = 0; i < diceContainer.transform.childCount; i++)
         {
             dices[i] = diceContainer.transform.GetChild(i).gameObject;
