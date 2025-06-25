@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 /// <summary>
 /// 스킬의 기능을 정의하는 인터페이스
 /// </summary>

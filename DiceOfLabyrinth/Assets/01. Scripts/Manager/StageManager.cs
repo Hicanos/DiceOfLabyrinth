@@ -10,10 +10,32 @@ public class StageManager : MonoBehaviour
     private int currentChapterIndex; // 현재 챕터 인덱스
     private int currentStageIndex; // 현재 스테이지 인덱스
     private int currentPhaseIndex; // 현재 페이즈 인덱스
+
     private int gem; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
-    private GameObject artifact; // 아티팩트 오브젝트, 스테이지 내에서만 쓰이는 오브젝트, 스테이지를 벗어나면 초기화됩니다.
-    private GameObject stagma; // 스태그마 오브젝트, 스테이지 내에서만 쓰이는 오브젝트, 스테이지를 벗어나면 초기화됩니다.
+    private List<string> artifacts = new List<string>();// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
+    private List<string> stagma = new List<string>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public static StageManager Instance { get; private set; }
+
+    //public static StageManager SafeInstance // null에 대비한 방어용 프로퍼티, 필요시 주석 해제하여 사용하세요. 어드레서블 등으로 챕터 데이터를 할당해야 합니다.
+    //{
+    //    get
+    //    {
+    //        if (Instance == null)
+    //        {
+    //            var found = FindFirstObjectByType<StageManager>();
+    //            if (found != null)
+    //            {
+    //                Instance = found;
+    //            }
+    //            else
+    //            {
+    //                var go = new GameObject("StageManager");
+    //                Instance = go.AddComponent<StageManager>();
+    //            }
+    //        }
+    //        return Instance;
+    //    }
+    //}
 
     // Awake is called when the script instance is being loaded
     void Awake()
@@ -35,6 +57,7 @@ public class StageManager : MonoBehaviour
 
         // Json 파일에서 클리어된 스테이지 데이터를 로드하는 메서드가 만들어지면 여기서 호출할 예정입니다.
     }
+
 
     public void StartStage(int chapterIndex, int stageIndex)
     {
@@ -61,9 +84,12 @@ public class StageManager : MonoBehaviour
         //    return;
         //}
         SceneManager.LoadScene("BattleScene");//SceneManagerEX.cs가 만들어지면 수정할 예정입니다.
+        currentChapterIndex = chapterIndex; // 현재 챕터 인덱스 설정
         currentStageIndex = stageIndex; // 현재 스테이지 인덱스 설정
         currentPhaseIndex = 0; // 현재 페이즈 인덱스 초기화
-        gem = 0;
+        gem = 0; // 스테이지 시작 시 재화 초기화
+        artifacts.Clear(); // 스테이지 시작 시 아티팩트 목록 초기화
+        stagma.Clear(); // 스테이지 시작 시 스태그마 목록 초기화
         StandbyPhase();
     }
 

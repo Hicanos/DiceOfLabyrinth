@@ -11,8 +11,10 @@ public class ChapterInfo
 {
     [SerializeField] private string chapterName;
     [SerializeField] private string description;
+    [SerializeField] private Sprite image;
     public StageData stageData;
 
     public string ChapterName => chapterName;
     public string Description => description;
+    public Sprite Image => image;
 }
