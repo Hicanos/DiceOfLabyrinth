@@ -8,8 +8,12 @@ public class BattlePlayerTurnState : IBattleTurnState
     float RankWeighting = 0;
     public void Enter()
     {
-        GetCost(AlivedCharacter());
         battleManager.BattleTurn++;
+        Debug.Log($"Turn{BattleManager.Instance.BattleTurn}");
+        Debug.Log("Player's turn");
+
+        GetCost(AlivedCharacter());
+        
 
         battleManager.DiceRollButton.interactable = true;
         battleManager.ConfirmButton.interactable = false;
@@ -48,6 +52,8 @@ public class BattlePlayerTurnState : IBattleTurnState
         battleManager.ConfirmButton.interactable = false;
 
         GetCost(signitureCount);
+        Debug.Log($"코스트 {signitureCount}개 획득");
+
         //공격 애니메이션실행
 
         battleManager.stateMachine.ChangeState(battleManager.enemyTurnState);
@@ -65,9 +71,10 @@ public class BattlePlayerTurnState : IBattleTurnState
         cost = Mathf.Clamp(cost + iNum, 0, battleManager.MaxCost);
 
         battleManager.CurrnetCost = cost;
+        battleManager.costTest.text = cost.ToString();
     }
 
-    private int AlivedCharacter()
+    private int AlivedCharacter() //작성 필요
     {
         int num = 0;
 
