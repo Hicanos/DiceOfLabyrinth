@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bcbe1ee2cb632b745a1273d3c4bc25d5, type: 3}
-  m_Name: StageData
+  m_Name: StageData_Ch1
   m_EditorClassIdentifier: 
   stageIndex:
   - stageName: "0\uC2A4\uD14C\uC774\uC9C0"
@@ -49,20 +49,29 @@ MonoBehaviour:
       gemReward: 0
     elitePhases:
     - phaseName: "\uC5D8\uB9AC\uD2B8\uC5D0\uB108\uBBF81"
-      enemies: []
+      enemies:
+      - enemyPrefab: {fileID: 0}
+        spawnPosition: {x: 0, y: 0, z: 0}
       phaseRewardObjects: []
       gemReward: 0
     - phaseName: "\uC5D8\uB9AC\uD2B8\uC5D0\uB108\uBBF82"
-      enemies: []
+      enemies:
+      - enemyPrefab: {fileID: 0}
+        spawnPosition: {x: 0, y: 0, z: 0}
       phaseRewardObjects: []
       gemReward: 0
     - phaseName: "\uC5D8\uB9AC\uD2B8\uC5D0\uB108\uBBF83"
-      enemies: []
+      enemies:
+      - enemyPrefab: {fileID: 0}
+        spawnPosition: {x: 0, y: 0, z: 0}
       phaseRewardObjects: []
       gemReward: 0
     choose:
     - chooseName: "\uC120\uD0DD\uC9C01"
       description: "\uC120\uD0DD\uC9C01 \uB514\uC2A4\uD06C\uB9BD\uC158"
+      iconImage: {fileID: 0}
+    - chooseName: "\uC120\uD0DD\uC9C02"
+      description: "\uC120\uD0DD\uC9C02 \uB514\uC2A4\uD06C\uB9BD\uC158"
       iconImage: {fileID: 0}
     stagmaList:
     - {fileID: 11400000, guid: f620bf743bc3c9d429c8ffde44b4cfae, type: 2}
