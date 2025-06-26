@@ -42,10 +42,10 @@ public class BattlePlayerTurnState : IBattleTurnState
         battleManager.ConfirmButton.interactable = true;
     }
 
-    public void Attack()
+    public void Attack() //[주사위 눈금 *족보별계수 + { 공격력 - 방어력 * (1 - 방어력 관통률)}] *(버프 + 아티팩트 + 속성 + 패시브 + 각인)
     {        
         Debug.Log("공격!");
-        float diceWeighting = DiceManager.Instance.GetDiceWeighting(); //(주사위 눈금 수 * 캐릭터 공격력 * 족보별 계수) *(버프 + 아티팩트 + 속성 + 패시브 + 각인)
+        float diceWeighting = DiceManager.Instance.GetDiceWeighting(); //주사위 눈금 *족보별계수
         int signitureCount = DiceManager.Instance.GetSignitureAmount();
 
         battleManager.DiceRollButton.interactable = false;

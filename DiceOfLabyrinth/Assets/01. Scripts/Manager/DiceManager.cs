@@ -47,7 +47,7 @@ public class DiceManager : MonoBehaviour
     [SerializeField] GameObject diceContainer;
     [SerializeField] RollMultipleDiceSynced roll;
     [SerializeField] Camera diceCamera;
-    GameObject[] dices;
+    public GameObject[] dices;
 
     int[] diceResult;
     int[] diceResultCount;
@@ -194,14 +194,14 @@ public class DiceManager : MonoBehaviour
         }
     }
 
-    private void DiceRankingJudgement(int[] diceResultCount)
+    private void DiceRankingJudgement()
     {
         int count = 0;
         int maxCount = 0;
         bool isPair = false;
         bool isTriple = false;
         diceRank = DiceRankingEnum.Top;
-
+        
         for (int i = 0; i < diceResultCount.Length; i++)
         {
             if(diceResultCount[i] == 1)
@@ -265,16 +265,16 @@ public class DiceManager : MonoBehaviour
             return;
         }
     }
-
-    private float DamageWeighting()
-    {
-        return damageWighting[(int)diceRank];
+    
+    private float DamageWeighting() //주사위 눈금 *족보별계수
+    {        
+        return diceResult.Sum() * damageWighting[(int)diceRank]; 
     }
 
 
     public float GetDiceWeighting()
     {
-        DiceRankingJudgement(diceResultCount);
+        DiceRankingJudgement();
         Debug.Log(diceRank);
         return DamageWeighting();
     }
