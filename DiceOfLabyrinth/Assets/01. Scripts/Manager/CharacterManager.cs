@@ -10,6 +10,12 @@ using UnityEngine.AddressableAssets;
 /// </summary>
 public class CharacterManager : MonoBehaviour
 {
+    //싱글톤패턴
+
+    public static CharacterManager Instance { get; private set; }
+   
+
+
     // 모든 캐릭터 데이터 (Key: charID, Value: CharacterSO)
     public Dictionary<string, CharacterSO> AllCharacters { get; private set; } = new Dictionary<string, CharacterSO>();
 
