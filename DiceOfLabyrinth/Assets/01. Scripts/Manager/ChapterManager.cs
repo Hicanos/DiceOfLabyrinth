@@ -62,12 +62,30 @@ public class ChapterManager : MonoBehaviour
         stageManager.artifacts.Clear(); // 챕터 시작 시 아티팩트 목록 초기화
         equipedArtifacts.Clear(); // 챕터 시작 시 장착된 아티팩트 목록 초기화
         stageManager.stagma.Clear(); // 챕터 시작 시 스태그마 목록 초기화
-        // 챕터 데이터에서 해당 챕터 정보를 가져와서 필요한 초기화 작업 수행
-        ChapterInfo chapterInfo = chapterData.chapterIndex[chapterIndex];
-        if (chapterInfo != null)
+        // 모든 스테이지 잠금/클리어 상태 초기화
+        var stages = chapterData.chapterIndex[chapterIndex].stageData.stageIndex;
+        for (int i = 0; i < stages.Count; i++)
         {
-            Debug.Log($"Starting Chapter: {chapterInfo.ChapterName}");
-            // 추가적인 초기화 작업이 필요하다면 여기에 작성
+            stages[i].IsLocked = (i != 0);      // 첫 번째만 false, 나머지는 true
+            stages[i].IsCompleted = false;      // 모두 미완료로 초기화
+        }
+    }
+    public void CompleteChapter(int chapterIndex)
+    {
+        if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
+        {
+            Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
+            return;
+        }
+        if (chapterData.chapterIndex[chapterIndex] != null)
+        {
+            chapterData.chapterIndex[chapterIndex].isCompleted = true; // 챕터 완료 상태를 true로 설정
+            chapterData.chapterIndex[chapterIndex +1].isLocked = false; // 다음 챕터 잠금 해제
+            Debug.Log($"Chapter {chapterData.chapterIndex[chapterIndex].ChapterName} completed!");
+        }
+        else
+        {
+            Debug.LogError($"Chapter {chapterIndex} not found.");
         }
     }
 }

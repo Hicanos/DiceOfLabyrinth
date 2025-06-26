@@ -257,34 +257,38 @@ public class StageManager : MonoBehaviour
     {
         //상점페이즈 로직, 예를 들어, 플레이어가 아이템을 구매하거나 판매할 수 있는 UI를 표시합니다.
     }
-    public void PhaseSuccess(bool isSuccess)
+    public void PhaseSuccess(string roomType)
     {
-        // 페이즈 성공 여부에 따라 다음 페이즈로 이동하거나 스테이지 종료 로직을 호출합니다.
-        if (isSuccess)
-        {
-            Debug.Log($"Phase {currentPhaseIndex} cleared!");
-            if (currentPhaseIndex < 3)
+            switch (roomType)
             {
-                RewardPhase(currentPhaseIndex);
+            case "EliteRoom":
+                // 엘리트 방 성공 로직
+                currentPhaseIndex++;
+                if (currentPhaseIndex < 4) // 4페이즈까지 진행 가능
+                {
+                    RewardPhase(currentPhaseIndex);
+                    BattlePhaseEliteRoom(currentPhaseIndex);
+                }
+                break;
+            case "ShopRoom":
+                // 상점 방 성공 로직
+                ShopPhase();
+                break;
+
+            case "NormalRoom":
+                // 일반 방 성공 로직
+                currentPhaseIndex++;
+                if (currentPhaseIndex < 4) // 4페이즈까지 진행 가능
+                {
+                    RewardPhase(currentPhaseIndex);
+                    BattlePhaseNormalRoom(currentPhaseIndex);
+                }
+                break;
             }
-            else if (currentPhaseIndex == 3)
-            {
-                ShopPhase(); //
-            }
-            else // 
-            {
-                EndStage(currentChapterIndex, currentStageIndex, true); // 스테이지 클리어
-            }
-        }
-        else
-        {
-            Debug.Log($"Phase {currentPhaseIndex} failed.");
-            EndStage(currentChapterIndex, currentStageIndex, false); // 스테이지 실패
-        }
     }
 
     private void RewardPhase(int currentPhaseIndex)
     {
-        //BattlePhase(currentPhaseIndex + 1);
+        
     }
 }
