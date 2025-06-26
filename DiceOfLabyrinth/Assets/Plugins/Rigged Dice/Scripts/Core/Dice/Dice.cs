@@ -14,6 +14,7 @@ namespace PredictedDice
 
         public DiceGraphic DiceGraphic { get; private set; }
         private DiceLocomotion _locomotion;
+        public DiceLocomotion Locomotion => _locomotion;
         public DiceSimulation Simulation { get; private set; }
         private ProjectionSceneManager _projectionSceneManager;
         public Pose GetPose() => _locomotion.GetPose();

@@ -1,9 +1,6 @@
-using NUnit.Framework;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static PredictedDice.Demo.RollMultipleDiceSynced;
 using Random = UnityEngine.Random;
 
 namespace PredictedDice.Demo
@@ -70,7 +67,7 @@ namespace PredictedDice.Demo
                 diceAndOutcome.dice.PlaySimulation();
             }
         }
-
+        
         private RollData GetRandomForcedRollData(int outcome = RollData.RandomFace)
         {
             return new RollData

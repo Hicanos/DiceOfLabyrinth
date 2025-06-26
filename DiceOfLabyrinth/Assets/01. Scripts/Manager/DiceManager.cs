@@ -1,5 +1,6 @@
 ﻿using PredictedDice;
 using PredictedDice.Demo;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -55,13 +56,14 @@ public class DiceManager : MonoBehaviour
     List<int> fixedDiceList;
     List<int> tempFixedDiceList;
     const int maxDiceNum = 6;
-
+    
     int rollCount = 0;
     const int maxRollCount = 3;
 
     DiceRankingEnum diceRank;
     float[] damageWighting;
-    
+
+    Vector3[] dicePos;
     void Start()
     {
         diceResult = new int[5];
@@ -72,13 +74,15 @@ public class DiceManager : MonoBehaviour
 
         fixedDiceList = new List<int>();
         tempFixedDiceList = new List<int>();
-
+        
         damageWighting = new float[7] { 1, 3, 6.5f, 10, 4, 6, 7.5f }; //추후 값을 받아올수 있도록 수정
 
         for (int i = 0; i < diceContainer.transform.childCount; i++)
         {
             dices[i] = diceContainer.transform.GetChild(i).gameObject;
         }
+
+        dicePos =new Vector3[] { new Vector3 (1.96f, 0,7.89f),new Vector3(3.4f, 0, 7.89f), new Vector3(4.86f, 0, 7.89f), new Vector3(6.36f, 0, 7.89f), new Vector3(7.82f, 0, 7.89f) };//추후 수정
     }
 
     private void Update()
@@ -93,14 +97,16 @@ public class DiceManager : MonoBehaviour
         roll.SetDiceOutcome(diceResult);
 
         roll.RollAll();
-                
-        foreach(int i in tempFixedDiceList)
+        
+        foreach (int i in tempFixedDiceList)
         {
             fixedDiceList.Add(i);
         }
         tempFixedDiceList.Clear();
-    }
 
+        StartCoroutine(dzsdvjzlxcv());
+    }    
+    
     private void GetRandomDiceNum()
     {
         diceResultCount = defaultDiceResultCount.ToArray();
@@ -128,6 +134,29 @@ public class DiceManager : MonoBehaviour
         Debug.Log($"남은 리롤 횟수 : {maxRollCount - rollCount}");
     }
 
+    private void SortingDice()
+    {
+        
+        for (int i = 0; i < dices.Length; i++)
+        {
+            dices[i].transform.localPosition = dicePos[i];
+        }
+        ResetRotation();
+    }
+    IEnumerator dzsdvjzlxcv()
+    {
+        while(true)
+        {
+            Dice dice = dices[dices.Length - 1].GetComponent<Dice>();
+
+            if(dice.Locomotion.isEnd == true)
+            {
+                SortingDice();
+                break;
+            }
+            yield return null;
+        }
+    }
     public void DiceFixed(DiceMy dice)
     {
         int index = dice.MyIndex;
@@ -305,6 +334,11 @@ public class DiceManager : MonoBehaviour
         fixedDiceList.Clear();
         tempFixedDiceList.Clear();
 
+        ResetRotation();
+    }
+
+    private void ResetRotation()
+    {
         foreach (GameObject dice in dices)
         {
             dice.transform.rotation = Quaternion.identity;
