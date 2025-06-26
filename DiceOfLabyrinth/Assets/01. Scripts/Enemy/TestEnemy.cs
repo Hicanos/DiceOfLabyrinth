@@ -32,9 +32,8 @@ public class TestEnemy : MonoBehaviour, IEnemy // 테스트에너미 클래스�
             UpdateEnemyName();
         }
     }
-    public void Init(EnemyData enemyData)
+    public void Init()
     {
-        this.enemyData = enemyData;
         currentHp = enemyData.MaxHp; // 초기 HP 설정
         Debug.Log($"Enemy Initialized: {enemyData.EnemyName}, Level: {enemyData.EnemyLevel}");
 

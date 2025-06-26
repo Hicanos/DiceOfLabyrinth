@@ -27,6 +27,11 @@ public class SceneManagerEx : MonoBehaviour
         LoadScene("DungeonSelectScene");
     }
 
+    public void OnDungeon1Clicked() // 추후 팀 편성UI를 추가한 뒤 탐험 버튼을 누르면 배틀 씬으로 이동하게 변경.
+    {
+        LoadScene("BattleScene");
+    }
+
     public void OnBackClicked()
     {
         Debug.Log("뒤로 가기");
