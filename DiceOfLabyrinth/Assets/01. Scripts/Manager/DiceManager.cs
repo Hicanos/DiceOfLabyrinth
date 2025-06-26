@@ -3,6 +3,7 @@ using PredictedDice.Demo;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 enum DiceRankingEnum
@@ -339,9 +340,13 @@ public class DiceManager : MonoBehaviour
 
     private void ResetRotation()
     {
+        quaternion quaternion;
         foreach (GameObject dice in dices)
         {
-            dice.transform.rotation = Quaternion.identity;
+            float z = dice.transform.rotation.y == 0 ? dice.transform.rotation.z : 0;
+            float y = dice.transform.rotation.z == 0 ? dice.transform.rotation.y : 0;
+            quaternion = Quaternion.Euler(dice.transform.rotation.x, y, z);
+            dice.transform.rotation = quaternion;
         }
     }
 }
