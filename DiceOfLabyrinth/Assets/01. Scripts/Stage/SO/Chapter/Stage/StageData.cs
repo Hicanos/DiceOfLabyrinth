@@ -14,7 +14,11 @@ public class StageData : ScriptableObject
 [System.Serializable]
 public class StageInfo
 {
-    
+    public enum StageDifficulty
+    {
+        Normal,
+        Hard,
+    }
     // 스테이지 정보 필드들
     [SerializeField] private string stageName;
     [SerializeField] private string description;
@@ -26,6 +30,7 @@ public class StageInfo
     [SerializeField] private int jewelReward;
     [SerializeField] private bool isCompleted;
     [SerializeField] private bool isLocked = true;
+    public StageDifficulty stageDifficulty;
     [SerializeField] private BossPhaseData bossPhase;
     [SerializeField] private List<NormalPhaseData> normalPhases;
     [SerializeField] private List<ElitePhaseData> elitePhases;

@@ -35,7 +35,7 @@ public class ChapterManager : MonoBehaviour
         }
     }
 
-    public void StartChapter(int chapterIndex)
+    public void LoadChapter(int chapterIndex)
     {
         if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
         {
@@ -54,11 +54,14 @@ public class ChapterManager : MonoBehaviour
             // 이미 완료된 챕터를 선택했을 때 완료 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
             return;
         }
-        else if (stageManager.currentChapterIndex != chapterIndex)
-        {
-            ResetChapterData(chapterIndex);
-        }
-        // 챕터 UI를 SetActive로 활성화하고 챕터 인덱스 값을 UI에 전달하는 로직을 추가합니다.
+        //else if({플레이어의 스태미나 변수 아직 안 만들어짐} <  chapterData.chapterIndex[chapterIndex].ChapterCost)
+        //{
+        //     Debug.LogError($"Not enough stamina to start chapter {chapterIndex}. Please recharge your stamina.");
+        //     플레이어의 스태미나가 부족할 때 스태미나 부족 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
+        //     return;
+        //}
+        // ResetChapterData(chapterIndex); // 챕터 데이터를 초기화합니다.
+        // 챕터 UI를 SetActive로 활성화하는 로직을 추가할 수 있습니다.
     }
     public void ResetChapterData(int chapterIndex)
     {

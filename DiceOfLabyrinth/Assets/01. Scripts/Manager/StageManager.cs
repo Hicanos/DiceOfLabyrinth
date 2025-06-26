@@ -2,19 +2,33 @@
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using TMPro;
+using System.Xml;
 
 public class StageManager : MonoBehaviour
 {
     public ChapterManager chapterManager;
     public ChapterData chapterData; // ChapterData 스크립터블 오브젝트, 에디터에서 할당해야 합니다.
-
+    
+    public enum DifficultyLevel // 스테이지 난이도 레벨, 필요시 추가할 수 있습니다.
+    {
+        Normal,
+        Hard
+    }
     public int currentChapterIndex; // 현재 챕터 인덱스
     public int currentStageIndex; // 현재 스테이지 인덱스
     public int currentPhaseIndex; // 현재 페이즈 인덱스
+    public DifficultyLevel difficultyLevel;
 
+    
     public int gem; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<ArtifactData> artifacts = new List<ArtifactData>();// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<StagmaData> stagma = new List<StagmaData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
+    public CharacterSO[] entryCharacters = new CharacterSO[5]; // 플레이어 캐릭터 목록, 플레이어 보유 캐릭터 중 5명을 선택하여 스테이지에 진입합니다.
+    public CharacterSO leaderCharacter; // 리더 캐릭터, 스테이지에 진입할 때 선택한 캐릭터 중 하나를 리더로 설정합니다.
+
+    public int savedExpReward; // 스테이지에서 획득한 경험치 보상, 스테이지 종료시 정산합니다.
+    public int savedGoldReward; // 스테이지에서 획득한 골드 보상, 스테이지 종료시 정산합니다.
+    public int savedJewelReward; // 스테이지에서 획득한 보석 보상, 스테이지 종료시 정산합니다.
     public static StageManager Instance { get; private set; }
 
     //public static StageManager SafeInstance // null에 대비한 방어용 프로퍼티, 필요시 주석 해제하여 사용하세요. 이걸 사용할거면 어드레서블 등으로 챕터 데이터를 불러와야 합니다.
@@ -67,26 +81,21 @@ public class StageManager : MonoBehaviour
     }
 
 
-    public void StartStage(int chapterIndex, int stageIndex)
+    public void LoadStage(int chapterIndex, int stageIndex)
     {
         // 스테이지 시작 로직을 구현합니다. 아래의 If 문은 UI를 다루는 cs가 만들어지면 수정할 예정입니다.
         if (chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsCompleted)
         {
             Debug.Log($"Stage {stageIndex} is already completed.");
-            // 이미 완료된 스테이지를 재도전 할지 여부를 묻는 UI를 표시할 예정입니다.
+            // 이미 완료된 스테이지는 도전할 수 없습니다.
+            return;
         }
         else if (chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsLocked)
         {
             Debug.Log($"Stage {stageIndex} is locked. Please complete previous stages.");
-            // 잠금된 스테이지를 시작할 수 없다는 UI 메시지를 표시할 예정입니다.
+            // 잠금된 스테이지를 시작할 수 없다는 UI를 표시할 예정입니다.
             return;
         }
-        // 플레이어 데이터에 입장 코스트가 만들어지면 코스트 비교를 추가할 예정입니다.
-        //else if (stageData.StageIndex[stageIndex].StageCost > 플레이어의 입장 코스트)
-        //{
-        //    // 자원이 부족하다는 UI 메시지를 표시할 예정입니다.
-        //    return;
-        //}
         SceneManager.LoadScene("BattleScene");//SceneManagerEX.cs가 만들어지면 수정할 예정입니다.
         StandbyPhase();
     }
@@ -99,34 +108,106 @@ public class StageManager : MonoBehaviour
         gem = 0; // 스테이지 시작 시 재화 초기화
         artifacts.Clear(); // 스테이지 시작 시 아티팩트 목록 초기화
         stagma.Clear(); // 스테이지 시작 시 스태그마 목록 초기화
+        savedExpReward = 0; // 경험치 보상 초기화
+        savedGoldReward = 0; // 골드 보상 초기화
+        savedJewelReward = 0; // 보석 보상 초기화
+        difficultyLevel = DifficultyLevel.Normal; // 난이도 초기화, 필요시 수정 가능
     }
 
-    public void EndStage(int chapterIndex, int stageIndex, bool isSuccess)
+    public void StageComplete(int chapterIndex, int stageIndex)
     {
         // 스테이지 종료 로직을 구현합니다.
-        // isSuccess에 따라 클리어 여부를 처리하고, Json 파일에 데이터를 저장하는 메서드를 호출할 예정입니다.
-        if (isSuccess)
-        {
+       
             Debug.Log($"Stage {stageIndex} cleared!");
             // 클리어된 스테이지 정보를 저장하는 로직을 추가할 예정입니다.
             chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsCompleted = true; // 스테이지 완료 상태 업데이트
-            chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex+1].IsLocked = false; // 다음 스테이지 잠금 해제
-            //보상 로직 추가 예정입니다. 예: 경험치, 골드, 보석 등, 플레이어 데이터가 만들어지면 += 할 예정입니다./
-            //
+        if (stageIndex < chapterData.chapterIndex[chapterIndex].stageData.stageIndex.Count - 1) // 다음 스테이지가 있다면
+        {
+            chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex + 1].IsLocked = false; // 다음 스테이지 잠금 해제
+            savedExpReward += chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].ExpReward; // 경험치 보상 저장
 
         }
         else
         {
-            Debug.Log($"Stage {stageIndex} failed.");
-            // 실패 시 처리 로직을 추가할 예정입니다.
+            chapterManager.CompleteChapter(chapterIndex); // 마지막 스테이지 클리어 시 챕터 완료 처리
         }
-        SceneManager.LoadScene("MainMenu"); // 메인 메뉴로 돌아가기, // SceneManagerEX.cs가 만들어지면 수정할 예정입니다.
+    }
+
+    public void SelectCharacter(CharacterSO character, int index)
+    {
+        // 플레이어가 선택한 캐릭터를 엔트리 캐릭터 목록에 추가합니다.
+        if (character == null)
+        {
+            Debug.LogError("Selected character is null. Please select a valid character.");
+            return;
+        }
+        entryCharacters[index] = character; // 선택한 캐릭터를 엔트리 캐릭터 목록에 설정
+        if(leaderCharacter == null)
+        {
+            leaderCharacter = character; // 리더 캐릭터가 아직 설정되지 않았다면 선택한 캐릭터를 리더로 설정
+        }
+    }
+    public void SelectLeaderCharacter(CharacterSO character)
+    {
+        // 플레이어가 선택한 캐릭터를 리더 캐릭터로 설정합니다.
+        if (character == null)
+        {
+            Debug.LogError("Selected leader character is null. Please select a valid character.");
+            return;
+        }
+        leaderCharacter = character; // 선택한 캐릭터를 리더로 설정
+    }
+
+    public void RemoveCharacter(ChapterData chapterData, int index)
+    {
+        // 플레이어가 선택한 캐릭터를 엔트리 캐릭터 목록에서 제거합니다.
+        if (index < 0 || index >= entryCharacters.Length)
+        {
+            Debug.LogError($"Invalid character index: {index}. Please provide a valid index.");
+            return;
+        }
+        entryCharacters[index] = null; // 해당 인덱스의 캐릭터를 null로 설정하여 제거
+        if(leaderCharacter == entryCharacters[index])
+        {
+            foreach (var character in entryCharacters)
+            {
+                if (character != null) // 다른 캐릭터가 있다면 그 캐릭터를 리더로 설정
+                {
+                    leaderCharacter = character;
+                    return;
+                }
+            }
+        }
     }
 
     public void StandbyPhase()
     {
+        
         //전투 페이즈 이전에 능력치 세팅 로직을 구현합니다.
+        // 각인 선택 UI를 출력할 예정입니다.
         //BattleUIController.cs에서 능력치 세팅 UI 메서드를 호출할 예정입니다.
+    }
+
+    public void AddStagma(StagmaData stagmaName)
+    {
+        // 스태그마 추가 로직을 구현합니다.
+        if (stagma.Count < 3) // 최대 3개까지 소지 가능
+        {
+            if (!stagma.Contains(stagmaName))
+            {
+                stagma.Add(stagmaName);
+                Debug.Log($"Stagma {stagmaName} added.");
+                // 스태그마 추가 UI 업데이트 메서드를 호출할 예정입니다.
+            }
+            else
+            {
+                Debug.LogWarning($"Stagma {stagmaName} is already in the list.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Maximum number of Stagmas reached. Cannot add more.");
+        }
     }
 
     public void AddArtifacts(ArtifactData artifactName)
