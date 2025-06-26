@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class DungeonSelectUIController : MonoBehaviour
+public class SelectAdventureUIController : MonoBehaviour
 {
     [SerializeField] private Button backButton;
     [SerializeField] private Button selectDungeonBg;
