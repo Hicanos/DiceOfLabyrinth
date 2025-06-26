@@ -74,10 +74,6 @@ public class StageManager : MonoBehaviour
         {
             Debug.Log($"Stage {stageIndex} is already completed.");
             // 이미 완료된 스테이지를 재도전 할지 여부를 묻는 UI를 표시할 예정입니다.
-            //if() // 재도전을 거절하는 경우 리턴, UI 입력에 따른 불리언 메서드가 만들어지면 추가할 예정입니다.
-            //{
-            //    return;
-            //}
         }
         else if (chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsLocked)
         {
@@ -92,13 +88,17 @@ public class StageManager : MonoBehaviour
         //    return;
         //}
         SceneManager.LoadScene("BattleScene");//SceneManagerEX.cs가 만들어지면 수정할 예정입니다.
+        StandbyPhase();
+    }
+
+    public void ResetStageData(int chapterIndex, int stageIndex)
+    {
         currentChapterIndex = chapterIndex; // 현재 챕터 인덱스 설정
         currentStageIndex = stageIndex; // 현재 스테이지 인덱스 설정
         currentPhaseIndex = 0; // 현재 페이즈 인덱스 초기화
         gem = 0; // 스테이지 시작 시 재화 초기화
         artifacts.Clear(); // 스테이지 시작 시 아티팩트 목록 초기화
         stagma.Clear(); // 스테이지 시작 시 스태그마 목록 초기화
-        StandbyPhase();
     }
 
     public void EndStage(int chapterIndex, int stageIndex, bool isSuccess)

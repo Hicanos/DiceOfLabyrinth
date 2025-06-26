@@ -45,15 +45,22 @@ public class ChapterManager : MonoBehaviour
         else if (chapterData.chapterIndex[chapterIndex].isLocked)
         {
             Debug.LogError($"Chapter {chapterIndex} is locked. Please unlock it before starting.");
+            // 챕터가 잠겨있을 때 잠김 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
+            return;
+        }
+        else if (chapterData.chapterIndex[chapterIndex].isCompleted)
+        {
+            Debug.LogError($"Chapter {chapterIndex} is already completed. Please select a different chapter.");
+            // 이미 완료된 챕터를 선택했을 때 완료 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
             return;
         }
         else if (stageManager.currentChapterIndex != chapterIndex)
         {
-            StartNewChapter(chapterIndex);
+            ResetChapterData(chapterIndex);
         }
         // 챕터 UI를 SetActive로 활성화하고 챕터 인덱스 값을 UI에 전달하는 로직을 추가합니다.
     }
-    private void StartNewChapter(int chapterIndex)
+    public void ResetChapterData(int chapterIndex)
     {
         stageManager.currentChapterIndex = chapterIndex;
         stageManager.currentStageIndex = 0; // 챕터 시작 시 첫 번째 스테이지로 초기화
