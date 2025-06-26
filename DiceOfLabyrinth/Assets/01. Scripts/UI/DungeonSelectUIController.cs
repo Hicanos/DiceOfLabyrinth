@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class DungeonSelectUIController : MonoBehaviour
 {
     [SerializeField] private Button backButton;
+    [SerializeField] private Button selectDungeonBg;
     [SerializeField] private Button chapter_01_Button;
     [SerializeField] private Button dungeon_01_Button;
 
@@ -16,6 +17,7 @@ public class DungeonSelectUIController : MonoBehaviour
         selectDungeonPanel.SetActive(false);
 
         backButton.onClick.AddListener(SceneManagerEx.Instance.OnBackClicked);
+        selectDungeonBg.onClick.AddListener(CloseSelectDungeonPanel);
         chapter_01_Button.onClick.AddListener(OpenSelectDungeonPanel);
         dungeon_01_Button.onClick.AddListener(SceneManagerEx.Instance.OnDungeon1Clicked);
     }
@@ -23,5 +25,10 @@ public class DungeonSelectUIController : MonoBehaviour
     private void OpenSelectDungeonPanel()
     {
         selectDungeonPanel.SetActive(true);
+    }
+
+    private void CloseSelectDungeonPanel()
+    {
+        selectDungeonPanel.SetActive(false);
     }
 }
