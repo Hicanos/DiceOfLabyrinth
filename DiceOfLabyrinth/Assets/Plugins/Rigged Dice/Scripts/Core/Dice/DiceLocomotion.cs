@@ -24,7 +24,7 @@ namespace PredictedDice
                 return _collider;
             }
         }
-
+        public bool isEnd = false;
         private void Awake()
         {
             _rb = GetComponent<Rigidbody>();
@@ -43,6 +43,7 @@ namespace PredictedDice
                 _rb.MoveRotation(pose.rotation);
                 yield return wait;
             }
+            isEnd = true;
         }
         public void ResetDice(Pose pose)
         {

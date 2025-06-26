@@ -8,8 +8,12 @@ public class BattlePlayerTurnState : IBattleTurnState
     float RankWeighting = 0;
     public void Enter()
     {
-        GetCost(AlivedCharacter());
         battleManager.BattleTurn++;
+        Debug.Log($"Turn{BattleManager.Instance.BattleTurn}");
+        Debug.Log("Player's turn");
+
+        GetCost(AlivedCharacter());
+        
 
         battleManager.DiceRollButton.interactable = true;
         battleManager.ConfirmButton.interactable = false;
@@ -38,16 +42,17 @@ public class BattlePlayerTurnState : IBattleTurnState
         battleManager.ConfirmButton.interactable = true;
     }
 
-    public void Attack()
+    public void Attack() //[주사위 눈금 *족보별계수 + { 공격력 - 방어력 * (1 - 방어력 관통률)}] *(버프 + 아티팩트 + 속성 + 패시브 + 각인)
     {        
         Debug.Log("공격!");
-        float diceWeighting = DiceManager.Instance.GetDiceWeighting(); //(주사위 눈금 수 * 캐릭터 공격력 * 족보별 계수) *(버프 + 아티팩트 + 속성 + 패시브 + 각인)
+        float diceWeighting = DiceManager.Instance.GetDiceWeighting(); //주사위 눈금 *족보별계수
         int signitureCount = DiceManager.Instance.GetSignitureAmount();
 
         battleManager.DiceRollButton.interactable = false;
         battleManager.ConfirmButton.interactable = false;
 
-        GetCost(signitureCount);
+        GetCost(signitureCount);        
+
         //공격 애니메이션실행
 
         battleManager.stateMachine.ChangeState(battleManager.enemyTurnState);
@@ -65,9 +70,10 @@ public class BattlePlayerTurnState : IBattleTurnState
         cost = Mathf.Clamp(cost + iNum, 0, battleManager.MaxCost);
 
         battleManager.CurrnetCost = cost;
+        battleManager.costTest.text = cost.ToString();
     }
 
-    private int AlivedCharacter()
+    private int AlivedCharacter() //작성 필요
     {
         int num = 0;
 

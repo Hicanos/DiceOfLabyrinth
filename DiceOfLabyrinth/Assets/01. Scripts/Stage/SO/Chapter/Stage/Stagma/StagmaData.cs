@@ -6,4 +6,5 @@ public class StagmaData : ScriptableObject
     public string stagmaName;
     public string description;
     public Sprite icon;
+    public float additionalDamage;
 }

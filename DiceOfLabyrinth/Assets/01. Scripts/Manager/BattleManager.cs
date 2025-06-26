@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
@@ -36,11 +37,12 @@ public class BattleManager : MonoBehaviour
     public IBattleTurnState playerTurnState;
     public IBattleTurnState enemyTurnState;
 
+    public TextMeshProUGUI costTest;
     public Button DiceRollButton;
     public Button ConfirmButton; //공격 -> 턴 넘어감
 
-    public int CurrnetCost = 0;
     public readonly int MaxCost = 12;
+    public int CurrnetCost = 0;
     public int BattleTurn = 0;
 
     void Start()
@@ -50,6 +52,7 @@ public class BattleManager : MonoBehaviour
         enemyTurnState = new BattleEnemyTurnState();
 
         stateMachine = new BattleStateMachine(playerTurnState);
+
         playerTurnState.Enter(); //테스트용
     }
 
@@ -57,5 +60,15 @@ public class BattleManager : MonoBehaviour
     void Update()
     {
         stateMachine.BattleUpdate();
+    }
+
+    public void BattleStart()
+    {
+        playerTurnState.Enter();
+    }
+
+    public void BattleEnd()
+    {
+
     }
 }

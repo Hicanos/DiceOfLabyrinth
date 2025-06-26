@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
 
@@ -13,20 +14,27 @@ public class StageData : ScriptableObject
 [System.Serializable]
 public class StageInfo
 {
-    
+    public enum StageDifficulty
+    {
+        Normal,
+        Hard,
+    }
     // 스테이지 정보 필드들
     [SerializeField] private string stageName;
     [SerializeField] private string description;
     [SerializeField] private Sprite backgroundImage;
     [SerializeField] private int stageCost;
+    [SerializeField] private int directCompleteCost;
     [SerializeField] private int expReward;
     [SerializeField] private int goldReward;
     [SerializeField] private int jewelReward;
     [SerializeField] private bool isCompleted;
     [SerializeField] private bool isLocked = true;
-    [SerializeField] private PhaseData[] phases = new PhaseData[5];
+    public StageDifficulty stageDifficulty;
+    [SerializeField] private BossPhaseData bossPhase;
+    [SerializeField] private List<NormalPhaseData> normalPhases;
+    [SerializeField] private List<ElitePhaseData> elitePhases;
     [SerializeField] private List<ChooseOptions> choose;
-
     [SerializeField] private List<StagmaData> stagmaList;
     [SerializeField] private List<ArtifactData> artifactList;
 
@@ -48,7 +56,8 @@ public class StageInfo
         get => isLocked;
         set => isLocked = value; // 외부에서 스테이지 잠금 상태를 변경할 수 있도록 허용
     }
-    public PhaseData[] Phases => phases;
+    public List<NormalPhaseData> NormalPhases => normalPhases;
+    public List<ElitePhaseData> ElitePhases => elitePhases;
     public List<ChooseOptions> Choose => choose;
 
     public List<StagmaData> StagmaList => stagmaList;
@@ -56,19 +65,13 @@ public class StageInfo
 }
 
 [System.Serializable]
-public class PhaseData
+public class NormalPhaseData
 {
-    public enum PhaseType
-    {
-        Normal, // 일반 페이즈
-        Boss,   // 보스 페이즈
-    }
     // Phase 정보 필드들
     [SerializeField] private string phaseName;
     [SerializeField] private List<EnemySpawnData> enemies;
     [SerializeField] private List<PhaseRewardData> phaseRewardObjects;
     [SerializeField] private int gemReward;
-    [SerializeField] private PhaseType phaseType; // 페이즈 타입 (일반, 보스 등)
 
     // 읽기 전용 프로퍼티들
     public string PhaseName => phaseName;
@@ -76,8 +79,38 @@ public class PhaseData
     public List<PhaseRewardData> PhaseRewardObjects => phaseRewardObjects;
 
     public int GemReward => gemReward;
-    public PhaseType Type => phaseType; // 페이즈 타입을 외부에서 읽을 수 있도록 허용
 }
+
+[System.Serializable]
+public class ElitePhaseData
+{
+    // 보스 페이즈 정보 필드들
+    [SerializeField] private string phaseName;
+    [SerializeField] private List<EnemySpawnData> enemies;
+    [SerializeField] private List<PhaseRewardData> phaseRewardObjects;
+    [SerializeField] private int gemReward;
+
+    // 읽기 전용 프로퍼티들
+    public string PhaseName => phaseName;
+    public List<EnemySpawnData> Enemies => enemies;
+    public List<PhaseRewardData> PhaseRewardObjects => phaseRewardObjects;
+    public int GemReward => gemReward;
+}
+[System.Serializable]
+public class BossPhaseData
+{
+    // 보스 페이즈 정보 필드들
+    [SerializeField] private string bossName;
+    [SerializeField] private string description;
+    [SerializeField] private GameObject bossPrefab;
+    [SerializeField] private Vector3 spawnPosition;
+    // 읽기 전용 프로퍼티들
+    public string BossName => bossName;
+    public string Description => description;
+    public GameObject BossPrefab => bossPrefab;
+    public Vector3 SpawnPosition => spawnPosition;
+}
+
 [System.Serializable]
 public class EnemySpawnData
 {
@@ -95,10 +128,12 @@ public class PhaseRewardData
 {
     // Phase 보상 정보 필드들
     [SerializeField] private string rewardName;
+    [SerializeField] private string description;
     [SerializeField] private int rewardAmount;
 
     // 읽기 전용 프로퍼티들
     public string RewardName => rewardName;
+    public string Description => description;
     public int RewardAmount => rewardAmount;
 }
 
