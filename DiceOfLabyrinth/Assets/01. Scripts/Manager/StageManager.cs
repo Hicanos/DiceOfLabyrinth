@@ -5,15 +5,16 @@ using TMPro;
 
 public class StageManager : MonoBehaviour
 {
+    public ChapterManager chapterManager;
     public ChapterData chapterData; // ChapterData 스크립터블 오브젝트, 에디터에서 할당해야 합니다.
 
-    private int currentChapterIndex; // 현재 챕터 인덱스
-    private int currentStageIndex; // 현재 스테이지 인덱스
-    private int currentPhaseIndex; // 현재 페이즈 인덱스
+    public int currentChapterIndex; // 현재 챕터 인덱스
+    public int currentStageIndex; // 현재 스테이지 인덱스
+    public int currentPhaseIndex; // 현재 페이즈 인덱스
 
-    private int gem; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
-    private List<string> artifacts = new List<string>();// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
-    private List<string> stagma = new List<string>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
+    public int gem; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
+    public List<ArtifactData> artifacts = new List<ArtifactData>();// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
+    public List<StagmaData> stagma = new List<StagmaData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public static StageManager Instance { get; private set; }
 
     //public static StageManager SafeInstance // null에 대비한 방어용 프로퍼티, 필요시 주석 해제하여 사용하세요. 이걸 사용할거면 어드레서블 등으로 챕터 데이터를 불러와야 합니다.
@@ -37,13 +38,20 @@ public class StageManager : MonoBehaviour
     //    }
     //}
 
-    // Awake is called when the script instance is being loaded
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // 이 오브젝트를 씬 전환 시 파괴되지 않도록 설정
+            if(chapterManager == null)
+            {
+                chapterManager = GetComponent<ChapterManager>();
+                if (chapterManager == null)
+                {
+                    Debug.LogError("ChapterManager not found in the scene. Please ensure it is present.");
+                }
+            }
         }
         else
         {
@@ -121,7 +129,7 @@ public class StageManager : MonoBehaviour
         //BattleUIController.cs에서 능력치 세팅 UI 메서드를 호출할 예정입니다.
     }
 
-    public void AddArtifact(string artifactName)
+    public void AddArtifacts(ArtifactData artifactName)
     {
         // 아티팩트 추가 로직을 구현합니다.
         if (!artifacts.Contains(artifactName))
@@ -133,6 +141,32 @@ public class StageManager : MonoBehaviour
         else
         {
             Debug.LogWarning($"Artifact {artifactName} is already in the list.");
+        }
+    }
+
+    public void EquipArtifacts(ArtifactData artifactName)
+    {
+        // 아티팩트 장착 로직을 구현합니다.
+        if (!artifacts.Contains(artifactName))
+        {
+            Debug.LogWarning($"Artifact {artifactName} is not in the artifacts list.");
+            return;
+        }
+        else
+        {
+            if (!chapterManager.equipedArtifacts.Contains(artifactName) && chapterManager.equipedArtifacts.Count < 4) // 최대 4개까지 장착 가능
+            {
+                chapterManager.equipedArtifacts.Add(artifactName);
+                artifacts.Remove(artifactName); // 장착 후 소지품 목록에서 제거
+            }
+            else
+            {
+                Debug.LogWarning($"Artifact {artifactName} is already equipped or maximum equipped artifacts reached.");
+                return;
+            }
+
+            Debug.Log($"Artifact {artifactName} equipped.");
+            // 아티팩트 장착 UI 업데이트 메서드를 호출할 예정입니다.
         }
     }
 
@@ -151,7 +185,6 @@ public class StageManager : MonoBehaviour
                 return;
             }
             int randomIndex = Random.Range(0, normalPhases.Count);
-            currentPhaseIndex = randomIndex;
             NormalPhaseData phaseData = normalPhases[randomIndex];
             foreach (var enemyInfo in phaseData.Enemies)
             {
@@ -183,7 +216,41 @@ public class StageManager : MonoBehaviour
 
     public void BattlePhaseEliteRoom(int phaseIndex)
     {
-
+        if(phaseIndex < 4)
+        {
+            currentPhaseIndex = phaseIndex;
+            var elitePhases = chapterData.chapterIndex[currentChapterIndex].stageData.stageIndex[currentStageIndex].ElitePhases;
+            if (elitePhases == null || elitePhases.Count == 0)
+            {
+                Debug.LogError("ElitePhase 리스트가 비어 있습니다.");
+                return;
+            }
+            int randomIndex = Random.Range(0, elitePhases.Count);
+            ElitePhaseData phaseData = elitePhases[randomIndex];
+            foreach (var enemyInfo in phaseData.Enemies)
+            {
+                Vector3 spawnPosition = enemyInfo.SpawnPosition;
+                var enemyPrefab = enemyInfo.EnemyPrefab;
+                GameObject enemyObj = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+                IEnemy enemy = enemyObj.GetComponent<IEnemy>();
+                if (enemy != null)
+                {
+                    enemy.Init();
+                }
+                else
+                {
+                    Debug.LogError($"{enemyPrefab.name}에 IEnemy가 구현되어 있지 않습니다.");
+                }
+            }
+        }
+        else if (phaseIndex == 4)
+        {
+            Debug.Log("4페이즈 인덱스는 보스룸을 위한 인덱스입니다. 잘못된 페이즈 인덱스입니다.");
+        }
+        else
+        {
+            Debug.LogError("Invalid phase index.");
+        }
     }
 
     private void ShopPhase()
