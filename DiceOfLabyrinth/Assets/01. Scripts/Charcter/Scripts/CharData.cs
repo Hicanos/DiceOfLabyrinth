@@ -86,6 +86,9 @@ public class CharData
     /// </summary>
     public int DiceID;
 
+    public string LobbyPrefabPath;
+    public string BattlePrefabPath;
+
 }
 public class CharDataLoader
 {

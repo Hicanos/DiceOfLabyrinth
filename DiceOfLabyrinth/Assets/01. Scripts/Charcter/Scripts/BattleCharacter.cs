@@ -12,9 +12,8 @@ public class BattleCharacter : Character, IDamagable
     public int CurrentDEF;
     public int CurrentCritChance;
     public int CurrentCritDamage;
-    public int FormationBonus;
-    public GameObject CharObj; // 배틀에서 사용되는 게임 오브젝트, 스폰되는 캐릭터 모델
-    public GameObject UIChar; // 배틀 UI에서 사용되는 캐릭터 UI 오브젝트
+    public int FormationBonus; //
+
     // 캐릭터가 사용하는 스킬 데이터를 Header를 이용하여 여기에 등록
 
     public bool IsDied; // 현재 HP가 0 이하인 경우 사망 상태
@@ -40,7 +39,6 @@ public class BattleCharacter : Character, IDamagable
         CurrentDEF = GetDEF();
         CurrentCritChance = characterData.critChance;
         CurrentCritDamage = characterData.critDamage;
-        FormationBonus = 0;
         // 기타 실시간 데이터 초기화
     }
 

@@ -95,6 +95,19 @@ public class CharacterSOGenerator : EditorWindow
             so.signitureNum = data.SignitureNum;
             so.diceID = data.DiceID;
 
+            // 프리팹 할당
+            if (!string.IsNullOrEmpty(data.LobbyPrefabPath))
+            {
+                var LobbyPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(data.LobbyPrefabPath);
+                so.charLobbyPrefab = LobbyPrefab;
+            }
+
+            if (!string.IsNullOrEmpty(data.BattlePrefabPath))
+            {
+                var BattlePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(data.BattlePrefabPath);
+                so.charBattlePrefab = BattlePrefab;
+            }
+
             // SO 파일 경로 설정
             string assetPath = $"{soOutputPath}{so.nameEn}_SO.asset";
 
@@ -167,5 +180,7 @@ public class CharacterSOGenerator : EditorWindow
         public DesignEnums.ElementTypes ElementType;
         public int SignitureNum;
         public int DiceID;
+        public string LobbyPrefabPath;
+        public string BattlePrefabPath; // 프리팹 경로 추가
     }
 }

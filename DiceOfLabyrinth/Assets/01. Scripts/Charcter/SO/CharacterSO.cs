@@ -24,4 +24,6 @@ public class CharacterSO : ScriptableObject
     public DesignEnums.ElementTypes elementType;
     public int signitureNum;
     public int diceID;
+    public GameObject charLobbyPrefab; // 로비에서 사용되는 캐릭터 프리팹
+    public GameObject charBattlePrefab; // 배틀에서 사용되는 캐릭터 프리팹
 }
