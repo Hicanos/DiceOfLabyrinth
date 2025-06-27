@@ -105,17 +105,9 @@ public class DiceManager : MonoBehaviour
 
     public void RollDice()
     {
-        for (int i = 0; i < fakeDices.Length; i++)
-        {
-            dices[i].SetActive(true);
-            if(fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i)) continue;
-            fakeDices[i].SetActive(false);
-        }
-        
+        SettingForRoll();
 
         StopCoroutine(SortingAfterRoll());
-
-        SettingForNextRoll();
 
         GetRandomDiceNum();
 
@@ -125,8 +117,15 @@ public class DiceManager : MonoBehaviour
         StartCoroutine(SortingAfterRoll());
     }
 
-    private void SettingForNextRoll()
+    private void SettingForRoll()
     {
+        for (int i = 0; i < fakeDices.Length; i++)
+        {
+            dices[i].SetActive(true);
+            if (fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i)) continue;
+            fakeDices[i].SetActive(false);
+        }
+
         foreach (GameObject diceGO in dices)
         {
             Dice dice = diceGO.GetComponent<Dice>();
