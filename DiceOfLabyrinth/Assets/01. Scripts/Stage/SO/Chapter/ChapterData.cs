@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ChapterData", menuName = "ScriptableObjects/Stages/ChapterData", order = 1)]
 public class ChapterData : ScriptableObject
 { 
-    public List<ChapterInfo> chapterIndex; // Â¦¼ö ÀÎµ¦½º´Â Normal, È¦¼ö ÀÎµ¦½º´Â Hard Ã©ÅÍ·Î ¼³Á¤, ¿¹ : 0¹øÀº 1Ã©ÅÍ Normal, 1¹øÀº 1Ã©ÅÍ Hard, 2¹øÀº 2Ã©ÅÍ Normal, 3¹øÀº 2Ã©ÅÍ Hard µî
+    public List<ChapterInfo> chapterIndex; // ì§ìˆ˜ ì¸ë±ìŠ¤ëŠ” Normal, í™€ìˆ˜ ì¸ë±ìŠ¤ëŠ” Hard ì±•í„°ë¡œ ì„¤ì •, ì˜ˆ : 0ë²ˆì€ 1ì±•í„° Normal, 1ë²ˆì€ 1ì±•í„° Hard, 2ë²ˆì€ 2ì±•í„° Normal, 3ë²ˆì€ 2ì±•í„° Hard ë“±
 }
 [System.Serializable]
 public class ChapterInfo
@@ -15,14 +15,14 @@ public class ChapterInfo
         Hard,
     }
     [SerializeField] private string chapterName;
-    [SerializeField] private ChapterDifficulty chapterDifficulty; // Ã©ÅÍ ³­ÀÌµµ, Normal ¶Ç´Â Hard·Î ¼³Á¤ °¡´É
+    [SerializeField] private ChapterDifficulty chapterDifficulty; // ì±•í„° ë‚œì´ë„, Normal ë˜ëŠ” Hardë¡œ ì„¤ì • ê°€ëŠ¥
     [SerializeField] private string description;
     [SerializeField] private Sprite image;
     [SerializeField] private int chapterCost;
     [SerializeField] private int directCompleteCost;
 
-    public bool isCompleted = false; // Ã©ÅÍ ¿Ï·á »óÅÂ, ±âº»°ªÀº false·Î ¼³Á¤
-    public bool isLocked = true; // Ã©ÅÍ Àá±İ »óÅÂ, ±âº»°ªÀº true·Î ¼³Á¤
+    public bool isCompleted = false; // ì±•í„° ì™„ë£Œ ìƒíƒœ, ê¸°ë³¸ê°’ì€ falseë¡œ ì„¤ì •
+    public bool isLocked = true; // ì±•í„° ì ê¸ˆ ìƒíƒœ, ê¸°ë³¸ê°’ì€ trueë¡œ ì„¤ì •
 
     public StageData stageData;
 
@@ -32,5 +32,5 @@ public class ChapterInfo
     public int ChapterCost => chapterCost;
     public int DirectCompleteCost => directCompleteCost;
 
-    public ChapterDifficulty Difficulty => chapterDifficulty; // Ã©ÅÍ ³­ÀÌµµ ÇÁ·ÎÆÛÆ¼
+    public ChapterDifficulty Difficulty => chapterDifficulty; // ì±•í„° ë‚œì´ë„ í”„ë¡œí¼í‹°
 }

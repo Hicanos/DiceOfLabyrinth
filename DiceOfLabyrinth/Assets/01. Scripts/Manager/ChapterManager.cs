@@ -1,4 +1,4 @@
-using NUnit.Framework;
+ï»¿using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,18 +7,18 @@ public class ChapterManager : MonoBehaviour
     public ChapterData chapterData;
     public StageManager stageManager;
 
-    public List<ArtifactData> equipedArtifacts = new List<ArtifactData>(); // ÇöÀç ÀåÂøµÈ ¾ÆÆ¼ÆÑÆ® ¸ñ·Ï
+    public List<ArtifactData> equipedArtifacts = new List<ArtifactData>(); // í˜„ì¬ ì¥ì°©ëœ ì•„í‹°íŒ©íŠ¸ ëª©ë¡
 
     public static ChapterManager Instance { get; private set; }
 
 
     private void Awake()
     {
-        // ½Ì±ÛÅÏ ÆĞÅÏÀ» Àû¿ëÇÏ¿© ChapterManagerÀÇ ÀÎ½ºÅÏ½º°¡ ÇÏ³ª¸¸ Á¸ÀçÇÏµµ·Ï ÇÕ´Ï´Ù.
+        // ì‹±ê¸€í„´ íŒ¨í„´ì„ ì ìš©í•˜ì—¬ ChapterManagerì˜ ì¸ìŠ¤í„´ìŠ¤ê°€ í•˜ë‚˜ë§Œ ì¡´ì¬í•˜ë„ë¡ í•©ë‹ˆë‹¤.
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // ¾À ÀüÈ¯ ½Ã ÆÄ±«µÇÁö ¾Êµµ·Ï ¼³Á¤
+            DontDestroyOnLoad(gameObject); // ì”¬ ì „í™˜ ì‹œ íŒŒê´´ë˜ì§€ ì•Šë„ë¡ ì„¤ì •
             if (stageManager == null)
             {
                 stageManager = GetComponent<StageManager>();
@@ -31,7 +31,7 @@ public class ChapterManager : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject); // ÀÌ¹Ì ÀÎ½ºÅÏ½º°¡ Á¸ÀçÇÏ¸é Áßº¹ »ı¼º ¹æÁö
+            Destroy(gameObject); // ì´ë¯¸ ì¸ìŠ¤í„´ìŠ¤ê°€ ì¡´ì¬í•˜ë©´ ì¤‘ë³µ ìƒì„± ë°©ì§€
         }
     }
 
@@ -42,18 +42,18 @@ public class ChapterManager : MonoBehaviour
     public void ResetChapterData(int chapterIndex)
     {
         stageManager.currentChapterIndex = chapterIndex;
-        stageManager.currentStageIndex = 0; // Ã©ÅÍ ½ÃÀÛ ½Ã Ã¹ ¹øÂ° ½ºÅ×ÀÌÁö·Î ÃÊ±âÈ­
-        stageManager.currentPhaseIndex = 0; // Ã©ÅÍ ½ÃÀÛ ½Ã Ã¹ ¹øÂ° ÆäÀÌÁî·Î ÃÊ±âÈ­
-        stageManager.gem = 0; // Ã©ÅÍ ½ÃÀÛ ½Ã ÀçÈ­ ÃÊ±âÈ­
-        stageManager.artifacts.Clear(); // Ã©ÅÍ ½ÃÀÛ ½Ã ¾ÆÆ¼ÆÑÆ® ¸ñ·Ï ÃÊ±âÈ­
-        equipedArtifacts.Clear(); // Ã©ÅÍ ½ÃÀÛ ½Ã ÀåÂøµÈ ¾ÆÆ¼ÆÑÆ® ¸ñ·Ï ÃÊ±âÈ­
-        stageManager.stagma.Clear(); // Ã©ÅÍ ½ÃÀÛ ½Ã ½ºÅÂ±×¸¶ ¸ñ·Ï ÃÊ±âÈ­
-        // ¸ğµç ½ºÅ×ÀÌÁö Àá±İ/Å¬¸®¾î »óÅÂ ÃÊ±âÈ­
+        stageManager.currentStageIndex = 0; // ì±•í„° ì‹œì‘ ì‹œ ì²« ë²ˆì§¸ ìŠ¤í…Œì´ì§€ë¡œ ì´ˆê¸°í™”
+        stageManager.currentPhaseIndex = 0; // ì±•í„° ì‹œì‘ ì‹œ ì²« ë²ˆì§¸ í˜ì´ì¦ˆë¡œ ì´ˆê¸°í™”
+        stageManager.gem = 0; // ì±•í„° ì‹œì‘ ì‹œ ì¬í™” ì´ˆê¸°í™”
+        stageManager.artifacts.Clear(); // ì±•í„° ì‹œì‘ ì‹œ ì•„í‹°íŒ©íŠ¸ ëª©ë¡ ì´ˆê¸°í™”
+        equipedArtifacts.Clear(); // ì±•í„° ì‹œì‘ ì‹œ ì¥ì°©ëœ ì•„í‹°íŒ©íŠ¸ ëª©ë¡ ì´ˆê¸°í™”
+        stageManager.stagma.Clear(); // ì±•í„° ì‹œì‘ ì‹œ ìŠ¤íƒœê·¸ë§ˆ ëª©ë¡ ì´ˆê¸°í™”
+        // ëª¨ë“  ìŠ¤í…Œì´ì§€ ì ê¸ˆ/í´ë¦¬ì–´ ìƒíƒœ ì´ˆê¸°í™”
         var stages = chapterData.chapterIndex[chapterIndex].stageData.stageIndex;
         for (int i = 0; i < stages.Count; i++)
         {
-            stages[i].IsLocked = (i != 0);      // Ã¹ ¹øÂ°¸¸ false, ³ª¸ÓÁö´Â true
-            stages[i].IsCompleted = false;      // ¸ğµÎ ¹Ì¿Ï·á·Î ÃÊ±âÈ­
+            stages[i].IsLocked = (i != 0);      // ì²« ë²ˆì§¸ë§Œ false, ë‚˜ë¨¸ì§€ëŠ” true
+            stages[i].IsCompleted = false;      // ëª¨ë‘ ë¯¸ì™„ë£Œë¡œ ì´ˆê¸°í™”
         }
     }
     public void CompleteChapter(int chapterIndex)
@@ -65,19 +65,19 @@ public class ChapterManager : MonoBehaviour
         }
         if (chapterData.chapterIndex[chapterIndex] != null)
         {
-            chapterData.chapterIndex[chapterIndex].isCompleted = true; // Ã©ÅÍ ¿Ï·á »óÅÂ¸¦ true·Î ¼³Á¤
-            if (chapterIndex % 2 == 0) // Â¦¼ö ÀÎµ¦½º´Â Normal Ã©ÅÍÀÌ¹Ç·Î Hard Ã©ÅÍ¿Í ´ÙÀ½ Normal Ã©ÅÍ¸¦ Àá±İ ÇØÁ¦ÇÕ´Ï´Ù.
+            chapterData.chapterIndex[chapterIndex].isCompleted = true; // ì±•í„° ì™„ë£Œ ìƒíƒœë¥¼ trueë¡œ ì„¤ì •
+            if (chapterIndex % 2 == 0) // ì§ìˆ˜ ì¸ë±ìŠ¤ëŠ” Normal ì±•í„°ì´ë¯€ë¡œ Hard ì±•í„°ì™€ ë‹¤ìŒ Normal ì±•í„°ë¥¼ ì ê¸ˆ í•´ì œí•©ë‹ˆë‹¤.
             {
-                chapterData.chapterIndex[chapterIndex + 1].isLocked = false; // hard Ã©ÅÍ Àá±İ ÇØÁ¦
-                chapterData.chapterIndex[chapterIndex + 2].isLocked = false; // ´ÙÀ½ Normal Ã©ÅÍ Àá±İ ÇØÁ¦
+                chapterData.chapterIndex[chapterIndex + 1].isLocked = false; // hard ì±•í„° ì ê¸ˆ í•´ì œ
+                chapterData.chapterIndex[chapterIndex + 2].isLocked = false; // ë‹¤ìŒ Normal ì±•í„° ì ê¸ˆ í•´ì œ
             }
-            else // È¦¼ö ÀÎµ¦½º´Â Hard Ã©ÅÍÀÌ¹Ç·Î ¾Æ¹«·± Ã©ÅÍµµ Àá±İ ÇØÁ¦ÇÏÁö ¾Ê½À´Ï´Ù.
+            else // í™€ìˆ˜ ì¸ë±ìŠ¤ëŠ” Hard ì±•í„°ì´ë¯€ë¡œ ì•„ë¬´ëŸ° ì±•í„°ë„ ì ê¸ˆ í•´ì œí•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.
             {
-                // ¸¸ÀÏÀ» À§ÇØ ºóÄ­À¸·Î ³²°ÜµÓ´Ï´Ù.
+                // ë§Œì¼ì„ ìœ„í•´ ë¹ˆì¹¸ìœ¼ë¡œ ë‚¨ê²¨ë‘¡ë‹ˆë‹¤.
             }
-            // Ã©ÅÍ ¿Ï·á ÈÄ ½ºÅ×ÀÌÁö µ¥ÀÌÅÍ ÃÊ±âÈ­
+            // ì±•í„° ì™„ë£Œ í›„ ìŠ¤í…Œì´ì§€ ë°ì´í„° ì´ˆê¸°í™”
             ResetChapterData(chapterIndex);
-            // ¼¼ÀÌºê ·ÎÁ÷ÀÌ Ãß°¡µÈ´Ù¸é ¿©±â¼­ ¼¼ÀÌºê µ¥ÀÌÅÍ¸¦ ÀúÀåÇÏ´Â ·ÎÁ÷À» Ãß°¡ÇÕ´Ï´Ù.
+            // ì„¸ì´ë¸Œ ë¡œì§ì´ ì¶”ê°€ëœë‹¤ë©´ ì—¬ê¸°ì„œ ì„¸ì´ë¸Œ ë°ì´í„°ë¥¼ ì €ì¥í•˜ëŠ” ë¡œì§ì„ ì¶”ê°€í•©ë‹ˆë‹¤.
         }
         else
         {

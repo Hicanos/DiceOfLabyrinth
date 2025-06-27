@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [CreateAssetMenu(fileName = "StagmaData", menuName = "ScriptableObjects/Stages/StagmaData")]
 public class StagmaData : ScriptableObject
@@ -6,14 +6,14 @@ public class StagmaData : ScriptableObject
     public string stagmaName;
     public string description;
     public Sprite icon;
-    //ÁÖ»çÀ§ Á·º¸¿¡ µû¸¥ Ãß°¡ È¿°ú¸¦ À§ÇÑ ÇÊµåµé
-    public float queenAdditionalDamage; // Äı Á·º¸ÀÏ ¶§ Ãß°¡ µ¥¹ÌÁö ¹è¼ö
-    public float fullHouseAdditionalDamage; // Ç®ÇÏ¿ì½º Á·º¸ÀÏ ¶§ Ãß°¡ µ¥¹ÌÁö ¹è¼ö
-    public float quadrupleAdditionalDamage; // 4°³ ÁÖ»çÀ§°¡ °°Àº Á·º¸ÀÏ ¶§ Ãß°¡ µ¥¹ÌÁö ¹è¼ö
-    public float tripleAdditionalDamage; // 3°³ ÁÖ»çÀ§°¡ °°Àº Á·º¸ÀÏ ¶§ Ãß°¡ µ¥¹ÌÁö ¹è¼ö
-    public float twoPairAdditionalDamage; // 2½ÖÀÌ °°Àº Á·º¸ÀÏ ¶§ Ãß°¡ µ¥¹ÌÁö ¹è¼ö
-    public float onePairAdditionalDamage; // 1½ÖÀÌ °°Àº Á·º¸ÀÏ ¶§ Ãß°¡ µ¥¹ÌÁö ¹è¼ö
-    public float smallStraightAdditionalDamage; // ½º¸ô ½ºÆ®·¹ÀÌÆ® Á·º¸ÀÏ ¶§ Ãß°¡ µ¥¹ÌÁö ¹è¼ö
-    public float largeStraightAdditionalDamage; // ¶óÁö ½ºÆ®·¹ÀÌÆ® Á·º¸ÀÏ ¶§ Ãß°¡ µ¥¹ÌÁö ¹è¼ö
-    public float noPairAdditionalDamage; // Á·º¸°¡ ¾ø´Â °æ¿ì Ãß°¡ µ¥¹ÌÁö ¹è¼ö
+    //ì£¼ì‚¬ìœ„ ì¡±ë³´ì— ë”°ë¥¸ ì¶”ê°€ íš¨ê³¼ë¥¼ ìœ„í•œ í•„ë“œë“¤
+    public float queenAdditionalDamage; // í€¸ ì¡±ë³´ì¼ ë•Œ ì¶”ê°€ ë°ë¯¸ì§€ ë°°ìˆ˜
+    public float fullHouseAdditionalDamage; // í’€í•˜ìš°ìŠ¤ ì¡±ë³´ì¼ ë•Œ ì¶”ê°€ ë°ë¯¸ì§€ ë°°ìˆ˜
+    public float quadrupleAdditionalDamage; // 4ê°œ ì£¼ì‚¬ìœ„ê°€ ê°™ì€ ì¡±ë³´ì¼ ë•Œ ì¶”ê°€ ë°ë¯¸ì§€ ë°°ìˆ˜
+    public float tripleAdditionalDamage; // 3ê°œ ì£¼ì‚¬ìœ„ê°€ ê°™ì€ ì¡±ë³´ì¼ ë•Œ ì¶”ê°€ ë°ë¯¸ì§€ ë°°ìˆ˜
+    public float twoPairAdditionalDamage; // 2ìŒì´ ê°™ì€ ì¡±ë³´ì¼ ë•Œ ì¶”ê°€ ë°ë¯¸ì§€ ë°°ìˆ˜
+    public float onePairAdditionalDamage; // 1ìŒì´ ê°™ì€ ì¡±ë³´ì¼ ë•Œ ì¶”ê°€ ë°ë¯¸ì§€ ë°°ìˆ˜
+    public float smallStraightAdditionalDamage; // ìŠ¤ëª° ìŠ¤íŠ¸ë ˆì´íŠ¸ ì¡±ë³´ì¼ ë•Œ ì¶”ê°€ ë°ë¯¸ì§€ ë°°ìˆ˜
+    public float largeStraightAdditionalDamage; // ë¼ì§€ ìŠ¤íŠ¸ë ˆì´íŠ¸ ì¡±ë³´ì¼ ë•Œ ì¶”ê°€ ë°ë¯¸ì§€ ë°°ìˆ˜
+    public float noPairAdditionalDamage; // ì¡±ë³´ê°€ ì—†ëŠ” ê²½ìš° ì¶”ê°€ ë°ë¯¸ì§€ ë°°ìˆ˜
 }
