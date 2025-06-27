@@ -101,11 +101,6 @@ public class DiceManager : MonoBehaviour
     private void Update()
     {
         SelectDice();
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            ResetSettingTest();
-        }
     }
 
     public void RollDice()
@@ -296,20 +291,6 @@ public class DiceManager : MonoBehaviour
         }
     }
 
-    public int GetSignitureAmount()
-    {
-        int iNum = 0;
-        foreach (GameObject diceGO in dices)
-        {
-            DiceMy dice = diceGO.GetComponent<DiceMy>();
-            if (diceResult.Contains<int>(dice.diceSO.C_No))
-            {
-                iNum++;
-            }
-        }
-        return iNum;
-    }
-
     public void ResetSetting() // 한 턴이 끝났을때 주사위 관련 데이터를 리셋
     {
         rollCount = 0;
@@ -328,7 +309,6 @@ public class DiceManager : MonoBehaviour
         tempFixedDiceList.Clear();
 
         GoDefaultPosition();
-        //ResetRotation();
     }
     public void ResetSettingTest() // 한 턴이 끝났을때 주사위 관련 데이터를 리셋
     {
@@ -339,9 +319,8 @@ public class DiceManager : MonoBehaviour
         }
 
         GoDefaultPosition();
-        //ResetRotation();
     }
-    public void GoDefaultPosition()
+    public void GoDefaultPosition() //주사위, 표시용 주사위 원위치로 (fix된 주사위 제외)
     {
         for (int i = 0; i < dices.Length; i++)
         {
@@ -355,7 +334,7 @@ public class DiceManager : MonoBehaviour
         }
     }
 
-    private void ResetRotation() //수정 필요 
+    private void ResetRotation() //표시용 주사위 회전값 조정
     {
         int i = 0;
         quaternion quaternion;
@@ -380,6 +359,7 @@ public class DiceManager : MonoBehaviour
         rotationVectors = loadScript.GetVectorCodes().ToArray();
     }
 
+    #region 배틀에 전달할 값
     public float GetDiceWeighting()
     {
         DiceRankingJudgement();
@@ -390,6 +370,20 @@ public class DiceManager : MonoBehaviour
     private float DamageWeighting() //주사위 눈금 *족보별계수
     {
         return diceResult.Sum() * damageWighting[(int)diceRank];
+    }
+
+    public int GetSignitureAmount()
+    {
+        int iNum = 0;
+        foreach (GameObject diceGO in dices)
+        {
+            DiceMy dice = diceGO.GetComponent<DiceMy>();
+            if (diceResult.Contains<int>(dice.diceSO.C_No))
+            {
+                iNum++;
+            }
+        }
+        return iNum;
     }
 
     private void DiceRankingJudgement()
@@ -463,4 +457,5 @@ public class DiceManager : MonoBehaviour
             return;
         }
     }
+    #endregion
 }
