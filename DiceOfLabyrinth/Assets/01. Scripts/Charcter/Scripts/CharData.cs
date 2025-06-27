@@ -9,7 +9,7 @@ public class CharData
     /// <summary>
     /// Key
     /// </summary>
-    public int key;
+    public int Key;
 
     /// <summary>
     /// Key
@@ -19,7 +19,7 @@ public class CharData
     /// <summary>
     /// Name
     /// </summary>
-    public string NameKr;
+    public string Name;
 
     /// <summary>
     /// Name_En
@@ -77,16 +77,33 @@ public class CharData
     public DesignEnums.ElementTypes ElementType;
 
     /// <summary>
-    /// C_No
-    /// </summary>
-    public int SignitureNum;
-
-    /// <summary>
     /// Char_Dice
     /// </summary>
     public int DiceID;
 
+    /// <summary>
+    /// Char_Description
+    /// </summary>
+    public string Description;
+
+    /// <summary>
+    /// Char_DialogA
+    /// </summary>
+    public string dialog1;
+
+    /// <summary>
+    /// CharDialogB
+    /// </summary>
+    public string dialog2;
+
+    /// <summary>
+    /// LobbyPrefabPath
+    /// </summary>
     public string LobbyPrefabPath;
+
+    /// <summary>
+    /// BattlePrefabPath
+    /// </summary>
     public string BattlePrefabPath;
 
 }
@@ -103,7 +120,7 @@ public class CharDataLoader
         ItemsDict = new Dictionary<int, CharData>();
         foreach (var item in ItemsList)
         {
-            ItemsDict.Add(item.key, item);
+            ItemsDict.Add(item.Key, item);
         }
     }
 

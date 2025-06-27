@@ -94,6 +94,9 @@ public class CharacterSOGenerator : EditorWindow
             so.elementType = data.ElementType;
             so.signitureNum = data.SignitureNum;
             so.diceID = data.DiceID;
+            so.description = data.Description;
+            so.dialog1 = data.dialog1;
+            so.dialog2 = data.dialog2;
 
             // 프리팹 할당
             if (!string.IsNullOrEmpty(data.LobbyPrefabPath))
@@ -180,6 +183,9 @@ public class CharacterSOGenerator : EditorWindow
         public DesignEnums.ElementTypes ElementType;
         public int SignitureNum;
         public int DiceID;
+        public string Description;
+        public string dialog1;
+        public string dialog2;
         public string LobbyPrefabPath;
         public string BattlePrefabPath; // 프리팹 경로 추가
     }
