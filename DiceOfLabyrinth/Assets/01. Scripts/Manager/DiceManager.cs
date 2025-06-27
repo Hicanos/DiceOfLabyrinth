@@ -1,6 +1,5 @@
 ﻿using PredictedDice;
 using PredictedDice.Demo;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +54,7 @@ public class DiceManager : MonoBehaviour
     [SerializeField] Camera diceCamera;
     public GameObject[] dices;
     public GameObject[] fakeDices;
+    public GameObject ground;
 
     int[] diceResult;
     int[] diceResultCount;
@@ -94,7 +94,7 @@ public class DiceManager : MonoBehaviour
             fakeDices[i].SetActive(false);
         }
 
-        fixedPos = new Vector3[] { new Vector3(-3, 0, 10.5f), new Vector3(-3, 0, 8.8f), new Vector3(-3, 0, 6.43f), new Vector3(-1.55f, 0, 10.5f), new Vector3(-1.55f, 0, 8.8f) };
+        fixedPos = new Vector3[] { new Vector3(-3, 5, 10.5f), new Vector3(-3, 5, 8.8f), new Vector3(-3, 5, 6.43f), new Vector3(-1.55f, 5, 10.5f), new Vector3(-1.55f, 5, 8.8f) };
         defaultPos = new Vector3[] { new Vector3(1.09999847f, 0, 2.07000017f), new Vector3(2.81999993f, 3.32999992f, 1.35000002f), new Vector3(4.57000017f, 0, 2.1099999f), new Vector3(6.09000015f, 2.96000004f, 1.35000002f), new Vector3(7.76000023f, -0.200000003f, 1.94000006f) };
     }
 
@@ -105,28 +105,27 @@ public class DiceManager : MonoBehaviour
 
     public void RollDice()
     {
-        for (int i = 0; i < fakeDices.Length; i++)
-        {
-            dices[i].SetActive(true);
-            if(fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i)) continue;
-            fakeDices[i].SetActive(false);
-        }
-        
+        SettingForRoll();
 
         StopCoroutine(SortingAfterRoll());
 
-        SettingForNextRoll();
-
         GetRandomDiceNum();
-
         roll.SetDiceOutcome(diceResult);
         roll.RollAll();
 
         StartCoroutine(SortingAfterRoll());
     }
 
-    private void SettingForNextRoll()
+    private void SettingForRoll()
     {
+        ground.SetActive(true);
+        for (int i = 0; i < fakeDices.Length; i++)
+        {
+            dices[i].SetActive(true);
+            if (fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i)) continue;
+            fakeDices[i].SetActive(false);
+        }
+
         foreach (GameObject diceGO in dices)
         {
             Dice dice = diceGO.GetComponent<Dice>();
@@ -166,9 +165,9 @@ public class DiceManager : MonoBehaviour
         rollCount++;
         BattleManager.Instance.DiceRollButton.interactable = false;
         List<Dice> diceList = new List<Dice>();
-        int endCount = 0;
+        int rollEndCount = 0;
 
-        for (int i = 0; i < dices.Length; i++)
+        for (int i = 0; i < dices.Length; i++) //현재 굴러가는 주사위의 Dice 컴포넌트를 리스트로
         {
             if (fixedDiceList.Contains<int>(i)) continue;
 
@@ -178,15 +177,15 @@ public class DiceManager : MonoBehaviour
 
         while (true)
         {
-            for (int i = 0; i < diceList.Count; i++)
+            for (int i = 0; i < diceList.Count; i++) //모든 주사위가 멈췄는지 체크
             {
                 if (diceList[i].Locomotion.isEnd)
                 {
-                    endCount++;
+                    rollEndCount++;
                 }
             }
 
-            if (endCount == diceList.Count)
+            if (rollEndCount == diceList.Count)
             {
                 if (rollCount == maxRollCount)
                 {
@@ -200,20 +199,18 @@ public class DiceManager : MonoBehaviour
                 SortingFakeDice();
                 break;
             }
-            endCount = 0;
+            rollEndCount = 0;
             yield return null;
         }
     }
 
     private void SortingFakeDice()
-    {
-        ResetSettingTest();
+    {        
+        GoDefaultPositionDice();
         for (int i = 0; i < fakeDices.Length; i++)
         {
             dices[i].SetActive(false);
             fakeDices[i].SetActive(true);
-            if (fixedDiceList.Contains<int>(i)) continue;
-            fakeDices[i].transform.localPosition = dicePos[i];
         }
         ResetRotation();
     }
@@ -308,29 +305,39 @@ public class DiceManager : MonoBehaviour
         fixedDiceList.Clear();
         tempFixedDiceList.Clear();
 
-        GoDefaultPosition();
-    }
-    public void ResetSettingTest() // 한 턴이 끝났을때 주사위 관련 데이터를 리셋
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            if (fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i)) continue;
-            roll.diceAndOutcomeArray[i].dice = dices[i].GetComponent<Dice>();
-        }
+        GoDefaultPositionDice();
+        GoDefaultPositionFakeDice();
 
-        GoDefaultPosition();
+        for (int i = 0; i < fakeDices.Length; i++)
+        {
+            dices[i].SetActive(true);            
+            fakeDices[i].SetActive(false);
+        }
     }
-    public void GoDefaultPosition() //주사위, 표시용 주사위 원위치로 (fix된 주사위 제외)
+
+    private void GoDefaultPositionDice()
     {
         for (int i = 0; i < dices.Length; i++)
         {
             if (fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i)) continue;
             dices[i].transform.localPosition = defaultPos[i];
         }
+    }
+
+    private void GoDefaultPositionFakeDice()
+    {
         for (int i = 0; i < fakeDices.Length; i++)
         {
             if (fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i)) continue;
-            fakeDices[i].transform.localPosition = defaultPos[i];
+            fakeDices[i].transform.localPosition = dicePos[i];
+        }
+    }
+
+    public void HideFakeDice()
+    {
+        for (int i = 0; i < fakeDices.Length; i++)
+        {
+            fakeDices[i].SetActive(false);
         }
     }
 
@@ -341,8 +348,7 @@ public class DiceManager : MonoBehaviour
         foreach (GameObject dice in fakeDices)
         {
             int iNum = diceResult[i] - 1;
-            quaternion = Quaternion.Euler(rotationVectors[iNum].x, rotationVectors[iNum].y, rotationVectors[iNum].z);
-            Debug.Log($"{i} : {iNum} : {rotationVectors[iNum].x}, {rotationVectors[iNum].y}, {rotationVectors[iNum].z}");
+            quaternion = Quaternion.Euler(rotationVectors[iNum].x, rotationVectors[iNum].y, rotationVectors[iNum].z);            
             dice.transform.rotation = quaternion;
             i++;
         }
@@ -375,13 +381,16 @@ public class DiceManager : MonoBehaviour
     public int GetSignitureAmount()
     {
         int iNum = 0;
+        int i = 0;
         foreach (GameObject diceGO in dices)
         {
             DiceMy dice = diceGO.GetComponent<DiceMy>();
-            if (diceResult.Contains<int>(dice.diceSO.C_No))
+            if (diceGO.GetComponent<DiceMy>().diceSO.C_No == diceResult[i])
             {
+
                 iNum++;
             }
+            i++;
         }
         return iNum;
     }
