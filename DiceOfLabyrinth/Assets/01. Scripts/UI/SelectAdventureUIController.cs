@@ -41,16 +41,16 @@ public class SelectAdventureUIController : MonoBehaviour
         //    Debug.Log("Not enough stamina to enter the chapter.");
         //    // 스태미나가 부족할 때 알림 UI를 표시하는 로직을 추가할 수 있습니다.
         //}
-        else
+        else if (chapterIndex != stageManager.currentChapterIndex) // 현재 챕터와 선택한 챕터가 다를 때만 초기화합니다.
         {
-            Debug.Log($"챕터 데이터를 초기화합니다. 만약 경고 UI가 필요하다면 수정해주세요.");
+            // 현재 챕터의 변경을 묻는 UI를 추가할 수 있습니다.
+            Debug.Log($"진행중인 챕터가 있는데 바꿀거냐 묻는 UI를 추가할 수 있습니다.");
             ChapterManager.Instance.ResetChapterData(chapterIndex); // 챕터 데이터를 초기화합니다.
         }
         // 새로운 챕터가 아니면, 데이터 초기화를 할 필요가 없습니다.
         // 만약 기존 챕터여도 새 시작을 원한다면, 묻는 UI를 추가할 수 있습니다.
         selectChapterPanel.SetActive(true);
         selectDungeonPanel.SetActive(true);
-        ChapterManager.Instance.LoadChapter(chapterIndex); // 챕터 데이터를 로드합니다.
     }   
     public void CloseSelectDungeonPanel()
     {
@@ -77,6 +77,7 @@ public class SelectAdventureUIController : MonoBehaviour
             return;
         }
         Debug.Log($"Stage {stageIndex + 1} selected. Loading battle scene.");
+        // 배틀 씬으로 이동할거냐 묻는 UI를 추가할 수 있습니다.
         SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
         stageManager.LoadStage(stageManager.currentChapterIndex, stageIndex); // 스테이지 데이터를 로드합니다.
     }

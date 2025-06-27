@@ -9,11 +9,6 @@ public class StageManager : MonoBehaviour
     public ChapterManager chapterManager;
     public ChapterData chapterData; // ChapterData 스크립터블 오브젝트, 에디터에서 할당해야 합니다.
     
-    public enum DifficultyLevel // 스테이지 난이도 레벨, 필요시 추가할 수 있습니다.
-    {
-        Normal,
-        Hard
-    }
     public enum CurrentFormationType // 포메이션 타입
     {
         Formation1,
@@ -24,7 +19,6 @@ public class StageManager : MonoBehaviour
     public int currentChapterIndex; // 현재 챕터 인덱스
     public int currentStageIndex; // 현재 스테이지 인덱스
     public int currentPhaseIndex; // 현재 페이즈 인덱스
-    public DifficultyLevel difficultyLevel;
     public CurrentFormationType currentFormationType;
 
     
@@ -109,7 +103,6 @@ public class StageManager : MonoBehaviour
         savedExpReward = 0; // 경험치 보상 초기화
         savedGoldReward = 0; // 골드 보상 초기화
         savedJewelReward = 0; // 보석 보상 초기화
-        difficultyLevel = DifficultyLevel.Normal; // 난이도 초기화, 필요시 수정 가능
     }
 
     public void StageComplete(int chapterIndex, int stageIndex)
