@@ -4,24 +4,7 @@ using UnityEngine.UI;
 
 public class BattleUIController : MonoBehaviour
 {
-    [Header("Stage Panel")]
-    [SerializeField] private Button backButton;
-    [SerializeField] private Button nextButton;
-
-    [Header("Battle Panel")]
-    [SerializeField] private Button rollingButton;
-
-    [Header("Victory Panel")]
-    [SerializeField] private Button victoryNextButton;
-
-    [Header("Defeat Panel")]
-    [SerializeField] private Button defeatNextButton;
-
     [Header("Select Artifact Panel")]
-    [SerializeField] private Button selectArtifact_01_Button;
-    [SerializeField] private Button selectArtifact_02_Button;
-    [SerializeField] private Button selectArtifact_03_Button;
-    [SerializeField] private Button getArtifactButton;
     [SerializeField] private TMP_Text artifactDescriptionText;
 
     [Header("Select Event Panel")]
@@ -46,28 +29,7 @@ public class BattleUIController : MonoBehaviour
         selectArtifactPanel.SetActive(false);
         selectEventPanel.SetActive(false);
 
-        // Stage Panel 내부의 버튼 할당
-        backButton.onClick.AddListener(SceneManagerEx.Instance.OnBackClicked);
-        nextButton.onClick.AddListener(OpenBattlePanel);
-
-        // Battle Panel 내부의 버튼 할당
-        rollingButton.onClick.AddListener(RollingDice);
-
-        // Victory Panel 내부의 버튼 할당
-        victoryNextButton.onClick.AddListener(BackToStage);
-
-        // Defeat Panel 내부의 버튼 할당
-        defeatNextButton.onClick.AddListener(BackToLobby);
-
-        // Select Artifact Panel 내부의 버튼 할당
-        selectArtifact_01_Button.onClick.AddListener(SelectArtifact);
-        selectArtifact_02_Button.onClick.AddListener(SelectArtifact);
-        selectArtifact_03_Button.onClick.AddListener(SelectArtifact);
-        getArtifactButton.onClick.AddListener(GetArtifact);
-
-        // Select Event 내부의 버튼 할당
-        event_01_Button.onClick.AddListener(SelectEvent);
-        event_02_Button.onClick.AddListener(SelectEvent);
+        StageManager.Instance.StandbyPhase();
     }
 
     private void OpenBattlePanel() // #1 nextButton 과 연결

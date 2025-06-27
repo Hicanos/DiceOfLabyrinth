@@ -9,15 +9,17 @@ public class StageManager : MonoBehaviour
     public ChapterManager chapterManager;
     public ChapterData chapterData; // ChapterData 스크립터블 오브젝트, 에디터에서 할당해야 합니다.
     
-    public enum DifficultyLevel // 스테이지 난이도 레벨, 필요시 추가할 수 있습니다.
+    public enum CurrentFormationType // 포메이션 타입
     {
-        Normal,
-        Hard
+        Formation1,
+        Formation2,
+        Formation3,
+        Formation4,
     }
     public int currentChapterIndex; // 현재 챕터 인덱스
     public int currentStageIndex; // 현재 스테이지 인덱스
     public int currentPhaseIndex; // 현재 페이즈 인덱스
-    public DifficultyLevel difficultyLevel;
+    public CurrentFormationType currentFormationType;
 
     
     public int gem; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
@@ -25,6 +27,7 @@ public class StageManager : MonoBehaviour
     public List<StagmaData> stagma = new List<StagmaData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public CharacterSO[] entryCharacters = new CharacterSO[5]; // 플레이어 캐릭터 목록, 플레이어 보유 캐릭터 중 5명을 선택하여 스테이지에 진입합니다.
     public CharacterSO leaderCharacter; // 리더 캐릭터, 스테이지에 진입할 때 선택한 캐릭터 중 하나를 리더로 설정합니다.
+
 
     public int savedExpReward; // 스테이지에서 획득한 경험치 보상, 스테이지 종료시 정산합니다.
     public int savedGoldReward; // 스테이지에서 획득한 골드 보상, 스테이지 종료시 정산합니다.
@@ -83,20 +86,9 @@ public class StageManager : MonoBehaviour
 
     public void LoadStage(int chapterIndex, int stageIndex)
     {
-        // 스테이지 시작 로직을 구현합니다. 아래의 If 문은 UI를 다루는 cs가 만들어지면 수정할 예정입니다.
-        if (chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsCompleted)
-        {
-            Debug.Log($"Stage {stageIndex} is already completed.");
-            // 이미 완료된 스테이지는 도전할 수 없습니다.
-            return;
-        }
-        else if (chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsLocked)
-        {
-            Debug.Log($"Stage {stageIndex} is locked. Please complete previous stages.");
-            // 잠금된 스테이지를 시작할 수 없다는 UI를 표시할 예정입니다.
-            return;
-        }
-        SceneManager.LoadScene("BattleScene");//SceneManagerEX.cs가 만들어지면 수정할 예정입니다.
+        // 스테이지 데이터를 초기화하고 로드합니다.
+        ResetStageData(chapterIndex, stageIndex); // 스테이지 데이터를 초기화합니다.
+        // 저장은 나중에 구현할 예정입니다.
         StandbyPhase();
     }
 
@@ -111,7 +103,6 @@ public class StageManager : MonoBehaviour
         savedExpReward = 0; // 경험치 보상 초기화
         savedGoldReward = 0; // 골드 보상 초기화
         savedJewelReward = 0; // 보석 보상 초기화
-        difficultyLevel = DifficultyLevel.Normal; // 난이도 초기화, 필요시 수정 가능
     }
 
     public void StageComplete(int chapterIndex, int stageIndex)

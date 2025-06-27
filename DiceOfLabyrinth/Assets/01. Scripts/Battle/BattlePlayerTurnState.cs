@@ -20,7 +20,7 @@ public class BattlePlayerTurnState : IBattleTurnState
 
         if (battleManager.BattleTurn == 1) //첫턴일 경우 리스너 부착
         {
-            battleManager.DiceRollButton.onClick.AddListener(Roll);
+            battleManager.DiceRollButton.onClick.AddListener(Roll); //배틀 끝날때 해제해줘야함
             battleManager.ConfirmButton.onClick.AddListener(Attack);
         }
     }
@@ -44,6 +44,8 @@ public class BattlePlayerTurnState : IBattleTurnState
 
     public void Attack() //[주사위 눈금 *족보별계수 + { 공격력 - 방어력 * (1 - 방어력 관통률)}] *(버프 + 아티팩트 + 속성 + 패시브 + 각인)
     {        
+        DiceManager.Instance.ground.SetActive(false);
+        DiceManager.Instance.HideFakeDice();
         Debug.Log("공격!");
         float diceWeighting = DiceManager.Instance.GetDiceWeighting(); //주사위 눈금 *족보별계수
         int signitureCount = DiceManager.Instance.GetSignitureAmount();

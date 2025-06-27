@@ -37,31 +37,7 @@ public class ChapterManager : MonoBehaviour
 
     public void LoadChapter(int chapterIndex)
     {
-        if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
-        {
-            Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
-            return;
-        }
-        else if (chapterData.chapterIndex[chapterIndex].isLocked)
-        {
-            Debug.LogError($"Chapter {chapterIndex} is locked. Please unlock it before starting.");
-            // 챕터가 잠겨있을 때 잠김 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
-            return;
-        }
-        else if (chapterData.chapterIndex[chapterIndex].isCompleted)
-        {
-            Debug.LogError($"Chapter {chapterIndex} is already completed. Please select a different chapter.");
-            // 이미 완료된 챕터를 선택했을 때 완료 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
-            return;
-        }
-        //else if({플레이어의 스태미나 변수 아직 안 만들어짐} <  chapterData.chapterIndex[chapterIndex].ChapterCost)
-        //{
-        //     Debug.LogError($"Not enough stamina to start chapter {chapterIndex}. Please recharge your stamina.");
-        //     플레이어의 스태미나가 부족할 때 스태미나 부족 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
-        //     return;
-        //}
-        // ResetChapterData(chapterIndex); // 챕터 데이터를 초기화합니다.
-        // 챕터 UI를 SetActive로 활성화하는 로직을 추가할 수 있습니다.
+
     }
     public void ResetChapterData(int chapterIndex)
     {
@@ -90,8 +66,18 @@ public class ChapterManager : MonoBehaviour
         if (chapterData.chapterIndex[chapterIndex] != null)
         {
             chapterData.chapterIndex[chapterIndex].isCompleted = true; // 챕터 완료 상태를 true로 설정
-            chapterData.chapterIndex[chapterIndex +1].isLocked = false; // 다음 챕터 잠금 해제
-            Debug.Log($"Chapter {chapterData.chapterIndex[chapterIndex].ChapterName} completed!");
+            if (chapterIndex % 2 == 0) // 짝수 인덱스는 Normal 챕터이므로 Hard 챕터와 다음 Normal 챕터를 잠금 해제합니다.
+            {
+                chapterData.chapterIndex[chapterIndex + 1].isLocked = false; // hard 챕터 잠금 해제
+                chapterData.chapterIndex[chapterIndex + 2].isLocked = false; // 다음 Normal 챕터 잠금 해제
+            }
+            else // 홀수 인덱스는 Hard 챕터이므로 아무런 챕터도 잠금 해제하지 않습니다.
+            {
+                // 만일을 위해 빈칸으로 남겨둡니다.
+            }
+            // 챕터 완료 후 스테이지 데이터 초기화
+            ResetChapterData(chapterIndex);
+            // 세이브 로직이 추가된다면 여기서 세이브 데이터를 저장하는 로직을 추가합니다.
         }
         else
         {
