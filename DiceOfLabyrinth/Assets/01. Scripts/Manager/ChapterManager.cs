@@ -37,23 +37,6 @@ public class ChapterManager : MonoBehaviour
 
     public void LoadChapter(int chapterIndex)
     {
-        if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
-        {
-            Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
-            return;
-        }
-        else if (chapterData.chapterIndex[chapterIndex].isLocked)
-        {
-            Debug.LogError($"Chapter {chapterIndex} is locked. Please unlock it before starting.");
-            // 챕터가 잠겨있을 때 잠김 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
-            return;
-        }
-        else if (chapterData.chapterIndex[chapterIndex].isCompleted)
-        {
-            Debug.LogError($"Chapter {chapterIndex} is already completed. Please select a different chapter.");
-            // 이미 완료된 챕터를 선택했을 때 완료 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
-            return;
-        }
         //else if({플레이어의 스태미나 변수 아직 안 만들어짐} <  chapterData.chapterIndex[chapterIndex].ChapterCost)
         //{
         //     Debug.LogError($"Not enough stamina to start chapter {chapterIndex}. Please recharge your stamina.");
