@@ -1,6 +1,5 @@
 ﻿using PredictedDice;
 using PredictedDice.Demo;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -209,9 +208,7 @@ public class DiceManager : MonoBehaviour
         for (int i = 0; i < fakeDices.Length; i++)
         {
             dices[i].SetActive(false);
-            //if (fixedDiceList.Contains<int>(i)) continue;
             fakeDices[i].SetActive(true);
-            //fakeDices[i].transform.localPosition = dicePos[i];
         }
         ResetRotation();
     }
@@ -374,13 +371,16 @@ public class DiceManager : MonoBehaviour
     public int GetSignitureAmount()
     {
         int iNum = 0;
+        int i = 0;
         foreach (GameObject diceGO in dices)
         {
             DiceMy dice = diceGO.GetComponent<DiceMy>();
-            if (diceResult.Contains<int>(dice.diceSO.C_No))
+            if (diceGO.GetComponent<DiceMy>().diceSO.C_No == diceResult[i])
             {
+
                 iNum++;
             }
+            i++;
         }
         return iNum;
     }
