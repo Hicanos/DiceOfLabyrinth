@@ -7,8 +7,6 @@ using System.Linq;
 /// </summary>
 public class CharacterDebugTool : EditorWindow
 {
-    // 씬에 존재하는 CharacterManager 인스턴스 참조
-    private CharacterManager characterManager;
     // 모든 캐릭터 목록 스크롤 위치
     private Vector2 scrollAll;
     // 획득한 캐릭터 목록 스크롤 위치
@@ -28,18 +26,8 @@ public class CharacterDebugTool : EditorWindow
     /// </summary>
     private void OnGUI()
     {
-        // CharacterManager 인스턴스가 없으면 씬에서 찾기
-        if (characterManager == null)
-        {
-            characterManager = FindFirstObjectByType<CharacterManager>();
-
-            // 없을 경우 안내 메시지 출력
-            if (characterManager == null)
-            {
-                EditorGUILayout.HelpBox("씬에 CharacterManager 오브젝트가 없습니다.", MessageType.Error);
-                return;
-            }
-        }
+        // 싱글톤 인스턴스 사용
+        var characterManager = CharacterManager.Instance;
 
         // 캐릭터 데이터가 아직 로드되지 않은 경우 안내
         if (!characterManager.IsLoaded)
@@ -81,12 +69,25 @@ public class CharacterDebugTool : EditorWindow
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("획득한 캐릭터 목록", EditorStyles.boldLabel);
 
-        // 획득한 캐릭터 목록 표시
+        // 획득한 캐릭터 목록 표시 및 삭제 버튼
+        string removeCharID = null;
         scrollAcquired = EditorGUILayout.BeginScrollView(scrollAcquired, GUILayout.Height(150));
         foreach (var so in characterManager.AcquiredCharacters)
         {
+            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField($"ID: {so.charID}, 이름: {so.nameKr} ({so.nameEn})");
+            if (GUILayout.Button("삭제", GUILayout.Width(50)))
+            {
+                removeCharID = so.charID; // 삭제할 ID 저장
+            }
+            EditorGUILayout.EndHorizontal();
         }
         EditorGUILayout.EndScrollView();
+
+        // 루프 밖에서 삭제 실행 (Begin/End 쌍 보장)
+        if (!string.IsNullOrEmpty(removeCharID))
+        {
+            characterManager.RemoveAcquiredCharacter(removeCharID);
+        }
     }
 }

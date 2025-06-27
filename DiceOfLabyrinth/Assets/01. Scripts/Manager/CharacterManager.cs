@@ -1,15 +1,29 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 /// <summary>
-/// 모든 캐릭터 데이터와 유저가 획득한 캐릭터를 관리하는 매니저
+/// 모든 캐릭터 데이터와 유저가 획득한 캐릭터를 관리하는 매니저 (MonoBehaviour 미상속)
 /// </summary>
-public class CharacterManager : MonoBehaviour
+public class CharacterManager
 {
+    // 싱글톤 인스턴스
+    private static CharacterManager instance;
+    public static CharacterManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new CharacterManager();
+                instance.Initialize();
+            }
+            return instance;
+        }
+    }
+
     // 모든 캐릭터 데이터 (Key: charID, Value: CharacterSO)
     public Dictionary<string, CharacterSO> AllCharacters { get; private set; } = new Dictionary<string, CharacterSO>();
 
@@ -17,52 +31,27 @@ public class CharacterManager : MonoBehaviour
     private HashSet<string> acquiredCharacterIDs = new HashSet<string>();
 
     // 획득한 캐릭터 리스트 반환
-    // acquiredList는 List<CharacterSO> 타입이며, 각 캐릭터의 상세 정보에 접근 가능
-    // 아래와 같이 사용 가능
-    //    var acquiredList = characterManager.AcquiredCharacters;
-    //foreach (var character in acquiredList)
-    //{
-    //    Debug.Log($"ID: {character.charID}, 이름: {character.nameKr}, 공격력: {character.baseATK}");
-    //}
-
-    // 특정 캐릭터 중 하나만 찾을 경우 아래와 같이 사용
-
-    /*
-     string targetCharID = "원하는_charID";
-    var acquired = characterManager.AcquiredCharacters
-     .FirstOrDefault(c => c.charID == targetCharID);
-
-    if (acquired != null)
-    {
-       Debug.Log($"획득한 캐릭터: {acquired.nameKr}");
-    }
-    else
-    {
-        Debug.LogWarning("획득한 캐릭터 중 해당 charID가 없습니다.");
-    }
-     */
-
-    public List<CharacterSO> AcquiredCharacters => 
+    public List<CharacterSO> AcquiredCharacters =>
         acquiredCharacterIDs
             .Where(charID => AllCharacters.ContainsKey(charID))
             .Select(charID => AllCharacters[charID])
             .ToList();
 
-    // Addressable로 등록된 캐릭터 SO들을 로드
-    // 캐릭터는 Addressable에 등록되어있으며, Character SO Group에 위치함
-    // CharacterSO의 위치 Assets/01. Scripts/Character/SO/Generated/{nameEn}_SO.asset
-    // Resources 폴더를 사용하지 않고 Addressable을 사용하여 캐릭터 데이터를 관리
-    // Resources.LoadAll을 사용하지 않고 Addressable을 통해 캐릭터 데이터를 로드
-
     // Addressable 로드 완료 여부
     public bool IsLoaded { get; private set; } = false;
 
+    // 초기화(최초 Instance 접근 시 1회만 호출)
+    private void Initialize()
+    {
+        LoadAcquiredCharacters();
+        LoadAllCharactersAsync();
+    }
+
+    // Addressable로 등록된 캐릭터 SO들을 비동기로 로드
     public void LoadAllCharactersAsync(System.Action onLoaded = null)
     {
-        // "Character SO Group"에 등록된 모든 CharacterSO를 Addressable Label로 관리한다고 가정
         Addressables.LoadAssetsAsync<CharacterSO>("CharacterSO", null).Completed += handle =>
         {
-            // hideFlags를 명시적으로 None으로 설정
             foreach (var so in handle.Result)
             {
                 so.hideFlags = HideFlags.None;
@@ -73,13 +62,7 @@ public class CharacterManager : MonoBehaviour
         };
     }
 
-    void Awake()
-    {
-        LoadAcquiredCharacters();
-        LoadAllCharactersAsync();
-    }
-
-    // 유저가 획득한 캐릭터 nameKr 목록 로드 (PlayerPrefs 등에서 불러오기)
+    // 유저가 획득한 캐릭터 목록 로드
     private void LoadAcquiredCharacters()
     {
         var saved = PlayerPrefs.GetString("AcquiredCharacters", "");
@@ -100,6 +83,16 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
+    // 보유(획득)한 캐릭터 삭제
+    public void RemoveAcquiredCharacter(string charID)
+    {
+        if (acquiredCharacterIDs.Contains(charID))
+        {
+            acquiredCharacterIDs.Remove(charID);
+            SaveAcquiredCharacters();
+        }
+    }
+
     // 획득한 캐릭터 저장
     private void SaveAcquiredCharacters()
     {
@@ -113,5 +106,4 @@ public class CharacterManager : MonoBehaviour
     {
         return acquiredCharacterIDs.Contains(charID);
     }
-
 }
