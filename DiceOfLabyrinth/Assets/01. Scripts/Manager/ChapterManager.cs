@@ -37,7 +37,7 @@ public class ChapterManager : MonoBehaviour
 
     public void LoadChapter(int chapterIndex)
     {
-        // 세이브 데이타가 만들어진다면 여기서 세이브 데이터를 로드하는 로직을 추가
+
     }
     public void ResetChapterData(int chapterIndex)
     {
@@ -66,8 +66,18 @@ public class ChapterManager : MonoBehaviour
         if (chapterData.chapterIndex[chapterIndex] != null)
         {
             chapterData.chapterIndex[chapterIndex].isCompleted = true; // 챕터 완료 상태를 true로 설정
-            chapterData.chapterIndex[chapterIndex +1].isLocked = false; // 다음 챕터 잠금 해제
-            Debug.Log($"Chapter {chapterData.chapterIndex[chapterIndex].ChapterName} completed!");
+            if (chapterIndex % 2 == 0) // 짝수 인덱스는 Normal 챕터이므로 Hard 챕터와 다음 Normal 챕터를 잠금 해제합니다.
+            {
+                chapterData.chapterIndex[chapterIndex + 1].isLocked = false; // hard 챕터 잠금 해제
+                chapterData.chapterIndex[chapterIndex + 2].isLocked = false; // 다음 Normal 챕터 잠금 해제
+            }
+            else // 홀수 인덱스는 Hard 챕터이므로 아무런 챕터도 잠금 해제하지 않습니다.
+            {
+                // 만일을 위해 빈칸으로 남겨둡니다.
+            }
+            // 챕터 완료 후 스테이지 데이터 초기화
+            ResetChapterData(chapterIndex);
+            // 세이브 로직이 추가된다면 여기서 세이브 데이터를 저장하는 로직을 추가합니다.
         }
         else
         {

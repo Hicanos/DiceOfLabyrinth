@@ -7,18 +7,14 @@ using UnityEngine.UIElements;
 public class StageData : ScriptableObject
 {
     public List<StageInfo> stageIndex;
-
+    [SerializeField] private List<PlayerFormations> playerFormations;
     public List<StageInfo> StageIndex => stageIndex;
+    public List<PlayerFormations> PlayerFormations => playerFormations;
 }
 
 [System.Serializable]
 public class StageInfo
 {
-    public enum StageDifficulty
-    {
-        Normal,
-        Hard,
-    }
     // 스테이지 정보 필드들
     [SerializeField] private string stageName;
     [SerializeField] private string description;
@@ -30,14 +26,12 @@ public class StageInfo
     [SerializeField] private int jewelReward;
     [SerializeField] private bool isCompleted;
     [SerializeField] private bool isLocked = true;
-    public StageDifficulty stageDifficulty;
     [SerializeField] private BossPhaseData bossPhase;
     [SerializeField] private List<NormalPhaseData> normalPhases;
     [SerializeField] private List<ElitePhaseData> elitePhases;
     [SerializeField] private List<ChooseOptions> choose;
     [SerializeField] private List<StagmaData> stagmaList;
     [SerializeField] private List<ArtifactData> artifactList;
-    [SerializeField] private List<PlayerFormations> playerFormations = new List<PlayerFormations>(4);
 
     // 읽기 전용 프로퍼티들
     public string StageName => stageName;
@@ -64,7 +58,6 @@ public class StageInfo
     public List<StagmaData> StagmaList => stagmaList;
     public List<ArtifactData> ArtifactList => artifactList;
 
-    public List<PlayerFormations> PlayerFormations => playerFormations;
 }
 
 [System.Serializable]
