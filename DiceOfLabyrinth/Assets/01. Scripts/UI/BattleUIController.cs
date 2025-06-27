@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class BattleUIController : MonoBehaviour
 {
     [Header("Stage Panel")]
-    [SerializeField] private Button backButton;
+    //[SerializeField] private Button backButton;
     [SerializeField] private Button nextButton;
 
     [Header("Battle Panel")]
@@ -47,7 +47,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
 
         // Stage Panel 내부의 버튼 할당
-        backButton.onClick.AddListener(SceneManagerEx.Instance.OnBackClicked);
+        //backButton.onClick.AddListener(SceneManagerEx.Instance.OnBackClicked);
         nextButton.onClick.AddListener(OpenBattlePanel);
 
         // Battle Panel 내부의 버튼 할당
