@@ -37,14 +37,7 @@ public class ChapterManager : MonoBehaviour
 
     public void LoadChapter(int chapterIndex)
     {
-        //else if({플레이어의 스태미나 변수 아직 안 만들어짐} <  chapterData.chapterIndex[chapterIndex].ChapterCost)
-        //{
-        //     Debug.LogError($"Not enough stamina to start chapter {chapterIndex}. Please recharge your stamina.");
-        //     플레이어의 스태미나가 부족할 때 스태미나 부족 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
-        //     return;
-        //}
-        // ResetChapterData(chapterIndex); // 챕터 데이터를 초기화합니다.
-        // 챕터 UI를 SetActive로 활성화하는 로직을 추가할 수 있습니다.
+        // 세이브 데이타가 만들어진다면 여기서 세이브 데이터를 로드하는 로직을 추가
     }
     public void ResetChapterData(int chapterIndex)
     {

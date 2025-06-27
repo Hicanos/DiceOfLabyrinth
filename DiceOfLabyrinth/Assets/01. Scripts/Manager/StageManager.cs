@@ -14,7 +14,7 @@ public class StageManager : MonoBehaviour
         Normal,
         Hard
     }
-    public enum FormationType // 포메이션 타입
+    public enum CurrentFormationType // 포메이션 타입
     {
         Formation1,
         Formation2,
@@ -25,6 +25,7 @@ public class StageManager : MonoBehaviour
     public int currentStageIndex; // 현재 스테이지 인덱스
     public int currentPhaseIndex; // 현재 페이즈 인덱스
     public DifficultyLevel difficultyLevel;
+    public CurrentFormationType currentFormationType;
 
     
     public int gem; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
@@ -91,20 +92,9 @@ public class StageManager : MonoBehaviour
 
     public void LoadStage(int chapterIndex, int stageIndex)
     {
-        // 스테이지 시작 로직을 구현합니다. 아래의 If 문은 UI를 다루는 cs가 만들어지면 수정할 예정입니다.
-        if (chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsCompleted)
-        {
-            Debug.Log($"Stage {stageIndex} is already completed.");
-            // 이미 완료된 스테이지는 도전할 수 없습니다.
-            return;
-        }
-        else if (chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].IsLocked)
-        {
-            Debug.Log($"Stage {stageIndex} is locked. Please complete previous stages.");
-            // 잠금된 스테이지를 시작할 수 없다는 UI를 표시할 예정입니다.
-            return;
-        }
-        SceneManager.LoadScene("BattleScene");//SceneManagerEX.cs가 만들어지면 수정할 예정입니다.
+        // 스테이지 데이터를 초기화하고 로드합니다.
+        ResetStageData(chapterIndex, stageIndex); // 스테이지 데이터를 초기화합니다.
+        // 저장은 나중에 구현할 예정입니다.
         StandbyPhase();
     }
 
