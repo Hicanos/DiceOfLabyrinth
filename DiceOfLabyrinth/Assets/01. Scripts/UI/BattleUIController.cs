@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class BattleUIController : MonoBehaviour
 {
-
     [Header("Select Artifact Panel")]
     [SerializeField] private TMP_Text artifactDescriptionText;
 
@@ -29,6 +28,8 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectArtifactPanel.SetActive(false);
         selectEventPanel.SetActive(false);
+
+        StageManager.Instance.StandbyPhase();
     }
 
     private void OpenBattlePanel() // #1 nextButton 과 연결
