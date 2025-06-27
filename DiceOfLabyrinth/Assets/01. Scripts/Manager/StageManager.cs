@@ -14,6 +14,13 @@ public class StageManager : MonoBehaviour
         Normal,
         Hard
     }
+    public enum FormationType // 포메이션 타입
+    {
+        Formation1,
+        Formation2,
+        Formation3,
+        Formation4,
+    }
     public int currentChapterIndex; // 현재 챕터 인덱스
     public int currentStageIndex; // 현재 스테이지 인덱스
     public int currentPhaseIndex; // 현재 페이즈 인덱스
@@ -25,6 +32,7 @@ public class StageManager : MonoBehaviour
     public List<StagmaData> stagma = new List<StagmaData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public CharacterSO[] entryCharacters = new CharacterSO[5]; // 플레이어 캐릭터 목록, 플레이어 보유 캐릭터 중 5명을 선택하여 스테이지에 진입합니다.
     public CharacterSO leaderCharacter; // 리더 캐릭터, 스테이지에 진입할 때 선택한 캐릭터 중 하나를 리더로 설정합니다.
+
 
     public int savedExpReward; // 스테이지에서 획득한 경험치 보상, 스테이지 종료시 정산합니다.
     public int savedGoldReward; // 스테이지에서 획득한 골드 보상, 스테이지 종료시 정산합니다.

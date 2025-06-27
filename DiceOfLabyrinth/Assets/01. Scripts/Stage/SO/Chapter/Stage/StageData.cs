@@ -37,6 +37,7 @@ public class StageInfo
     [SerializeField] private List<ChooseOptions> choose;
     [SerializeField] private List<StagmaData> stagmaList;
     [SerializeField] private List<ArtifactData> artifactList;
+    [SerializeField] private List<PlayerFormations> playerFormations = new List<PlayerFormations>(4);
 
     // 읽기 전용 프로퍼티들
     public string StageName => stageName;
@@ -62,6 +63,8 @@ public class StageInfo
 
     public List<StagmaData> StagmaList => stagmaList;
     public List<ArtifactData> ArtifactList => artifactList;
+
+    public List<PlayerFormations> PlayerFormations => playerFormations;
 }
 
 [System.Serializable]
@@ -109,6 +112,23 @@ public class BossPhaseData
     public string Description => description;
     public GameObject BossPrefab => bossPrefab;
     public Vector3 SpawnPosition => spawnPosition;
+}
+
+[System.Serializable]
+public class PlayerFormations
+{
+    [SerializeField] private string formationName;
+    [SerializeField] private List<PlayerPositions> playerPositions = new List<PlayerPositions>(5);
+
+    public string FormationName => formationName;
+    public List<PlayerPositions> PlayerPositions => playerPositions;
+}
+
+[System.Serializable]
+public class PlayerPositions
+{
+    [SerializeField] private Vector3 position;
+    public Vector3 Position => position;
 }
 
 [System.Serializable]
