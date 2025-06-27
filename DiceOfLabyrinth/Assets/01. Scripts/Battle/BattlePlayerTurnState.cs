@@ -20,7 +20,7 @@ public class BattlePlayerTurnState : IBattleTurnState
 
         if (battleManager.BattleTurn == 1) //첫턴일 경우 리스너 부착
         {
-            battleManager.DiceRollButton.onClick.AddListener(Roll);
+            battleManager.DiceRollButton.onClick.AddListener(Roll); //배틀 끝날때 해제해줘야함
             battleManager.ConfirmButton.onClick.AddListener(Attack);
         }
     }

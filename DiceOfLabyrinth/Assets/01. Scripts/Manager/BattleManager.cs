@@ -54,6 +54,7 @@ public class BattleManager : MonoBehaviour
         stateMachine = new BattleStateMachine(playerTurnState);
 
         playerTurnState.Enter(); //테스트용
+        DiceManager.Instance.LoadDiceData();
     }
 
     
@@ -65,6 +66,7 @@ public class BattleManager : MonoBehaviour
     public void BattleStart()
     {
         playerTurnState.Enter();
+        DiceManager.Instance.LoadDiceData();
     }
 
     public void BattleEnd()
