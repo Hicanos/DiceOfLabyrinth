@@ -3,10 +3,10 @@ using UnityEngine.UI;
 
 public class LobbyUIController : MonoBehaviour
 {
-    [SerializeField] private Button adventureButton;
+    //[SerializeField] private Button adventureButton;
 
     private void Start()
     {
-        adventureButton.onClick.AddListener(() => SceneManagerEx.Instance.OnAdventureClicked());
+        //adventureButton.onClick.AddListener(() => SceneManagerEx.Instance.OnAdventureClicked());
     }
 }
