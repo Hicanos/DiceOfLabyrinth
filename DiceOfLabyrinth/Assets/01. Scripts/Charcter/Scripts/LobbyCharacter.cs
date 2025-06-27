@@ -13,6 +13,8 @@ public class LobbyCharacter : Character
     public int ExternalHP = 0;
 
     public int CurrentExp = 0;
+
+    // Regular 속성을 BattleCharacter에서 가져감
     public int RegularATK; // (아무런 보정이 없는) 공격력
     public int RegularDEF; // (아무런 보정이 없는) 방어력
     public int RegularHP; // (아무런 보정이 없는) 체력(BattleCharacter의 MaxHP와 동일)
@@ -32,8 +34,23 @@ public class LobbyCharacter : Character
     /// </summary>
     public void AddExp(int exp)
     {
-        TotalExp += exp;
+        CurrentExp += exp;
         // 레벨업 조건 및 처리 로직 추가 가능
+        while (CurrentExp >= GetExpToNextLevel())
+        {
+            CurrentExp -= GetExpToNextLevel();
+            LevelUP();
+        }
+    }
+
+    private void LevelUP()
+    {
+        Level++;
+        // 레벨이 올라가면 올라간만큼 기본 능력치 증가함
+        GetMaxHP();
+        RegularATK = GetATK();
+        RegularDEF = GetDEF();
+        RegularHP = GetMaxHP();
     }
 
     /// <summary>
