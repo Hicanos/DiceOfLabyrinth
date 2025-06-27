@@ -11,7 +11,7 @@ public class LoadDiceDataScript
 
     public void LoadDiceJson()
     {
-        if(File.Exists(jsonPath))
+        if(File.Exists(jsonPath) == false)
         {
             Debug.LogWarning("DiceData.json ¾øÀ½");
             return;
@@ -24,7 +24,7 @@ public class LoadDiceDataScript
     public Vector3[] GetPoses()
     {         
         int i = 0;
-        JToken dicePoses = root["DicePoses"];        
+        JToken dicePoses = root["DicePoses"];
         Vector3[] loadPoses = new Vector3[dicePoses.Count()];
 
         foreach (JToken jtoken in dicePoses)
