@@ -54,6 +54,7 @@ public class DiceManager : MonoBehaviour
     [SerializeField] Camera diceCamera;
     public GameObject[] dices;
     public GameObject[] fakeDices;
+    public GameObject ground;
 
     int[] diceResult;
     int[] diceResultCount;
@@ -93,7 +94,7 @@ public class DiceManager : MonoBehaviour
             fakeDices[i].SetActive(false);
         }
 
-        fixedPos = new Vector3[] { new Vector3(-3, 0, 10.5f), new Vector3(-3, 0, 8.8f), new Vector3(-3, 0, 6.43f), new Vector3(-1.55f, 0, 10.5f), new Vector3(-1.55f, 0, 8.8f) };
+        fixedPos = new Vector3[] { new Vector3(-3, 5, 10.5f), new Vector3(-3, 5, 8.8f), new Vector3(-3, 5, 6.43f), new Vector3(-1.55f, 5, 10.5f), new Vector3(-1.55f, 5, 8.8f) };
         defaultPos = new Vector3[] { new Vector3(1.09999847f, 0, 2.07000017f), new Vector3(2.81999993f, 3.32999992f, 1.35000002f), new Vector3(4.57000017f, 0, 2.1099999f), new Vector3(6.09000015f, 2.96000004f, 1.35000002f), new Vector3(7.76000023f, -0.200000003f, 1.94000006f) };
     }
 
@@ -117,6 +118,7 @@ public class DiceManager : MonoBehaviour
 
     private void SettingForRoll()
     {
+        ground.SetActive(true);
         for (int i = 0; i < fakeDices.Length; i++)
         {
             dices[i].SetActive(true);
@@ -328,6 +330,14 @@ public class DiceManager : MonoBehaviour
         {
             if (fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i)) continue;
             fakeDices[i].transform.localPosition = dicePos[i];
+        }
+    }
+
+    public void HideFakeDice()
+    {
+        for (int i = 0; i < fakeDices.Length; i++)
+        {
+            fakeDices[i].SetActive(false);
         }
     }
 
