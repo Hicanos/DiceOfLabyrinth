@@ -1,23 +1,32 @@
-﻿using TMPro;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BattleUIController : MonoBehaviour
 {
-    [Header("Select Artifact Panel")]
-    [SerializeField] private TMP_Text artifactDescriptionText;
 
-    [Header("Select Event Panel")]
-    [SerializeField] private Button event_01_Button;
-    [SerializeField] private Button event_02_Button;
+    public ChapterData chapterData;
+
+    private string currentPhaseState; // 현재 페이즈 상태를 저장하는 변수 (예: "Standby", "NormalReward", "EliteReward" 등)
+
+    [Header("Select Item Panel")]
+
+    [SerializeField] private TMP_Text itemTitleText;
+    [SerializeField] private TMP_Text itemDescriptionText;
 
     [Header("Panels")]
     [SerializeField] private GameObject stagePanel;
     [SerializeField] private GameObject battlePanel;
     [SerializeField] private GameObject victoryPanel;
     [SerializeField] private GameObject defeatPanel;
-    [SerializeField] private GameObject selectArtifactPanel;
+    [SerializeField] private GameObject selectItemPanel;
     [SerializeField] private GameObject selectEventPanel;
+    [SerializeField] private GameObject[] itemChoiceIcon = new GameObject[3]; // 스태그마 선택 아이콘을 위한 배열
+    
+    public StagmaData[] stagmaChoices = new StagmaData[3]; // 스태그마 선택을 위한 배열
+    public ArtifactData[] artifactChoices = new ArtifactData[3]; // 아티팩트 선택을 위한 배열
 
     private void Start()
     {
@@ -26,8 +35,9 @@ public class BattleUIController : MonoBehaviour
         battlePanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
-        selectArtifactPanel.SetActive(false);
+        selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
+        currentPhaseState = ""; // 초기 페이즈 상태를 빈 문자열로 설정
 
         StageManager.Instance.StandbyPhase();
     }
@@ -38,18 +48,70 @@ public class BattleUIController : MonoBehaviour
         battlePanel.SetActive(true);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
-        selectArtifactPanel.SetActive(false);
+        selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
     }
 
-    private void OpenSelectArtifactPanel() // 나중에 쓰도록 만들어 놓음
+    public void OpenSelectStagmaPanel(string phaseState) // "Standby", "NormalReward", "EliteReward" 등과 연결
+                                                         // 현재 기획에선 Stanby 와 EliteReward 페이즈에서 스태그마 선택을 할 수 있도록 되어있음
     {
-        selectArtifactPanel.SetActive(true);
+        // phaseState에 따라 아이템 선택 후 다음 페이즈로 넘어가는 방향을 결정
+        currentPhaseState = phaseState; // 현재 페이즈 상태 저장
+        List<StagmaData> availableStagmas = chapterData.chapterIndex[StageManager.Instance.currentChapterIndex].stageData.stageIndex[StageManager.Instance.currentStageIndex].StagmaList; // 현재 스테이지의 스태그마 목록을 가져옴
+        itemTitleText.text = "각인 선택"; // 스태그마 선택 UI 제목 설정
+        itemDescriptionText.text = ""; // 초기화
+        List<StagmaData> selectedStagmas = new List<StagmaData>();
+        while (selectedStagmas.Count < 3)
+        {
+            int rand = Random.Range(0, availableStagmas.Count);
+            StagmaData candidate = availableStagmas[rand];
+            if (!selectedStagmas.Contains(candidate))
+                selectedStagmas.Add(candidate);
+        }
+
+        // 배열에 저장 및 UI 반영
+        for (int i = 0; i < 3; i++)
+        {
+            stagmaChoices[i] = selectedStagmas[i];
+            var iconImage = itemChoiceIcon[i].GetComponent<Image>();
+            iconImage.sprite = stagmaChoices[i].icon;
+        }
+
+        selectItemPanel.SetActive(true);
     }
 
-    private void CloseSelectArtifactPanel() // 나중에 쓰도록 만들어 놓음
+    private void CloseSelectStagmaPanel() // 나중에 쓰도록 만들어 놓음
     {
-        selectArtifactPanel.SetActive(false);
+        selectItemPanel.SetActive(false);
+    }
+
+    public void OpenSelectArtifactPanel(string phaseState) // "Standby", "NormalReward", "EliteReward" 등과 연결
+                                                           // 현재 기획에선 NormalReward 와 EliteReward 페이즈에서 아티팩트 선택을 할 수 있도록 되어있음
+    {
+        // phaseState에 따라 아티팩트 선택 후 다음 페이즈로 넘어가는 방향을 결정
+        currentPhaseState = phaseState; // 현재 페이즈 상태 저장
+        itemTitleText.text = "아티팩트 선택"; // 아티팩트 선택 UI 제목 설정
+        itemDescriptionText.text = ""; // 초기화
+            
+        List<ArtifactData> availableArtifacts = chapterData.chapterIndex[StageManager.Instance.currentChapterIndex].stageData.stageIndex[StageManager.Instance.currentStageIndex].ArtifactList; // 현재 스테이지의 아티팩트 목록을 가져옴
+        List<ArtifactData> selectedArtifacts = new List<ArtifactData>();
+        while (selectedArtifacts.Count < 3)
+        {
+            int rand = Random.Range(0, availableArtifacts.Count);
+            ArtifactData candidate = availableArtifacts[rand];
+            if (!selectedArtifacts.Contains(candidate))
+                selectedArtifacts.Add(candidate);
+        }
+
+        // 배열에 저장 및 UI 반영
+        for (int i = 0; i < 3; i++)
+        {
+            artifactChoices[i] = selectedArtifacts[i];
+            var iconImage = itemChoiceIcon[i].GetComponent<Image>();
+            iconImage.sprite = stagmaChoices[i].icon;
+        }
+        selectItemPanel.SetActive(true);
+
     }
 
     private void OpenSelectEventPanel() // 나중에 쓰도록 만들어 놓음
@@ -83,11 +145,11 @@ public class BattleUIController : MonoBehaviour
         // 로비 씬으로 이동
     }
 
-    private void SelectArtifact() // #5 selectArtifact_0@_Button 과 연결
+    private void SelectItem() // #5 selectItem_0@_Button 과 연결
     {
-        // 아티팩트 선택 UI에서 아티팩트 버튼을 눌렀을 때
+        // 아이템 선택 UI에서 아이템 버튼을 눌렀을 때
 
-        // 선택한 아티팩트의 아웃라인만 켜지도록 (선택한건 키고 나머진 끄고)
+        // 선택한 아이템의 아웃라인만 켜지도록 (선택한건 키고 나머진 끄고)
         // 그리고 선택한 아티팩의 설명이 나옴 (artifactDescriptionText 이용)
     }
 

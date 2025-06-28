@@ -3,12 +3,13 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using TMPro;
 using System.Xml;
+using UnityEditor.SceneManagement;
 
 public class StageManager : MonoBehaviour
 {
     public ChapterManager chapterManager;
     public ChapterData chapterData; // ChapterData 스크립터블 오브젝트, 에디터에서 할당해야 합니다.
-    
+    public BattleUIController battleUIController; // BattleUIController 스크립트, 에디터에서 할당해야 합니다.
     public enum CurrentFormationType // 포메이션 타입
     {
         Formation1,
@@ -173,10 +174,8 @@ public class StageManager : MonoBehaviour
 
     public void StandbyPhase()
     {
-        
-        //전투 페이즈 이전에 능력치 세팅 로직을 구현합니다.
-        // 각인 선택 UI를 출력할 예정입니다.
-        //BattleUIController.cs에서 능력치 세팅 UI 메서드를 호출할 예정입니다.
+
+        battleUIController.OpenSelectStagmaPanel("Standby"); // 스탠바이 페이즈 UI 열기
     }
 
     public void AddStagma(StagmaData stagmaName)
