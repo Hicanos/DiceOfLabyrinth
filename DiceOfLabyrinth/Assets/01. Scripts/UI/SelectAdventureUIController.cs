@@ -66,6 +66,8 @@ public class SelectAdventureUIController : MonoBehaviour
         }
         // 새로운 챕터가 아니면, 데이터 초기화를 할 필요가 없습니다.
         // 만약 기존 챕터여도 새 시작을 원한다면, 묻는 UI를 추가할 수 있습니다.
+        Debug.Log("테스트 버전에선 새 시작을 가정하여 챕터 데이터를 초기화합니다.");
+        StageManager.Instance.stageSaveData.ResetToDefault(chapterIndex); // 선택한 챕터의 기본 상태로 초기화합니다.
         selectChapterPanel.SetActive(true);
         selectDungeonPanel.SetActive(true);
     }   
@@ -104,6 +106,7 @@ public class SelectAdventureUIController : MonoBehaviour
         Debug.Log($"Stage {stageIndex} selected. Loading battle scene.");
         // 배틀 씬으로 이동할거냐 묻는 UI를 추가할 수 있습니다.
         SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
+        StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태를 복원합니다.
     }
 
     public void DifficultyToggleRefresh()

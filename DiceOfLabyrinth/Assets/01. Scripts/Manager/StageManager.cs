@@ -8,10 +8,10 @@ public class StageSaveData
 {
     public enum CurrentFormationType // 포메이션 타입
     {
-        Formation1,
-        Formation2,
-        Formation3,
-        Formation4,
+        FormationA,
+        FormationB,
+        FormationC,
+        FormationD,
     }
     [Header("Stage Save Data")]
     public int currentChapterIndex; // 현재 챕터 인덱스
@@ -40,8 +40,8 @@ public class StageSaveData
         currentChapterIndex = chapterIndex;
         currentStageIndex = 0;
         currentPhaseIndex = 0;
-        currentFormationType = CurrentFormationType.Formation1;
-        currentChoiceState = ""; // 초기 선택지 페이즈 상태를 빈 문자열로 설정
+        currentFormationType = CurrentFormationType.FormationA;
+        currentChoiceState = "Standby"; // 초기 상태는 Standby로 설정
         manaStone = 0;
         artifacts.Clear();
         stagma.Clear();
@@ -55,7 +55,7 @@ public class StageSaveData
         for (int i = 0; i < chapterAndStageStates[chapterIndex].stageStates.Count; i++)
         {
             chapterAndStageStates[chapterIndex].stageStates[i].isCompleted = false; // 모든 스테이지는 미완료 상태로 초기화
-            chapterAndStageStates[chapterIndex].stageStates[i].isUnLocked = (i != 0); // 첫 번째 스테이지만 잠금 해제, 나머지는 잠금 상태로 초기화
+            chapterAndStageStates[chapterIndex].stageStates[i].isUnLocked = (i == 0); // 첫 번째 스테이지만 잠금 해제, 나머지는 잠금 상태로 초기화
         }
         
     }
@@ -84,27 +84,30 @@ public class StageManager : MonoBehaviour
 
     public static StageManager Instance { get; private set; }
 
-    //public static StageManager SafeInstance // null에 대비한 방어용 프로퍼티, 필요시 주석 해제하여 사용하세요. 이걸 사용할거면 어드레서블 등으로 챕터 데이터를 불러와야 합니다.
-    //{
-    //    get
-    //    {
-    //        if (Instance == null)
-    //        {
-    //            var found = FindFirstObjectByType<StageManager>();
-    //            if (found != null)
-    //            {
-    //                Instance = found;
-    //            }
-    //            else
-    //            {
-    //                var go = new GameObject("StageManager");
-    //                Instance = go.AddComponent<StageManager>();
-    //            }
-    //        }
-    //        return Instance;
-    //    }
-    //}
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
 
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "BattleScene")
+        {
+            if (battleUIController == null)
+            {
+                battleUIController = FindAnyObjectByType<BattleUIController>();
+                if (battleUIController == null)
+                {
+                    Debug.LogWarning("BattleUIController를 BattleScene에서 찾을 수 없습니다.");
+                }
+            }
+        }
+    }
     void Awake()
     {
         if (Instance == null)
@@ -144,33 +147,28 @@ public class StageManager : MonoBehaviour
             Debug.LogWarning("BattleUIController.Instance가 null입니다. BattleScene이 완전히 로드된 후에 호출해야 합니다.");
             return;
         }
-        if (SceneManager.GetActiveScene().name != "BattleScene")
-        {
-            SceneManagerEx.Instance.LoadScene("BattleScene");
-            return;
-        }
 
         if (stageSaveData == null)
         {
-            stageSaveData = new StageSaveData(); // 스테이지 저장 데이터가 없으면 새로 생성합니다.
-            stageSaveData.ResetToDefault(0); // 기본값으로 초기화합니다. 챕터 인덱스는 0으로 설정합니다.
+            Debug.LogError("StageSaveData가 할당되지 않았습니다. 스테이지 데이터를 초기화해주세요.");
+            return;
         }
         else if (stageSaveData.currentChapterIndex < 0 || stageSaveData.currentChapterIndex >= chapterData.chapterIndex.Count)
         {
-            Debug.LogError("Invalid chapter index in StageSaveData. Please check the chapter data.");
+            Debug.LogError("현재의 챕터 인덱스가 유효하지 않습니다. 챕터 데이터를 확인해주세요.");
             return;
         }
-        else if (stageSaveData.currentStageIndex < 0 || stageSaveData.currentStageIndex >= chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex.Count)
+        else if (stageSaveData.currentStageIndex < 0 || stageSaveData.currentStageIndex > 4) // 스테이지 인덱스가 0~4 범위를 벗어나는 경우
         {
-            Debug.LogError("Invalid stage index in StageSaveData. Please check the stage data.");
+            Debug.LogError("현재의 스테이지 인덱스가 유효하지 않습니다. 스테이지 데이터를 확인해주세요.");
             return;
         }
         else if (stageSaveData.currentPhaseIndex < 0 || stageSaveData.currentPhaseIndex > 4) // 페이즈 인덱스가 0~4 범위를 벗어나는 경우
         {
-            Debug.LogError("Invalid phase index in StageSaveData. Please check the phase data.");
+            Debug.LogError("현재의 페이즈 인덱스가 유효하지 않습니다. 페이즈 데이터를 확인해주세요.");
             return;
         }
-        //if (stageSaveData.leaderCharacter == null || stageSaveData.entryCharacters.Any(x => x == null)) // 리더 캐릭터나 엔트리 캐릭터가 설정되지 않은 경우
+        //else if (stageSaveData.leaderCharacter == null || stageSaveData.entryCharacters.Any(x => x == null)) // 리더 캐릭터나 엔트리 캐릭터가 설정되지 않은 경우
         //{
         //    BattleUIController.Instance.OpenSelectCharacterPanel(); // 캐릭터 선택 UI를 엽니다.
         //    return;
