@@ -165,6 +165,7 @@ public class BattleUIController : MonoBehaviour
         {
             case "Standby":
                 // Standby 페이즈 이후에는 다른 선택지 없이 스테이지1을 시작할 예정
+                OpenBattlePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 배틀 패널을 열도록 함
                 break;
             case "NormalReward":
                 //다음 전투페이즈로 넘어가는 로직을 추가할 수 있음
@@ -173,8 +174,9 @@ public class BattleUIController : MonoBehaviour
                 OpenSelectStagmaPanel(phaseState); // 엘리트 아티팩트 리워드 페이즈에서는 스태그마 선택 패널을 열도록 함
                 break;
             case "EliteStagmaReward":
-                //
+                // 다음 전투페이즈로 넘어가는 로직을 추가할 수 있음
                 break;
+            case "BossReward":
             default:
                 Debug.LogError($"Unknown phase state: {phaseState}");
                 break;

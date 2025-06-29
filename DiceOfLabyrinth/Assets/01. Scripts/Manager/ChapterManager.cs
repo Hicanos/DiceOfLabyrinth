@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ChapterManager : MonoBehaviour
@@ -49,23 +50,40 @@ public class ChapterManager : MonoBehaviour
             Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
             return;
         }
-        if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex] != null)
+
+        var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
+        states[chapterIndex].isCompleted = true;
+
+        int groupIndex = chapterIndex / 10;
+        List<int> normalChapters = new List<int>();
+        for (int i = 0; i < 5; i++)
         {
-            StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted = true; // 챕터 완료 상태를 true로 설정
-            if (chapterIndex % 2 == 0) // 짝수 인덱스는 Normal 챕터이므로 Hard 챕터와 다음 Normal 챕터를 잠금 해제합니다.
-            {
-                StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex + 1].isUnLocked = true; // hard 챕터 잠금 해제
-                StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex + 2].isUnLocked = true; // 다음 Normal 챕터 잠금 해제
-            }
-            else // 홀수 인덱스는 Hard 챕터이므로 아무런 챕터도 잠금 해제하지 않습니다.
-            {
-                // 만일을 위해 빈칸으로 남겨둡니다.
-            }
-            StageManager.Instance.ResetStageData(chapterIndex); // 챕터 완료 후 스테이지 데이터를 초기화합니다.
+            int normalIdx = groupIndex * 10 + i * 2;
+            if (normalIdx < states.Count)
+                normalChapters.Add(normalIdx);
         }
-        else
+
+        // 노말 챕터 5개가 모두 클리어됐는지 확인
+        bool allNormalCompleted = normalChapters.All(idx => states[idx].isCompleted);
+
+        if (allNormalCompleted)
         {
-            Debug.LogError($"Chapter {chapterIndex} not found.");
+            // 하드 챕터 5개 해금
+            foreach (var normalIdx in normalChapters)
+            {
+                int hardIdx = normalIdx + 1;
+                if (hardIdx < states.Count)
+                    states[hardIdx].isUnLocked = true;
+            }
+            // 다음 노말 챕터 5개 해금
+            foreach (var normalIdx in normalChapters)
+            {
+                int nextNormalIdx = normalIdx + 10;
+                if (nextNormalIdx < states.Count)
+                    states[nextNormalIdx].isUnLocked = true;
+            }
         }
+
+        StageManager.Instance.ResetStageData(chapterIndex);
     }
 }

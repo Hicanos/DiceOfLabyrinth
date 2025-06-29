@@ -34,6 +34,7 @@ public class StageSaveData
     public int savedJewelReward; // 스테이지에서 획득한 보석 보상, 스테이지 종료시 정산합니다.
 
     public List<ChapterAndStageStates> chapterAndStageStates = new List<ChapterAndStageStates>();
+ 
     public void ResetToDefault(int chapterIndex)
     {
         currentChapterIndex = chapterIndex;
@@ -206,22 +207,23 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    public void StageComplete(int chapterIndex, int stageIndex)
+    public void StageComplete(int stageIndex)
     {
         // 스테이지 종료 로직을 구현합니다.
        
             Debug.Log($"Stage {stageIndex} cleared!");
             // 클리어된 스테이지 정보를 저장하는 로직을 추가할 예정입니다.
             StageManager.Instance.stageSaveData.chapterAndStageStates[StageManager.Instance.stageSaveData.currentChapterIndex].stageStates[stageIndex].isCompleted = true; // 스테이지 완료 상태 업데이트
-        if (stageIndex < chapterData.chapterIndex[chapterIndex].stageData.stageIndex.Count - 1) // 다음 스테이지가 있다면
+        if (stageIndex < chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex.Count - 1) // 다음 스테이지가 있다면
         {
             StageManager.Instance.stageSaveData.chapterAndStageStates[StageManager.Instance.stageSaveData.currentChapterIndex].stageStates[stageIndex + 1].isUnLocked = true; // 다음 스테이지 잠금 해제
-            stageSaveData.savedExpReward += chapterData.chapterIndex[chapterIndex].stageData.stageIndex[stageIndex].ExpReward; // 경험치 보상 저장
-
+            stageSaveData.savedExpReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].ExpReward; // 경험치 보상 저장
+            stageSaveData.savedGoldReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].GoldReward; // 골드 보상 저장
+            stageSaveData.savedJewelReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].JewelReward; // 보석 보상 저장
         }
         else
         {
-            chapterManager.CompleteChapter(chapterIndex); // 마지막 스테이지 클리어 시 챕터 완료 처리
+            chapterManager.CompleteChapter(stageSaveData.currentChapterIndex); // 마지막 스테이지 클리어 시 챕터 완료 처리
         }
     }
 
