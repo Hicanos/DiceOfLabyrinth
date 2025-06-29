@@ -44,6 +44,7 @@ public class BattleManager : MonoBehaviour
     public readonly int MaxCost = 12;
     public int CurrnetCost = 0;
     public int BattleTurn = 0;
+    public bool isBattle;
 
     void Start()
     {
@@ -55,6 +56,7 @@ public class BattleManager : MonoBehaviour
 
         playerTurnState.Enter(); //테스트용
         DiceManager.Instance.LoadDiceData();
+        isBattle = true;
     }
 
     
@@ -67,10 +69,11 @@ public class BattleManager : MonoBehaviour
     {
         playerTurnState.Enter();
         DiceManager.Instance.LoadDiceData();
+        isBattle = true;
     }
 
     public void BattleEnd()
     {
-
+        isBattle = false;
     }
 }
