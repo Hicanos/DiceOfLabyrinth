@@ -6,11 +6,7 @@ using UnityEngine.UI;
 
 public class BattleUIController : MonoBehaviour
 {
-
     public ChapterData chapterData;
-
-    private string currentPhaseState; // 현재 페이즈 상태를 저장하는 변수 (예: "Standby", "NormalReward", "EliteReward" 등)
-
     [Header("Select Item Panel")]
 
     [SerializeField] private TMP_Text itemTitleText;
@@ -31,18 +27,22 @@ public class BattleUIController : MonoBehaviour
     private void Start()
     {
         // 초기 설정
+        OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 현재 페이즈 인덱스에 해당하는 스테이지 패널을 엽니다.
+        
+        StageManager.Instance.RestoreStageState();
+    }
+
+    public void OpenStagePanel(int phaseIndex) // 스테이지 패널을 여는 함수
+    {
         stagePanel.SetActive(true);
         battlePanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
-        currentPhaseState = ""; // 초기 페이즈 상태를 빈 문자열로 설정
-
-        StageManager.Instance.StandbyPhase();
     }
 
-    private void OpenBattlePanel() // #1 nextButton 과 연결
+    private void OpenBattlePanel(int phaseIndex) // 스테이지 선택 후 배틀 패널을 여는 함수
     {
         stagePanel.SetActive(false);
         battlePanel.SetActive(true);
@@ -52,12 +52,32 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
     }
 
-    public void OpenSelectStagmaPanel(string phaseState) // "Standby", "NormalReward", "EliteReward" 등과 연결
+    public void OpenSelectStagmaPanel(string phaseState) // "Standby", "NormalReward", "EliteArtifactReward", "EliteStagmaReward" 등과 연결
                                                          // 현재 기획에선 Stanby 와 EliteReward 페이즈에서 스태그마 선택을 할 수 있도록 되어있음
     {
         // phaseState에 따라 아이템 선택 후 다음 페이즈로 넘어가는 방향을 결정
-        currentPhaseState = phaseState; // 현재 페이즈 상태 저장
-        List<StagmaData> availableStagmas = chapterData.chapterIndex[StageManager.Instance.currentChapterIndex].stageData.stageIndex[StageManager.Instance.currentStageIndex].StagmaList; // 현재 스테이지의 스태그마 목록을 가져옴
+        //예외 상태 스트링 값을 처리하는 스위치
+        switch (phaseState)
+        {
+            case "Standby":
+            case "EliteStagmaReward":
+                // 스태그마 선택 UI를 열어야 하는 경우만 break(아래 코드 실행)
+                break;
+            case "NormalReward":
+                Debug.Log("노멀 리워드에는 각인이 없습니다.");
+                return;
+            case "EliteArtifactReward":
+                Debug.Log("아티팩트 리워드가 아니라 각인 리워드입니다.");
+                return;
+            case "BossReward":
+                Debug.Log("보스 리워드에는 각인이 없습니다.");
+                return;
+            default:
+                Debug.LogError($"Unknown phase state: {phaseState}");
+                return;
+        }
+        StageManager.Instance.stageSaveData.currentChoiceState = phaseState; // 현재 페이즈 상태 저장
+        List<StagmaData> availableStagmas = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].StagmaList; // 현재 스테이지의 스태그마 목록을 가져옴
         itemTitleText.text = "각인 선택"; // 스태그마 선택 UI 제목 설정
         itemDescriptionText.text = ""; // 초기화
         List<StagmaData> selectedStagmas = new List<StagmaData>();
@@ -77,23 +97,41 @@ public class BattleUIController : MonoBehaviour
             iconImage.sprite = stagmaChoices[i].icon;
         }
 
+        stagePanel.SetActive(true);
+        battlePanel.SetActive(false);
+        victoryPanel.SetActive(false);
+        defeatPanel.SetActive(false);
         selectItemPanel.SetActive(true);
+        selectEventPanel.SetActive(false);
     }
 
-    private void CloseSelectStagmaPanel() // 나중에 쓰도록 만들어 놓음
-    {
-        selectItemPanel.SetActive(false);
-    }
-
-    public void OpenSelectArtifactPanel(string phaseState) // "Standby", "NormalReward", "EliteReward" 등과 연결
-                                                           // 현재 기획에선 NormalReward 와 EliteReward 페이즈에서 아티팩트 선택을 할 수 있도록 되어있음
+    public void OpenSelectArtifactPanel(string phaseState) // "NormalReward", "EliteArtifactReward", "BossReward" 와 연결
+                                                           // 현재 기획에선 "BossReward" 페이즈에서 아티팩트 선택을 할 수 있도록 되어있음
     {
         // phaseState에 따라 아티팩트 선택 후 다음 페이즈로 넘어가는 방향을 결정
-        currentPhaseState = phaseState; // 현재 페이즈 상태 저장
+        // 예외 상태 스트링 값을 처리하는 스위치
+        switch (phaseState)
+        {
+            case "BossReward":
+            case "NormalReward":
+            case "EliteArtifactReward":
+                // 아티팩트 선택 UI를 열어야 하는 경우만 break(아래 코드 실행)
+                break;
+            case "EliteStagmaReward":
+                Debug.Log("엘리트 스태그마 리워드에는 아티팩트 선택이 없습니다.");
+                return;
+            case "Standby":
+                Debug.Log("스탠바이 페이즈에는 아티팩트 선택이 없습니다.");
+                return;
+            default:
+                Debug.LogError($"Unknown phase state: {phaseState}");
+                return;
+        }
+        StageManager.Instance.stageSaveData.currentChoiceState = phaseState; // 현재 페이즈 상태 저장
         itemTitleText.text = "아티팩트 선택"; // 아티팩트 선택 UI 제목 설정
         itemDescriptionText.text = ""; // 초기화
             
-        List<ArtifactData> availableArtifacts = chapterData.chapterIndex[StageManager.Instance.currentChapterIndex].stageData.stageIndex[StageManager.Instance.currentStageIndex].ArtifactList; // 현재 스테이지의 아티팩트 목록을 가져옴
+        List<ArtifactData> availableArtifacts = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ArtifactList; // 현재 스테이지의 아티팩트 목록을 가져옴
         List<ArtifactData> selectedArtifacts = new List<ArtifactData>();
         while (selectedArtifacts.Count < 3)
         {
@@ -110,7 +148,41 @@ public class BattleUIController : MonoBehaviour
             var iconImage = itemChoiceIcon[i].GetComponent<Image>();
             iconImage.sprite = stagmaChoices[i].icon;
         }
+        stagePanel.SetActive(true);
+        battlePanel.SetActive(false);
+        victoryPanel.SetActive(false);
+        defeatPanel.SetActive(false);
         selectItemPanel.SetActive(true);
+        selectEventPanel.SetActive(false);
+
+    }
+
+    private void CloseSelectItemPanel(string phaseState) // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
+    {
+        selectItemPanel.SetActive(false);
+        StageManager.Instance.stageSaveData.currentChoiceState = ""; // 선택지 페이즈 상태 초기화
+        switch (phaseState)
+        {
+            case "Standby":
+                // Standby 페이즈 이후에는 다른 선택지 없이 스테이지1을 시작할 예정
+                break;
+            case "NormalReward":
+                //다음 전투페이즈로 넘어가는 로직을 추가할 수 있음
+                break;
+            case "EliteArtifactReward":
+                OpenSelectStagmaPanel(phaseState); // 엘리트 아티팩트 리워드 페이즈에서는 스태그마 선택 패널을 열도록 함
+                break;
+            case "EliteStagmaReward":
+                //
+                break;
+            default:
+                Debug.LogError($"Unknown phase state: {phaseState}");
+                break;
+        }
+    }
+
+    public void OpenSelectCharacterPanel()
+    {
 
     }
 

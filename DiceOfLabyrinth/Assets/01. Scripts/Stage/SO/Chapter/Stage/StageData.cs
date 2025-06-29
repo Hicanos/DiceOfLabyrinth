@@ -19,13 +19,9 @@ public class StageInfo
     [SerializeField] private string stageName;
     [SerializeField] private string description;
     [SerializeField] private Sprite backgroundImage;
-    [SerializeField] private int stageCost;
-    [SerializeField] private int directCompleteCost;
     [SerializeField] private int expReward;
     [SerializeField] private int goldReward;
     [SerializeField] private int jewelReward;
-    [SerializeField] private bool isCompleted;
-    [SerializeField] private bool isLocked = true;
     [SerializeField] private BossPhaseData bossPhase;
     [SerializeField] private List<NormalPhaseData> normalPhases;
     [SerializeField] private List<ElitePhaseData> elitePhases;
@@ -37,20 +33,9 @@ public class StageInfo
     public string StageName => stageName;
     public string Description => description;
     public Sprite BackgroundImage => backgroundImage;
-    public int StageCost => stageCost;
     public int ExpReward => expReward;
     public int GoldReward => goldReward;
     public int JewelReward => jewelReward;
-    public bool IsCompleted
-    {
-        get => isCompleted;
-        set => isCompleted = value; // 외부에서 스테이지 완료 상태를 변경할 수 있도록 허용
-    }
-    public bool IsLocked
-    {
-        get => isLocked;
-        set => isLocked = value; // 외부에서 스테이지 잠금 상태를 변경할 수 있도록 허용
-    }
     public List<NormalPhaseData> NormalPhases => normalPhases;
     public List<ElitePhaseData> ElitePhases => elitePhases;
     public List<ChooseOptions> Choose => choose;
@@ -67,14 +52,14 @@ public class NormalPhaseData
     [SerializeField] private string phaseName;
     [SerializeField] private List<EnemySpawnData> enemies;
     [SerializeField] private List<PhaseRewardData> phaseRewardObjects;
-    [SerializeField] private int gemReward;
+    [SerializeField] private int manaStoneReward;
 
     // 읽기 전용 프로퍼티들
     public string PhaseName => phaseName;
     public List<EnemySpawnData> Enemies => enemies;
     public List<PhaseRewardData> PhaseRewardObjects => phaseRewardObjects;
 
-    public int GemReward => gemReward;
+    public int ManaStoneReward => manaStoneReward;
 }
 
 [System.Serializable]
@@ -84,13 +69,13 @@ public class ElitePhaseData
     [SerializeField] private string phaseName;
     [SerializeField] private List<EnemySpawnData> enemies;
     [SerializeField] private List<PhaseRewardData> phaseRewardObjects;
-    [SerializeField] private int gemReward;
+    [SerializeField] private int manaStoneReward;
 
     // 읽기 전용 프로퍼티들
     public string PhaseName => phaseName;
     public List<EnemySpawnData> Enemies => enemies;
     public List<PhaseRewardData> PhaseRewardObjects => phaseRewardObjects;
-    public int GemReward => gemReward;
+    public int ManaStoneReward => manaStoneReward;
 }
 [System.Serializable]
 public class BossPhaseData
