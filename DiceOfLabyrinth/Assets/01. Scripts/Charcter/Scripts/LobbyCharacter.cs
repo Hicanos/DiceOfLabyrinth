@@ -82,4 +82,9 @@ public class LobbyCharacter : Character
     {
         return base.GetDEF();
     }
+
+    public CharData GetCharData(CharDataLoader loader)
+    {
+        return loader.GetByCharID(CharacterData.charID);
+    }
 }
