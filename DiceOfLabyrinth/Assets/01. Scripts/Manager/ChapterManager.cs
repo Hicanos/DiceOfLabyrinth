@@ -51,6 +51,11 @@ public class ChapterManager : MonoBehaviour
             return;
         }
 
+        /// 저장된 보상들을 정산하는 로직은 유저데이터가 만들어지면 추가할 예정입니다.
+        // {유저데이터의 경험치} += StageManager.Instance.stageSaveData.savedExpReward;
+        // {유저데이터의 골드} += StageManager.Instance.stageSaveData.savedGoldReward;
+        // {유저데이터의 쥬얼} += StageManager.Instance.stageSaveData.savedJewelReward;
+        ///
         var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
         states[chapterIndex].isCompleted = true;
 
@@ -84,6 +89,19 @@ public class ChapterManager : MonoBehaviour
             }
         }
 
-        StageManager.Instance.ResetStageData(chapterIndex);
+        StageManager.Instance.stageSaveData.ResetToDefault(-1); // 챕터 완료 후 스테이지 데이터 초기화, -1은 현재 챕터가 셀렉트되지 않았음을 의미합니다.
+    }
+
+    public void DefeatChapter(int chapterIndex)
+    {
+        if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
+        {
+            Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
+            return;
+        }
+        var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
+        states[chapterIndex].isCompleted = false; // 챕터 완료 상태를 해제
+        states[chapterIndex].isUnLocked = true; // 챕터 잠금 해제 상태 유지
+        StageManager.Instance.stageSaveData.ResetToDefault(-1); // 챕터 패배 후 스테이지 데이터 초기화, -1은 현재 챕터가 셀렉트되지 않았음을 의미합니다.
     }
 }

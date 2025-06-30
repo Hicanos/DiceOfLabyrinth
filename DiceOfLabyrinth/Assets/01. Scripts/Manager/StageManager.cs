@@ -110,21 +110,16 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    public void ResetStageData(int chapterIndex)
-    {
-        stageSaveData.ResetToDefault(chapterIndex);
-    }
-
     public void RestoreStageState()//배틀씬에 입장시 세이브 데이터에 따라 진행도를 복원하고 UI 컨트롤러에 알려줍니다.
     {
         if (battleUIController == null)
+        {
+            battleUIController = FindAnyObjectByType<BattleUIController>();
+            if (battleUIController == null)
             {
-                battleUIController = FindAnyObjectByType<BattleUIController>();
-                if (battleUIController == null)
-                {
-                    Debug.LogWarning("BattleUIController를 BattleScene에서 찾을 수 없습니다.");
-                }
+                Debug.LogWarning("BattleUIController를 BattleScene에서 찾을 수 없습니다.");
             }
+        }
 
         if (stageSaveData == null)
         {
