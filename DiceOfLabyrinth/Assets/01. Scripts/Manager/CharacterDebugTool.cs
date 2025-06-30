@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using System.Linq;
+using System.Collections.Generic;
 
 /// <summary>
 /// 에디터에서 캐릭터 획득 및 획득 정보 확인을 위한 디버그 툴
@@ -14,12 +15,43 @@ public class CharacterDebugTool : EditorWindow
     // 직접 입력으로 획득할 캐릭터 ID
     private string acquireCharID = "";
 
+    // 경험치 부여용 입력값
+    private int addExpValue = 100;
+
+    // LobbyCharacter 프리팹을 에디터에서 할당
+    private GameObject lobbyCharacterPrefab;
+
+    // 현재 씬에 생성된 LobbyCharacter 인스턴스 관리
+    private List<LobbyCharacter> spawnedLobbyCharacters = new List<LobbyCharacter>();
+
     // 에디터 메뉴에 툴 등록
     [MenuItem("Tools/Character Debug Tool")]
     public static void ShowWindow()
     {
         GetWindow<CharacterDebugTool>("Character Debug Tool");
     }
+
+    //private void OnEnable()
+    //{
+    //    // 프리팹 경로는 프로젝트 상황에 맞게 수정하세요.
+    //    lobbyCharacterPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/05. Prefabs/LobbyCharacter.prefab");
+    //    RefreshSpawnedLobbyCharacters();
+    //}
+
+    //private void OnFocus()
+    //{
+    //    RefreshSpawnedLobbyCharacters();
+    //}
+
+    //private void OnHierarchyChange()
+    //{
+    //    RefreshSpawnedLobbyCharacters();
+    //}
+
+    //private void RefreshSpawnedLobbyCharacters()
+    //{
+    //    spawnedLobbyCharacters = GameObject.FindObjectsOfType<LobbyCharacter>().ToList();
+    //}
 
     /// <summary>
     /// 에디터 윈도우의 GUI를 그리는 메서드
@@ -49,6 +81,10 @@ public class CharacterDebugTool : EditorWindow
             if (GUILayout.Button("획득", GUILayout.Width(50)))
             {
                 characterManager.AcquireCharacter(so.charID);
+
+                //// LobbyCharacter 인스턴스 생성 및 초기화
+                //CreateAndInitLobbyCharacter(so, 1); // 기본 레벨 1로 생성, 필요시 저장 데이터 반영
+                //RefreshSpawnedLobbyCharacters();
             }
             EditorGUILayout.EndHorizontal();
         }
@@ -63,6 +99,13 @@ public class CharacterDebugTool : EditorWindow
         if (GUILayout.Button("획득", GUILayout.Width(50)))
         {
             characterManager.AcquireCharacter(acquireCharID);
+
+            //// SO 찾기
+            //if (characterManager.AllCharacters.TryGetValue(acquireCharID, out var so))
+            //{
+            //    CreateAndInitLobbyCharacter(so, 1);
+            //    RefreshSpawnedLobbyCharacters();
+            //}
         }
         EditorGUILayout.EndHorizontal();
 
@@ -71,16 +114,46 @@ public class CharacterDebugTool : EditorWindow
 
         // 획득한 캐릭터 목록 표시 및 삭제 버튼
         string removeCharID = null;
-        scrollAcquired = EditorGUILayout.BeginScrollView(scrollAcquired, GUILayout.Height(150));
+        scrollAcquired = EditorGUILayout.BeginScrollView(scrollAcquired, GUILayout.Height(300));
         foreach (var so in characterManager.AcquiredCharacters)
         {
+            EditorGUILayout.BeginVertical("box");
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField($"ID: {so.charID}, 이름: {so.nameKr} ({so.nameEn})");
+            EditorGUILayout.LabelField($"ID: {so.charID}, 이름: {so.nameKr} ({so.nameEn})", GUILayout.Width(300));
             if (GUILayout.Button("삭제", GUILayout.Width(50)))
             {
                 removeCharID = so.charID; // 삭제할 ID 저장
             }
             EditorGUILayout.EndHorizontal();
+
+            // 캐릭터별 경험치/레벨/능력치 표시 및 조작
+            var lobbyChar = FindLobbyCharacter(so.charID);
+            if (lobbyChar != null)
+            {
+                EditorGUILayout.LabelField($"레벨: {lobbyChar.Level}   경험치: {lobbyChar.CurrentExp}");
+                EditorGUILayout.LabelField($"ATK: {lobbyChar.RegularATK}  DEF: {lobbyChar.RegularDEF}  HP: {lobbyChar.RegularHP}  크리확률: {lobbyChar.CritChance}  크리뎀: {lobbyChar.CritDamage}");
+
+                EditorGUILayout.BeginHorizontal();
+                addExpValue = EditorGUILayout.IntField("경험치 부여", addExpValue, GUILayout.Width(150));
+                if (GUILayout.Button("경험치 추가", GUILayout.Width(80)))
+                {
+                    lobbyChar.AddExp(addExpValue);
+                }
+                if (GUILayout.Button("저장", GUILayout.Width(50)))
+                {
+                    DataSaver.Instance.SaveCharacter(lobbyChar);
+                }
+                if (GUILayout.Button("로드", GUILayout.Width(50)))
+                {
+                    LoadLobbyCharacterData(lobbyChar);
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("LobbyCharacter 인스턴스를 찾을 수 없습니다. (씬에 프리팹이 존재해야 함)", MessageType.Warning);
+            }
+            EditorGUILayout.EndVertical();
         }
         EditorGUILayout.EndScrollView();
 
@@ -88,6 +161,81 @@ public class CharacterDebugTool : EditorWindow
         if (!string.IsNullOrEmpty(removeCharID))
         {
             characterManager.RemoveAcquiredCharacter(removeCharID);
+            // 삭제 시 LobbyCharacter 오브젝트도 삭제
+            var lobbyChar = FindLobbyCharacter(removeCharID);
+            if (lobbyChar != null)
+            {
+                GameObject.DestroyImmediate(lobbyChar.gameObject);
+                //RefreshSpawnedLobbyCharacters();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 현재 씬에 존재하는 LobbyCharacter 중 해당 charID를 가진 인스턴스 반환
+    /// </summary>
+    private LobbyCharacter FindLobbyCharacter(string charID)
+    {
+        return spawnedLobbyCharacters.FirstOrDefault(lc => lc.CharacterData != null && lc.CharacterData.charID == charID);
+    }
+
+    /// <summary>
+    /// LobbyCharacter 프리팹을 생성하고 초기화
+    /// </summary>
+    private void CreateAndInitLobbyCharacter(CharacterSO so, int level)
+    {
+        if (lobbyCharacterPrefab == null)
+        {
+            Debug.LogError("LobbyCharacter 프리팹이 할당되지 않았습니다. 경로를 확인하세요.");
+            return;
+        }
+        // 이미 존재하면 중복 생성 방지
+        if (FindLobbyCharacter(so.charID) != null)
+            return;
+
+        var go = GameObject.Instantiate(lobbyCharacterPrefab);
+        go.name = $"LobbyCharacter_{so.charID}";
+        var lobbyChar = go.GetComponent<LobbyCharacter>();
+        if (lobbyChar != null)
+        {
+            lobbyChar.Initialize(so, level);
+
+            // 저장된 데이터가 있으면 반영
+            var saveData = DataSaver.Instance.SaveData.characters
+                .FirstOrDefault(c => c.CharacterID == so.charID);
+            if (saveData != null)
+            {
+                lobbyChar.Level = saveData.Level;
+                lobbyChar.CurrentExp = saveData.CurrentExp;
+                lobbyChar.RegularATK = saveData.ATK;
+                lobbyChar.RegularDEF = saveData.DEF;
+                lobbyChar.RegularHP = saveData.HP;
+                lobbyChar.CritChance = saveData.CritChance;
+                lobbyChar.CritDamage = saveData.CritDamage;
+            }
+        }
+        else
+        {
+            Debug.LogError("LobbyCharacter 컴포넌트를 찾을 수 없습니다.");
+        }
+    }
+
+    /// <summary>
+    /// 저장된 데이터에서 해당 캐릭터의 정보를 로드하여 LobbyCharacter에 반영
+    /// </summary>
+    private void LoadLobbyCharacterData(LobbyCharacter lobbyChar)
+    {
+        var saveData = DataSaver.Instance.SaveData.characters
+            .FirstOrDefault(c => c.CharacterID == lobbyChar.CharacterData.charID);
+        if (saveData != null)
+        {
+            lobbyChar.Level = saveData.Level;
+            lobbyChar.CurrentExp = saveData.CurrentExp;
+            lobbyChar.RegularATK = saveData.ATK;
+            lobbyChar.RegularDEF = saveData.DEF;
+            lobbyChar.RegularHP = saveData.HP;
+            lobbyChar.CritChance = saveData.CritChance;
+            lobbyChar.CritDamage = saveData.CritDamage;
         }
     }
 }
