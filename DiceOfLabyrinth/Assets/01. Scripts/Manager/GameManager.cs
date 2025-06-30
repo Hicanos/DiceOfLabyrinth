@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
         // 2. 현재 플레이어가 획득한 캐릭터 정보(강화 여부포함) 저장
         // 3. 현재 플레이어가 클리어한 스테이지 정보 저장
         // 4. 현재 플레이어가 획득한 아이템 정보 저장
+        // DataSaver에서 저장로직 가져올 것
                 
 
     }
@@ -54,8 +55,13 @@ public class GameManager : MonoBehaviour
         Debug.Log("게임 초기화됨");
         // 예: 모든 데이터 초기화, 씬 재시작 등
         // 모든 매니저를 초기 상태로 되돌림( 클리어한 스테이지, 획득한 캐릭터, 강화된 캐릭터 등)
-
         
+    }
+
+    // 애플리케이션 종료(강제 종료) 시 자동으로 게임 저장
+    private void OnApplicationQuit()
+    {
+        SaveGame();
     }
 
 }

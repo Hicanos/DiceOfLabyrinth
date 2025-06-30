@@ -107,10 +107,12 @@ public class CharData
     public string BattlePrefabPath;
 
 }
+
 public class CharDataLoader
 {
     public List<CharData> ItemsList { get; private set; }
     public Dictionary<int, CharData> ItemsDict { get; private set; }
+    public Dictionary<string, CharData> ItemsByCharID { get; private set; }
 
     public CharDataLoader(string path = "JSON/CharData")
     {
@@ -118,9 +120,11 @@ public class CharDataLoader
         jsonData = Resources.Load<TextAsset>(path).text;
         ItemsList = JsonUtility.FromJson<Wrapper>(jsonData).Items;
         ItemsDict = new Dictionary<int, CharData>();
+        ItemsByCharID = new Dictionary<string, CharData>();
         foreach (var item in ItemsList)
         {
             ItemsDict.Add(item.Key, item);
+            ItemsByCharID[item.CharID] = item;
         }
     }
 
@@ -144,6 +148,13 @@ public class CharDataLoader
         {
             return ItemsList[index];
         }
+        return null;
+    }
+
+    public CharData GetByCharID(string charID)
+    {
+        if (ItemsByCharID.ContainsKey(charID))
+            return ItemsByCharID[charID];
         return null;
     }
 }
