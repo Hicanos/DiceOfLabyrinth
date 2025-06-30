@@ -44,6 +44,7 @@ public class LobbyCharacter : Character
     /// </summary>
     public void AddExp(int exp)
     {
+        GetExpToNextLevel();
         CurrentExp += exp;
         // 레벨업 조건 및 처리 로직 추가 가능
         // 현재 최대레벨은 20, 20에 도달하면 더이상 레벨이 증가하지 않음
