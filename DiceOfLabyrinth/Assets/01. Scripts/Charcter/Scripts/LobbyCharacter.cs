@@ -52,6 +52,9 @@ public class LobbyCharacter : Character
             CurrentExp -= GetExpToNextLevel();
             LevelUP();
         }
+        // 변동된 값(CurrentExp) 저장
+        DataSaver.Instance.SaveCharacter(this);
+
     }
 
 

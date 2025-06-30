@@ -17,6 +17,17 @@ public class DataSaver
     // 저장2: 현재 플레이어가 획득한 캐릭터 정보(강화 여부포함)
     // 저장3: 현재 플레이어가 클리어한 스테이지 정보
     // 저장4: 현재 플레이어가 획득한 아이템 정보
+    
+    // 해당 클래스는 static으로 선언하여 사용
+    // 싱글톤 패턴추가(static)
+
+    public static DataSaver Instance { get; private set; }
+    static DataSaver()
+    {
+        Instance = new DataSaver();
+        Instance.Load(); // 인스턴스 생성 시 저장된 데이터 로드
+    }
+
 
     [Serializable]
     public class UserData
@@ -39,6 +50,32 @@ public class DataSaver
         public int HP; // 체력
         public int CritChance; // 치명타 확률
         public int CritDamage; // 치명타 피해량
+        // 캐릭터의 스킬 정보 - SkillData 리스트로 저장
+        public List<SkillData> Skills = new List<SkillData>(); // 각 캐릭터가 보유한 스킬 정보
+
+
+        // 생성자
+        public CharacterData() { }
+        public CharacterData(string characterID, int level, int atk, int def, int hp, int critChance, int critDamage)
+        {
+            CharacterID = characterID;
+            Level = level;
+            ATK = atk;
+            DEF = def;
+            HP = hp;
+            CritChance = critChance;
+            CritDamage = critDamage;
+        }
+    }
+
+    [Serializable]
+    public class SkillData
+    {
+        // 캐릭터의 스킬 정보 (스킬 레벨, 효과 등)
+        public string SkillID; // 스킬 ID
+        public int Level; // 스킬 레벨
+        public int Cooldown; // 쿨타임
+        public int Power; // 스킬 파워
     }
 
     [Serializable]
@@ -86,6 +123,57 @@ public class DataSaver
         }
     }
 
+    /// <summary>
+    /// 개별 캐릭터 저장(추가/갱신)
+    /// </summary>
+    public void SaveCharacter(LobbyCharacter lobbyChar)
+    {
+        var charData = new CharacterData
+        {
+            CharacterID = lobbyChar.CharacterData.charID,
+            Level = lobbyChar.Level,
+            
+            ATK = lobbyChar.RegularATK,
+            DEF = lobbyChar.RegularDEF,
+            HP = lobbyChar.RegularHP,
+            CritChance = lobbyChar.CritChance,
+            CritDamage = lobbyChar.CritDamage,
+            CurrentExp = lobbyChar.CurrentExp,
+            //Skills = lobbyChar.Skills.Select(skill => new SkillData
+            //{
+            //    SkillID = skill.SkillID,
+            //    Level = skill.Level,
+            //    Cooldown = skill.Cooldown,
+            //    Power = skill.Power
+            //}).ToList()
+        };
+
+        int idx = SaveData.characters.FindIndex(c => c.CharacterID == charData.CharacterID);
+        if (idx >= 0)
+            SaveData.characters[idx] = charData;
+        else
+            SaveData.characters.Add(charData);
+
+        Save();
+    }
+
+    /// <summary>
+    /// 전체 캐릭터 저장
+    /// </summary>
+    public void SaveAllCharacters(List<LobbyCharacter> lobbyCharacters)
+    {
+        SaveData.characters.Clear();
+        foreach (var lobbyChar in lobbyCharacters)
+        {
+            SaveCharacter(lobbyChar);
+        }
+        Save();
+    }
+
+    /// <summary>
+    /// 저장된 게임데이터 로드
+    /// </summary>
+
     public void Load()
     {
         try
@@ -106,7 +194,7 @@ public class DataSaver
 #endif
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) //Seserialize 과정에서 예외 발생 시
         {
             Debug.LogError($"게임 데이터 불러오기 실패: {ex.Message}");
             SaveData = new GameSaveData();

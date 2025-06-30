@@ -21,16 +21,16 @@ public class GameManager : MonoBehaviour
 
     private void SaveGame()
     {
-        // 게임 저장 로직 구현
-        Debug.Log("게임 저장됨");
-
         // 예: 현재 게임 상태를 각각 JSON으로 직렬화하고 파일에 저장
         // 1. 현재 유저(플레이어)의 재화 정보, 레벨정보 저장
         // 2. 현재 플레이어가 획득한 캐릭터 정보(강화 여부포함) 저장
         // 3. 현재 플레이어가 클리어한 스테이지 정보 저장
         // 4. 현재 플레이어가 획득한 아이템 정보 저장
         // DataSaver에서 저장로직 가져올 것
-                
+
+
+        // 아래에서 일괄처리
+        DataSaver.Instance.Save();
 
     }
 
