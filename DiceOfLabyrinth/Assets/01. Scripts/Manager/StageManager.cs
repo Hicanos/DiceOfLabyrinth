@@ -83,31 +83,6 @@ public class StageManager : MonoBehaviour
     public BattleUIController battleUIController; // 배틀 UI 컨트롤러, 스테이지 시작 시 초기화됩니다.
 
     public static StageManager Instance { get; private set; }
-
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        if (scene.name == "BattleScene")
-        {
-            if (battleUIController == null)
-            {
-                battleUIController = FindAnyObjectByType<BattleUIController>();
-                if (battleUIController == null)
-                {
-                    Debug.LogWarning("BattleUIController를 BattleScene에서 찾을 수 없습니다.");
-                }
-            }
-        }
-    }
     void Awake()
     {
         if (Instance == null)
@@ -143,10 +118,13 @@ public class StageManager : MonoBehaviour
     public void RestoreStageState()//배틀씬에 입장시 세이브 데이터에 따라 진행도를 복원하고 UI 컨트롤러에 알려줍니다.
     {
         if (battleUIController == null)
-        {
-            Debug.LogWarning("BattleUIController.Instance가 null입니다. BattleScene이 완전히 로드된 후에 호출해야 합니다.");
-            return;
-        }
+            {
+                battleUIController = FindAnyObjectByType<BattleUIController>();
+                if (battleUIController == null)
+                {
+                    Debug.LogWarning("BattleUIController를 BattleScene에서 찾을 수 없습니다.");
+                }
+            }
 
         if (stageSaveData == null)
         {
