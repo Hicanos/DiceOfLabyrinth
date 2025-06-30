@@ -39,9 +39,9 @@ public class DiceBattle
         return DamageWeighting(DiceRankingJudgement(DiceManager.Instance.DiceResultCount));
     }
 
-    private float DamageWeighting(DiceRankingEnum diceRank) //주사위 눈금 *족보별계수
+    private float DamageWeighting(DiceRankingEnum diceRank) //족보별계수
     {
-        return DiceManager.Instance.DiceResult.Sum() * damageWightTable[(int)diceRank];
+        return damageWightTable[(int)diceRank];
     }
 
     private DiceRankingEnum DiceRankingJudgement(int[] diceResultCount)

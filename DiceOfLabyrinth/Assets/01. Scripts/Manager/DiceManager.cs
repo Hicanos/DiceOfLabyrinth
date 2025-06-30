@@ -268,7 +268,7 @@ public class DiceManager : MonoBehaviour
             //dices[i].layer = 6;      
             fakeDices[i].SetActive(false);
         }
-        diceCamera.cullingMask |= 1 << LayerMask.NameToLayer("Dice");
+        //diceCamera.cullingMask |= 1 << LayerMask.NameToLayer("Dice");
     }    
 
     private void GoDefaultPositionDice()

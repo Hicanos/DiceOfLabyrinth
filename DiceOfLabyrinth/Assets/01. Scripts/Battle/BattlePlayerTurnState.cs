@@ -13,8 +13,10 @@ public class BattlePlayerTurnState : IBattleTurnState
 
         GetCost(AlivedCharacter());
         
-
+        if(DiceManager.Instance.isRolling == false)
+        {
         battleManager.DiceRollButton.interactable = true;
+        }
         battleManager.ConfirmButton.interactable = false;
 
         if (battleManager.BattleTurn == 1) //첫턴일 경우 리스너 부착
