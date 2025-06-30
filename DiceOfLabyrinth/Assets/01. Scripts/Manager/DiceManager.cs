@@ -68,8 +68,8 @@ public class DiceManager : MonoBehaviour
     const int diceCount = 5;
 
     int signitureAmount;
-    int rollCount = 0;
-    const int maxRollCount = 3;
+    public int rollCount = 0;
+    public readonly int maxRollCount = 3;
     public bool isSkipped = false;
     public bool isRolling = false;
 
@@ -176,7 +176,7 @@ public class DiceManager : MonoBehaviour
     IEnumerator SortingAfterRoll()
     {
         rollCount++;
-        BattleManager.Instance.DiceRollButton.interactable = false;
+        //BattleManager.Instance.DiceRollButton.interactable = false;
         List<Dice> diceList = new List<Dice>();
         int rollEndCount = 0;
 
@@ -202,14 +202,13 @@ public class DiceManager : MonoBehaviour
             {
                 BattleManager.Instance.GetCost(signitureAmount);
                 isRolling = false;
-                if (rollCount == maxRollCount)
+                
+                if(BattleManager.Instance.currentPlayerState == PlayerTurnState.Roll || BattleManager.Instance.currentPlayerState == PlayerTurnState.Enter)
                 {
-                    BattleManager.Instance.DiceRollButton.interactable = false;
+                    BattleManager.Instance.currentPlayerState = PlayerTurnState.RollEnd;
+                    BattleManager.Instance.OnOffButton();
                 }
-                else
-                {
-                    BattleManager.Instance.DiceRollButton.interactable = true;
-                }
+
                 Debug.Log($"남은 리롤 횟수 : {maxRollCount - rollCount}");
                 if (isSkipped == false)
                 {

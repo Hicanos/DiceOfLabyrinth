@@ -33,15 +33,17 @@ public class BattleManager : MonoBehaviour
     }
     #endregion
     public CharacterSO[] entryCharacters;
-
+    
     public BattleStateMachine stateMachine;
     public IBattleTurnState playerTurnState;
     public IBattleTurnState enemyTurnState;
+    public PlayerTurnState currentPlayerState;
 
     public TextMeshProUGUI costTest;
     public Button DiceRollButton;
     public Button ConfirmButton;
     public Button EndTurnButton;
+    public AbstractBattleButton[] BattleButtons;
 
     public readonly int MaxCost = 12;
     public int CurrnetCost = 0;
@@ -96,5 +98,21 @@ public class BattleManager : MonoBehaviour
 
         CurrnetCost = cost;
         costTest.text = cost.ToString();
+    }
+
+    public void OnOffButton()
+    {
+        foreach(AbstractBattleButton button in BattleButtons)
+        {
+            button.OnOffButton(currentPlayerState);
+        }
+    }
+
+    public void GetButton()
+    {
+        foreach (AbstractBattleButton button in BattleButtons)
+        {
+            button.GetButtonComponent();
+        }
     }
 }
