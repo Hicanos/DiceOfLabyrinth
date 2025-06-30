@@ -31,15 +31,19 @@ public class BattleManager : MonoBehaviour
             return instance;
         }
     }
-#endregion
-
+    #endregion
+    public CharacterSO[] entryCharacters;
+    
     public BattleStateMachine stateMachine;
     public IBattleTurnState playerTurnState;
     public IBattleTurnState enemyTurnState;
+    public PlayerTurnState currentPlayerState;
 
     public TextMeshProUGUI costTest;
     public Button DiceRollButton;
-    public Button ConfirmButton; //공격 -> 턴 넘어감
+    public Button ConfirmButton;
+    public Button EndTurnButton;
+    public AbstractBattleButton[] BattleButtons;
 
     public readonly int MaxCost = 12;
     public int CurrnetCost = 0;
@@ -54,9 +58,7 @@ public class BattleManager : MonoBehaviour
 
         stateMachine = new BattleStateMachine(playerTurnState);
 
-        playerTurnState.Enter(); //테스트용
-        DiceManager.Instance.LoadDiceData();
-        isBattle = true;
+        BattleStart(); //테스트용        
     }
 
     
@@ -67,6 +69,7 @@ public class BattleManager : MonoBehaviour
 
     public void BattleStart()
     {
+        //entryCharacters = StageManager.Instance.stageSaveData.entryCharacters;
         playerTurnState.Enter();
         DiceManager.Instance.LoadDiceData();
         isBattle = true;
@@ -75,5 +78,41 @@ public class BattleManager : MonoBehaviour
     public void BattleEnd()
     {
         isBattle = false;
+    }
+
+    private void GetMonster()
+    {
+
+    }
+
+    public void DealDamage(IDamagable target, int damage)
+    {
+        target.TakeDamage(damage);
+    }
+
+    public void GetCost(int iNum)
+    {
+        int cost = CurrnetCost;
+
+        cost = Mathf.Clamp(cost + iNum, 0, MaxCost);
+
+        CurrnetCost = cost;
+        costTest.text = cost.ToString();
+    }
+
+    public void OnOffButton()
+    {
+        foreach(AbstractBattleButton button in BattleButtons)
+        {
+            button.OnOffButton(currentPlayerState);
+        }
+    }
+
+    public void GetButton()
+    {
+        foreach (AbstractBattleButton button in BattleButtons)
+        {
+            button.GetButtonComponent();
+        }
     }
 }
