@@ -6626,7 +6626,7 @@ GameObject:
   - component: {fileID: 424743686}
   - component: {fileID: 424743687}
   m_Layer: 0
-  m_Name: SelectAdventureUIController
+  m_Name: SelectAdventureScene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6670,7 +6670,6 @@ MonoBehaviour:
   HardDifficultySelect: {fileID: 819886150}
   selectedChapterNameText:
   - {fileID: 1984964166}
-  - {fileID: 0}
   isDifficulty: 0
 --- !u!1 &429771457
 GameObject:
@@ -9227,9 +9226,9 @@ RectTransform:
   - {fileID: 2076934789}
   m_Father: {fileID: 1625863425}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 25, y: -40}
   m_SizeDelta: {x: 200, y: 80}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &599254394
@@ -10009,9 +10008,9 @@ RectTransform:
   - {fileID: 765102937}
   m_Father: {fileID: 758275403}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 625, y: -40}
   m_SizeDelta: {x: 250, y: 80}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &667412698
@@ -13207,7 +13206,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &901323798
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13603,7 +13602,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &940654834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14038,9 +14037,9 @@ RectTransform:
   - {fileID: 819886153}
   m_Father: {fileID: 1625863425}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 275, y: -40}
   m_SizeDelta: {x: 200, y: 80}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &982413118
@@ -18010,9 +18009,9 @@ RectTransform:
   - {fileID: 111655318}
   m_Father: {fileID: 1714152664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 275, y: -50}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1332773205
@@ -19282,9 +19281,9 @@ RectTransform:
   - {fileID: 519286188}
   m_Father: {fileID: 758275403}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 325, y: -40}
   m_SizeDelta: {x: 250, y: 80}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1459619531
@@ -20831,9 +20830,9 @@ RectTransform:
   - {fileID: 520261673}
   m_Father: {fileID: 1714152664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 25, y: -50}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1576764910
@@ -21945,6 +21944,10 @@ PrefabInstance:
     - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
       propertyPath: entryCharacters.Array.size
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
+      propertyPath: stageSaveData.currentChapterIndex
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
       propertyPath: m_LocalPosition.x
@@ -23958,7 +23961,7 @@ GameObject:
   - component: {fileID: 1830927597}
   - component: {fileID: 1830927598}
   m_Layer: 0
-  m_Name: BattleUIController
+  m_Name: BattleScene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26605,9 +26608,9 @@ RectTransform:
   - {fileID: 1327085018}
   m_Father: {fileID: 758275403}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 25, y: -40}
   m_SizeDelta: {x: 250, y: 80}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &2060663449
@@ -27642,7 +27645,7 @@ GameObject:
   - component: {fileID: 2145648058}
   - component: {fileID: 2145648057}
   m_Layer: 0
-  m_Name: LobbyUIController
+  m_Name: LobbyScene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

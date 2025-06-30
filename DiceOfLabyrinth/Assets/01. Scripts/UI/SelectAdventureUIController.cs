@@ -48,7 +48,7 @@ public class SelectAdventureUIController : MonoBehaviour
             Debug.Log($"Invalid chapter index: {chapterIndex}. 인덱스에 해당하는 챕터 데이터가 없습니다.");
             return;
         }
-        else if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isUnLocked)
+        else if (!StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isUnLocked)
         {
             Debug.Log($"Chapter: {chapterIndex} is locked.");
             // 챕터가 잠겨있을 때 잠김 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
@@ -60,13 +60,26 @@ public class SelectAdventureUIController : MonoBehaviour
             // 이미 완료된 챕터를 선택했을 때 완료 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
             return;
         }
+        else if (StageManager.Instance.stageSaveData.currentChapterIndex == -1) // -1은 진행중인 챕터가 없음을 의미합니다.
+        {
+            StageManager.Instance.stageSaveData.currentChapterIndex = chapterIndex; // 현재 챕터 인덱스를 선택한 챕터로 설정합니다.
+            Debug.Log($"새챕터 새로 시작: {chapterIndex}");
+        }
         else if (chapterIndex != StageManager.Instance.stageSaveData.currentChapterIndex) // 현재 챕터와 선택한 챕터가 다를 때만 초기화합니다.
         {
             // 현재 챕터의 변경을 묻는 UI를 추가할 수 있습니다.
+            StageManager.Instance.stageSaveData.currentChapterIndex = chapterIndex; // 현재 챕터 인덱스를 선택한 챕터로 설정합니다.
             Debug.Log($"진행중인 챕터가 있는데 바꿀거냐 묻는 UI를 추가할 수 있습니다.");
-            //StageManager.Instance.ResetStageData(chapterIndex); // 스테이지 데이터 초기화는 해당 UI를 띄우고 나서 코스트 지불 후에 실행합니다.
         }
-        OpenCostCalculationPanel(chapterIndex); // 비용 계산 패널을 엽니다.
+        else // 현재 챕터와 선택한 챕터가 같을 때
+        {
+            // 코스트 지불 없이 바로 배틀 씬으로 이동할 수 있도록 처리합니다.
+            Debug.Log($"진행 중이던 챕터 {chapterIndex}를 다시 선택했습니다. 코스트 계산 패널을 열지 않습니다.");
+            SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
+            StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태를 복원합니다.
+            return;
+        }
+        OpenCostCalculationPanel(chapterIndex); // 입장 코스트를 묻는 패널을 엽니다.
     }
 
     private void OpenCostCalculationPanel(int chapterIndex)
