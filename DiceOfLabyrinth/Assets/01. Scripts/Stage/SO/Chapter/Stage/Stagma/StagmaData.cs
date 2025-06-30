@@ -7,7 +7,7 @@ public class StagmaData : ScriptableObject
     public string description;
     public Sprite icon;
     //주사위 족보에 따른 추가 효과를 위한 필드들
-    public float queenAdditionalDamage; // 퀸 족보일 때 추가 데미지 배수
+    public float queenAdditionalDamage; // 5개 주사위가 같은 족보일 때 추가 데미지 배수
     public float fullHouseAdditionalDamage; // 풀하우스 족보일 때 추가 데미지 배수
     public float quadrupleAdditionalDamage; // 4개 주사위가 같은 족보일 때 추가 데미지 배수
     public float tripleAdditionalDamage; // 3개 주사위가 같은 족보일 때 추가 데미지 배수

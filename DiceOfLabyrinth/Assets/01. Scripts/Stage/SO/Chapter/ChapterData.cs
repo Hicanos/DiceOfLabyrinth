@@ -20,9 +20,8 @@ public class ChapterInfo
     [SerializeField] private Sprite image;
     [SerializeField] private int chapterCost;
     [SerializeField] private int directCompleteCost;
-
-    public bool isCompleted = false; // 챕터 완료 상태, 기본값은 false로 설정
-    public bool isLocked = true; // 챕터 잠금 상태, 기본값은 true로 설정
+    [SerializeField] private bool defaultIsUnLocked; // 챕터가 기본적으로 잠금 해제되어 있는지 여부
+    [SerializeField] private bool defaultIsCompleted; // 챕터가 기본적으로 완료되어 있는지 여부
 
     public StageData stageData;
 
@@ -33,4 +32,6 @@ public class ChapterInfo
     public int DirectCompleteCost => directCompleteCost;
 
     public ChapterDifficulty Difficulty => chapterDifficulty; // 챕터 난이도 프로퍼티
+    public bool DefaultIsUnLocked => defaultIsUnLocked; // 챕터가 기본적으로 잠금 해제되어 있는지 여부
+    public bool DefaultIsCompleted => defaultIsCompleted; // 챕터가 기본적으로 완료되어 있는지 여부
 }
