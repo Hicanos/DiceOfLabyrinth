@@ -13,6 +13,8 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private TMP_Text itemDescriptionText;
 
     [Header("Panels")]
+    [SerializeField] private GameObject selectDungeonPanel;
+    [SerializeField] private GameObject teamFormationPenel;
     [SerializeField] private GameObject stagePanel;
     [SerializeField] private GameObject battlePanel;
     [SerializeField] private GameObject victoryPanel;
