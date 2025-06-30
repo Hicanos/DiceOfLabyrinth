@@ -4,6 +4,7 @@ using PredictedDice.Demo;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 public class DiceManager : MonoBehaviour
 {
@@ -42,6 +43,7 @@ public class DiceManager : MonoBehaviour
     public GameObject[] fakeDices;
     public GameObject ground;
     public GameObject DiceBoard;
+    public Image diceBackground;
 
     [SerializeField] RollMultipleDiceSynced roll;
     [SerializeField] Camera diceCamera;
@@ -104,7 +106,7 @@ public class DiceManager : MonoBehaviour
         }
 
         fixedPos = new Vector3[] { new Vector3(-3, 5, 10.5f), new Vector3(-3, 5, 8.8f), new Vector3(-3, 5, 6.43f), new Vector3(-1.55f, 5, 10.5f), new Vector3(-1.55f, 5, 8.8f) };
-        defaultPos = new Vector3[] { new Vector3(1.1f, 0, 2.07f), new Vector3(2.82f, 3.33f, 1.35f), new Vector3(4.57f, 0, 2.11f), new Vector3(6.1f, 2.96f, 1.35f), new Vector3(7.76f, -0.2f, 1.94f) };
+        defaultPos = new Vector3[] { new Vector3(2.29f, 0, 2.07f), new Vector3(2.82f, 3.33f, 1.35f), new Vector3(4.57f, 0, 2.11f), new Vector3(6.05f, 2.96f, 1.35f), new Vector3(7.1f, -0.2f, 1.94f) };
     }
 
     public void RollDice()

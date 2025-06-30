@@ -40,7 +40,8 @@ public class BattleManager : MonoBehaviour
 
     public TextMeshProUGUI costTest;
     public Button DiceRollButton;
-    public Button ConfirmButton; //공격 -> 턴 넘어감
+    public Button ConfirmButton;
+    public Button EndTurnButton;
 
     public readonly int MaxCost = 12;
     public int CurrnetCost = 0;
