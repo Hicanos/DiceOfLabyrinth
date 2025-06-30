@@ -14,24 +14,7 @@ enum DiceRankingEnum
 
 public class DiceBattle
 {
-    public float[] damageWightTable;
-
-    public int GetSignitureAmount()
-    {
-        int iNum = 0;
-        int i = 0;
-        foreach (GameObject diceGO in DiceManager.Instance.dices)
-        {
-            DiceMy dice = diceGO.GetComponent<DiceMy>();
-            if (diceGO.GetComponent<DiceMy>().diceSO.C_No == DiceManager.Instance.DiceResult[i])
-            {
-
-                iNum++;
-            }
-            i++;
-        }
-        return iNum;
-    }
+    public float[] damageWightTable;    
 
     public float GetDiceWeighting()
     {        

@@ -31,7 +31,8 @@ public class BattleManager : MonoBehaviour
             return instance;
         }
     }
-#endregion
+    #endregion
+    public CharacterSO[] entryCharacters;
 
     public BattleStateMachine stateMachine;
     public IBattleTurnState playerTurnState;
@@ -54,9 +55,7 @@ public class BattleManager : MonoBehaviour
 
         stateMachine = new BattleStateMachine(playerTurnState);
 
-        playerTurnState.Enter(); //테스트용
-        DiceManager.Instance.LoadDiceData();
-        isBattle = true;
+        BattleStart(); //테스트용        
     }
 
     
@@ -67,6 +66,7 @@ public class BattleManager : MonoBehaviour
 
     public void BattleStart()
     {
+        //entryCharacters = StageManager.Instance.stageSaveData.entryCharacters;
         playerTurnState.Enter();
         DiceManager.Instance.LoadDiceData();
         isBattle = true;
@@ -75,5 +75,25 @@ public class BattleManager : MonoBehaviour
     public void BattleEnd()
     {
         isBattle = false;
+    }
+
+    private void GetMonster()
+    {
+
+    }
+
+    public void DealDamage(IDamagable target, int damage)
+    {
+        target.TakeDamage(damage);
+    }
+
+    public void GetCost(int iNum)
+    {
+        int cost = CurrnetCost;
+
+        cost = Mathf.Clamp(cost + iNum, 0, MaxCost);
+
+        CurrnetCost = cost;
+        costTest.text = cost.ToString();
     }
 }

@@ -46,7 +46,7 @@ public class DiceManager : MonoBehaviour
     [SerializeField] RollMultipleDiceSynced roll;
     [SerializeField] Camera diceCamera;
     public DiceBattle DiceBattle = new DiceBattle();
-
+    DiceMy[] dicesDatas;
 
     private int[] diceResult;
     public int[] DiceResult => diceResult;
@@ -63,7 +63,9 @@ public class DiceManager : MonoBehaviour
     public List<int> TempFixedDiceList => tempFixedDiceList;
 
     const int maxDiceNum = 6;
+    const int diceCount = 5;
 
+    int signitureAmount;
     int rollCount = 0;
     const int maxRollCount = 3;
     public bool isSkipped = false;
@@ -84,14 +86,16 @@ public class DiceManager : MonoBehaviour
         diceResultCount = new int[6];
         defaultDiceResultCount = new int[6] { 0, 0, 0, 0, 0, 0 };
 
-        dices = new GameObject[diceContainer.transform.childCount];
-        fakeDices = new GameObject[fakeDiceContainer.transform.childCount];
+        dices = new GameObject[diceCount];
+        fakeDices = new GameObject[diceCount];
+        dicesDatas = new DiceMy[diceCount];
         fixedDiceList = new List<int>();
         tempFixedDiceList = new List<int>();
 
         for (int i = 0; i < diceContainer.transform.childCount; i++)
         {
             dices[i] = diceContainer.transform.GetChild(i).gameObject;
+            dicesDatas[i] = dices[i].GetComponent<DiceMy>();
         }
         for (int i = 0; i < fakeDiceContainer.transform.childCount; i++)
         {
@@ -100,7 +104,7 @@ public class DiceManager : MonoBehaviour
         }
 
         fixedPos = new Vector3[] { new Vector3(-3, 5, 10.5f), new Vector3(-3, 5, 8.8f), new Vector3(-3, 5, 6.43f), new Vector3(-1.55f, 5, 10.5f), new Vector3(-1.55f, 5, 8.8f) };
-        defaultPos = new Vector3[] { new Vector3(1.09999847f, 0, 2.07000017f), new Vector3(2.81999993f, 3.32999992f, 1.35000002f), new Vector3(4.57000017f, 0, 2.1099999f), new Vector3(6.09000015f, 2.96000004f, 1.35000002f), new Vector3(7.76000023f, -0.200000003f, 1.94000006f) };
+        defaultPos = new Vector3[] { new Vector3(1.1f, 0, 2.07f), new Vector3(2.82f, 3.33f, 1.35f), new Vector3(4.57f, 0, 2.11f), new Vector3(6.1f, 2.96f, 1.35f), new Vector3(7.76f, -0.2f, 1.94f) };
     }
 
     public void RollDice()
@@ -118,13 +122,13 @@ public class DiceManager : MonoBehaviour
 
     private void SettingForRoll()
     {
+        signitureAmount = 0;
         isSkipped = false;
-        //GoDefaultPositionDice();
+
         ground.SetActive(true);
         DiceBoard.SetActive(true);
         for (int i = 0; i < fakeDices.Length; i++)
         {
-            //dices[i].layer = 6;
             if (fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i)) continue;
             fakeDices[i].SetActive(false);
         }
@@ -151,17 +155,18 @@ public class DiceManager : MonoBehaviour
 
         for (int i = 0; i < diceResult.Length; i++)
         {
-            if (tempFixedDiceList == null && fixedDiceList == null)
-            {
-
-            }
-            else if (tempFixedDiceList.Contains<int>(i) || fixedDiceList.Contains<int>(i))
+            if (tempFixedDiceList.Contains<int>(i) || fixedDiceList.Contains<int>(i))
             {
                 diceResultCount[diceResult[i] - 1]++;
                 continue;
             }
             diceResult[i] = UnityEngine.Random.Range(1, maxDiceNum);
             diceResultCount[diceResult[i] - 1]++;
+            
+            if (dicesDatas[i].diceSO.C_No == diceResult[i])
+            {
+                signitureAmount++;
+            }
         }
         Debug.Log($"{diceResult[0]},{diceResult[1]},{diceResult[2]},{diceResult[3]},{diceResult[4]}");
     }
@@ -193,6 +198,7 @@ public class DiceManager : MonoBehaviour
 
             if (rollEndCount == diceList.Count)
             {
+                BattleManager.Instance.GetCost(signitureAmount);
                 isRolling = false;
                 if (rollCount == maxRollCount)
                 {
@@ -212,7 +218,7 @@ public class DiceManager : MonoBehaviour
                     GoDefaultPositionDice();
                 }
                 break;
-            }
+            }                        
             rollEndCount = 0;
             yield return null;
         }
@@ -223,7 +229,6 @@ public class DiceManager : MonoBehaviour
         GoDefaultPositionDice();
         for (int i = 0; i < fakeDices.Length; i++)
         {
-            //dices[i].layer = 7;
             fakeDices[i].SetActive(true);
         }
         diceCamera.cullingMask = diceCamera.cullingMask & ~(1 << LayerMask.NameToLayer("Dice"));
@@ -264,18 +269,15 @@ public class DiceManager : MonoBehaviour
         GoDefaultPositionFakeDice();
 
         for (int i = 0; i < fakeDices.Length; i++)
-        {
-            //dices[i].layer = 6;      
+        {     
             fakeDices[i].SetActive(false);
         }
-        //diceCamera.cullingMask |= 1 << LayerMask.NameToLayer("Dice");
     }    
 
     private void GoDefaultPositionDice()
     {
         for (int i = 0; i < dices.Length; i++)
-        {
-            //if (fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i)) continue;
+        {            
             dices[i].transform.localPosition = defaultPos[i];
         }
     }
