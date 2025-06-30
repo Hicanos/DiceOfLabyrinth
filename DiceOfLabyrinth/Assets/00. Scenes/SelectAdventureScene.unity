@@ -1503,7 +1503,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1637,7 +1637,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
+          m_IntArgument: 6
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4388,7 +4388,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 555346716}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1073086551}
+        m_TargetAssemblyTypeName: SelectAdventureUIController, Assembly-CSharp
+        m_MethodName: OnClickDifficulty
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &555346716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5745,7 +5757,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 649882920}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1073086551}
+        m_TargetAssemblyTypeName: SelectAdventureUIController, Assembly-CSharp
+        m_MethodName: OnClickDifficulty
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &649882920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10064,9 +10088,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chapterData: {fileID: 11400000, guid: 7e9784863b1f3db4f98bfa3f47f22c51, type: 2}
-  stageManager: {fileID: 2071539292}
   selectChapterPanel: {fileID: 1080581005}
   selectDungeonPanel: {fileID: 2120520650}
+  NormalDifficultyUnselect: {fileID: 0}
+  NormalDifficultySelect: {fileID: 0}
+  HardDifficultyUnselect: {fileID: 0}
+  HardDifficultySelect: {fileID: 0}
+  selectedChapterNameText: {fileID: 0}
+  selectedChapterDescriptionText: {fileID: 0}
+  isDifficulty: 0
 --- !u!4 &1073086552
 Transform:
   m_ObjectHideFlags: 0
@@ -10875,7 +10905,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 4
+          m_IntArgument: 8
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -11145,7 +11175,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -18919,17 +18949,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2066953184}
   m_CullTransparentMesh: 1
---- !u!114 &2071539292 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-  m_PrefabInstance: {fileID: 299268780}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52abc6c2a90f6184fabe85310d96adf5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2090652176
 GameObject:
   m_ObjectHideFlags: 0
