@@ -91,12 +91,13 @@ public class CharacterSOGenerator : EditorWindow
             so.plusHP = data.PlusHP;
             so.critChance = data.CritChance;
             so.critDamage = data.CritDamage;
-            so.elementType = data.ElementType;
-            so.signitureNum = data.SignitureNum;
-            so.diceID = data.DiceID;
+            so.penetration = data.Penetration;
+            so.elementDMG = data.ElementDMG;
+            so.elementType = data.ElementType;            
             so.description = data.Description;
             so.dialog1 = data.dialog1;
             so.dialog2 = data.dialog2;
+            so.diceID = data.DiceID;
 
             // 프리팹 할당
             if (!string.IsNullOrEmpty(data.LobbyPrefabPath))
@@ -178,11 +179,12 @@ public class CharacterSOGenerator : EditorWindow
         public int PlusDEF;
         public int BaseHP;
         public int PlusHP;
-        public int CritChance;
-        public int CritDamage;
+        public float CritChance;
+        public float CritDamage;
+        public int Penetration;
+        public float ElementDMG;
         public DesignEnums.ElementTypes ElementType;
-        public int SignitureNum;
-        public int DiceID;
+        public string DiceID;
         public string Description;
         public string dialog1;
         public string dialog2;
