@@ -4,7 +4,6 @@ public class BattlePlayerTurnState : IBattleTurnState
 {
     BattleManager battleManager = BattleManager.Instance;
 
-    float RankWeighting = 0;
     public void Enter()
     {
         battleManager.BattleTurn++;
@@ -15,11 +14,14 @@ public class BattlePlayerTurnState : IBattleTurnState
 
         if (battleManager.BattleTurn == 1) 
         {
-            BattleManager.Instance.GetButton();
+            battleManager.GetButton();
+            battleManager.LoadMonsterPattern.Load();
         }
 
-        BattleManager.Instance.currentPlayerState = PlayerTurnState.Enter;
-        BattleManager.Instance.OnOffButton();
+        battleManager.LoadMonsterPattern.PrepareSkill();
+
+        battleManager.currentPlayerState = PlayerTurnState.Enter;
+        battleManager.OnOffButton();
     }
 
     public void BattleUpdate()

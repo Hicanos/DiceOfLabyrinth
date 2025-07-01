@@ -5,7 +5,7 @@ public class BattleButtonConfirm : AbstractBattleButton
     Button button;
     public override void GetButtonComponent()
     {
-        button = GetComponentInChildren<Button>();
+        button = GetComponent<Button>();
     }
 
     public override void OnOffButton(PlayerTurnState state)
@@ -34,7 +34,8 @@ public class BattleButtonConfirm : AbstractBattleButton
         DiceManager.Instance.ground.SetActive(false);
         DiceManager.Instance.DiceBoard.SetActive(false);
         DiceManager.Instance.HideFakeDice();
-        DiceManager.Instance.diceBackground.gameObject.SetActive(false);
+        //DiceManager.Instance.diceBackground.gameObject.SetActive(false);
+        BattleManager.Instance.ConfirmButton.gameObject.SetActive(false);
 
         BattleManager.Instance.OnOffButton();
     }

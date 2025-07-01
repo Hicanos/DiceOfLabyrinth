@@ -46,7 +46,8 @@ public class BattleButtonRollDice : AbstractBattleButton
         BattleManager.Instance.currentPlayerState = PlayerTurnState.Roll;
 
         DiceManager.Instance.RollDice();
-        DiceManager.Instance.diceBackground.gameObject.SetActive(true);
+        //DiceManager.Instance.diceBackground.gameObject.SetActive(true);
+        BattleManager.Instance.ConfirmButton.gameObject.SetActive(true);
 
         BattleManager.Instance.OnOffButton();
     }
