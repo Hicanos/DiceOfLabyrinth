@@ -35,7 +35,7 @@ public class StageSaveData
 
     public List<ChapterAndStageStates> chapterAndStageStates = new List<ChapterAndStageStates>();
  
-    public void ResetToDefault(int chapterIndex)
+    public void ResetToDefault(int chapterIndex)// 셀렉트된 챕터의 인덱스를 받아 현재 챕터를 세팅하고 초기화합니다. 셀렉트 된 챕터가 없는 상태는 -1로 설정합니다.
     {
         currentChapterIndex = chapterIndex;
         currentStageIndex = 0;
