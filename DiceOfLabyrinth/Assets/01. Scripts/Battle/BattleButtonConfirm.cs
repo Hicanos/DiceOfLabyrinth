@@ -1,11 +1,8 @@
-﻿using UnityEngine.UI;
-
-public class BattleButtonConfirm : AbstractBattleButton
+﻿public class BattleButtonConfirm : AbstractBattleButton
 {
-    Button button;
     public override void GetButtonComponent()
     {
-        button = GetComponent<Button>();
+
     }
 
     public override void OnOffButton(PlayerTurnState state)
@@ -13,13 +10,16 @@ public class BattleButtonConfirm : AbstractBattleButton
         switch (state)
         {
             case PlayerTurnState.Enter:
-                button.interactable = false;
+                gameObject.SetActive(false);
                 break;
             case PlayerTurnState.Roll:
-                button.interactable = true;
+                gameObject.SetActive(true);
+                break;
+            case PlayerTurnState.RollEnd:
+                gameObject.SetActive(true);
                 break;
             case PlayerTurnState.Confirm:
-                button.interactable = false;
+                gameObject.SetActive(false);
                 break;
             case PlayerTurnState.EndTurn:
 
@@ -34,8 +34,6 @@ public class BattleButtonConfirm : AbstractBattleButton
         DiceManager.Instance.ground.SetActive(false);
         DiceManager.Instance.DiceBoard.SetActive(false);
         DiceManager.Instance.HideFakeDice();
-        //DiceManager.Instance.diceBackground.gameObject.SetActive(false);
-        BattleManager.Instance.ConfirmButton.gameObject.SetActive(false);
 
         BattleManager.Instance.OnOffButton();
     }

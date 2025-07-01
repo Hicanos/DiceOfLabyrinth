@@ -10,13 +10,10 @@ public class BattleButtonRollDice : AbstractBattleButton
 
     public override void OnOffButton(PlayerTurnState state)
     {
-        switch(state)
+        switch (state)
         {
             case PlayerTurnState.Enter:
-                if (DiceManager.Instance.isRolling == false)
-                {
-                    button.interactable = true;
-                }
+                button.interactable = true;
                 break;
             case PlayerTurnState.Roll:
                 UnityEngine.Debug.Log("작동");
@@ -46,8 +43,6 @@ public class BattleButtonRollDice : AbstractBattleButton
         BattleManager.Instance.currentPlayerState = PlayerTurnState.Roll;
 
         DiceManager.Instance.RollDice();
-        //DiceManager.Instance.diceBackground.gameObject.SetActive(true);
-        BattleManager.Instance.ConfirmButton.gameObject.SetActive(true);
 
         BattleManager.Instance.OnOffButton();
     }
