@@ -27,9 +27,15 @@ public class SelectAdventureUIController : MonoBehaviour
     [SerializeField] private List<TMP_Text> selectedChapterNameText = new List<TMP_Text>(); // 선택된 챕터 이름 텍스트, 여러 개의 챕터 이름을 표시할 수 있도록 리스트로 변경
     //[SerializeField] private TMP_Text selectedChapterDescriptionText; // 선택된 챕터 설명 텍스트, 현재 기획에선 설명이 필요하지 않으므로 주석 처리
 
-    [Header("Scares and Stamina Panel")]
+    [Header("Direct Complete Multiplier")]
     [SerializeField] private TMP_Text directCompleteMultiplierText; // 직접 완료 배수 텍스트
-    private int directCompleteMultiplier;
+    private int directCompleteMultiplier; // 직접 완료 배수 값
+
+    [Header("스태미나 부족 패널")]
+    [SerializeField] private TMP_Text afterCostText; // 지불 후 스태미너를 보여주는 텍스트
+    [SerializeField] private TMP_Text staminaRegenerationText; // 스태미너 재생 시간 텍스트
+
+
 
     public bool isDifficulty = false; // 챕터 난이도 선택 여부
 
@@ -80,6 +86,7 @@ public class SelectAdventureUIController : MonoBehaviour
         {
             // 코스트 지불 없이 바로 배틀 씬으로 이동할 수 있도록 처리합니다.
             Debug.Log($"진행 중이던 챕터 {chapterIndex}를 다시 선택했습니다. 코스트 계산 패널을 열지 않습니다.");
+            // 진행중이던 챕터를 다시 시작했다는 팝업을 띄우는 로직을 추가할 수 있습니다.
             SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
             StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태를 복원합니다.
             return;
@@ -101,9 +108,7 @@ public class SelectAdventureUIController : MonoBehaviour
         selectedChapterIndex = chapterIndex; // 선택된 챕터 인덱스 저장
         selectChapterPanel.SetActive(true);
         costCalculationPanel.SetActive(true);
-        //selectDungeonPanel.SetActive(false);
         scaresStaminaPanel.SetActive(false);
-        //teamFormationPanel.SetActive(false);
     }
 
     public void OnClickCostCalculationPanelStartButton()
@@ -111,13 +116,12 @@ public class SelectAdventureUIController : MonoBehaviour
         int chapterIndex = selectedChapterIndex; // 선택된 챕터 인덱스 가져오기
         if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
         {
-            Debug.LogError($"Invalid chapter index: {chapterIndex}. Cannot start battle.");
+            Debug.Log($"Invalid chapter index: {chapterIndex}. Cannot start battle.");
             return;
         }
         var selectedChapter = chapterData.chapterIndex[chapterIndex];
         if (userData.stamina < selectedChapter.ChapterCost)
         {
-            Debug.LogError($"Not enough stamina to start chapter {chapterIndex}. Required: {selectedChapter.ChapterCost}, Available: {userData.stamina}");
             OpenScaresStaminaPanel();
             return;
         }
@@ -126,8 +130,7 @@ public class SelectAdventureUIController : MonoBehaviour
             selectedChapterIndex = -1; // 선택된 챕터 인덱스 초기화
             userData.stamina -= selectedChapter.ChapterCost; // 스테이지 시작 시 스태미너 차감
             StageManager.Instance.stageSaveData.currentChapterIndex = chapterIndex; // 현재 챕터 인덱스 설정
-            StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isUnLocked = true; // 챕터 잠금 해제 상태 설정
-            StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted = false; // 챕터 완료 상태 초기화
+            StageManager.Instance.stageSaveData.ResetToDefault(chapterIndex); // 스테이지 상태 초기화
             SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
             StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태 복원
         }
@@ -138,6 +141,28 @@ public class SelectAdventureUIController : MonoBehaviour
         selectChapterPanel.SetActive(true);
         costCalculationPanel.SetActive(true);
         scaresStaminaPanel.SetActive(true);
+        UpdateStaminaUI(); // 스태미나 UI 업데이트
+    }
+
+    public void OnClickRechargeStaminaButton() // 스태미나 충전 버튼
+    {
+        Debug.Log("Recharge Stamina Button Clicked");
+        if (userData.jewel < 50) // 스태미나 충전 비용이 50 젬이므로, 젬이 부족할 경우
+        {
+            Debug.Log("Not enough jewels to recharge stamina.");
+            // 에러 메시지를 표시하거나 UI를 업데이트하는 로직을 추가할 수 있습니다.
+        }
+        else
+        { 
+            userData.stamina += 50; // 스태미나 50 증가
+            userData.jewel -= 50; // 스태미나 충전 비용으로 50 젬 차감
+        }
+        OpenCostCalculationPanel(selectedChapterIndex); // 선택된 챕터 인덱스를 다시 설정
+    }
+    public void OnClickScaresStaminaPanelBackButton()
+    {
+        Debug.Log("Scares Stamina Panel Back Button Clicked");
+        OpenCostCalculationPanel(selectedChapterIndex); // 선택된 챕터 인덱스를 다시 설정
     }
 
     public void OnClickDifficulty(bool DifficultyToggle)
@@ -178,5 +203,11 @@ public class SelectAdventureUIController : MonoBehaviour
             text.text = selectedChapter.ChapterName;
         }
         //selectedChapterDescriptionText.text = selectedChapter.Description; // 현재 기획에선 설명이 필요하지 않으므로 주석 처리
+    }
+
+    private void UpdateStaminaUI()
+    {
+        afterCostText.text = $"{userData.stamina}/50 -> {userData.stamina + 50}/50"; // 스태미나 충전 후의 상태를 보여줍니다.
+        //int regenerationTime = // 스태미나 재생 시간 계산 로직은 아직 구현되지 않았습니다.
     }
 }

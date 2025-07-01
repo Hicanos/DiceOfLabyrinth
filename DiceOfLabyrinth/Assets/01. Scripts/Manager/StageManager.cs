@@ -17,7 +17,7 @@ public class StageSaveData
     public int currentPhaseIndex; // 현재 페이즈 인덱스
     public CurrentFormationType currentFormationType;
 
-    public string currentChoiceState; // 현재 선택지 상태, "". "Standby", "NormalReward", "EliteArtifactReward", "EliteStagmaReward", "BossReward" 중 하나
+    public string currentPhaseState; // 현재 페이즈 상태, "". "Standby", "NormalReward", "EliteArtifactReward", "EliteStagmaReward", "BossReward", "Shop" , "TeamSelect" 중 하나
 
 
     public int manaStone; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
@@ -36,10 +36,10 @@ public class StageSaveData
     public void ResetToDefault(int chapterIndex)// 셀렉트된 챕터의 인덱스를 받아 현재 챕터를 세팅하고 초기화합니다. 셀렉트 된 챕터가 없는 상태는 -1로 설정합니다.
     {
         currentChapterIndex = chapterIndex;
-        currentStageIndex = 0;
+        currentStageIndex = -1; // 초기화 시 스테이지 인덱스는 -1로 설정, 셀렉트 된 스테이지가 없는 상태를 의미합니다.
         currentPhaseIndex = 0;
         currentFormationType = CurrentFormationType.FormationA;
-        currentChoiceState = "Standby"; // 초기 상태는 Standby로 설정
+        currentPhaseState = "Standby"; // 초기 상태는 Standby로 설정
         manaStone = 0;
         artifacts.Clear();
         stagma.Clear();
@@ -110,6 +110,10 @@ public class StageManager : MonoBehaviour
 
     public void RestoreStageState()//배틀씬에 입장시 세이브 데이터에 따라 진행도를 복원하고 UI 컨트롤러에 알려줍니다.
     {
+        if(SceneManager.GetActiveScene().name != "BattleScene")
+        {
+            SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
+        }
         if (battleUIController == null)
         {
             battleUIController = FindAnyObjectByType<BattleUIController>();
@@ -129,7 +133,7 @@ public class StageManager : MonoBehaviour
             Debug.LogError("현재의 챕터 인덱스가 유효하지 않습니다. 챕터 데이터를 확인해주세요.");
             return;
         }
-        else if (stageSaveData.currentStageIndex < 0 || stageSaveData.currentStageIndex > 4) // 스테이지 인덱스가 0~4 범위를 벗어나는 경우
+        else if (stageSaveData.currentStageIndex < -1 || stageSaveData.currentStageIndex > 4) // 스테이지 인덱스가 0~4 범위를 벗어나는 경우, -1은 스테이지가 선택되지 않은 상태를 의미합니다.
         {
             Debug.LogError("현재의 스테이지 인덱스가 유효하지 않습니다. 스테이지 데이터를 확인해주세요.");
             return;
@@ -139,35 +143,40 @@ public class StageManager : MonoBehaviour
             Debug.LogError("현재의 페이즈 인덱스가 유효하지 않습니다. 페이즈 데이터를 확인해주세요.");
             return;
         }
-        //else if (stageSaveData.leaderCharacter == null || stageSaveData.entryCharacters.Any(x => x == null)) // 리더 캐릭터나 엔트리 캐릭터가 설정되지 않은 경우
-        //{
-        //    BattleUIController.Instance.OpenSelectCharacterPanel(); // 캐릭터 선택 UI를 엽니다.
-        //    return;
-        //}
-        else if (stageSaveData.currentChoiceState != "") // 현재 선택지 상태가 비어있지 않은 경우
+        else if (stageSaveData.currentStageIndex == -1) // 현재 스테이지가 선택되지 않은 상태인 경우
         {
-            switch (stageSaveData.currentChoiceState)
+            battleUIController.OpenSelectDungeonPanel(); // 스테이지 선택 UI를 엽니다.
+            return;
+        }
+        else if (stageSaveData.currentPhaseState != "") // 현재 선택지 상태가 비어있지 않은 경우
+        {
+            switch (stageSaveData.currentPhaseState)
             {
+                case "TeamSelect":
+                    battleUIController.OpenTeamFormationPanel(); // 팀 선택 UI를 엽니다.
+                    return;
                 case "Standby":
                     battleUIController.OpenSelectStagmaPanel("Standby"); // 스탠바이 상태에 해당하는 스태그마 선택 UI를 엽니다.
-                    break;
+                    return;
                 case "NormalReward":
                     battleUIController.OpenSelectStagmaPanel("NormalReward"); // 노멀 리워드 상태에 해당하는 스태그마 선택 UI를 엽니다.
-                    break;
+                    return;
                 case "EliteArtifactReward":
                     battleUIController.OpenSelectArtifactPanel("EliteArtifactReward"); // 엘리트 아티팩트 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
-                    break;
+                    return;
                 case "EliteStagmaReward":
                     battleUIController.OpenSelectStagmaPanel("EliteStagmaReward"); // 엘리트 스태그마 리워드 상태에 해당하는 스태그마 선택 UI를 엽니다.
-                    break;
+                    return;
                 case "BossReward":
                     battleUIController.OpenSelectStagmaPanel("BossReward"); // 보스 리워드 상태에 해당하는 스태그마 선택 UI를 엽니다.
-                    break;
+                    return;
+                case "Shop":
+                    ShopPhase(); // 상점 상태인 경우 상점 패널을 엽니다.
+                    return;
                 default:
-                    Debug.LogError($"Unknown choice state: {stageSaveData.currentChoiceState}");
+                    Debug.LogError($"Unknown choice state: {stageSaveData.currentPhaseState}");
                     return;
             }
-            return; // 선택지 상태가 처리되었으므로 이후 로직을 실행하지 않습니다.
         }
         else if (stageSaveData.currentPhaseIndex >=0 || stageSaveData.currentPhaseIndex <= 4) // 페이즈 인덱스가 유효한 경우
         {
@@ -189,16 +198,12 @@ public class StageManager : MonoBehaviour
             stageSaveData.savedExpReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].ExpReward; // 경험치 보상 저장
             stageSaveData.savedGoldReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].GoldReward; // 골드 보상 저장
             stageSaveData.savedJewelReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].JewelReward; // 보석 보상 저장
+            stageSaveData.currentStageIndex = -1; // 스테이지 인덱스 초기화
         }
         else
         {
             chapterManager.CompleteChapter(stageSaveData.currentChapterIndex); // 마지막 스테이지 클리어 시 챕터 완료 처리
         }
-    }
-
-    public void SelectCharacterPhase()
-    {
-
     }
 
     public void SelectCharacter(CharacterSO character, int index)
@@ -306,7 +311,6 @@ public class StageManager : MonoBehaviour
                 Debug.LogWarning($"Artifact {artifactName} is already equipped or maximum equipped artifacts reached.");
                 return;
             }
-
             Debug.Log($"Artifact {artifactName} equipped.");
             // 아티팩트 장착 UI 업데이트 메서드를 호출할 예정입니다.
         }
