@@ -112,6 +112,11 @@ public class CharacterSOGenerator : EditorWindow
                 so.charBattlePrefab = BattlePrefab;
             }
 
+            // DiceDataLoader를 통해 Dice 데이터 로드
+            DiceDataLoader diceLoader = new DiceDataLoader(); // 기본 경로 사용
+            CharDiceData diceData = diceLoader.ItemsList.Find(d => d.DiceID == data.DiceID);
+            so.charDiceData = diceData;
+
             // SO 파일 경로 설정
             string assetPath = $"{soOutputPath}{so.nameEn}_SO.asset";
 
@@ -120,6 +125,12 @@ public class CharacterSOGenerator : EditorWindow
                 AssetDatabase.DeleteAsset(assetPath);
 
             AssetDatabase.CreateAsset(so, assetPath);
+
+            // SO를 저장한 후, 프로젝트에서 해당 에셋을 다시 불러옴
+            var soAsset = AssetDatabase.LoadAssetAtPath<CharacterSO>(assetPath);
+
+            // CharacterSO 라벨 자동 할당
+            AssetDatabase.SetLabels(soAsset, new[] { "CharacterSO" });
 
             // Addressable 등록
             var Asettings = AddressableAssetSettingsDefaultObject.Settings;

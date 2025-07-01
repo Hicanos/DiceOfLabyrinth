@@ -182,18 +182,25 @@ public class CharacterDebugTool : EditorWindow
     /// </summary>
     private void CreateAndInitLobbyCharacter(CharacterSO so, int level)
     {
-        // SO에 할당된 프리팹 참조 사용
         var prefab = so.charLobbyPrefab;
         if (prefab == null)
         {
             Debug.LogError($"CharacterSO({so.charID})에 charLobbyPrefab이 할당되어 있지 않습니다.");
             return;
         }
-        // 이미 존재하면 중복 생성 방지
         if (FindLobbyCharacter(so.charID) != null)
             return;
 
-        var go = GameObject.Instantiate(prefab);
+        // 캔버스 찾기
+        Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+        if (canvas == null)
+        {
+            Debug.LogError("씬에 Canvas가 존재하지 않습니다. UI 프리팹을 생성할 수 없습니다.");
+            return;
+        }
+
+        // 캔버스 하위에 프리팹 생성
+        var go = GameObject.Instantiate(prefab, canvas.transform);
         go.name = $"LobbyCharacter_{so.charID}";
         var lobbyChar = go.GetComponent<LobbyCharacter>();
         if (lobbyChar != null)
@@ -213,6 +220,8 @@ public class CharacterDebugTool : EditorWindow
                 lobbyChar.CritChance = saveData.CritChance;
                 lobbyChar.CritDamage = saveData.CritDamage;
             }
+            // 추가로 원하는 초기값이 있다면 여기서 세팅
+            // 예시: lobbyChar.TotalExp = 0;
         }
         else
         {
