@@ -59,11 +59,9 @@ public class DiceHolding : MonoBehaviour
                     dice.SetIndex();
                     if (fixedDiceList != null && fixedDiceList.Contains<int>(dice.MyIndex))
                     {
-                        Debug.Log("이미 고정된 주사위입니다.");
                         return;
                     }
-                    DiceFixed(dice);
-                    Debug.Log("주사위 감지" + dice.name + dice.MyIndex);
+                    DiceFixed(dice);                    
                 }
             }
         }
@@ -107,6 +105,7 @@ public class DiceHolding : MonoBehaviour
             {
                 if(hit.collider.gameObject.tag == "DiceBoard")
                 {
+                    DiceManager.Instance.StopSimulation();
                     DiceManager.Instance.isSkipped = true;
                     DiceManager.Instance.SortingFakeDice();
                 }

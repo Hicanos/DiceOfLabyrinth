@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace PredictedDice
@@ -8,7 +8,7 @@ namespace PredictedDice
     {
         [SerializeField] private bool hideGraphicObject = true;
         public FaceMap faceMap;
-        private IEnumerator _play;
+        public IEnumerator _play;
 
         private bool _isClone;
 
@@ -115,6 +115,12 @@ namespace PredictedDice
 
             _play = _locomotion.Play(Simulation.Trajectory);
             StartCoroutine(_play);
+        }
+
+        public void StopSimulation()
+        {
+            StopCoroutine(_play);
+            Simulation.ResetSimulationDice(this);
         }
 
         public void ChangeOutCome(int faceValue)
