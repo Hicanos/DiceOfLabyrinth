@@ -31,27 +31,25 @@ public class CharacterDebugTool : EditorWindow
         GetWindow<CharacterDebugTool>("Character Debug Tool");
     }
 
-    //private void OnEnable()
-    //{
-    //    // 프리팹 경로는 프로젝트 상황에 맞게 수정하세요.
-    //    lobbyCharacterPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/05. Prefabs/LobbyCharacter.prefab");
-    //    RefreshSpawnedLobbyCharacters();
-    //}
+    private void OnEnable()
+    {        
+        RefreshSpawnedLobbyCharacters();
+    }
 
-    //private void OnFocus()
-    //{
-    //    RefreshSpawnedLobbyCharacters();
-    //}
+    private void OnFocus()
+    {
+        RefreshSpawnedLobbyCharacters();
+    }
 
-    //private void OnHierarchyChange()
-    //{
-    //    RefreshSpawnedLobbyCharacters();
-    //}
+    private void OnHierarchyChange()
+    {
+        RefreshSpawnedLobbyCharacters();
+    }
 
-    //private void RefreshSpawnedLobbyCharacters()
-    //{
-    //    spawnedLobbyCharacters = GameObject.FindObjectsOfType<LobbyCharacter>().ToList();
-    //}
+    private void RefreshSpawnedLobbyCharacters()
+    {
+        spawnedLobbyCharacters = GameObject.FindObjectsOfType<LobbyCharacter>().ToList();
+    }
 
     /// <summary>
     /// 에디터 윈도우의 GUI를 그리는 메서드
@@ -100,12 +98,12 @@ public class CharacterDebugTool : EditorWindow
         {
             characterManager.AcquireCharacter(acquireCharID);
 
-            //// SO 찾기
-            //if (characterManager.AllCharacters.TryGetValue(acquireCharID, out var so))
-            //{
-            //    CreateAndInitLobbyCharacter(so, 1);
-            //    RefreshSpawnedLobbyCharacters();
-            //}
+            // SO 찾기
+            if (characterManager.AllCharacters.TryGetValue(acquireCharID, out var so))
+            {
+                CreateAndInitLobbyCharacter(so, 1);
+                RefreshSpawnedLobbyCharacters();
+            }
         }
         EditorGUILayout.EndHorizontal();
 
@@ -184,16 +182,18 @@ public class CharacterDebugTool : EditorWindow
     /// </summary>
     private void CreateAndInitLobbyCharacter(CharacterSO so, int level)
     {
-        if (lobbyCharacterPrefab == null)
+        // SO에 할당된 프리팹 참조 사용
+        var prefab = so.charLobbyPrefab;
+        if (prefab == null)
         {
-            Debug.LogError("LobbyCharacter 프리팹이 할당되지 않았습니다. 경로를 확인하세요.");
+            Debug.LogError($"CharacterSO({so.charID})에 charLobbyPrefab이 할당되어 있지 않습니다.");
             return;
         }
         // 이미 존재하면 중복 생성 방지
         if (FindLobbyCharacter(so.charID) != null)
             return;
 
-        var go = GameObject.Instantiate(lobbyCharacterPrefab);
+        var go = GameObject.Instantiate(prefab);
         go.name = $"LobbyCharacter_{so.charID}";
         var lobbyChar = go.GetComponent<LobbyCharacter>();
         if (lobbyChar != null)
