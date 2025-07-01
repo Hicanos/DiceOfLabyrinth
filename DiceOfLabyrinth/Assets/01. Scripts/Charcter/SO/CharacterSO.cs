@@ -19,14 +19,17 @@ public class CharacterSO : ScriptableObject
     public int plusDEF;
     public int baseHP;
     public int plusHP;
-    public int critChance;
-    public int critDamage;
+    public float critChance;
+    public float critDamage;
+    public int penetration;
+    public float elementDMG;
     public DesignEnums.ElementTypes elementType;
-    public int signitureNum;
-    public int diceID;
     public string description;
     public string dialog1;
     public string dialog2;
+    public string diceID;
+
     public GameObject charLobbyPrefab; // 로비에서 사용되는 캐릭터 프리팹
     public GameObject charBattlePrefab; // 배틀에서 사용되는 캐릭터 프리팹
+
 }

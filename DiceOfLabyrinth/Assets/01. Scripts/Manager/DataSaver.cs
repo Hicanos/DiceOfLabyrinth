@@ -48,15 +48,15 @@ public class DataSaver
         public int ATK; // 공격력
         public int DEF; // 방어력
         public int HP; // 체력
-        public int CritChance; // 치명타 확률
-        public int CritDamage; // 치명타 피해량
+        public float CritChance; // 치명타 확률
+        public float CritDamage; // 치명타 피해량
         // 캐릭터의 스킬 정보 - SkillData 리스트로 저장
         public List<SkillData> Skills = new List<SkillData>(); // 각 캐릭터가 보유한 스킬 정보
 
 
         // 생성자
         public CharacterData() { }
-        public CharacterData(string characterID, int level, int atk, int def, int hp, int critChance, int critDamage)
+        public CharacterData(string characterID, int level, int atk, int def, int hp, float critChance, float critDamage)
         {
             CharacterID = characterID;
             Level = level;
