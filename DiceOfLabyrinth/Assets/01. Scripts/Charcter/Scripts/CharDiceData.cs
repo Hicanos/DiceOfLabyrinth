@@ -107,7 +107,7 @@ public class DiceDataLoader
     public List<CharDiceData> ItemsList { get; private set; }
     public Dictionary<int, CharDiceData> ItemsDict { get; private set; }
 
-    public DiceDataLoader(string path = "JSON/DiceData")
+    public DiceDataLoader(string path = "JSON/DiceTable")
     {
         string jsonData;
         jsonData = Resources.Load<TextAsset>(path).text;

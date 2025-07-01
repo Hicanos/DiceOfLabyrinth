@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
     public void LoadGame()
     {
         // 게임 로드 로직 구현
+        DataSaver.Instance.Load();
         Debug.Log("게임 로드됨");
     }
 
