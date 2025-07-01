@@ -11,8 +11,8 @@ public class SettingUIController : MonoBehaviour
 
     private void Start()
     {
-        settingButton.onClick.AddListener(OpenSetting);
-        settingBg.onClick.AddListener(CloseSetting);
+        //settingButton.onClick.AddListener(OpenSetting);
+        //settingBg.onClick.AddListener(CloseSetting);
     }
 
     private void OpenSetting()

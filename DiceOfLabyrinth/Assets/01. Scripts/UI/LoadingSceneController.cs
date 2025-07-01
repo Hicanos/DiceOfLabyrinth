@@ -24,7 +24,7 @@ public class LoadingSceneController : MonoBehaviour
 
             // 로딩이 얼마나 완료되었는지 0~1의 값으로 보여줌. 1이 되면 씬이 활성화 되기 때문에,
             // 지금은 최소 1초를 기다리도록 설정해서 씬이 다 로드가 됐다면 대기시간 동안은 0.9가 출력될 것임.
-            Debug.Log($"{async.progress}"); 
+            //Debug.Log($"{async.progress}"); 
 
             if (loadTime > 1f) // 최소 1초는 기다리도록 설정. 지금은 씬이 가볍기 때문에 설정을 풀면 씬을 바로 넘어갈듯.
             {
