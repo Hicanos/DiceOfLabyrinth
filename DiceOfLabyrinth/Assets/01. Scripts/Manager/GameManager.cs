@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            //게임 데이터 로드
+            LoadGame();
         }
         else
         {
@@ -33,6 +36,12 @@ public class GameManager : MonoBehaviour
         // 아래에서 일괄처리
         DataSaver.Instance.Save();
 
+    }
+
+    private void Start()
+    {
+        // 불러온 모든 캐릭터의 Json데이터를 실제 LobbyCharacter에 할당
+        // UI에 존재한s LobbyCharacter에 Awake에서 불러온 데이터를 집어넣음.
     }
 
     public void LoadGame()
