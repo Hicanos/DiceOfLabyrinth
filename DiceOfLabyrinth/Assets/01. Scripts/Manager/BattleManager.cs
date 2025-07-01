@@ -1,6 +1,6 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class BattleManager : MonoBehaviour
 {
@@ -32,7 +32,9 @@ public class BattleManager : MonoBehaviour
         }
     }
     #endregion
-    public CharacterSO[] entryCharacters;
+    //public CharacterSO[] entryCharacters;
+    public BattleCharacter[] entryCharacters;
+    public IEnemy enemy;
 
     public LoadMonsterPattern LoadMonsterPattern;
     public MonsterPattern MonsterPattern;
@@ -44,9 +46,8 @@ public class BattleManager : MonoBehaviour
     public TextMeshProUGUI costTest;
     public TextMeshProUGUI monsterSkillName;
     public Button DiceRollButton;
-    public Button ConfirmButton;
     public Button EndTurnButton;
-    public AbstractBattleButton[] BattleButtons;
+    public AbstractBattleButton[] BattleButtons;   
 
     public readonly int MaxCost = 12;
     public int CurrnetCost = 0;
@@ -88,7 +89,21 @@ public class BattleManager : MonoBehaviour
 
     private void GetMonster()
     {
+        //enemy = 
+    }    
 
+    public void CharacterAttack(float diceWeighting)
+    {
+        Debug.Log("공격!");
+        for (int i = 0; i < entryCharacters.Length; i++)
+        {
+            float characterAtk = entryCharacters[i].CurrentATK;
+            float monsterDef = enemy.EnemyData.Def;
+            float damage = (characterAtk - monsterDef) * diceWeighting;
+
+            //enemy.currentHp -= damage;
+            //DealDamage(IDamagerable target , int damage);
+        }
     }
 
     public void DealDamage(IDamagable target, int damage)

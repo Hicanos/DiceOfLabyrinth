@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
-using PredictedDice;
-using PredictedDice.Demo;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.UI;
+using PredictedDice;
+using PredictedDice.Demo;
 
 public class DiceManager : MonoBehaviour
 {
@@ -81,7 +81,7 @@ public class DiceManager : MonoBehaviour
 
     Vector3[] rotationVectors; //굴린 후 정렬시 적용할 회전값
     Vector3[] defaultPos; //주사위 굴리는 기본 위치 화면 아래쪽
-
+    IEnumerator diceSimulation;
     void Start()
     {
         diceResult = new int[5];
@@ -309,5 +309,20 @@ public class DiceManager : MonoBehaviour
         dicePos = loadScript.GetPoses().ToArray();
         DiceBattle.damageWightTable = loadScript.GetWeighting().ToArray();
         rotationVectors = loadScript.GetVectorCodes().ToArray();
+    }
+
+    public void StopSimulation()
+    {
+        foreach (GameObject diceGO in dices)
+        {
+            Dice dice = diceGO.GetComponent<Dice>();
+ 
+            dice.StopSimulation();
+            StopCoroutine(SortingAfterRoll());            
+
+            BattleManager.Instance.currentPlayerState = PlayerTurnState.RollEnd;
+            BattleManager.Instance.OnOffButton();
+        }
+        BattleManager.Instance.GetCost(signitureAmount);
     }
 }

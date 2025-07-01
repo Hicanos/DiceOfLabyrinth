@@ -31,7 +31,7 @@ public class BattleCharacter : Character, IDamagable
 
     // 캐릭터가 사용하는 스킬 데이터를 이후 SO에서 가져와 Header를 이용하여 여기에 등록
 
-    private bool isDied; // 현재 HP가 0 이하인 경우 사망 상태
+    public bool isDied { get; private set; } // 현재 HP가 0 이하인 경우 사망 상태
 
 
 
