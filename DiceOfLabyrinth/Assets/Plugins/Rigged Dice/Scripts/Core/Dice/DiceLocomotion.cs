@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,6 +35,7 @@ namespace PredictedDice
         public IEnumerator Play(List<Pose> projectory)
         {
             Pose[] poses = new Pose[projectory.Count];
+            //Vector3[] testPosition = new Vector3[] { new Vector3(-2.3f, 54.5f, -17.5f), new Vector3(-3.58f, 54.5f, -16.86f), new Vector3(0.08f, 54.5f, -23.41f), new Vector3(-3, 54.5f, -24.73f), new Vector3(-4.14f, 54.5f, -19.8f) };
             projectory.CopyTo(poses);
             var wait = new WaitForFixedUpdate();
             foreach (var pose in poses)

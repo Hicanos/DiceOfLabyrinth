@@ -14,9 +14,10 @@ public class LobbyCharacter : Character
     public int RegularATK; // (아무런 보정이 없는) 공격력
     public int RegularDEF; // (아무런 보정이 없는) 방어력
     public int RegularHP; // (아무런 보정이 없는) 체력
-    public int CritChance; // 치명타 확률
-    public int CritDamage; // 치명타 피해량
+    public float CritChance; // 치명타 확률
+    public float CritDamage; // 치명타 피해량
     public int MaxLevel = 20; // 최대 레벨
+
 
     // 로비 캐릭터 데이터
     public override void Initialize(CharacterSO so, int level = 1)
@@ -44,25 +45,37 @@ public class LobbyCharacter : Character
     /// </summary>
     public void AddExp(int exp)
     {
+        GetExpToNextLevel();
         CurrentExp += exp;
         // 레벨업 조건 및 처리 로직 추가 가능
         // 현재 최대레벨은 20, 20에 도달하면 더이상 레벨이 증가하지 않음
-        while (CurrentExp >= GetExpToNextLevel()|| Level < MaxLevel)
+        while (CurrentExp >= GetExpToNextLevel()&& Level < MaxLevel)
         {
             CurrentExp -= GetExpToNextLevel();
             LevelUP();
         }
+
+        if (Level >= MaxLevel)
+        {
+            CurrentExp = 0;
+        }
+        // 변동된 값(CurrentExp) 저장
+        DataSaver.Instance.SaveCharacter(this);
+
     }
 
 
     private void LevelUP()
     {
-        Level++;
-        // 레벨이 올라가면 올라간만큼 기본 능력치 증가함
-        GetMaxHP();
-        RegularATK = GetATK();
-        RegularDEF = GetDEF();
-        RegularHP = GetMaxHP();
+        if (Level < MaxLevel)
+        {
+            Level++;
+            // 레벨이 올라가면 올라간만큼 기본 능력치 증가함
+            GetMaxHP();
+            RegularATK = GetATK();
+            RegularDEF = GetDEF();
+            RegularHP = GetMaxHP();
+        }
     }
 
     /// <summary>
@@ -81,5 +94,10 @@ public class LobbyCharacter : Character
     public override int GetDEF()
     {
         return base.GetDEF();
+    }
+
+    public CharData GetCharData(CharDataLoader loader)
+    {
+        return loader.GetByCharID(CharacterData.charID);
     }
 }

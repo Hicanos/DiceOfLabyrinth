@@ -1,6 +1,4 @@
-using UnityEngine;
-
-public interface IBattleTurnState
+﻿public interface IBattleTurnState
 {
     void Enter();
     void BattleUpdate();

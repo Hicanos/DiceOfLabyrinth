@@ -1,6 +1,6 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class BattleManager : MonoBehaviour
 {
@@ -31,19 +31,28 @@ public class BattleManager : MonoBehaviour
             return instance;
         }
     }
-#endregion
+    #endregion
+    //public CharacterSO[] entryCharacters;
+    public BattleCharacter[] entryCharacters;
+    public IEnemy enemy;
 
+    public LoadMonsterPattern LoadMonsterPattern;
+    public MonsterPattern MonsterPattern;
     public BattleStateMachine stateMachine;
     public IBattleTurnState playerTurnState;
     public IBattleTurnState enemyTurnState;
+    public PlayerTurnState currentPlayerState;
 
     public TextMeshProUGUI costTest;
+    public TextMeshProUGUI monsterSkillName;
     public Button DiceRollButton;
-    public Button ConfirmButton; //공격 -> 턴 넘어감
+    public Button EndTurnButton;
+    public AbstractBattleButton[] BattleButtons;   
 
     public readonly int MaxCost = 12;
     public int CurrnetCost = 0;
     public int BattleTurn = 0;
+    public bool isBattle;
 
     void Start()
     {
@@ -53,8 +62,10 @@ public class BattleManager : MonoBehaviour
 
         stateMachine = new BattleStateMachine(playerTurnState);
 
-        playerTurnState.Enter(); //테스트용
-        DiceManager.Instance.LoadDiceData();
+        LoadMonsterPattern = new LoadMonsterPattern();
+        MonsterPattern = new MonsterPattern();
+
+        BattleStart(); //테스트용        
     }
 
     
@@ -65,12 +76,64 @@ public class BattleManager : MonoBehaviour
 
     public void BattleStart()
     {
+        //entryCharacters = StageManager.Instance.stageSaveData.entryCharacters;
         playerTurnState.Enter();
         DiceManager.Instance.LoadDiceData();
+        isBattle = true;
     }
 
     public void BattleEnd()
     {
+        isBattle = false;
+    }
 
+    private void GetMonster()
+    {
+        //enemy = 
+    }    
+
+    public void CharacterAttack(float diceWeighting)
+    {
+        Debug.Log("공격!");
+        for (int i = 0; i < entryCharacters.Length; i++)
+        {
+            float characterAtk = entryCharacters[i].CurrentATK;
+            float monsterDef = enemy.EnemyData.Def;
+            float damage = (characterAtk - monsterDef) * diceWeighting;
+
+            //enemy.currentHp -= damage;
+            //DealDamage(IDamagerable target , int damage);
+        }
+    }
+
+    public void DealDamage(IDamagable target, int damage)
+    {
+        target.TakeDamage(damage);
+    }
+
+    public void GetCost(int iNum)
+    {
+        int cost = CurrnetCost;
+
+        cost = Mathf.Clamp(cost + iNum, 0, MaxCost);
+
+        CurrnetCost = cost;
+        costTest.text = cost.ToString();
+    }
+
+    public void OnOffButton()
+    {
+        foreach(AbstractBattleButton button in BattleButtons)
+        {
+            button.OnOffButton(currentPlayerState);
+        }
+    }
+
+    public void GetButton()
+    {
+        foreach (AbstractBattleButton button in BattleButtons)
+        {
+            button.GetButtonComponent();
+        }
     }
 }

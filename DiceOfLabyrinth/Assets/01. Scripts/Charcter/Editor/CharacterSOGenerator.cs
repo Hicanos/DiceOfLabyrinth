@@ -91,12 +91,13 @@ public class CharacterSOGenerator : EditorWindow
             so.plusHP = data.PlusHP;
             so.critChance = data.CritChance;
             so.critDamage = data.CritDamage;
-            so.elementType = data.ElementType;
-            so.signitureNum = data.SignitureNum;
-            so.diceID = data.DiceID;
+            so.penetration = data.Penetration;
+            so.elementDMG = data.ElementDMG;
+            so.elementType = data.ElementType;            
             so.description = data.Description;
             so.dialog1 = data.dialog1;
             so.dialog2 = data.dialog2;
+            so.diceID = data.DiceID;
 
             // 프리팹 할당
             if (!string.IsNullOrEmpty(data.LobbyPrefabPath))
@@ -111,6 +112,11 @@ public class CharacterSOGenerator : EditorWindow
                 so.charBattlePrefab = BattlePrefab;
             }
 
+            // DiceDataLoader를 통해 Dice 데이터 로드
+            DiceDataLoader diceLoader = new DiceDataLoader(); // 기본 경로 사용
+            CharDiceData diceData = diceLoader.ItemsList.Find(d => d.DiceID == data.DiceID);
+            so.charDiceData = diceData;
+
             // SO 파일 경로 설정
             string assetPath = $"{soOutputPath}{so.nameEn}_SO.asset";
 
@@ -119,6 +125,12 @@ public class CharacterSOGenerator : EditorWindow
                 AssetDatabase.DeleteAsset(assetPath);
 
             AssetDatabase.CreateAsset(so, assetPath);
+
+            // SO를 저장한 후, 프로젝트에서 해당 에셋을 다시 불러옴
+            var soAsset = AssetDatabase.LoadAssetAtPath<CharacterSO>(assetPath);
+
+            // CharacterSO 라벨 자동 할당
+            AssetDatabase.SetLabels(soAsset, new[] { "CharacterSO" });
 
             // Addressable 등록
             var Asettings = AddressableAssetSettingsDefaultObject.Settings;
@@ -134,13 +146,26 @@ public class CharacterSOGenerator : EditorWindow
 
                 string guid = AssetDatabase.AssetPathToGUID(assetPath);
                 var entry = Asettings.CreateOrMoveEntry(guid, group);
-                entry.address = so.nameEn; // address로 nameEn 사용
+                entry.address = so.nameEn;
+            }
+
+            // 에셋 저장 및 데이터베이스 갱신
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            // SO를 다시 불러와서 라벨 할당
+            soAsset = AssetDatabase.LoadAssetAtPath<CharacterSO>(assetPath);
+            if (soAsset != null)
+            {
+                AssetDatabase.SetLabels(soAsset, new[] { "CharacterSO" });
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
+            else
+            {
+                Debug.LogError($"SO 에셋을 다시 불러오지 못했습니다: {assetPath}");
             }
         }
-
-        // 에셋 저장 및 데이터 베이스 갱신
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
 
         // Addressable 설정 업데이트
         var settings = AddressableAssetSettingsDefaultObject.Settings;
@@ -178,11 +203,12 @@ public class CharacterSOGenerator : EditorWindow
         public int PlusDEF;
         public int BaseHP;
         public int PlusHP;
-        public int CritChance;
-        public int CritDamage;
+        public float CritChance;
+        public float CritDamage;
+        public int Penetration;
+        public float ElementDMG;
         public DesignEnums.ElementTypes ElementType;
-        public int SignitureNum;
-        public int DiceID;
+        public string DiceID;
         public string Description;
         public string dialog1;
         public string dialog2;

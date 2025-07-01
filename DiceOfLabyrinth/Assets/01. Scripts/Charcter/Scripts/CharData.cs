@@ -19,7 +19,7 @@ public class CharData
     /// <summary>
     /// Name
     /// </summary>
-    public string Name;
+    public string NameKr;
 
     /// <summary>
     /// Name_En
@@ -32,69 +32,79 @@ public class CharData
     public DesignEnums.ClassTypes ClassType;
 
     /// <summary>
-    /// Char_Stat_ATK
+    /// Char_PlusATK
     /// </summary>
     public int BaseATK;
 
     /// <summary>
-    /// ATK_Bonus
+    /// Char_Stat_DEF
     /// </summary>
     public int PlusATK;
 
     /// <summary>
-    /// Char_Stat_DEF
+    /// Char_PlusDEF
     /// </summary>
     public int BaseDEF;
 
     /// <summary>
-    /// DEF_Bonus
+    /// Char_Stat_HP
     /// </summary>
     public int PlusDEF;
 
     /// <summary>
-    /// Char_Stat_HP
+    /// Char_HP_Bonus
     /// </summary>
     public int BaseHP;
 
     /// <summary>
-    /// HP_Bonus
+    /// Char_Stat_CriC(%)
     /// </summary>
     public int PlusHP;
 
     /// <summary>
-    /// Char_Stat_CriC
-    /// </summary>
-    public int CritChance;
-
-    /// <summary>
     /// Char_Stat_CriD
     /// </summary>
-    public int CritDamage;
+    public float CritChance;
 
     /// <summary>
-    /// Char_E_Type
+    /// Char_Stat_Pene
+    /// </summary>
+    public float CritDamage;
+
+    /// <summary>
+    /// Char_Stat_Pene
+    /// </summary>
+    public int Penetration;
+
+    /// <summary>
+    /// E_DMG
+    /// </summary>
+    public float ElementDMG;
+
+    /// <summary>
+    /// E_Type
     /// </summary>
     public DesignEnums.ElementTypes ElementType;
 
     /// <summary>
-    /// Char_Dice
-    /// </summary>
-    public int DiceID;
-
-    /// <summary>
-    /// Char_Description
+    /// Cha_Des
     /// </summary>
     public string Description;
 
     /// <summary>
-    /// Char_DialogA
+    /// Cha_DLog1
     /// </summary>
     public string dialog1;
 
     /// <summary>
-    /// CharDialogB
+    /// Cha_DLog2
     /// </summary>
     public string dialog2;
+
+    /// <summary>
+    /// DiceID
+    /// </summary>
+    public string DiceID;
 
     /// <summary>
     /// LobbyPrefabPath
@@ -111,6 +121,7 @@ public class CharDataLoader
 {
     public List<CharData> ItemsList { get; private set; }
     public Dictionary<int, CharData> ItemsDict { get; private set; }
+    public Dictionary<string, CharData> ItemsByCharID { get; private set; }
 
     public CharDataLoader(string path = "JSON/CharData")
     {
@@ -118,9 +129,11 @@ public class CharDataLoader
         jsonData = Resources.Load<TextAsset>(path).text;
         ItemsList = JsonUtility.FromJson<Wrapper>(jsonData).Items;
         ItemsDict = new Dictionary<int, CharData>();
+        ItemsByCharID = new Dictionary<string, CharData>();
         foreach (var item in ItemsList)
         {
             ItemsDict.Add(item.Key, item);
+            ItemsByCharID[item.CharID] = item;
         }
     }
 
@@ -144,6 +157,12 @@ public class CharDataLoader
         {
             return ItemsList[index];
         }
+        return null;
+    }
+    public CharData GetByCharID(string charID)
+    {
+        if (ItemsByCharID.ContainsKey(charID))
+            return ItemsByCharID[charID];
         return null;
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class TempEnemyAttack : MonoBehaviour
@@ -15,11 +15,14 @@ public class TempEnemyAttack : MonoBehaviour
 
     IEnumerator enemyAttack()
     {
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(1.2f);
 
         Debug.Log("Enemy Attack!");
 
-        yield return new WaitForSeconds(0.8f);
+        //int damage = BattleManager.Instance.enemy.ATK;
+        //battleManager.DealDamage(IDamagerable target , int damage);
+
+        yield return new WaitForSeconds(1.2f);
 
         BattleManager.Instance.stateMachine.ChangeState(BattleManager.Instance.playerTurnState);
     }
