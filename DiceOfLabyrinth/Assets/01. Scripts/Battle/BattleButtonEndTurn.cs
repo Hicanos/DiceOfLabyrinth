@@ -22,7 +22,7 @@ public class BattleButtonEndTurn : AbstractBattleButton
                 button.interactable = true;
                 break;
             case PlayerTurnState.EndTurn:
-
+                button.interactable = false;
                 break;
         }
     }
