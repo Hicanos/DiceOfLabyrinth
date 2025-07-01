@@ -146,13 +146,26 @@ public class CharacterSOGenerator : EditorWindow
 
                 string guid = AssetDatabase.AssetPathToGUID(assetPath);
                 var entry = Asettings.CreateOrMoveEntry(guid, group);
-                entry.address = so.nameEn; // address로 nameEn 사용
+                entry.address = so.nameEn;
+            }
+
+            // 에셋 저장 및 데이터베이스 갱신
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            // SO를 다시 불러와서 라벨 할당
+            soAsset = AssetDatabase.LoadAssetAtPath<CharacterSO>(assetPath);
+            if (soAsset != null)
+            {
+                AssetDatabase.SetLabels(soAsset, new[] { "CharacterSO" });
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
+            else
+            {
+                Debug.LogError($"SO 에셋을 다시 불러오지 못했습니다: {assetPath}");
             }
         }
-
-        // 에셋 저장 및 데이터 베이스 갱신
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
 
         // Addressable 설정 업데이트
         var settings = AddressableAssetSettingsDefaultObject.Settings;

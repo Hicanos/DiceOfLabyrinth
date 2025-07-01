@@ -74,15 +74,22 @@ public class CharacterDebugTool : EditorWindow
         foreach (var pair in characterManager.AllCharacters)
         {
             var so = pair.Value;
+            // DiceDataLoader 인스턴스 생성 (한 번만 생성해서 캐싱해도 됨)
+            DiceDataLoader diceLoader = new DiceDataLoader();
+            CharDiceData diceData = diceLoader.ItemsList.FirstOrDefault(d => d.DiceID == so.diceID);
+
+            int cignatureNo = diceData != null ? diceData.CignatureNo : -1;
+
+            EditorGUILayout.LabelField($"ID: {so.charID}, 시그니처 넘버: {cignatureNo}");
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField($"ID: {so.charID}, 이름: {so.nameKr} ({so.nameEn})", GUILayout.Width(300));
+            EditorGUILayout.LabelField($"이름: {so.nameKr} ({so.nameEn})", GUILayout.Width(300));
             if (GUILayout.Button("획득", GUILayout.Width(50)))
             {
                 characterManager.AcquireCharacter(so.charID);
 
-                //// LobbyCharacter 인스턴스 생성 및 초기화
-                //CreateAndInitLobbyCharacter(so, 1); // 기본 레벨 1로 생성, 필요시 저장 데이터 반영
-                //RefreshSpawnedLobbyCharacters();
+                // LobbyCharacter 인스턴스 생성 및 초기화
+                CreateAndInitLobbyCharacter(so, 1); // 기본 레벨 1로 생성, 필요시 저장 데이터 반영
+                RefreshSpawnedLobbyCharacters();
             }
             EditorGUILayout.EndHorizontal();
         }
@@ -130,6 +137,7 @@ public class CharacterDebugTool : EditorWindow
             {
                 EditorGUILayout.LabelField($"레벨: {lobbyChar.Level}   경험치: {lobbyChar.CurrentExp}");
                 EditorGUILayout.LabelField($"ATK: {lobbyChar.RegularATK}  DEF: {lobbyChar.RegularDEF}  HP: {lobbyChar.RegularHP}  크리확률: {lobbyChar.CritChance}  크리뎀: {lobbyChar.CritDamage}");
+
 
                 EditorGUILayout.BeginHorizontal();
                 addExpValue = EditorGUILayout.IntField("경험치 부여", addExpValue, GUILayout.Width(150));
@@ -192,7 +200,7 @@ public class CharacterDebugTool : EditorWindow
             return;
 
         // 캔버스 찾기
-        Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+        Canvas canvas = Object.FindFirstObjectByType<Canvas>();
         if (canvas == null)
         {
             Debug.LogError("씬에 Canvas가 존재하지 않습니다. UI 프리팹을 생성할 수 없습니다.");

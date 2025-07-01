@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            //게임 데이터 로드
+            LoadGame();
         }
         else
         {
@@ -34,9 +38,16 @@ public class GameManager : MonoBehaviour
 
     }
 
+    private void Start()
+    {
+        // 불러온 모든 캐릭터의 Json데이터를 실제 LobbyCharacter에 할당
+        // UI에 존재한s LobbyCharacter에 Awake에서 불러온 데이터를 집어넣음.
+    }
+
     public void LoadGame()
     {
         // 게임 로드 로직 구현
+        DataSaver.Instance.Load();
         Debug.Log("게임 로드됨");
     }
 
