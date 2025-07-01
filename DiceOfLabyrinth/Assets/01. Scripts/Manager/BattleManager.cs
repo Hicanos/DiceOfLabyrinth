@@ -33,13 +33,16 @@ public class BattleManager : MonoBehaviour
     }
     #endregion
     public CharacterSO[] entryCharacters;
-    
+
+    public LoadMonsterPattern LoadMonsterPattern;
+    public MonsterPattern MonsterPattern;
     public BattleStateMachine stateMachine;
     public IBattleTurnState playerTurnState;
     public IBattleTurnState enemyTurnState;
     public PlayerTurnState currentPlayerState;
 
     public TextMeshProUGUI costTest;
+    public TextMeshProUGUI monsterSkillName;
     public Button DiceRollButton;
     public Button ConfirmButton;
     public Button EndTurnButton;
@@ -57,6 +60,9 @@ public class BattleManager : MonoBehaviour
         enemyTurnState = new BattleEnemyTurnState();
 
         stateMachine = new BattleStateMachine(playerTurnState);
+
+        LoadMonsterPattern = new LoadMonsterPattern();
+        MonsterPattern = new MonsterPattern();
 
         BattleStart(); //테스트용        
     }
