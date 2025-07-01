@@ -14,8 +14,8 @@ public class LobbyCharacter : Character
     public int RegularATK; // (아무런 보정이 없는) 공격력
     public int RegularDEF; // (아무런 보정이 없는) 방어력
     public int RegularHP; // (아무런 보정이 없는) 체력
-    public int CritChance; // 치명타 확률
-    public int CritDamage; // 치명타 피해량
+    public float CritChance; // 치명타 확률
+    public float CritDamage; // 치명타 피해량
     public int MaxLevel = 20; // 최대 레벨
 
     // 로비 캐릭터 데이터

@@ -12,15 +12,15 @@ public class BattleCharacter : Character, IDamagable
     public int CurrentHP;
     public int CurrentATK;
     public int CurrentDEF;
-    public int CurrentCritChance;
-    public int CurrentCritDamage;
+    public float CurrentCritChance;
+    public float CurrentCritDamage;
 
     [Header("처음 저장되는 기본 값")]
     private int initialHP; // 처음 생성 시의 HP (로비 정보 기반)
     private int initialATK; // 처음 생성 시의 공격력 (로비 정보 기반)
     private int initialDEF; // 처음 생성 시의 방어력 (로비 정보 기반)
-    private int initialCritChance; // 처음 생성 시의 치명타 확률 (로비 정보 기반)
-    private int initialCritDamage; // 처음 생성 시의 치명타 피해량 (로비 정보 기반)
+    private float initialCritChance; // 처음 생성 시의 치명타 확률 (로비 정보 기반)
+    private float initialCritDamage; // 처음 생성 시의 치명타 피해량 (로비 정보 기반)
     private int initialLevel; // 처음 생성 시의 레벨 (로비 정보 기반)
 
     // 액션 이벤트
