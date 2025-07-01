@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class ChapterManager : MonoBehaviour
 {
+    public UserData userData;
     public ChapterData chapterData;
     public StageManager stageManager;
 
@@ -50,12 +51,10 @@ public class ChapterManager : MonoBehaviour
             Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
             return;
         }
+        userData.exp += StageManager.Instance.stageSaveData.savedExpReward;
+        userData.gold += StageManager.Instance.stageSaveData.savedGoldReward;
+        userData.jewel += StageManager.Instance.stageSaveData.savedJewelReward;
 
-        /// 저장된 보상들을 정산하는 로직은 유저데이터가 만들어지면 추가할 예정입니다.
-        // {유저데이터의 경험치} += StageManager.Instance.stageSaveData.savedExpReward;
-        // {유저데이터의 골드} += StageManager.Instance.stageSaveData.savedGoldReward;
-        // {유저데이터의 쥬얼} += StageManager.Instance.stageSaveData.savedJewelReward;
-        ///
         var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
         states[chapterIndex].isCompleted = true;
 
