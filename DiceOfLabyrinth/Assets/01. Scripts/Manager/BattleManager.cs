@@ -33,7 +33,7 @@ public class BattleManager : MonoBehaviour
     }
     #endregion
     //public CharacterSO[] entryCharacters;
-    public BattleCharacter[] entryCharacters;
+    public GameObject[] entryCharacters; //임시
     public IEnemy enemy;
 
     public LoadMonsterPattern LoadMonsterPattern;
