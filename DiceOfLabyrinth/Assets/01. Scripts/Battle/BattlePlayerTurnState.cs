@@ -55,17 +55,17 @@ public class BattlePlayerTurnState : IBattleTurnState
         }
     }
 
-    private int AlivedCharacter() //작성 필요
-    {
-        int num = 0;
+    //private int AlivedCharacter() //작성 필요
+    //{
+    //    int num = 0;
 
-        foreach (BattleCharacter character in battleManager.entryCharacters)
-        {
-            if(character.IsDied == false)
-            {
-                num++;
-            }
-        }
-        return num;
-    }
+    //    foreach (BattleCharacter character in battleManager.entryCharacters)
+    //    {
+    //        if(character.IsDied == false)
+    //        {
+    //            num++;
+    //        }
+    //    }
+    //    return num;
+    //}
 }
