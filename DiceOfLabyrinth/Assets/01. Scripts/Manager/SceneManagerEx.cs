@@ -24,8 +24,9 @@ public class SceneManagerEx : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-        string currentScene = SceneManager.GetActiveScene().name; // 현재 씬 이름을 저장
-        sceneStack.Push(currentScene); // 현재 씬을 스택에 추가. 추후에 꺼내면 그게 이전 씬이 됨.
+        if (sceneName != "LoadingScene")
+            sceneStack.Push(SceneManager.GetActiveScene().name); // 현재 씬을 스택에 추가. 추후에 꺼내면 그게 이전 씬이 됨.
+
         nextSceneName = sceneName; // 일단 이동할 씬을 저장해놓고, 먼저 로딩 씬으로 이동
         SceneManager.LoadScene("LoadingScene");
     }
