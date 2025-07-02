@@ -179,7 +179,6 @@ public class DiceManager : MonoBehaviour
     IEnumerator SortingAfterRoll()
     {
         rollCount++;
-        //BattleManager.Instance.DiceRollButton.interactable = false;
         List<Dice> diceList = new List<Dice>();
         int rollEndCount = 0;
 
@@ -208,8 +207,7 @@ public class DiceManager : MonoBehaviour
                 
                 if(BattleManager.Instance.currentPlayerState == PlayerTurnState.Roll || BattleManager.Instance.currentPlayerState == PlayerTurnState.Enter)
                 {
-                    BattleManager.Instance.currentPlayerState = PlayerTurnState.RollEnd;
-                    BattleManager.Instance.OnOffButton();
+                    BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
                 }
 
                 Debug.Log($"남은 리롤 횟수 : {maxRollCount - rollCount}");
@@ -322,9 +320,8 @@ public class DiceManager : MonoBehaviour
  
             dice.StopSimulation();
             StopCoroutine(SortingAfterRoll());            
-
-            BattleManager.Instance.currentPlayerState = PlayerTurnState.RollEnd;
-            BattleManager.Instance.OnOffButton();
+            
+            BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
         }
         BattleManager.Instance.GetCost(signitureAmount);
     }

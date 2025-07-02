@@ -42,10 +42,8 @@ public class BattleButtonRollDice : AbstractBattleButton
 
     public override void OnPush()
     {
-        BattleManager.Instance.currentPlayerState = PlayerTurnState.Roll;
-
         DiceManager.Instance.RollDice();
 
-        BattleManager.Instance.OnOffButton();
+        BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Roll);
     }
 }

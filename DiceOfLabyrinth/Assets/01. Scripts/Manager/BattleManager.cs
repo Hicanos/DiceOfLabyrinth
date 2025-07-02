@@ -39,16 +39,16 @@ public class BattleManager : MonoBehaviour
     public LoadMonsterPattern LoadMonsterPattern;
     public MonsterPattern MonsterPattern;
     public BattleStateMachine stateMachine;
+    public PlayerTurnState currentPlayerState;
     public IBattleTurnState playerTurnState;
     public IBattleTurnState enemyTurnState;
-    public PlayerTurnState currentPlayerState;
+    public BattlePlayerTurnState battlePlayerTurnState;
 
     public TextMeshProUGUI costTest;
     public TextMeshProUGUI monsterSkillName;
+    public TextMeshProUGUI monsterSkillDescription;
     public Button DiceRollButton;
-    public Button EndTurnButton;
-    public Image patternDisplay;
-    public AbstractBattleButton[] BattleButtons;   
+    public AbstractBattleButton[] BattleButtons;
 
     public readonly int MaxCost = 12;
     public int CurrnetCost = 0;
@@ -60,7 +60,8 @@ public class BattleManager : MonoBehaviour
     void Start()
     {
         playerTurnState = new BattlePlayerTurnState();
-        
+        battlePlayerTurnState = (BattlePlayerTurnState)playerTurnState;
+
         enemyTurnState = new BattleEnemyTurnState();
 
         stateMachine = new BattleStateMachine(playerTurnState);
@@ -77,7 +78,7 @@ public class BattleManager : MonoBehaviour
         stateMachine.BattleUpdate();
     }
 
-    public void BattleStartCoroutine()
+    public void BattleStartCoroutine() //전투 시작시 호출해야할 메서드
     {
         DiceManager.Instance.DiceSettingForBattle();
         battleCoroutine.StartPrepareBattle();
@@ -87,7 +88,6 @@ public class BattleManager : MonoBehaviour
     {
         //entryCharacters = StageManager.Instance.stageSaveData.entryCharacters;
         playerTurnState.Enter();
-        patternDisplay.gameObject.SetActive(true);
         DiceManager.Instance.LoadDiceData();
         
         isBattle = true;
@@ -97,8 +97,7 @@ public class BattleManager : MonoBehaviour
     {
         isBattle = false;
 
-        currentPlayerState = PlayerTurnState.BattleEnd;
-        OnOffButton();
+        battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
     }
 
     private void GetMonster()
@@ -133,21 +132,5 @@ public class BattleManager : MonoBehaviour
 
         CurrnetCost = cost;
         costTest.text = cost.ToString();
-    }
-
-    public void OnOffButton()
-    {
-        foreach(AbstractBattleButton button in BattleButtons)
-        {
-            button.OnOffButton(currentPlayerState);
-        }
-    }
-
-    public void GetButton()
-    {
-        foreach (AbstractBattleButton button in BattleButtons)
-        {
-            button.GetButtonComponent();
-        }
     }
 }

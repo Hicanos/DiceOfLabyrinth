@@ -26,12 +26,10 @@
 
     public override void OnPush()
     {
-        BattleManager.Instance.currentPlayerState = PlayerTurnState.Confirm;
-
         DiceManager.Instance.ground.SetActive(false);
         DiceManager.Instance.DiceBoard.SetActive(false);
         DiceManager.Instance.HideFakeDice();
 
-        BattleManager.Instance.OnOffButton();
+        BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Confirm);
     }
 }
