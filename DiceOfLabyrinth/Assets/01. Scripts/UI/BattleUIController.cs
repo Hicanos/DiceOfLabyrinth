@@ -15,6 +15,7 @@ public class BattleUIController : MonoBehaviour
     }
 
     public ChapterData chapterData;
+    public CheckPanel checkPanel; // 체크 패널, 스테이지가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
     [Header("Select Item Panel")]
     [SerializeField] private TMP_Text itemTitleText;
@@ -29,7 +30,7 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private GameObject defeatPanel;
     [SerializeField] private GameObject selectItemPanel;
     [SerializeField] private GameObject selectEventPanel;
-    [SerializeField] private GameObject[] itemChoiceIcon = new GameObject[3]; // 스태그마 선택 아이콘을 위한 배열
+    [SerializeField] private GameObject[] itemChoiceIcon = new GameObject[3]; // 아이템 선택 아이콘을 위한 배열
 
     [Header("Select Dungeon")]
     [SerializeField] private TMP_Text selectedChapterText; // 스테이지 선택 패널 제목
@@ -80,12 +81,13 @@ public class BattleUIController : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Chapter {stageIndex} is locked. Please unlock it first.");
-            // 스테이지가 잠겨있을 때 잠김 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
+            checkPanel.Open("이 스테이지는 아직 잠겨 있습니다. 다른 스테이지를 완료한 후 다시 시도해 주세요."); // 스테이지가 잠겨있을 때 경고 메시지 표시
         }
     }
     public void OpenTeamFormationPanel()
     {
+        RefreshTeamFormationButton(); // 팀 구성 버튼 상태 갱신
+        RefreshSpawnedCharacters(); // 현재 스폰된 캐릭터들을 갱신
         //Debug.Log($"[TeamFormation] AcquiredCharacters Count: {CharacterManager.Instance.AcquiredCharacters.Count}");
         StageManager.Instance.stageSaveData.currentPhaseState = "TeamSelect"; // 팀 선택 패널
         selectDungeonPanel.SetActive(false);
@@ -111,34 +113,21 @@ public class BattleUIController : MonoBehaviour
         for (int i = 0; i < loopCount; i++)
         {
             var characterSO = CharacterManager.Instance.AcquiredCharacters[i];
+            if (characterSO == null)
+            {
+                Debug.LogWarning($"[TeamFormation] CharacterSO at index {i} is null.");
+            }
 
-            Debug.Log($"[TeamFormation] Setting up character button {i} with CharacterSO: {characterSO.charID}");
-            // CharacterSO null 체크 
-            //if (characterSO == null)
-            //{
-            //    Debug.LogWarning($"[TeamFormation] CharacterSO at index {i} is null.");
-            //}
-            //else
-            //{
-            //    Debug.Log($"[TeamFormation] CharacterSO at index {i}: {characterSO.charID}");
-            //}
-
-            //// charLobbyPrefab null 체크
-            //if (characterSO.charLobbyPrefab == null)
-            //{
-            //    Debug.LogWarning($"[TeamFormation] charLobbyPrefab is null for charID: {characterSO.charID} (index {i})");
-            //}
-            //else
-            //{
-            //    Debug.Log($"[TeamFormation] charLobbyPrefab for charID {characterSO.charID} (index {i}) is valid.");
-            //}
+            if (characterSO.charLobbyPrefab == null)
+            {
+                Debug.LogWarning($"[TeamFormation] charLobbyPrefab is null for charID: {characterSO.charID} (index {i})");
+            }
 
             var prefab = Instantiate(characterSO.charLobbyPrefab, characterButtons[i].transform);
             prefab.transform.localPosition = Vector3.zero;
             prefab.transform.localRotation = Quaternion.identity;
             prefab.transform.localScale = Vector3.one;
         }
-        RefreshTeamFormationButton(); // 팀 구성 버튼 상태 갱신
 
     }
 
@@ -147,6 +136,7 @@ public class BattleUIController : MonoBehaviour
         if (characterIndex < 0 || characterIndex >= CharacterManager.Instance.AcquiredCharacters.Count)
         {
             Debug.Log($"Invalid character index: {characterIndex}. Total acquired characters: {CharacterManager.Instance.AcquiredCharacters.Count}");
+            checkPanel.Open("잘못된 캐릭터 인덱스입니다. 다시 시도해 주세요.");
             return;
         }
         var selectedCharacter = CharacterManager.Instance.AcquiredCharacters[characterIndex].charBattlePrefab.GetComponent<BattleCharacter>(); ; // 선택된 캐릭터 SO
@@ -166,13 +156,9 @@ public class BattleUIController : MonoBehaviour
                 }
             }
         }
-        else
-        {
-            Debug.Log($"이미 5명의 캐릭터가 선택되어 있습니다. 더 이상 선택할 수 없습니다.");
-            return;
-        }
 
         // 선택된 캐릭터를 월드에 스폰하는 리프레시 함수 호출
+        RefreshSpawnedCharacters(); // 스폰된 캐릭터 갱신
     }
 
     public void OnClickTeamFormationButton(int formationIndex) // 팀 구성 버튼 클릭 시 호출되는 함수
@@ -182,15 +168,22 @@ public class BattleUIController : MonoBehaviour
         RefreshTeamFormationButton();
     }
 
-    private void RefreshSpawnedCharacters() // 스폰된 캐릭터를 갱신하는 함수
+    private void RefreshSpawnedCharacters() // 스폰된 캐릭터를 갱신하는 함수, 구조 고쳐야 함
     {
+        // 기존에 월드에 스폰된 캐릭터들을 제거하는 로직
+        var characters = FindObjectsByType<BattleCharacter>(FindObjectsInactive.Include, FindObjectsSortMode.None); // 현재 씬에 있는 모든 BattleCharacter를 찾아서
+        foreach (var character in characters)
+        {
+            Destroy(character.gameObject); // 제거
+        }
         for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++)
         {
             if (StageManager.Instance.stageSaveData.entryCharacters[i] != null)
             {
                 // 캐릭터를 월드에 스폰하는 로직, 스테이지 데이터에 스폰 포지션이 있으며 스폰 포지션과 같은 인덱스의 엔트리 캐릭터를 스폰
-                GameObject spawnCharacter = StageManager.Instance.stageSaveData.entryCharacters[i].CharacterData.charBattlePrefab;
+                GameObject battleCharacterObject = StageManager.Instance.stageSaveData.entryCharacters[i].CharacterData.charBattlePrefab;
                 Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
+                GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity); // 스폰 포인트에 캐릭터 스폰
             }
         }
     }
@@ -231,7 +224,8 @@ public class BattleUIController : MonoBehaviour
     public void OpenSelectStagmaPanel(string phaseState) // "Standby", "NormalReward", "EliteArtifactReward", "EliteStagmaReward" 등과 연결
     {
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태를 설정
-        // phaseState에 따라 아이템 선택 후 다음 페이즈로 넘어가는 방향을 결정
+        stagmaChoices = new StagmaData[3]; // 스태그마 선택 배열 초기화
+        artifactChoices = new ArtifactData[3]; // 아티팩트 선택 배열 초기화
         //예외 상태 스트링 값을 처리하는 스위치
         switch (phaseState)
         {
@@ -275,10 +269,11 @@ public class BattleUIController : MonoBehaviour
     }
 
     public void OpenSelectArtifactPanel(string phaseState) // "NormalReward", "EliteArtifactReward", "BossReward" 와 연결
-                                                           // 현재 기획에선 "BossReward" 페이즈에서 아티팩트 선택을 할 수 있도록 되어있음
     {
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태를 설정
-        // phaseState에 따라 아티팩트 선택 후 다음 페이즈로 넘어가는 방향을 결정
+
+        stagmaChoices = new StagmaData[3]; // 스태그마 선택 배열 초기화
+        artifactChoices = new ArtifactData[3]; // 아티팩트 선택 배열 초기화
         // 예외 상태 스트링 값을 처리하는 스위치
         switch (phaseState)
         {
@@ -327,11 +322,15 @@ public class BattleUIController : MonoBehaviour
         string phaseState = StageManager.Instance.stageSaveData.currentPhaseState; // 현재 페이즈 상태를 가져옴
         selectItemPanel.SetActive(false);
         StageManager.Instance.stageSaveData.currentPhaseState = ""; // 선택지 페이즈 상태 초기화
+        StageManager.Instance.stageSaveData.stagmas.Add(stagmaChoices[selectIndex]); // 선택한 스태그마를 스테이지 저장 데이터에 추가
+        StageManager.Instance.stageSaveData.artifacts.Add(artifactChoices[selectIndex]); // 선택한 스태그마를 스테이지 저장 데이터에 추가
+        stagmaChoices = new StagmaData[3]; // 스태그마 선택 배열 초기화
+        artifactChoices = new ArtifactData[3]; // 아티팩트 선택 배열 초기화
         switch (phaseState)
         {
             case "StartReward":
-                // Standby 페이즈 이후에는 다른 선택지 없이 스테이지1을 시작할 예정
-                OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 배틀 패널을 열도록 함
+                // StartReward 페이즈 이후에는 다른 선택지 없이 스테이지1을 시작할 예정
+                OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 스테이지 패널을 열도록 함
                 break;
             case "NormalReward":
                 OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 노멀 리워드 페이즈에서는 배틀 패널을 열도록 함

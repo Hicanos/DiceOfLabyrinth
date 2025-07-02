@@ -24,6 +24,7 @@ public class SceneManagerEx : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
+
         if (sceneName != "LoadingScene")
             sceneStack.Push(SceneManager.GetActiveScene().name); // 현재 씬을 스택에 추가. 추후에 꺼내면 그게 이전 씬이 됨.
 

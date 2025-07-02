@@ -7,6 +7,7 @@ public class SelectAdventureUIController : MonoBehaviour
 {
     public UserData userData; // 유저 데이터
     public ChapterData chapterData;
+    public CheckPanel checkPanel; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
     private int selectedChapterIndex = -1; // 선택된 챕터 인덱스
 
@@ -62,8 +63,9 @@ public class SelectAdventureUIController : MonoBehaviour
         }
         else if (!StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isUnLocked)
         {
-            Debug.Log($"Chapter: {chapterIndex} is locked.");
             // 챕터가 잠겨있을 때 잠김 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
+            checkPanel.Open("이 챕터는 아직 잠겨 있습니다. 다른 챕터를 완료한 후 다시 시도해 주세요.");
+
             return;
         }
         else if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted)
@@ -74,13 +76,12 @@ public class SelectAdventureUIController : MonoBehaviour
         }
         else if (StageManager.Instance.stageSaveData.currentChapterIndex == -1) // -1은 진행중인 챕터가 없음을 의미합니다.
         {
-            Debug.Log($"새챕터 새로 시작: {chapterIndex}");
             OpenCostCalculationPanel(chapterIndex); // 입장 코스트를 묻는 패널을 엽니다.
         }
         else if (chapterIndex != StageManager.Instance.stageSaveData.currentChapterIndex) // 현재 챕터와 선택한 챕터가 다를 때엔 이전 챕터의 종료를 먼저 하라는 팝업을 띄워야 합니다.
         {
-            Debug.Log($"현재 챕터 {StageManager.Instance.stageSaveData.currentChapterIndex}와 선택한 챕터 {chapterIndex}가 다릅니다. 해당 챕터를 정산부터 해주라는 경고 패널을 열 예정입니다.");
-            return; // 현재 챕터와 선택한 챕터가 다를 때는 경고 패널을 열어야 합니다. 아직 구현이 안 되어 있으므로 일단 리턴합니다.
+            checkPanel.Open($"진행 중인 챕터 {StageManager.Instance.stageSaveData.currentChapterIndex}가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
+            return;
         }
         else // 현재 챕터와 선택한 챕터가 같을 때
         {
@@ -148,10 +149,9 @@ public class SelectAdventureUIController : MonoBehaviour
     public void OnClickRechargeStaminaButton() // 스태미나 충전 버튼
     {
         Debug.Log("Recharge Stamina Button Clicked");
-        if (userData.jewel < 50) // 스태미나 충전 비용이 50 젬이므로, 젬이 부족할 경우
+        if (userData.jewel < 50) // 스태미나 충전 비용이 50 쥬얼이므로, 쥬얼이 부족할 경우
         {
-            Debug.Log("Not enough jewels to recharge stamina.");
-            // 에러 메시지를 표시하거나 UI를 업데이트하는 로직을 추가할 수 있습니다.
+            checkPanel.Open("스태미나를 충전하려면 50 쥬얼이 필요합니다.");
         }
         else
         { 

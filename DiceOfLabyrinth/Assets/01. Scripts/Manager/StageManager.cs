@@ -23,7 +23,7 @@ public class StageSaveData
 
     public int manaStone; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<ArtifactData> artifacts = new List<ArtifactData>();// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
-    public List<StagmaData> stagma = new List<StagmaData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
+    public List<StagmaData> stagmas = new List<StagmaData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<BattleCharacter> entryCharacters = new List<BattleCharacter>(5); // 플레이어 캐릭터 목록, 플레이어 보유 캐릭터 중 5명을 선택하여 스테이지에 진입합니다.
     public BattleCharacter leaderCharacter; // 리더 캐릭터, 스테이지에 진입할 때 선택한 캐릭터 중 하나를 리더로 설정합니다.
 
@@ -43,7 +43,7 @@ public class StageSaveData
         currentPhaseState = ""; // 초기 상태는 ""로 설정
         manaStone = 0;
         artifacts.Clear();
-        stagma.Clear();
+        stagmas.Clear();
         for (int i = 0; i < entryCharacters.Count; i++)
             entryCharacters[i] = null;
         leaderCharacter = null;
@@ -260,11 +260,11 @@ public class StageManager : MonoBehaviour
     public void AddStagma(StagmaData stagmaName)
     {
         // 스태그마 추가 로직을 구현합니다.
-        if (stageSaveData.stagma.Count < 3) // 최대 3개까지 소지 가능
+        if (stageSaveData.stagmas.Count < 3) // 최대 3개까지 소지 가능
         {
-            if (!stageSaveData.stagma.Contains(stagmaName))
+            if (!stageSaveData.stagmas.Contains(stagmaName))
             {
-                stageSaveData.stagma.Add(stagmaName);
+                stageSaveData.stagmas.Add(stagmaName);
                 Debug.Log($"Stagma {stagmaName} added.");
                 // 스태그마 추가 UI 업데이트 메서드를 호출할 예정입니다.
             }
@@ -337,7 +337,7 @@ public class StageManager : MonoBehaviour
             NormalPhaseData phaseData = normalPhases[randomIndex];
             foreach (var enemyInfo in phaseData.Enemies)
             {
-                Vector2 spawnPosition = enemyInfo.SpawnPosition;
+                Vector3 spawnPosition = enemyInfo.SpawnPosition;
                 var enemyPrefab = enemyInfo.EnemyPrefab;
 
                 GameObject enemyObj = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
