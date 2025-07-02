@@ -61,7 +61,7 @@ public class BattlePlayerTurnState : IBattleTurnState
 
         foreach (BattleCharacter character in battleManager.entryCharacters)
         {
-            if(character.isDied == false)
+            if(character.IsDied == false)
             {
                 num++;
             }
