@@ -29,6 +29,10 @@ public class CharacterManager
     // 보유한 캐릭터 데이터 (LobbyCharacter 리스트)
     public List<LobbyCharacter> OwnedCharacters { get; private set; } = new List<LobbyCharacter>();
 
+    // BattleCharacter 관리용 컬렉션
+    public Dictionary<string, BattleCharacter> BattleCharacters { get; private set; } = new Dictionary<string, BattleCharacter>();
+
+
     // Addressable 로드 완료 여부
     public bool IsLoaded { get; private set; } = false;
 
@@ -126,4 +130,45 @@ public class CharacterManager
     {
         return OwnedCharacters.FirstOrDefault(lc => lc.CharacterData != null && lc.CharacterData.charID == charID);
     }
+
+    /// <summary>
+    /// BattleCharacter 데이터만 등록 (프리팹 생성 X)
+    /// 이미 등록되어 있으면 지우고 새로 생성
+    /// </summary>
+    public BattleCharacter RegisterBattleCharacterData(string charID)
+    {
+        // 이미 등록된 BattleCharacter가 있으면 지우고 새로 생성
+        if (BattleCharacters.TryGetValue(charID, out var battleChar))
+        {
+            BattleCharacters.Remove(charID);
+        }
+
+        // 캐릭터 SO가 존재하는지 확인
+        if (!AllCharacters.TryGetValue(charID, out var so))
+            throw new System.Exception($"존재하지 않는 캐릭터 ID: {charID}");
+        
+        // BattleCharacter를 so를 기반으로 생성 (내부에서 LobbyCharacter까지 읽어옴)
+        var battleData = new BattleCharacter(so);
+        BattleCharacters[charID] = battleData;
+        return battleData;
+    }
+
+    /// <summary>
+    /// BattleCharacter 데이터 제거 (프리팹 오브젝트는 따로 관리)
+    /// </summary>
+    public void UnregisterBattleCharacterData(string charID)
+    {
+        if (BattleCharacters.ContainsKey(charID))
+            BattleCharacters.Remove(charID);
+    }
+
+    /// <summary>
+    /// BattleCharacter 데이터 조회
+    /// </summary>
+    public BattleCharacter GetBattleCharacterData(string charID)
+    {
+        BattleCharacters.TryGetValue(charID, out var battleChar);
+        return battleChar;
+    }
+
 }

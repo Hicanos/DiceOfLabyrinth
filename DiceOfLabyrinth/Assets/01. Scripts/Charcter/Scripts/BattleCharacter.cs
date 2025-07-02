@@ -5,8 +5,13 @@ using System;
 /// 배틀(전투)에서 사용되는 캐릭터 정보 및 기능
 /// (실시간 변동 데이터, 버프 등)
 /// </summary>
-public class BattleCharacter : MonoBehaviour, IDamagable
+public class BattleCharacter : IDamagable
 {
+    /*
+     * var battleData = CharacterManager.Instance.RegisterBattleCharacterData("charID");
+     */
+
+
     // 캐릭터의 고유 데이터
     public string CharID { get; private set; }
     public CharacterSO CharacterData { get; private set; }
@@ -35,11 +40,22 @@ public class BattleCharacter : MonoBehaviour, IDamagable
     private float initialCritDamage;
     private int initialLevel;
 
-    public bool isDied { get; private set; }
+    public bool IsDied { get; private set; }
 
     public event Action<int> OnHPChanged;
     public event Action OnDied;
     public event Action OnRevived;
+
+    public BattleCharacter(CharacterSO so)
+    {
+        SetCharacterSO(so);
+    }
+
+    public BattleCharacter(string charID)
+    {
+        SetCharID(charID);
+    }
+
 
     /// <summary>
     /// 외부에서 CharacterSO만 세팅하면 자동으로 LobbyCharacter를 찾아 초기화
@@ -74,8 +90,8 @@ public class BattleCharacter : MonoBehaviour, IDamagable
 
         if (lobbyChar == null)
         {
-            Debug.LogError($"BattleCharacter: 해당하는 LobbyCharacter를 찾을 수 없습니다. (charID: {CharID})");
-            return;
+            // MonoBehaviour가 아니므로 Debug.LogError 대신 예외 처리
+            throw new InvalidOperationException($"BattleCharacter: 해당하는 LobbyCharacter를 찾을 수 없습니다. (charID: {CharID})");
         }
 
         // LobbyCharacter의 모든 주요 데이터를 복사
@@ -97,7 +113,7 @@ public class BattleCharacter : MonoBehaviour, IDamagable
 
         // 전투용 데이터 초기화
         ResetBattleData();
-        isDied = false;
+        IsDied = false;
     }
 
     /// <summary>
@@ -122,7 +138,7 @@ public class BattleCharacter : MonoBehaviour, IDamagable
         {
             CurrentHP = 0;
             // 캐릭터 사망 처리
-            isDied = true;
+            IsDied = true;
             OnDied?.Invoke(); // 사망 이벤트 호출
         }
         OnHPChanged?.Invoke(CurrentHP); // HP 변경 이벤트 호출
@@ -138,18 +154,13 @@ public class BattleCharacter : MonoBehaviour, IDamagable
         OnHPChanged?.Invoke(CurrentHP); // HP 변경 이벤트 호출
     }
 
-    public void Attack()
-    {
-        Debug.Log("공격");
-    }
-
     public int AttackDamage() => CurrentATK;
 
     public void Revive()
     {
-        if (isDied)
+        if (IsDied)
         {
-            isDied = false;
+            IsDied = false;
             CurrentHP = initialHP; // 부활 시 최대 HP로 회복
             ResetBattleData(); // 배틀 데이터 초기화
             OnRevived?.Invoke(); // 부활 이벤트 호출
