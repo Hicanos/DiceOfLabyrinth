@@ -2,9 +2,8 @@
 using System.IO;
 using System;
 using System.Threading.Tasks;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
-using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 /// <summary>
@@ -28,7 +27,6 @@ public class DataSaver
         Instance.Load(); // 인스턴스 생성 시 저장된 데이터 로드
     }
 
-
     [Serializable]
     public class UserData
     {
@@ -41,6 +39,8 @@ public class DataSaver
         // 플레이어가 보유한 캐릭터 정보와 그 캐릭터의 레벨 정보(스킬, 주사위 포함)
         // 고유 식별자 : CharacterSO에서 캐릭터 정보를 가져올 수 있음
         public string CharacterID; // 캐릭터 ID
+        public string NameKr; // 캐릭터 이름 (한국어)
+        public string NameEn; // 캐릭터 이름 (영어)
         public int Level; // 캐릭터 레벨
         public int CurrentExp; // 현재 경험치
 
@@ -51,7 +51,7 @@ public class DataSaver
         public float CritChance; // 치명타 확률
         public float CritDamage; // 치명타 피해량
         // 캐릭터의 스킬 정보 - SkillData 리스트로 저장
-        public List<SkillData> Skills = new List<SkillData>(); // 각 캐릭터가 보유한 스킬 정보
+        // public List<SkillData> Skills = new List<SkillData>(); // 각 캐릭터가 보유한 스킬 정보
 
 
         // 생성자
@@ -132,20 +132,12 @@ public class DataSaver
         {
             CharacterID = lobbyChar.CharacterData.charID,
             Level = lobbyChar.Level,
-            
+            CurrentExp = lobbyChar.CurrentExp,
             ATK = lobbyChar.RegularATK,
             DEF = lobbyChar.RegularDEF,
             HP = lobbyChar.RegularHP,
             CritChance = lobbyChar.CritChance,
-            CritDamage = lobbyChar.CritDamage,
-            CurrentExp = lobbyChar.CurrentExp,
-            //Skills = lobbyChar.Skills.Select(skill => new SkillData
-            //{
-            //    SkillID = skill.SkillID,
-            //    Level = skill.Level,
-            //    Cooldown = skill.Cooldown,
-            //    Power = skill.Power
-            //}).ToList()
+            CritDamage = lobbyChar.CritDamage
         };
 
         int idx = SaveData.characters.FindIndex(c => c.CharacterID == charData.CharacterID);
@@ -162,23 +154,29 @@ public class DataSaver
     /// </summary>
     public void SaveAllCharacters(List<LobbyCharacter> lobbyCharacters)
     {
-        SaveData.characters.Clear();
-        foreach (var lobbyChar in lobbyCharacters)
+        SaveData.characters = lobbyCharacters.Select(lobbyChar => new CharacterData
         {
-            SaveCharacter(lobbyChar);
-        }
+            CharacterID = lobbyChar.CharacterData.charID,
+            Level = lobbyChar.Level,
+            CurrentExp = lobbyChar.CurrentExp,
+            ATK = lobbyChar.RegularATK,
+            DEF = lobbyChar.RegularDEF,
+            HP = lobbyChar.RegularHP,
+            CritChance = lobbyChar.CritChance,
+            CritDamage = lobbyChar.CritDamage
+        }).ToList();
+
         Save();
     }
 
     /// <summary>
     /// 저장된 게임데이터 로드
     /// </summary>
-
     public void Load()
     {
         try
         {
-            if(File.Exists(SavePath))
+            if (File.Exists(SavePath))
             {
                 string json = File.ReadAllText(SavePath);
                 SaveData = JsonConvert.DeserializeObject<GameSaveData>(json);
