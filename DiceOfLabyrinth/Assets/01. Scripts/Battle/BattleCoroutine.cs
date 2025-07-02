@@ -29,7 +29,7 @@ public class BattleCoroutine : MonoBehaviour
         Vector3[] formation = BattleManager.Instance.tempFormation;
         for (int i = 0; i < 5; i++)
         {
-            BattleManager.Instance.entryCharacters[i].gameObject.transform.localPosition = formation[i];
+            BattleManager.Instance.entryCharacters[i].transform.localPosition = formation[i];
         }
 
         BattleManager.Instance.BattleStart();
@@ -45,7 +45,7 @@ public class BattleCoroutine : MonoBehaviour
         {
             for (int i = 0; i < 5; i++)
             {
-                BattleManager.Instance.entryCharacters[i].gameObject.transform.localPosition = Vector3.Lerp(formation[i] - Vector3.right * 12, formation[i], pastTime/destTime);
+                BattleManager.Instance.entryCharacters[i].transform.localPosition = Vector3.Lerp(formation[i] - Vector3.right * 12, formation[i], pastTime/destTime);
             }
 
             pastTime += Time.deltaTime;
