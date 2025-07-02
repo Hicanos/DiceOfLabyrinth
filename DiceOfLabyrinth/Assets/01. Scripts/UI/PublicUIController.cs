@@ -4,6 +4,7 @@ public enum HudMode
 {
     None,
     Lobby,
+    Character,
     SelectAdventure,
     Battle,
 }
@@ -48,6 +49,15 @@ public class PublicUIController : MonoBehaviour
                 settingButton.SetActive(true);
                 homeButton.SetActive(false);
                 sceneBackButton.SetActive(false);
+                break;
+
+            case HudMode.Character:
+                stamina.SetActive(false);
+                gold.SetActive(true);
+                jewel.SetActive(true);
+                settingButton.SetActive(true);
+                homeButton.SetActive(false);
+                sceneBackButton.SetActive(true);
                 break;
 
             case HudMode.SelectAdventure:

@@ -37,6 +37,7 @@ public class UIManager : MonoBehaviour
         {
             "LobbyScene" => HudMode.Lobby,
             "SelectAdventureScene" => HudMode.SelectAdventure,
+            "CharacterScene" => HudMode.Character,
             "BattleScene" => HudMode.Battle,
             "LoadingScene" => HudMode.None,
             _ => HudMode.Lobby
