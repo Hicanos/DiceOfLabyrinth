@@ -47,6 +47,7 @@ public class BattleManager : MonoBehaviour
     public TextMeshProUGUI monsterSkillName;
     public Button DiceRollButton;
     public Button EndTurnButton;
+    public Image patternDisplay;
     public AbstractBattleButton[] BattleButtons;   
 
     public readonly int MaxCost = 12;
@@ -54,6 +55,8 @@ public class BattleManager : MonoBehaviour
     public int BattleTurn = 0;
     public bool isBattle;
 
+    public BattleCoroutine battleCoroutine;
+    public Vector3[] tempFormation = new Vector3[] { new Vector3(-13.8f, 0, 1.16f), new Vector3(-10.5f, 0, -3.17f), new Vector3(-7.4f, 0, -7.24f), new Vector3(-7.25f, 0, -0.18f), new Vector3(-3.98f, 0, -4.46f) };
     void Start()
     {
         playerTurnState = new BattlePlayerTurnState();
@@ -65,7 +68,7 @@ public class BattleManager : MonoBehaviour
         LoadMonsterPattern = new LoadMonsterPattern();
         MonsterPattern = new MonsterPattern();
 
-        BattleStart(); //테스트용        
+        BattleStartCoroutine(); //테스트용
     }
 
     
@@ -74,23 +77,34 @@ public class BattleManager : MonoBehaviour
         stateMachine.BattleUpdate();
     }
 
+    public void BattleStartCoroutine()
+    {
+        DiceManager.Instance.DiceSettingForBattle();
+        battleCoroutine.StartPrepareBattle();
+    }
+
     public void BattleStart()
     {
         //entryCharacters = StageManager.Instance.stageSaveData.entryCharacters;
         playerTurnState.Enter();
+        patternDisplay.gameObject.SetActive(true);
         DiceManager.Instance.LoadDiceData();
+        
         isBattle = true;
     }
 
     public void BattleEnd()
     {
         isBattle = false;
+
+        currentPlayerState = PlayerTurnState.BattleEnd;
+        OnOffButton();
     }
 
     private void GetMonster()
     {
         //enemy = 
-    }    
+    }
 
     public void CharacterAttack(float diceWeighting)
     {

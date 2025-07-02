@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BattleEnemyTurnState : IBattleTurnState
 {
@@ -17,7 +17,7 @@ public class BattleEnemyTurnState : IBattleTurnState
 
     public void Exit()
     {
-        enemyAtack.EnemyAttackEnd();
+        enemyAtack.EnemyAttackEnd();        
         DiceManager.Instance.ResetSetting();
     }
 }
