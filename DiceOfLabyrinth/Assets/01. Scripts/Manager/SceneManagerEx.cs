@@ -22,22 +22,6 @@ public class SceneManagerEx : MonoBehaviour
         }
     }
 
-    public void OnAdventureClicked()
-    {
-        LoadScene("SelectAdventureScene");
-    }
-
-    public void OnDungeon1Clicked() // 추후 팀 편성UI를 추가한 뒤 탐험 버튼을 누르면 배틀 씬으로 이동하게 변경.
-    {
-        LoadScene("BattleScene");
-    }
-
-    public void OnBackClicked()
-    {
-        Debug.Log("뒤로 가기");
-        LoadPreviousScene();
-    }
-
     public void LoadScene(string sceneName)
     {
         string currentScene = SceneManager.GetActiveScene().name; // 현재 씬 이름을 저장

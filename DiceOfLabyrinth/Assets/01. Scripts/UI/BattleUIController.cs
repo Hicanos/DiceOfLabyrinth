@@ -50,7 +50,7 @@ public class BattleUIController : MonoBehaviour
         // 초기 설정
         OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 현재 페이즈 인덱스에 해당하는 스테이지 패널을 엽니다.
         
-        StageManager.Instance.RestoreStageState();
+        //StageManager.Instance.RestoreStageState();
     }
 
     public void OpenSelectDungeonPanel() // 스테이지 선택 패널을 여는 함수
