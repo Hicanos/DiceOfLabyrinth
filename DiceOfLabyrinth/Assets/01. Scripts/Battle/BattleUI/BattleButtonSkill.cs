@@ -4,10 +4,11 @@ using UnityEngine.UI;
 public class BattleButtonSkill : AbstractBattleButton
 {
     Button button;
-    //int index;
+    int index;
     public override void GetButtonComponent()
     {
         button = GetComponent<Button>();
+        GetIndex();
     }
 
     public override void OnOffButton(PlayerTurnState state)
@@ -37,6 +38,11 @@ public class BattleButtonSkill : AbstractBattleButton
 
     public override void OnPush()
     {
-        Debug.Log("캐릭터 스킬 사용");
+        Debug.Log(index + " 캐릭터 스킬 사용");
+    }
+
+    private void GetIndex()
+    {
+        index = gameObject.transform.GetSiblingIndex();
     }
 }
