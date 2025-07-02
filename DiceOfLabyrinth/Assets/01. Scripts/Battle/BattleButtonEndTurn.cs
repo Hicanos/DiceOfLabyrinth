@@ -12,17 +12,20 @@ public class BattleButtonEndTurn : AbstractBattleButton
     {
         switch (state)
         {
+            case PlayerTurnState.BattleStart:
+                gameObject.SetActive(true);
+                break;
             case PlayerTurnState.Enter:
                 button.interactable = false;
-                break;
-            case PlayerTurnState.Roll:
-
                 break;
             case PlayerTurnState.Confirm:
                 button.interactable = true;
                 break;
             case PlayerTurnState.EndTurn:
                 button.interactable = false;
+                break;
+            case PlayerTurnState.BattleEnd:
+                gameObject.SetActive(false);
                 break;
         }
     }

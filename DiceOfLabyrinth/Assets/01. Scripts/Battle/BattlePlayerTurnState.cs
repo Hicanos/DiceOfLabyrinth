@@ -10,15 +10,17 @@ public class BattlePlayerTurnState : IBattleTurnState
         Debug.Log($"Turn{BattleManager.Instance.BattleTurn}");
         Debug.Log("Player's turn");
 
+        BattleManager.Instance.battleCoroutine.GetMonsterPattern();
         //battleManager.GetCost(AlivedCharacter());
 
         if (battleManager.BattleTurn == 1)
         {
-            battleManager.GetButton();
+            battleManager.currentPlayerState = PlayerTurnState.BattleStart;
+            battleManager.OnOffButton();
+            battleManager.GetButton();            
+
             battleManager.LoadMonsterPattern.Load();
         }
-
-        battleManager.LoadMonsterPattern.PrepareSkill();
 
         battleManager.currentPlayerState = PlayerTurnState.Enter;
         battleManager.OnOffButton();

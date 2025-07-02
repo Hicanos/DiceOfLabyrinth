@@ -8,7 +8,7 @@
     public override void OnOffButton(PlayerTurnState state)
     {
         switch (state)
-        {
+        {            
             case PlayerTurnState.Enter:
                 gameObject.SetActive(false);
                 break;
@@ -20,9 +20,6 @@
                 break;
             case PlayerTurnState.Confirm:
                 gameObject.SetActive(false);
-                break;
-            case PlayerTurnState.EndTurn:
-
                 break;
         }
     }

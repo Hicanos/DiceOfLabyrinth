@@ -12,11 +12,13 @@ public class BattleButtonRollDice : AbstractBattleButton
     {
         switch (state)
         {
+            case PlayerTurnState.BattleStart:
+                gameObject.SetActive(true);
+                break;
             case PlayerTurnState.Enter:
                 button.interactable = true;
                 break;
             case PlayerTurnState.Roll:
-                UnityEngine.Debug.Log("작동");
                 button.interactable = false;
                 break;
             case PlayerTurnState.RollEnd:
@@ -32,8 +34,8 @@ public class BattleButtonRollDice : AbstractBattleButton
             case PlayerTurnState.Confirm:
                 button.interactable = false;
                 break;
-            case PlayerTurnState.EndTurn:
-
+            case PlayerTurnState.BattleEnd:
+                gameObject.SetActive(false);
                 break;
         }
     }

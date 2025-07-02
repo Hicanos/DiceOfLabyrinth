@@ -14,6 +14,9 @@ public class BattleButtonSkill : AbstractBattleButton
     {
         switch (state)
         {
+            case PlayerTurnState.BattleStart:
+                gameObject.transform.parent.gameObject.SetActive(true);
+                break;
             case PlayerTurnState.Enter:
                 button.interactable = true;
                 break;
@@ -25,6 +28,9 @@ public class BattleButtonSkill : AbstractBattleButton
                 break;
             case PlayerTurnState.EndTurn:
                 button.interactable = false;
+                break;
+            case PlayerTurnState.BattleEnd:
+                gameObject.transform.parent.gameObject.SetActive(false);
                 break;
         }
     }
