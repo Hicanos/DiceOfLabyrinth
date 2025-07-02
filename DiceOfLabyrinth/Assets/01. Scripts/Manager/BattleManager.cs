@@ -110,9 +110,9 @@ public class BattleManager : MonoBehaviour
         Debug.Log("공격!");
         for (int i = 0; i < entryCharacters.Length; i++)
         {
-            float characterAtk = entryCharacters[i].CurrentATK;
+            //float characterAtk = entryCharacters[i].CurrentATK;
             float monsterDef = enemy.EnemyData.Def;
-            float damage = (characterAtk - monsterDef) * diceWeighting;
+            //float damage = (characterAtk - monsterDef) * diceWeighting;
 
             //enemy.currentHp -= damage;
             //DealDamage(IDamagerable target , int damage);
