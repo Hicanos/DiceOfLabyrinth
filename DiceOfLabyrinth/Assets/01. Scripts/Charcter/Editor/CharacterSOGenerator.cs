@@ -111,6 +111,8 @@ public class CharacterSOGenerator : EditorWindow
                 var BattlePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(data.BattlePrefabPath);
                 so.charBattlePrefab = BattlePrefab;
             }
+            // 아이콘 및 스탠딩 이미지 할당
+
 
             // DiceDataLoader를 통해 Dice 데이터 로드
             DiceDataLoader diceLoader = new DiceDataLoader(); // 기본 경로 사용

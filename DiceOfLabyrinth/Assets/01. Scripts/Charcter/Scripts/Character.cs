@@ -3,7 +3,7 @@ using UnityEngine.TextCore.Text;
 /// <summary>
 /// 공통 베이스
 /// </summary>
-public class Character : MonoBehaviour
+public class Character
 {
     // 캐릭터 데이터
     public CharacterSO CharacterData;
