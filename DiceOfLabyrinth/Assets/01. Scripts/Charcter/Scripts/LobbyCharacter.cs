@@ -7,7 +7,6 @@
 public class LobbyCharacter : Character
 {
     [Header("로비 정보")]
-    public int TotalExp = 0;
     public int CurrentExp = 0;
 
     // Regular 속성을 BattleCharacter에서 가져감
@@ -61,7 +60,6 @@ public class LobbyCharacter : Character
         }
         // 변동된 값(CurrentExp) 저장
         DataSaver.Instance.SaveCharacter(this);
-
     }
 
 

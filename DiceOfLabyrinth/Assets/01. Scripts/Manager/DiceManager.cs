@@ -81,7 +81,7 @@ public class DiceManager : MonoBehaviour
 
     Vector3[] rotationVectors; //굴린 후 정렬시 적용할 회전값
     Vector3[] defaultPos; //주사위 굴리는 기본 위치 화면 아래쪽
-    IEnumerator diceSimulation;
+
     void Start()
     {
         diceResult = new int[5];
@@ -94,6 +94,12 @@ public class DiceManager : MonoBehaviour
         fixedDiceList = new List<int>();
         tempFixedDiceList = new List<int>();
 
+        fixedPos = new Vector3[] { new Vector3(-3, 5, 10.5f), new Vector3(-3, 5, 8.8f), new Vector3(-3, 5, 6.43f), new Vector3(-1.55f, 5, 10.5f), new Vector3(-1.55f, 5, 8.8f) };
+        defaultPos = new Vector3[] { new Vector3(2.29f, 0, 2.07f), new Vector3(2.82f, 3.33f, 1.35f), new Vector3(4.57f, 0, 2.11f), new Vector3(6.05f, 2.96f, 1.35f), new Vector3(7.1f, -0.2f, 1.94f) };
+    }
+
+    public void DiceSettingForBattle()
+    {
         for (int i = 0; i < diceContainer.transform.childCount; i++)
         {
             dices[i] = diceContainer.transform.GetChild(i).gameObject;
@@ -104,9 +110,6 @@ public class DiceManager : MonoBehaviour
             fakeDices[i] = fakeDiceContainer.transform.GetChild(i).gameObject;
             fakeDices[i].SetActive(false);
         }
-
-        fixedPos = new Vector3[] { new Vector3(-3, 5, 10.5f), new Vector3(-3, 5, 8.8f), new Vector3(-3, 5, 6.43f), new Vector3(-1.55f, 5, 10.5f), new Vector3(-1.55f, 5, 8.8f) };
-        defaultPos = new Vector3[] { new Vector3(2.29f, 0, 2.07f), new Vector3(2.82f, 3.33f, 1.35f), new Vector3(4.57f, 0, 2.11f), new Vector3(6.05f, 2.96f, 1.35f), new Vector3(7.1f, -0.2f, 1.94f) };
     }
 
     public void RollDice()
@@ -176,7 +179,6 @@ public class DiceManager : MonoBehaviour
     IEnumerator SortingAfterRoll()
     {
         rollCount++;
-        //BattleManager.Instance.DiceRollButton.interactable = false;
         List<Dice> diceList = new List<Dice>();
         int rollEndCount = 0;
 
@@ -205,8 +207,7 @@ public class DiceManager : MonoBehaviour
                 
                 if(BattleManager.Instance.currentPlayerState == PlayerTurnState.Roll || BattleManager.Instance.currentPlayerState == PlayerTurnState.Enter)
                 {
-                    BattleManager.Instance.currentPlayerState = PlayerTurnState.RollEnd;
-                    BattleManager.Instance.OnOffButton();
+                    BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
                 }
 
                 Debug.Log($"남은 리롤 횟수 : {maxRollCount - rollCount}");
@@ -319,9 +320,8 @@ public class DiceManager : MonoBehaviour
  
             dice.StopSimulation();
             StopCoroutine(SortingAfterRoll());            
-
-            BattleManager.Instance.currentPlayerState = PlayerTurnState.RollEnd;
-            BattleManager.Instance.OnOffButton();
+            
+            BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
         }
         BattleManager.Instance.GetCost(signitureAmount);
     }

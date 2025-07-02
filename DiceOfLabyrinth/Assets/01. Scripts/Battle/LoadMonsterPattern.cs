@@ -30,8 +30,9 @@ public class LoadMonsterPattern
 
         string skillNum = pattern.pattern["Table"][index][patternCount].ToString();
         string skillName = pattern.skill[skillNum]["Name"].ToString();
+        string skillDescription = pattern.skill[skillNum]["Description"].ToString();
         BattleManager.Instance.monsterSkillName.text = $"{skillName} 준비중";
-
+        BattleManager.Instance.monsterSkillDescription.text = skillDescription;
         patternCount++;
         if (patternCount == patternLength)
         {

@@ -12,11 +12,11 @@ public class BattleButtonEndTurn : AbstractBattleButton
     {
         switch (state)
         {
+            case PlayerTurnState.BattleStart:
+                gameObject.SetActive(true);
+                break;
             case PlayerTurnState.Enter:
                 button.interactable = false;
-                break;
-            case PlayerTurnState.Roll:
-
                 break;
             case PlayerTurnState.Confirm:
                 button.interactable = true;
@@ -24,13 +24,14 @@ public class BattleButtonEndTurn : AbstractBattleButton
             case PlayerTurnState.EndTurn:
                 button.interactable = false;
                 break;
+            case PlayerTurnState.BattleEnd:
+                gameObject.SetActive(false);
+                break;
         }
     }
 
     public override void OnPush()
     {
-        BattleManager.Instance.currentPlayerState = PlayerTurnState.EndTurn;
-
         float diceWeighting = DiceManager.Instance.DiceBattle.GetDiceWeighting(); //족보별 계수
 
         //BattleManager.Instance.CharacterAttack(diceWeighting);
@@ -39,6 +40,6 @@ public class BattleButtonEndTurn : AbstractBattleButton
         //공격 애니메이션실행
 
         BattleManager.Instance.stateMachine.ChangeState(BattleManager.Instance.enemyTurnState);
-        BattleManager.Instance.OnOffButton();
+        BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.EndTurn);
     }
 }

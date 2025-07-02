@@ -2,11 +2,13 @@
 
 public enum PlayerTurnState
 {
+    BattleStart,
     Enter,
     Roll,
     RollEnd,
     Confirm,
-    EndTurn
+    EndTurn,
+    BattleEnd
 }
 
 public abstract class AbstractBattleButton : MonoBehaviour
