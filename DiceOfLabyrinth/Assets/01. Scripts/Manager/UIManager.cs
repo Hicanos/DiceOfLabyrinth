@@ -5,6 +5,9 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
+    [field: SerializeField]
+    public PublicUIController publicUIController { get; private set; }
+
     private void Awake()
     {
         if (Instance == null)
@@ -30,6 +33,16 @@ public class UIManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        HudMode hudmode = scene.name switch
+        {
+            "LobbyScene" => HudMode.Lobby,
+            "SelectAdventureScene" => HudMode.SelectAdventure,
+            "BattleScene" => HudMode.Battle,
+            "LoadingScene" => HudMode.None,
+            _ => HudMode.Lobby
+        };
+
+        publicUIController.ApplyMode(hudmode);
         ActivateControllerForScene(scene.name);
     }
 

@@ -18,14 +18,14 @@ public class StageSaveData
     public int currentPhaseIndex; // 현재 페이즈 인덱스
     public CurrentFormationType currentFormationType;
 
-    public string currentPhaseState; // 현재 페이즈 상태, "". "Standby", "NormalReward", "EliteArtifactReward", "EliteStagmaReward", "BossReward", "Shop" , "TeamSelect" 중 하나
-
+    public string currentPhaseState; //""은 던전선택에서 사용되는 상태입니다.
+    // "". "StartReward", "NormalReward", "EliteArtifactReward", "EliteStagmaReward", "BossReward", "Shop" , "TeamSelect",  "Standby", "Battle" 중 하나
 
     public int manaStone; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<ArtifactData> artifacts = new List<ArtifactData>();// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
-    public List<StagmaData> stagma = new List<StagmaData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
-    public CharacterSO[] entryCharacters = new CharacterSO[5]; // 플레이어 캐릭터 목록, 플레이어 보유 캐릭터 중 5명을 선택하여 스테이지에 진입합니다.
-    public CharacterSO leaderCharacter; // 리더 캐릭터, 스테이지에 진입할 때 선택한 캐릭터 중 하나를 리더로 설정합니다.
+    public List<StagmaData> stagmas = new List<StagmaData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
+    public List<BattleCharacter> entryCharacters = new List<BattleCharacter>(5); // 플레이어 캐릭터 목록, 플레이어 보유 캐릭터 중 5명을 선택하여 스테이지에 진입합니다.
+    public BattleCharacter leaderCharacter; // 리더 캐릭터, 스테이지에 진입할 때 선택한 캐릭터 중 하나를 리더로 설정합니다.
 
 
     public int savedExpReward; // 스테이지에서 획득한 경험치 보상, 스테이지 종료시 정산합니다.
@@ -40,11 +40,11 @@ public class StageSaveData
         currentStageIndex = -1; // 초기화 시 스테이지 인덱스는 -1로 설정, 셀렉트 된 스테이지가 없는 상태를 의미합니다.
         currentPhaseIndex = 0;
         currentFormationType = CurrentFormationType.FormationA;
-        currentPhaseState = "Standby"; // 초기 상태는 Standby로 설정
+        currentPhaseState = ""; // 초기 상태는 ""로 설정
         manaStone = 0;
         artifacts.Clear();
-        stagma.Clear();
-        for (int i = 0; i < entryCharacters.Length; i++)
+        stagmas.Clear();
+        for (int i = 0; i < entryCharacters.Count; i++)
             entryCharacters[i] = null;
         leaderCharacter = null;
         savedExpReward = 0;
@@ -129,7 +129,7 @@ public class StageManager : MonoBehaviour
             Debug.LogError("StageSaveData가 할당되지 않았습니다. 스테이지 데이터를 초기화해주세요.");
             return;
         }
-        else if (stageSaveData.currentChapterIndex < 0 || stageSaveData.currentChapterIndex >= chapterData.chapterIndex.Count)
+        else if (stageSaveData.currentChapterIndex < -1 || stageSaveData.currentChapterIndex >= chapterData.chapterIndex.Count)
         {
             Debug.LogError("현재의 챕터 인덱스가 유효하지 않습니다. 챕터 데이터를 확인해주세요.");
             return;
@@ -144,20 +144,21 @@ public class StageManager : MonoBehaviour
             Debug.LogError("현재의 페이즈 인덱스가 유효하지 않습니다. 페이즈 데이터를 확인해주세요.");
             return;
         }
-        else if (stageSaveData.currentStageIndex == -1) // 현재 스테이지가 선택되지 않은 상태인 경우
+        else if (stageSaveData.currentStageIndex == -1 || stageSaveData.currentPhaseState == "") // 던전 선택 상태
         {
             battleUIController.OpenSelectDungeonPanel(); // 스테이지 선택 UI를 엽니다.
             return;
         }
-        else if (stageSaveData.currentPhaseState != "") // 현재 선택지 상태가 비어있지 않은 경우
+        else if (stageSaveData.currentPhaseIndex >= 0 || stageSaveData.currentPhaseIndex <= 4) // 현재 선택지 상태가 비어있지 않은 경우
+                                                                                               // "StartReward", "NormalReward", "SelectChoice", "EliteArtifactReward", "EliteStagmaReward", "BossReward", "Shop" , "TeamSelect",  "Standby", "Battle" 중 하나
         {
             switch (stageSaveData.currentPhaseState)
             {
                 case "TeamSelect":
                     battleUIController.OpenTeamFormationPanel(); // 팀 선택 UI를 엽니다.
                     return;
-                case "Standby":
-                    battleUIController.OpenSelectStagmaPanel("Standby"); // 스탠바이 상태에 해당하는 스태그마 선택 UI를 엽니다.
+                case "StartReward":
+                    battleUIController.OpenSelectStagmaPanel("StartReward"); // 스탠바이 상태에 해당하는 스태그마 선택 UI를 엽니다.
                     return;
                 case "NormalReward":
                     battleUIController.OpenSelectStagmaPanel("NormalReward"); // 노멀 리워드 상태에 해당하는 스태그마 선택 UI를 엽니다.
@@ -171,18 +172,19 @@ public class StageManager : MonoBehaviour
                 case "BossReward":
                     battleUIController.OpenSelectStagmaPanel("BossReward"); // 보스 리워드 상태에 해당하는 스태그마 선택 UI를 엽니다.
                     return;
+                case "Standby":
+                    battleUIController.OpenStagePanel(stageSaveData.currentPhaseIndex); // 스탠바이 상태에 해당하는 UI를 엽니다.
+                    return;
+                case "Battle":
+                    battleUIController.OpenStagePanel(stageSaveData.currentPhaseIndex); // 배틀 중이었어도 복구시엔 스테이지 패널을 엽니다.
+                    return;
                 case "Shop":
-                    ShopPhase(); // 상점 상태인 경우 상점 패널을 엽니다.
+                    // 상점 상태에 해당하는 UI를 엽니다.
                     return;
                 default:
                     Debug.LogError($"Unknown choice state: {stageSaveData.currentPhaseState}");
                     return;
             }
-        }
-        else if (stageSaveData.currentPhaseIndex >=0 || stageSaveData.currentPhaseIndex <= 4) // 페이즈 인덱스가 유효한 경우
-        {
-            battleUIController.OpenStagePanel(stageSaveData.currentPhaseIndex); // 스테이지 패널을 엽니다.
-            return;
         }
     }
 
@@ -207,7 +209,7 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    public void SelectCharacter(CharacterSO character, int index)
+    public void SelectCharacter(BattleCharacter character, int index)
     {
         // 플레이어가 선택한 캐릭터를 엔트리 캐릭터 목록에 추가합니다.
         if (character == null)
@@ -221,7 +223,7 @@ public class StageManager : MonoBehaviour
             stageSaveData.leaderCharacter = character; // 리더 캐릭터가 아직 설정되지 않았다면 선택한 캐릭터를 리더로 설정
         }
     }
-    public void SelectLeaderCharacter(CharacterSO character)
+    public void SelectLeaderCharacter(BattleCharacter character)
     {
         // 플레이어가 선택한 캐릭터를 리더 캐릭터로 설정합니다.
         if (character == null)
@@ -235,7 +237,7 @@ public class StageManager : MonoBehaviour
     public void RemoveCharacter(ChapterData chapterData, int index)
     {
         // 플레이어가 선택한 캐릭터를 엔트리 캐릭터 목록에서 제거합니다.
-        if (index < 0 || index >= stageSaveData.entryCharacters.Length)
+        if (index < 0 || index >= stageSaveData.entryCharacters.Count)
         {
             Debug.LogError($"Invalid character index: {index}. Please provide a valid index.");
             return;
@@ -258,11 +260,11 @@ public class StageManager : MonoBehaviour
     public void AddStagma(StagmaData stagmaName)
     {
         // 스태그마 추가 로직을 구현합니다.
-        if (stageSaveData.stagma.Count < 3) // 최대 3개까지 소지 가능
+        if (stageSaveData.stagmas.Count < 3) // 최대 3개까지 소지 가능
         {
-            if (!stageSaveData.stagma.Contains(stagmaName))
+            if (!stageSaveData.stagmas.Contains(stagmaName))
             {
-                stageSaveData.stagma.Add(stagmaName);
+                stageSaveData.stagmas.Add(stagmaName);
                 Debug.Log($"Stagma {stagmaName} added.");
                 // 스태그마 추가 UI 업데이트 메서드를 호출할 예정입니다.
             }
@@ -335,7 +337,7 @@ public class StageManager : MonoBehaviour
             NormalPhaseData phaseData = normalPhases[randomIndex];
             foreach (var enemyInfo in phaseData.Enemies)
             {
-                Vector2 spawnPosition = enemyInfo.SpawnPosition;
+                Vector3 spawnPosition = enemyInfo.SpawnPosition;
                 var enemyPrefab = enemyInfo.EnemyPrefab;
 
                 GameObject enemyObj = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
@@ -398,40 +400,6 @@ public class StageManager : MonoBehaviour
         {
             Debug.LogError("Invalid phase index.");
         }
-    }
-
-    private void ShopPhase()
-    {
-        //상점페이즈 로직, 예를 들어, 플레이어가 아이템을 구매하거나 판매할 수 있는 UI를 표시합니다.
-    }
-    public void PhaseSuccess(string roomType)
-    {
-            switch (roomType)
-            {
-            case "EliteRoom":
-                // 엘리트 방 성공 로직
-                stageSaveData.currentPhaseIndex++;
-                if (stageSaveData.currentPhaseIndex < 4) // 4페이즈까지 진행 가능
-                {
-                    RewardPhase(stageSaveData.currentPhaseIndex);
-                    BattlePhaseEliteRoom(stageSaveData.currentPhaseIndex);
-                }
-                break;
-            case "ShopRoom":
-                // 상점 방 성공 로직
-                ShopPhase();
-                break;
-
-            case "NormalRoom":
-                // 일반 방 성공 로직
-                stageSaveData.currentPhaseIndex++;
-                if (stageSaveData.currentPhaseIndex < 4) // 4페이즈까지 진행 가능
-                {
-                    RewardPhase(stageSaveData.currentPhaseIndex);
-                    BattlePhaseNormalRoom(stageSaveData.currentPhaseIndex);
-                }
-                break;
-            }
     }
 
     private void RewardPhase(int currentPhaseIndex)
