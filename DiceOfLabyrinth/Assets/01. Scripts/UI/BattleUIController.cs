@@ -107,12 +107,12 @@ public class BattleUIController : MonoBehaviour
                 Destroy(button.transform.GetChild(i).gameObject);
             }
         }
-        int acquiredCount = CharacterManager.Instance.AcquiredCharacters.Count;
+        int acquiredCount = CharacterManager.Instance.OwnedCharacters.Count;
         int buttonCount = characterButtons.Length;
         int loopCount = Mathf.Min(acquiredCount, buttonCount);
         for (int i = 0; i < loopCount; i++)
         {
-            var characterSO = CharacterManager.Instance.AcquiredCharacters[i];
+            var characterSO = CharacterManager.Instance.OwnedCharacters[i].CharacterData;
             if (characterSO == null)
             {
                 Debug.LogWarning($"[TeamFormation] CharacterSO at index {i} is null.");
@@ -133,13 +133,13 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickCharacterButton(int characterIndex) // 캐릭터 버튼 클릭 시 호출되는 함수
     {
-        if (characterIndex < 0 || characterIndex >= CharacterManager.Instance.AcquiredCharacters.Count)
+        if (characterIndex < 0 || characterIndex >= CharacterManager.Instance.OwnedCharacters.Count)
         {
-            Debug.Log($"Invalid character index: {characterIndex}. Total acquired characters: {CharacterManager.Instance.AcquiredCharacters.Count}");
+            Debug.Log($"Invalid character index: {characterIndex}. Total acquired characters: {CharacterManager.Instance.OwnedCharacters.Count}");
             checkPanel.Open("잘못된 캐릭터 인덱스입니다. 다시 시도해 주세요.");
             return;
         }
-        var selectedCharacter = CharacterManager.Instance.AcquiredCharacters[characterIndex].charBattlePrefab.GetComponent<BattleCharacter>(); ; // 선택된 캐릭터 SO
+        var selectedCharacter = CharacterManager.Instance.OwnedCharacters[characterIndex].CharacterData.charBattlePrefab.GetComponent<BattleCharacter>(); ; // 선택된 캐릭터 SO
         //조건문으로 엔트리캐릭터 배열 안에 선택된 캐릭터가 이미 들어있는지 확인
         if (StageManager.Instance.stageSaveData.entryCharacters.Contains(selectedCharacter)) // 이미 선택된 캐릭터인지 확인해서 제거
         {
@@ -170,22 +170,22 @@ public class BattleUIController : MonoBehaviour
 
     private void RefreshSpawnedCharacters() // 스폰된 캐릭터를 갱신하는 함수, 구조 고쳐야 함
     {
-        // 기존에 월드에 스폰된 캐릭터들을 제거하는 로직
-        var characters = FindObjectsByType<BattleCharacter>(FindObjectsInactive.Include, FindObjectsSortMode.None); // 현재 씬에 있는 모든 BattleCharacter를 찾아서
-        foreach (var character in characters)
-        {
-            Destroy(character.gameObject); // 제거
-        }
-        for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++)
-        {
-            if (StageManager.Instance.stageSaveData.entryCharacters[i] != null)
-            {
-                // 캐릭터를 월드에 스폰하는 로직, 스테이지 데이터에 스폰 포지션이 있으며 스폰 포지션과 같은 인덱스의 엔트리 캐릭터를 스폰
-                GameObject battleCharacterObject = StageManager.Instance.stageSaveData.entryCharacters[i].CharacterData.charBattlePrefab;
-                Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
-                GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity); // 스폰 포인트에 캐릭터 스폰
-            }
-        }
+        //// 기존에 월드에 스폰된 캐릭터들을 제거하는 로직
+        //var characters = FindObjectsByType<BattleCharacter>(FindObjectsInactive.Include, FindObjectsSortMode.None); // 현재 씬에 있는 모든 BattleCharacter를 찾아서
+        //foreach (var character in characters)
+        //{
+        //    Destroy(character.gameObject); // 제거
+        //}
+        //for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++)
+        //{
+        //    if (StageManager.Instance.stageSaveData.entryCharacters[i] != null)
+        //    {
+        //        // 캐릭터를 월드에 스폰하는 로직, 스테이지 데이터에 스폰 포지션이 있으며 스폰 포지션과 같은 인덱스의 엔트리 캐릭터를 스폰
+        //        GameObject battleCharacterObject = StageManager.Instance.stageSaveData.entryCharacters[i].CharacterData.charBattlePrefab;
+        //        Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
+        //        GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity); // 스폰 포인트에 캐릭터 스폰
+        //    }
+        //}
     }
 
     private void RefreshTeamFormationButton() // 팀 구성 버튼 상태를 갱신하는 함수
