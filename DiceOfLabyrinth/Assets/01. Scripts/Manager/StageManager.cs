@@ -83,7 +83,7 @@ public class StageManager : MonoBehaviour
     public ChapterData chapterData; // ChapterData 스크립터블 오브젝트, 에디터에서 할당해야 합니다.
     public StageSaveData stageSaveData; // 스테이지 저장 데이터, 스테이지 시작 시 초기화됩니다.
     public BattleUIController battleUIController; // 배틀 UI 컨트롤러, 스테이지 시작 시 초기화됩니다.
-    public CheckPanel checkPanel; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
+    public MessagePopup messagePopup; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
     public static StageManager Instance { get; private set; }
     void Awake()

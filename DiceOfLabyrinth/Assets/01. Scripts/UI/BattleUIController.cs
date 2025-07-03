@@ -16,7 +16,7 @@ public class BattleUIController : MonoBehaviour
     }
 
     public ChapterData chapterData;
-    public CheckPanel checkPanel; // 체크 패널, 스테이지가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
+    public MessagePopup messagePopup; // 체크 패널, 스테이지가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
     [Header("Select Item Panel")]
     [SerializeField] private TMP_Text itemTitleText;
@@ -83,7 +83,7 @@ public class BattleUIController : MonoBehaviour
         }
         else
         {
-            checkPanel.Open("이 스테이지는 아직 잠겨 있습니다. 다른 스테이지를 완료한 후 다시 시도해 주세요."); // 스테이지가 잠겨있을 때 경고 메시지 표시
+            messagePopup.Open("이 스테이지는 아직 잠겨 있습니다. 다른 스테이지를 완료한 후 다시 시도해 주세요."); // 스테이지가 잠겨있을 때 경고 메시지 표시
         }
     }
     public void OpenTeamFormationPanel()
@@ -115,7 +115,7 @@ public class BattleUIController : MonoBehaviour
 
             if (characterSO.icon == null)
             {
-                checkPanel.Open($"캐릭터 아이콘이 설정되지 않았습니다. 캐릭터 ID: {characterSO.nameKr}");
+                messagePopup.Open($"캐릭터 아이콘이 설정되지 않았습니다. 캐릭터 ID: {characterSO.nameKr}");
             }
             characterButtons[i].sprite = characterSO.icon; // 캐릭터 아이콘 설정
         }
@@ -126,42 +126,42 @@ public class BattleUIController : MonoBehaviour
     {
         if (CharacterManager.Instance == null)
         {
-            checkPanel.Open("CharacterManager 인스턴스가 존재하지 않습니다.");
+            messagePopup.Open("CharacterManager 인스턴스가 존재하지 않습니다.");
             return;
         }
         if (CharacterManager.Instance.OwnedCharacters == null)
         {
-            checkPanel.Open("OwnedCharacters 리스트가 초기화되지 않았습니다.");
+            messagePopup.Open("OwnedCharacters 리스트가 초기화되지 않았습니다.");
             return;
         }
         if (characterIndex < 0 || characterIndex >= CharacterManager.Instance.OwnedCharacters.Count)
         {
-            checkPanel.Open("잘못된 캐릭터 인덱스입니다. 다시 시도해 주세요.");
+            messagePopup.Open("잘못된 캐릭터 인덱스입니다. 다시 시도해 주세요.");
             return;
         }
         if (CharacterManager.Instance.OwnedCharacters[characterIndex] == null)
         {
-            checkPanel.Open("해당 인덱스의 캐릭터가 존재하지 않습니다.");
+            messagePopup.Open("해당 인덱스의 캐릭터가 존재하지 않습니다.");
             return;
         }
         if (CharacterManager.Instance.OwnedCharacters[characterIndex].CharacterData == null)
         {
-            checkPanel.Open("해당 캐릭터의 데이터가 존재하지 않습니다.");
+            messagePopup.Open("해당 캐릭터의 데이터가 존재하지 않습니다.");
             return;
         }
         if (StageManager.Instance == null)
         {
-            checkPanel.Open("StageManager 인스턴스가 존재하지 않습니다.");
+            messagePopup.Open("StageManager 인스턴스가 존재하지 않습니다.");
             return;
         }
         if (StageManager.Instance.stageSaveData == null)
         {
-            checkPanel.Open("stageSaveData가 초기화되지 않았습니다.");
+            messagePopup.Open("stageSaveData가 초기화되지 않았습니다.");
             return;
         }
         if (StageManager.Instance.stageSaveData.entryCharacters == null)
         {
-            checkPanel.Open("entryCharacters 리스트가 초기화되지 않았습니다.");
+            messagePopup.Open("entryCharacters 리스트가 초기화되지 않았습니다.");
             return;
         }
         // 리스트 크기를 5로 고정
@@ -196,11 +196,11 @@ public class BattleUIController : MonoBehaviour
                     if (StageManager.Instance.stageSaveData.leaderCharacter == null) // 리더 캐릭터가 설정되지 않았다면 첫 번째 선택된 캐릭터를 리더로 설정
                     {
                         StageManager.Instance.stageSaveData.leaderCharacter = selectedCharacter;
-                        checkPanel.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
+                        messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
                     }
                     else
                     {
-                        checkPanel.Open($"[{selectedCharacter.nameKr}] 캐릭터가 팀에 추가되었습니다.");
+                        messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 팀에 추가되었습니다.");
                     }
                     break;
                 }
@@ -223,7 +223,7 @@ public class BattleUIController : MonoBehaviour
         var entry = StageManager.Instance.stageSaveData.entryCharacters;
         if (entry.All(c => c == null))
         {
-            checkPanel.Open("팀에 캐릭터가 없습니다. 팀을 구성해 주세요.");
+            messagePopup.Open("팀에 캐릭터가 없습니다. 팀을 구성해 주세요.");
             return;
         }
 
@@ -235,7 +235,7 @@ public class BattleUIController : MonoBehaviour
                 if (entry[i] != null)
                 {
                     StageManager.Instance.stageSaveData.leaderCharacter = entry[i];
-                    checkPanel.Open($"[{entry[i].nameKr}] 캐릭터가 리더로 설정되었습니다.");
+                    messagePopup.Open($"[{entry[i].nameKr}] 캐릭터가 리더로 설정되었습니다.");
                     return;
                 }
             }
@@ -250,7 +250,7 @@ public class BattleUIController : MonoBehaviour
             if (entry[nextIndex] != null)
             {
                 StageManager.Instance.stageSaveData.leaderCharacter = entry[nextIndex];
-                checkPanel.Open($"[{entry[nextIndex].nameKr}] 캐릭터가 리더로 설정되었습니다.");
+                messagePopup.Open($"[{entry[nextIndex].nameKr}] 캐릭터가 리더로 설정되었습니다.");
                 break;
             }
         }
@@ -282,7 +282,7 @@ public class BattleUIController : MonoBehaviour
         }
         else
         {
-            checkPanel.Open("팀에 캐릭터가 5명 모두 있어야 탐색을 시작할 수 있습니다.");
+            messagePopup.Open("팀에 캐릭터가 5명 모두 있어야 탐색을 시작할 수 있습니다.");
         }
     }
 
@@ -405,7 +405,7 @@ public class BattleUIController : MonoBehaviour
                 // 아티팩트 선택 UI를 열어야 하는 경우만 break(아래 코드 실행)
                 break;
             default:
-                checkPanel.Open("잘못된 페이즈 상태입니다. 다시 시도해 주세요.");
+                messagePopup.Open("잘못된 페이즈 상태입니다. 다시 시도해 주세요.");
                 return;
         }
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태 저장
@@ -474,7 +474,7 @@ public class BattleUIController : MonoBehaviour
         this.selectIndex = selectIndex; // 선택된 아이템 인덱스 설정
         if (selectIndex < 0 || selectIndex >= 3)
         {
-            checkPanel.Open("잘못된 선택입니다. 다시 시도해 주세요.");
+            messagePopup.Open("잘못된 선택입니다. 다시 시도해 주세요.");
             return;
         }
         // 모든 아이콘의 부모 Outline을 비활성화
@@ -511,7 +511,7 @@ public class BattleUIController : MonoBehaviour
                 itemDescriptionText.text = artifactChoices[selectIndex].description; // 선택된 아티팩트 설명 설정
                 break;
             default:
-                checkPanel.Open("잘못된 페이즈 상태입니다. 다시 시도해 주세요.");
+                messagePopup.Open("잘못된 페이즈 상태입니다. 다시 시도해 주세요.");
                 return;
         }
     }
