@@ -10,7 +10,7 @@ public class BattlePlayerTurnState : IBattleTurnState
         Debug.Log($"Turn{BattleManager.Instance.BattleTurn}");
         Debug.Log("Player's turn");
         
-        //battleManager.GetCost(AlivedCharacter());
+        battleManager.GetCost(AlivedCharacter());
 
         if (battleManager.BattleTurn == 1)
         {
@@ -20,6 +20,7 @@ public class BattlePlayerTurnState : IBattleTurnState
             battleManager.LoadMonsterPattern.Load();
         }
 
+        battleManager.turnText.text = battleManager.BattleTurn.ToString();
         ChangePlayerTurnState(PlayerTurnState.Enter);
     }
 
@@ -55,17 +56,17 @@ public class BattlePlayerTurnState : IBattleTurnState
         }
     }
 
-    //private int AlivedCharacter() //작성 필요
-    //{
-    //    int num = 0;
+    private int AlivedCharacter()
+    {
+        int num = 0;
 
-    //    foreach (BattleCharacter character in battleManager.entryCharacters)
-    //    {
-    //        if(character.IsDied == false)
-    //        {
-    //            num++;
-    //        }
-    //    }
-    //    return num;
-    //}
+        foreach (BattleCharacter character in battleManager.battleCharacters)
+        {
+            if (character.IsDied == false)
+            {
+                num++;
+            }
+        }
+        return num;
+    }
 }

@@ -48,8 +48,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
         else
         {
             images[1].gameObject.SetActive(true);
-        }
-        
+        }        
     }
 
     IEnumerator BlinkUI()
