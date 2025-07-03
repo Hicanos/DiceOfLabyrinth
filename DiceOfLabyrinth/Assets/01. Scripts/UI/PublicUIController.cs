@@ -20,22 +20,10 @@ public class PublicUIController : MonoBehaviour
     [SerializeField] private GameObject homeButton;
     [SerializeField] private GameObject sceneBackButton;
 
-    [Header("Panels")]
-    [SerializeField] private CheckPanel checkPanel;
-
     [Header("Text")]
     [SerializeField] private TMP_Text staminaText;
     [SerializeField] private TMP_Text goldText;
     [SerializeField] private TMP_Text jewelText;
-
-    [ContextMenu("테스트")]
-    void TestOpenCheckPanel()
-    {
-        if (checkPanel)
-        {
-            checkPanel.Open("안녕");
-        }
-    }
 
     public void Refresh()
     {

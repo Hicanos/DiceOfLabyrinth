@@ -83,7 +83,7 @@ public class StageManager : MonoBehaviour
     public ChapterData chapterData; // ChapterData 스크립터블 오브젝트, 에디터에서 할당해야 합니다.
     public StageSaveData stageSaveData; // 스테이지 저장 데이터, 스테이지 시작 시 초기화됩니다.
     public BattleUIController battleUIController; // 배틀 UI 컨트롤러, 스테이지 시작 시 초기화됩니다.
-    public CheckPanel checkPanel; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
+    public MessagePopup messagePopup; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
     public static StageManager Instance { get; private set; }
     void Awake()
@@ -244,16 +244,16 @@ public class StageManager : MonoBehaviour
             if (!stageSaveData.stagmas.Contains(stagmaName))
             {
                 stageSaveData.stagmas.Add(stagmaName);
-                checkPanel.Open($"스태그마 {stagmaName.stagmaName}이(가) 추가되었습니다.");
+                messagePopup.Open($"스태그마 {stagmaName.stagmaName}이(가) 추가되었습니다.");
             }
             else
             {
-                checkPanel.Open($"스태그마 {stagmaName.stagmaName}은(는) 이미 목록에 있습니다.");
+                messagePopup.Open($"스태그마 {stagmaName.stagmaName}은(는) 이미 목록에 있습니다.");
             }
         }
         else
         {
-            checkPanel.Open("최대 3개의 각인을 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
+            messagePopup.Open("최대 3개의 각인을 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
         }
     }
 
@@ -264,11 +264,11 @@ public class StageManager : MonoBehaviour
         {
             stageSaveData.artifacts.Add(artifactName);
             Debug.Log($"Artifact {artifactName} added.");
-            checkPanel.Open($"아티팩트 {artifactName.artifactName}이(가) 추가되었습니다.");
+            messagePopup.Open($"아티팩트 {artifactName.artifactName}이(가) 추가되었습니다.");
         }
         else
         {
-            checkPanel.Open($"아티팩트 {artifactName.artifactName}은(는) 이미 목록에 있습니다.");
+            messagePopup.Open($"아티팩트 {artifactName.artifactName}은(는) 이미 목록에 있습니다.");
         }
     }
 
