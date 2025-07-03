@@ -24,8 +24,9 @@ public class StageSaveData
     public int manaStone; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<ArtifactData> artifacts = new List<ArtifactData>();// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<StagmaData> stagmas = new List<StagmaData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
-    public List<BattleCharacter> entryCharacters = new List<BattleCharacter>(5); // 플레이어 캐릭터 목록, 플레이어 보유 캐릭터 중 5명을 선택하여 스테이지에 진입합니다.
-    public BattleCharacter leaderCharacter; // 리더 캐릭터, 스테이지에 진입할 때 선택한 캐릭터 중 하나를 리더로 설정합니다.
+    public List<CharacterSO> entryCharacters = new List<CharacterSO>(5); // 플레이어 캐릭터 목록, 플레이어 보유 캐릭터 중 5명을 선택하여 스테이지에 진입합니다.
+    public CharacterSO leaderCharacter; // 리더 캐릭터, 스테이지에 진입할 때 선택한 캐릭터 중 하나를 리더로 설정합니다.
+    public List<BattleCharacter> battleCharacters = new List<BattleCharacter>(); // 전투에 참여하는 캐릭터 목록, 탐험 버튼을 누를 때 엔트리 캐릭터 목록의 캐릭터들이 할당됩니다.
 
 
     public int savedExpReward; // 스테이지에서 획득한 경험치 보상, 스테이지 종료시 정산합니다.
@@ -47,6 +48,8 @@ public class StageSaveData
         for (int i = 0; i < entryCharacters.Count; i++)
             entryCharacters[i] = null;
         leaderCharacter = null;
+        for (int i = 0; i < battleCharacters.Count; i++)
+            battleCharacters[i] = null; // 전투 캐릭터 목록 초기화
         savedExpReward = 0;
         savedGoldReward = 0;
         savedJewelReward = 0;
@@ -80,6 +83,7 @@ public class StageManager : MonoBehaviour
     public ChapterData chapterData; // ChapterData 스크립터블 오브젝트, 에디터에서 할당해야 합니다.
     public StageSaveData stageSaveData; // 스테이지 저장 데이터, 스테이지 시작 시 초기화됩니다.
     public BattleUIController battleUIController; // 배틀 UI 컨트롤러, 스테이지 시작 시 초기화됩니다.
+    public MessagePopup messagePopup; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
     public static StageManager Instance { get; private set; }
     void Awake()
@@ -209,31 +213,6 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    public void SelectCharacter(BattleCharacter character, int index)
-    {
-        // 플레이어가 선택한 캐릭터를 엔트리 캐릭터 목록에 추가합니다.
-        if (character == null)
-        {
-            Debug.LogError("Selected character is null. Please select a valid character.");
-            return;
-        }
-        stageSaveData.entryCharacters[index] = character; // 선택한 캐릭터를 엔트리 캐릭터 목록에 설정
-        if(stageSaveData.leaderCharacter == null)
-        {
-            stageSaveData.leaderCharacter = character; // 리더 캐릭터가 아직 설정되지 않았다면 선택한 캐릭터를 리더로 설정
-        }
-    }
-    public void SelectLeaderCharacter(BattleCharacter character)
-    {
-        // 플레이어가 선택한 캐릭터를 리더 캐릭터로 설정합니다.
-        if (character == null)
-        {
-            Debug.LogError("Selected leader character is null. Please select a valid character.");
-            return;
-        }
-        stageSaveData.leaderCharacter = character; // 선택한 캐릭터를 리더로 설정
-    }
-
     public void RemoveCharacter(ChapterData chapterData, int index)
     {
         // 플레이어가 선택한 캐릭터를 엔트리 캐릭터 목록에서 제거합니다.
@@ -265,17 +244,16 @@ public class StageManager : MonoBehaviour
             if (!stageSaveData.stagmas.Contains(stagmaName))
             {
                 stageSaveData.stagmas.Add(stagmaName);
-                Debug.Log($"Stagma {stagmaName} added.");
-                // 스태그마 추가 UI 업데이트 메서드를 호출할 예정입니다.
+                messagePopup.Open($"스태그마 {stagmaName.stagmaName}이(가) 추가되었습니다.");
             }
             else
             {
-                Debug.LogWarning($"Stagma {stagmaName} is already in the list.");
+                messagePopup.Open($"스태그마 {stagmaName.stagmaName}은(는) 이미 목록에 있습니다.");
             }
         }
         else
         {
-            Debug.LogWarning("Maximum number of Stagmas reached. Cannot add more.");
+            messagePopup.Open("최대 3개의 각인을 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
         }
     }
 
@@ -286,11 +264,11 @@ public class StageManager : MonoBehaviour
         {
             stageSaveData.artifacts.Add(artifactName);
             Debug.Log($"Artifact {artifactName} added.");
-            // 아티팩트 추가 UI 업데이트 메서드를 호출할 예정입니다.
+            messagePopup.Open($"아티팩트 {artifactName.artifactName}이(가) 추가되었습니다.");
         }
         else
         {
-            Debug.LogWarning($"Artifact {artifactName} is already in the list.");
+            messagePopup.Open($"아티팩트 {artifactName.artifactName}은(는) 이미 목록에 있습니다.");
         }
     }
 
@@ -402,10 +380,10 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    private void RewardPhase(int currentPhaseIndex)
-    {
+    //private void RewardPhase(int currentPhaseIndex)
+    //{
         
-    }
+    //}
     public void InitializeStageStates(ChapterData chapterData)
     {
         if (chapterData == null)

@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +16,7 @@ public class BattleUIController : MonoBehaviour
     }
 
     public ChapterData chapterData;
-    public CheckPanel checkPanel; // 체크 패널, 스테이지가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
+    public MessagePopup messagePopup; // 체크 패널, 스테이지가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
     [Header("Select Item Panel")]
     [SerializeField] private TMP_Text itemTitleText;
@@ -40,7 +41,7 @@ public class BattleUIController : MonoBehaviour
     [Header("Team Formation")]
     [SerializeField] private SelectedTeamFormation selectedTeamFormation; // 선택된 팀 구성
     [SerializeField] private Image[] teamFormationIcons = new Image[4]; // 팀 구성 아이콘 배열
-    [SerializeField] GameObject[] characterButtons = new GameObject[7];
+    [SerializeField] Image[] characterButtons = new Image[7];
     
     [Header("selected items")]
     public StagmaData[] stagmaChoices = new StagmaData[3]; // 스태그마 선택을 위한 배열
@@ -81,13 +82,13 @@ public class BattleUIController : MonoBehaviour
         }
         else
         {
-            checkPanel.Open("이 스테이지는 아직 잠겨 있습니다. 다른 스테이지를 완료한 후 다시 시도해 주세요."); // 스테이지가 잠겨있을 때 경고 메시지 표시
+            messagePopup.Open("이 스테이지는 아직 잠겨 있습니다. 다른 스테이지를 완료한 후 다시 시도해 주세요."); // 스테이지가 잠겨있을 때 경고 메시지 표시
         }
     }
     public void OpenTeamFormationPanel()
     {
         RefreshTeamFormationButton(); // 팀 구성 버튼 상태 갱신
-        RefreshSpawnedCharacters(); // 현재 스폰된 캐릭터들을 갱신
+        RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
         //Debug.Log($"[TeamFormation] AcquiredCharacters Count: {CharacterManager.Instance.AcquiredCharacters.Count}");
         StageManager.Instance.stageSaveData.currentPhaseState = "TeamSelect"; // 팀 선택 패널
         selectDungeonPanel.SetActive(false);
@@ -100,16 +101,9 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         // characterButtons의 개수를 보유 캐릭터 수 만큼으로 설정하는 로직은 나중에 구현할 예정 현재는 7개로 사용
 
-        foreach(var button in characterButtons)
-        {
-            for (int i = button.transform.childCount - 1; i >= 0; i--)
-            {
-                Destroy(button.transform.GetChild(i).gameObject);
-            }
-        }
-        int acquiredCount = CharacterManager.Instance.OwnedCharacters.Count;
+        int ownedCount = CharacterManager.Instance.OwnedCharacters.Count;
         int buttonCount = characterButtons.Length;
-        int loopCount = Mathf.Min(acquiredCount, buttonCount);
+        int loopCount = Mathf.Min(ownedCount, buttonCount);
         for (int i = 0; i < loopCount; i++)
         {
             var characterSO = CharacterManager.Instance.OwnedCharacters[i].CharacterData;
@@ -118,47 +112,101 @@ public class BattleUIController : MonoBehaviour
                 Debug.LogWarning($"[TeamFormation] CharacterSO at index {i} is null.");
             }
 
-            if (characterSO.charLobbyPrefab == null)
+            if (characterSO.icon == null)
             {
-                Debug.LogWarning($"[TeamFormation] charLobbyPrefab is null for charID: {characterSO.charID} (index {i})");
+                messagePopup.Open($"캐릭터 아이콘이 설정되지 않았습니다. 캐릭터 ID: {characterSO.nameKr}");
             }
-
-            var prefab = Instantiate(characterSO.charLobbyPrefab, characterButtons[i].transform);
-            prefab.transform.localPosition = Vector3.zero;
-            prefab.transform.localRotation = Quaternion.identity;
-            prefab.transform.localScale = Vector3.one;
+            characterButtons[i].sprite = characterSO.icon; // 캐릭터 아이콘 설정
         }
 
     }
 
     public void OnClickCharacterButton(int characterIndex) // 캐릭터 버튼 클릭 시 호출되는 함수
     {
-        if (characterIndex < 0 || characterIndex >= CharacterManager.Instance.OwnedCharacters.Count)
+        if (CharacterManager.Instance == null)
         {
-            Debug.Log($"Invalid character index: {characterIndex}. Total acquired characters: {CharacterManager.Instance.OwnedCharacters.Count}");
-            checkPanel.Open("잘못된 캐릭터 인덱스입니다. 다시 시도해 주세요.");
+            messagePopup.Open("CharacterManager 인스턴스가 존재하지 않습니다.");
             return;
         }
-        var selectedCharacter = CharacterManager.Instance.OwnedCharacters[characterIndex].CharacterData.charBattlePrefab.GetComponent<BattleCharacter>(); ; // 선택된 캐릭터 SO
-        //조건문으로 엔트리캐릭터 배열 안에 선택된 캐릭터가 이미 들어있는지 확인
-        if (StageManager.Instance.stageSaveData.entryCharacters.Contains(selectedCharacter)) // 이미 선택된 캐릭터인지 확인해서 제거
+        if (CharacterManager.Instance.OwnedCharacters == null)
         {
-            StageManager.Instance.stageSaveData.entryCharacters.Remove(selectedCharacter); // 선택된 캐릭터 제거
+            messagePopup.Open("OwnedCharacters 리스트가 초기화되지 않았습니다.");
+            return;
         }
-        else if (StageManager.Instance.stageSaveData.entryCharacters.Count < 5) // 선택된 캐릭터가 아직 추가되지 않은 경우, 최대 5명까지 추가 가능
+        if (characterIndex < 0 || characterIndex >= CharacterManager.Instance.OwnedCharacters.Count)
         {
-            for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++) // 선택된 캐릭터를 스테이지 저장 데이터에 설정
+            messagePopup.Open("잘못된 캐릭터 인덱스입니다. 다시 시도해 주세요.");
+            return;
+        }
+        if (CharacterManager.Instance.OwnedCharacters[characterIndex] == null)
+        {
+            messagePopup.Open("해당 인덱스의 캐릭터가 존재하지 않습니다.");
+            return;
+        }
+        if (CharacterManager.Instance.OwnedCharacters[characterIndex].CharacterData == null)
+        {
+            messagePopup.Open("해당 캐릭터의 데이터가 존재하지 않습니다.");
+            return;
+        }
+        if (StageManager.Instance == null)
+        {
+            messagePopup.Open("StageManager 인스턴스가 존재하지 않습니다.");
+            return;
+        }
+        if (StageManager.Instance.stageSaveData == null)
+        {
+            messagePopup.Open("stageSaveData가 초기화되지 않았습니다.");
+            return;
+        }
+        if (StageManager.Instance.stageSaveData.entryCharacters == null)
+        {
+            messagePopup.Open("entryCharacters 리스트가 초기화되지 않았습니다.");
+            return;
+        }
+        // 리스트 크기를 5로 고정
+        while (StageManager.Instance.stageSaveData.entryCharacters.Count < 5)
+            StageManager.Instance.stageSaveData.entryCharacters.Add(null);
+
+        while (StageManager.Instance.stageSaveData.entryCharacters.Count > 5)
+            StageManager.Instance.stageSaveData.entryCharacters.RemoveAt(StageManager.Instance.stageSaveData.entryCharacters.Count - 1);
+
+        CharacterSO selectedCharacter = CharacterManager.Instance.OwnedCharacters[characterIndex].CharacterData;
+
+        // 이미 선택된 캐릭터면 해제(토글)
+        bool wasSelected = false;
+        for (int i = 0; i < 5; i++)
+        {
+            if (StageManager.Instance.stageSaveData.entryCharacters[i] == selectedCharacter)
             {
-                if (StageManager.Instance.stageSaveData.entryCharacters[i] == null) // 빈 슬롯에 캐릭터를 설정
+                StageManager.Instance.stageSaveData.entryCharacters[i] = null;
+                wasSelected = true;
+            }
+        }
+
+        // 선택 해제였다면 추가하지 않음
+        if (!wasSelected)
+        {
+            // 첫 번째 null 슬롯에 할당
+            for (int i = 0; i < 5; i++)
+            {
+                if (StageManager.Instance.stageSaveData.entryCharacters[i] == null)
                 {
                     StageManager.Instance.stageSaveData.entryCharacters[i] = selectedCharacter;
+                    if (StageManager.Instance.stageSaveData.leaderCharacter == null) // 리더 캐릭터가 설정되지 않았다면 첫 번째 선택된 캐릭터를 리더로 설정
+                    {
+                        StageManager.Instance.stageSaveData.leaderCharacter = selectedCharacter;
+                        messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
+                    }
+                    else
+                    {
+                        messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 팀에 추가되었습니다.");
+                    }
                     break;
                 }
             }
         }
-
         // 선택된 캐릭터를 월드에 스폰하는 리프레시 함수 호출
-        RefreshSpawnedCharacters(); // 스폰된 캐릭터 갱신
+        RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 스폰된 캐릭터 갱신
     }
 
     public void OnClickTeamFormationButton(int formationIndex) // 팀 구성 버튼 클릭 시 호출되는 함수
@@ -168,24 +216,96 @@ public class BattleUIController : MonoBehaviour
         RefreshTeamFormationButton();
     }
 
-    private void RefreshSpawnedCharacters() // 스폰된 캐릭터를 갱신하는 함수, 구조 고쳐야 함
+
+    public void OnClickSelectLeaderButton()
     {
-        //// 기존에 월드에 스폰된 캐릭터들을 제거하는 로직
-        //var characters = FindObjectsByType<BattleCharacter>(FindObjectsInactive.Include, FindObjectsSortMode.None); // 현재 씬에 있는 모든 BattleCharacter를 찾아서
-        //foreach (var character in characters)
-        //{
-        //    Destroy(character.gameObject); // 제거
-        //}
-        //for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++)
-        //{
-        //    if (StageManager.Instance.stageSaveData.entryCharacters[i] != null)
-        //    {
-        //        // 캐릭터를 월드에 스폰하는 로직, 스테이지 데이터에 스폰 포지션이 있으며 스폰 포지션과 같은 인덱스의 엔트리 캐릭터를 스폰
-        //        GameObject battleCharacterObject = StageManager.Instance.stageSaveData.entryCharacters[i].CharacterData.charBattlePrefab;
-        //        Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
-        //        GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity); // 스폰 포인트에 캐릭터 스폰
-        //    }
-        //}
+        var entry = StageManager.Instance.stageSaveData.entryCharacters;
+        if (entry.All(c => c == null))
+        {
+            messagePopup.Open("팀에 캐릭터가 없습니다. 팀을 구성해 주세요.");
+            return;
+        }
+
+        // 리더가 null이면 0번 인덱스(첫 번째 null이 아닌 캐릭터)를 리더로 지정
+        if (StageManager.Instance.stageSaveData.leaderCharacter == null)
+        {
+            for (int i = 0; i < entry.Count; i++)
+            {
+                if (entry[i] != null)
+                {
+                    StageManager.Instance.stageSaveData.leaderCharacter = entry[i];
+                    messagePopup.Open($"[{entry[i].nameKr}] 캐릭터가 리더로 설정되었습니다.");
+                    return;
+                }
+            }
+        }
+
+        // 리더가 entryCharacters에 있으면 다음 인덱스의 캐릭터(비어있지 않은 캐릭터)를 리더로, 마지막 인덱스면 0번부터 다시 탐색
+        int currentLeaderIndex = entry.FindIndex(c => c == StageManager.Instance.stageSaveData.leaderCharacter);
+        int count = entry.Count;
+        for (int offset = 1; offset <= count; offset++)
+        {
+            int nextIndex = (currentLeaderIndex + offset) % count;
+            if (entry[nextIndex] != null)
+            {
+                StageManager.Instance.stageSaveData.leaderCharacter = entry[nextIndex];
+                messagePopup.Open($"[{entry[nextIndex].nameKr}] 캐릭터가 리더로 설정되었습니다.");
+                break;
+            }
+        }
+    }
+
+    public void OnClickExploreButton()
+    {
+        // 배틀 캐릭터 크기를 5로 고정
+        while (StageManager.Instance.stageSaveData.battleCharacters.Count < 5)
+            StageManager.Instance.stageSaveData.battleCharacters.Add(null);
+        while (StageManager.Instance.stageSaveData.battleCharacters.Count > 5)
+            StageManager.Instance.stageSaveData.battleCharacters.RemoveAt(StageManager.Instance.stageSaveData.battleCharacters.Count - 1);
+
+        // 팀에 5명 모두 채워져 있는지 확인
+        if (StageManager.Instance.stageSaveData.entryCharacters.Count(c => c != null) == 5)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                var so = StageManager.Instance.stageSaveData.entryCharacters[i];
+                StageManager.Instance.stageSaveData.battleCharacters[i] = CharacterManager.Instance.RegisterBattleCharacterData(so.charID);
+            }
+            // 엔트리 캐릭터는 비우고 리프레시
+            for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++)
+            {
+                StageManager.Instance.stageSaveData.entryCharacters[i] = null;
+            }
+            DeleteSpawnedCharacters(); // 월드에 스폰된 캐릭터 제거
+            OpenSelectStagmaPanel("StartReward"); // 시작 시 각인 선택 패널 열기
+        }
+        else
+        {
+            messagePopup.Open("팀에 캐릭터가 5명 모두 있어야 탐색을 시작할 수 있습니다.");
+        }
+    }
+
+    private void RefreshSpawnedCharacters(int formationIndex) // 월드에 스폰된 캐릭터를 갱신하는 함수
+    {
+        DeleteSpawnedCharacters(); // 기존에 스폰된 캐릭터 제거
+        for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++)
+        {
+            if (StageManager.Instance.stageSaveData.entryCharacters[i] != null)
+            {
+                // 캐릭터를 월드에 스폰하는 로직, 스테이지 데이터에 스폰 포지션이 있으며 스폰 포지션과 같은 인덱스의 엔트리 캐릭터를 스폰
+                GameObject battleCharacterObject = StageManager.Instance.stageSaveData.entryCharacters[i].charBattlePrefab;
+                Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.PlayerFormations[formationIndex].PlayerPositions[i].Position;
+                GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity); // 스폰 포인트에 캐릭터 스폰
+            }
+        }
+    }
+    private void DeleteSpawnedCharacters() // 월드에 스폰된 캐릭터를 제거하는 함수
+    {
+        var characters = FindObjectsByType<SpawnedCharacter>(FindObjectsInactive.Include, FindObjectsSortMode.None); // 현재 씬에 있는 모든 SpawnedCharacter를 찾아서
+        foreach (var character in characters)
+        {
+            Destroy(character.gameObject); // 제거
+        }
     }
 
     private void RefreshTeamFormationButton() // 팀 구성 버튼 상태를 갱신하는 함수
@@ -194,6 +314,7 @@ public class BattleUIController : MonoBehaviour
         {
             teamFormationIcons[i].color = (SelectedTeamFormation)i == selectedTeamFormation ? Color.yellow : Color.white; // 선택된 팀 구성은 노란색, 나머지는 흰색으로 표시
         }
+        RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
     }
     public void OpenStagePanel(int phaseIndex) // 스테이지 패널을 여는 함수
     {
@@ -283,7 +404,7 @@ public class BattleUIController : MonoBehaviour
                 // 아티팩트 선택 UI를 열어야 하는 경우만 break(아래 코드 실행)
                 break;
             default:
-                Debug.LogError($"잘못된 phase state: {phaseState}");
+                messagePopup.Open("잘못된 페이즈 상태입니다. 다시 시도해 주세요.");
                 return;
         }
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태 저장
@@ -317,13 +438,39 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
     }
 
+    public void OnClickSelectItemNumber(int selectIndex) // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
+    {
+        if (selectIndex < 0 || selectIndex >= 3)
+        {
+            messagePopup.Open("잘못된 선택입니다. 다시 시도해 주세요.");
+            return;
+        }
+        switch (StageManager.Instance.stageSaveData.currentPhaseState)
+        {
+            case "StartReward":
+            case "EliteStagmaReward":
+                itemTitleText.text = stagmaChoices[selectIndex].name; // 선택된 스태그마 이름 설정
+                itemDescriptionText.text = stagmaChoices[selectIndex].description; // 선택된 스태그마 설명 설정
+                break;
+            case "NormalReward":
+            case "EliteArtifactReward":
+            case "BossReward":
+                itemTitleText.text = artifactChoices[selectIndex].name; // 선택된 아티팩트 이름 설정
+                itemDescriptionText.text = artifactChoices[selectIndex].description; // 선택된 아티팩트 설명 설정
+                break;
+            default:
+                messagePopup.Open("잘못된 페이즈 상태입니다. 다시 시도해 주세요.");
+                return;
+        }
+    }
+
     public void OnClickSelectItem(int selectIndex) // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
     {
         string phaseState = StageManager.Instance.stageSaveData.currentPhaseState; // 현재 페이즈 상태를 가져옴
         selectItemPanel.SetActive(false);
         StageManager.Instance.stageSaveData.currentPhaseState = ""; // 선택지 페이즈 상태 초기화
-        StageManager.Instance.stageSaveData.stagmas.Add(stagmaChoices[selectIndex]); // 선택한 스태그마를 스테이지 저장 데이터에 추가
-        StageManager.Instance.stageSaveData.artifacts.Add(artifactChoices[selectIndex]); // 선택한 스태그마를 스테이지 저장 데이터에 추가
+        StageManager.Instance.AddStagma(stagmaChoices[selectIndex]);
+        StageManager.Instance.AddArtifacts(artifactChoices[selectIndex]);
         stagmaChoices = new StagmaData[3]; // 스태그마 선택 배열 초기화
         artifactChoices = new ArtifactData[3]; // 아티팩트 선택 배열 초기화
         switch (phaseState)
@@ -350,9 +497,9 @@ public class BattleUIController : MonoBehaviour
         }
     }
 
-    public void OpenSelectEventPanel() // 선택지 이벤트 패널을 여는 함수
+    public void OpenSelectChoicePanel() // 선택지 이벤트 패널을 여는 함수
     {
-        StageManager.Instance.stageSaveData.currentPhaseState = "SelectChoice"; // 현재 페이즈 상태를 "SelectEvent"로 설정
+        StageManager.Instance.stageSaveData.currentPhaseState = "SelectChoice"; // 현재 페이즈 상태를 "SelectChoice"로 설정
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(false);
@@ -363,7 +510,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(true); // 선택지 이벤트 패널 활성화
     }
 
-    public void OnClickSelectEvent(int phaseStage) // 나중에 쓰도록 만들어 놓음
+    public void OnClickSelectChoice(int phaseStage) // 나중에 쓰도록 만들어 놓음
     {
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);

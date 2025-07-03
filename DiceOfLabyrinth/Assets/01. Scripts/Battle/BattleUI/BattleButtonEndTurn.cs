@@ -1,4 +1,6 @@
-﻿using UnityEngine.UI;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleButtonEndTurn : AbstractBattleButton
 {
@@ -33,13 +35,19 @@ public class BattleButtonEndTurn : AbstractBattleButton
     public override void OnPush()
     {
         float diceWeighting = DiceManager.Instance.DiceBattle.GetDiceWeighting(); //족보별 계수
-
-        //BattleManager.Instance.CharacterAttack(diceWeighting);
-        //CharacterAttack(diceWeighting);
-
+        BattleManager battleManager = BattleManager.Instance;
         //공격 애니메이션실행
+        battleManager.CharacterAttack(diceWeighting);
 
-        BattleManager.Instance.stateMachine.ChangeState(BattleManager.Instance.enemyTurnState);
-        BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.EndTurn);
+        battleManager.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.EndTurn);
+        if(battleManager.TestEnemy.IsDead == true)
+        {
+            Debug.Log("전투 종료");
+            battleManager.BattleEnd();
+        }
+        else
+        {
+            battleManager.stateMachine.ChangeState(battleManager.enemyTurnState);
+        }
     }
 }

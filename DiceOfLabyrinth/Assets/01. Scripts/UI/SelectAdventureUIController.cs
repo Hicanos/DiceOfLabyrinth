@@ -2,12 +2,12 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Android.Gradle.Manifest;
 
 public class SelectAdventureUIController : MonoBehaviour
 {
-    public UserData userData; // 유저 데이터
     public ChapterData chapterData;
-    public CheckPanel checkPanel; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
+    public MessagePopup messagePopup; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
     private int selectedChapterIndex = -1; // 선택된 챕터 인덱스
 
@@ -15,7 +15,7 @@ public class SelectAdventureUIController : MonoBehaviour
     [SerializeField] private GameObject selectChapterPanel;
     [SerializeField] private GameObject costCalculationPanel;
     //[SerializeField] private GameObject selectDungeonPanel; //배틀씬으로 패널을 옮겼으므로 주석 처리
-    [SerializeField] private GameObject scaresStaminaPanel;
+    [SerializeField] private GameObject scarceStaminaPanel;
     //[SerializeField] private GameObject teamFormationPanel; // 배틀씬으로 패널을 옮겼으므로 주석 처리
 
     [Header("Difficulty Toggles")]
@@ -44,7 +44,7 @@ public class SelectAdventureUIController : MonoBehaviour
     {
         selectChapterPanel.SetActive(true);
         costCalculationPanel.SetActive(false);
-        scaresStaminaPanel.SetActive(false);
+        scarceStaminaPanel.SetActive(false);
         DifficultyToggleRefresh(); // 초기 난이도 토글 상태 설정
 
     }
@@ -56,31 +56,35 @@ public class SelectAdventureUIController : MonoBehaviour
             chapterIndex++; // 하드 챕터의 인덱스는 Normal 챕터 인덱스 + 1입니다.
         }
         Debug.Log($"Selected Chapter Index: {chapterIndex}");
-        if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
+        if (chapterIndex < -1 || chapterIndex >= chapterData.chapterIndex.Count)
         {
-            Debug.Log($"Invalid chapter index: {chapterIndex}. 인덱스에 해당하는 챕터 데이터가 없습니다.");
+            messagePopup.Open("선택한 챕터가 유효하지 않습니다. 다시 시도해 주세요.");
+            return;
+        }
+        else if (CharacterManager.Instance.OwnedCharacters.Count < 5) // 캐릭터가 5개 미만일 때
+        {
+            messagePopup.Open("캐릭터를 5개 이상 보유해야 챕터를 선택할 수 있습니다.");
             return;
         }
         else if (!StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isUnLocked)
         {
-            // 챕터가 잠겨있을 때 잠김 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
-            checkPanel.Open("이 챕터는 아직 잠겨 있습니다. 다른 챕터를 완료한 후 다시 시도해 주세요.");
+            messagePopup.Open("이 챕터는 아직 잠겨 있습니다. 다른 챕터를 완료한 후 다시 시도해 주세요.");
 
             return;
         }
-        else if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted)
-        {
-            Debug.Log("Chapter is already completed.");
-            // 이미 완료된 챕터를 선택했을 때 완료 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
-            return;
-        }
+        //else if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted)
+        //{
+        //    Debug.Log("Chapter is already completed.");
+        //    // 이미 완료된 챕터를 선택했을 때 완료 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
+        //    return;
+        //}
         else if (StageManager.Instance.stageSaveData.currentChapterIndex == -1) // -1은 진행중인 챕터가 없음을 의미합니다.
         {
             OpenCostCalculationPanel(chapterIndex); // 입장 코스트를 묻는 패널을 엽니다.
         }
         else if (chapterIndex != StageManager.Instance.stageSaveData.currentChapterIndex) // 현재 챕터와 선택한 챕터가 다를 때엔 이전 챕터의 종료를 먼저 하라는 팝업을 띄워야 합니다.
         {
-            checkPanel.Open($"진행 중인 챕터 {StageManager.Instance.stageSaveData.currentChapterIndex}가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
+            messagePopup.Open($"진행 중인 챕터 {StageManager.Instance.stageSaveData.currentChapterIndex}가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
             return;
         }
         else // 현재 챕터와 선택한 챕터가 같을 때
@@ -90,6 +94,7 @@ public class SelectAdventureUIController : MonoBehaviour
             // 진행중이던 챕터를 다시 시작했다는 팝업을 띄우는 로직을 추가할 수 있습니다.
             SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
             StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태를 복원합니다.
+            messagePopup.Open($"진행 중이던 챕터 {chapterIndex}를 다시 선택했습니다. 배틀 씬으로 이동합니다.");
             return;
         }
     }
@@ -99,7 +104,7 @@ public class SelectAdventureUIController : MonoBehaviour
         selectChapterPanel.SetActive(true);
         costCalculationPanel.SetActive(false);
         //selectDungeonPanel.SetActive(false);
-        scaresStaminaPanel.SetActive(false);
+        scarceStaminaPanel.SetActive(false);
         //teamFormationPanel.SetActive(false);
     }
 
@@ -109,7 +114,7 @@ public class SelectAdventureUIController : MonoBehaviour
         selectedChapterIndex = chapterIndex; // 선택된 챕터 인덱스 저장
         selectChapterPanel.SetActive(true);
         costCalculationPanel.SetActive(true);
-        scaresStaminaPanel.SetActive(false);
+        scarceStaminaPanel.SetActive(false);
     }
 
     public void OnClickCostCalculationPanelStartButton()
@@ -117,19 +122,18 @@ public class SelectAdventureUIController : MonoBehaviour
         int chapterIndex = selectedChapterIndex; // 선택된 챕터 인덱스 가져오기
         if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
         {
-            Debug.Log($"Invalid chapter index: {chapterIndex}. Cannot start battle.");
+            messagePopup.Open("선택한 챕터가 유효하지 않습니다. 다시 시도해 주세요.");
             return;
         }
         var selectedChapter = chapterData.chapterIndex[chapterIndex];
-        if (userData.stamina < selectedChapter.ChapterCost)
+        if (!UserDataManager.Instance.UseStamina(selectedChapter.ChapterCost)) // 코스트를 지불하지 못하면,
         {
             OpenScaresStaminaPanel();
-            return;
+            //return;
         }
         else
         {
             selectedChapterIndex = -1; // 선택된 챕터 인덱스 초기화
-            userData.stamina -= selectedChapter.ChapterCost; // 스테이지 시작 시 스태미너 차감
             StageManager.Instance.stageSaveData.currentChapterIndex = chapterIndex; // 현재 챕터 인덱스 설정
             StageManager.Instance.stageSaveData.ResetToDefault(chapterIndex); // 스테이지 상태 초기화
             Debug.Log($"Starting battle for chapter: {selectedChapter.ChapterName} (Index: {chapterIndex})");
@@ -142,27 +146,25 @@ public class SelectAdventureUIController : MonoBehaviour
     {
         selectChapterPanel.SetActive(true);
         costCalculationPanel.SetActive(true);
-        scaresStaminaPanel.SetActive(true);
+        scarceStaminaPanel.SetActive(true);
         UpdateStaminaUI(); // 스태미나 UI 업데이트
     }
 
     public void OnClickRechargeStaminaButton() // 스태미나 충전 버튼
     {
         Debug.Log("Recharge Stamina Button Clicked");
-        if (userData.jewel < 50) // 스태미나 충전 비용이 50 쥬얼이므로, 쥬얼이 부족할 경우
+        if (!UserDataManager.Instance.UseJewel(50)) // 스태미나 충전 비용이 50 쥬얼이므로, 쥬얼이 부족할 경우
         {
-            checkPanel.Open("스태미나를 충전하려면 50 쥬얼이 필요합니다.");
+            messagePopup.Open("스태미나를 충전하려면 50 쥬얼이 필요합니다.");
         }
         else
         { 
-            userData.stamina += 50; // 스태미나 50 증가
-            userData.jewel -= 50; // 스태미나 충전 비용으로 50 젬 차감
+            UserDataManager.Instance.AddStamina(50); // 스태미나 50 증가
         }
         OpenCostCalculationPanel(selectedChapterIndex); // 선택된 챕터 인덱스를 다시 설정
     }
     public void OnClickScaresStaminaPanelBackButton()
     {
-        Debug.Log("Scares Stamina Panel Back Button Clicked");
         OpenCostCalculationPanel(selectedChapterIndex); // 선택된 챕터 인덱스를 다시 설정
     }
 
@@ -208,7 +210,7 @@ public class SelectAdventureUIController : MonoBehaviour
 
     private void UpdateStaminaUI()
     {
-        afterCostText.text = $"{userData.stamina}/50 -> {userData.stamina + 50}/50"; // 스태미나 충전 후의 상태를 보여줍니다.
+        afterCostText.text = $"{UserDataManager.Instance.userdata.stamina}/50 -> {UserDataManager.Instance.userdata.stamina + 50}/50"; // 스태미나 충전 후의 상태를 보여줍니다.
         //int regenerationTime = // 스태미나 재생 시간 계산 로직은 아직 구현되지 않았습니다.
     }
 }

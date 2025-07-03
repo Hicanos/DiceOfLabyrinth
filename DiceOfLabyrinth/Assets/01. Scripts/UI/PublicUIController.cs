@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public enum HudMode
 {
@@ -19,16 +20,21 @@ public class PublicUIController : MonoBehaviour
     [SerializeField] private GameObject homeButton;
     [SerializeField] private GameObject sceneBackButton;
 
-    [Header("Panels")]
-    [SerializeField] private CheckPanel checkPanel;
+    [Header("Text")]
+    [SerializeField] private TMP_Text staminaText;
+    [SerializeField] private TMP_Text goldText;
+    [SerializeField] private TMP_Text jewelText;
 
-    [ContextMenu("테스트")]
-    void TestOpenCheckPanel()
+    public void Refresh()
     {
-        if (checkPanel)
-        {
-            checkPanel.Open("안녕");
-        }
+        UserData userdata = UserDataManager.Instance.userdata;
+
+        if (userdata == null)
+            return;
+
+        staminaText.text = userdata.stamina.ToString("N0");
+        goldText.text = userdata.gold.ToString("N0");
+        jewelText.text = userdata.jewel.ToString("N0");
     }
 
     public void ApplyMode(HudMode mode)

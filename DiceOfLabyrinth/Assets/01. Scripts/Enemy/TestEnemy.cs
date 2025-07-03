@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
 
-public class TestEnemy : MonoBehaviour, IEnemy // 테스트에너미 클래스는 모든 에너미 클래스들이 구현해야하는 메서드들의 디폴트를 제공합니다. IEnemy 인터페이스를 상속받고 구체적인 구현을 해주세요
+public class TestEnemy : MonoBehaviour, IEnemy, IDamagable // 테스트에너미 클래스는 모든 에너미 클래스들이 구현해야하는 메서드들의 디폴트를 제공합니다. IEnemy 인터페이스를 상속받고 구체적인 구현을 해주세요
 {
     [SerializeField] private EnemyData enemyData;
     [SerializeField] private int currentHp;
@@ -13,6 +13,7 @@ public class TestEnemy : MonoBehaviour, IEnemy // 테스트에너미 클래스�
     [SerializeField] private float healthBarWidth = 100f; // 기본 너비 설정
 
     private bool isDead = false;
+    public bool IsDead => isDead;
     public EnemyData EnemyData
     {
         get => enemyData;
@@ -66,6 +67,24 @@ public class TestEnemy : MonoBehaviour, IEnemy // 테스트에너미 클래스�
     private void UpdateEnemyName()
     {
         Debug.Log($"Enemy Name: {enemyData.EnemyName}");
+    }
+
+    public void TakeDamage(int damage)
+    {
+        Debug.Log($"Monster hp : {currentHp}");
+        currentHp = Mathf.Clamp(currentHp - damage, 0, currentHp);
+        float hpRatio = currentHp / enemyData.MaxHp;
+        
+        BattleManager.Instance.enemyHPImage.GetComponent<RectTransform>().localScale = new Vector3(hpRatio, 1, 1);
+        if (currentHp == 0)
+        {
+            isDead = true;
+        }
+    }
+
+    public void Heal(int amount)
+    {
+        currentHp += amount;
     }
 }
 
