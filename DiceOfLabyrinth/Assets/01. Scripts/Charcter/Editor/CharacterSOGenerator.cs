@@ -162,6 +162,9 @@ public class CharacterSOGenerator : EditorWindow
                 string guid = AssetDatabase.AssetPathToGUID(assetPath);
                 var entry = Asettings.CreateOrMoveEntry(guid, group);
                 entry.address = so.nameEn;
+
+                // Addressable 라벨 자동 할당
+                entry.SetLabel("CharacterSO", true);
             }
 
             // 에셋 저장 및 데이터베이스 갱신
