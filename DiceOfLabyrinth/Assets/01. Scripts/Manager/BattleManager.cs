@@ -73,11 +73,23 @@ public class BattleManager : MonoBehaviour
 
         LoadMonsterPattern = new LoadMonsterPattern();
         MonsterPattern = new MonsterPattern();
+
+        battleCharacters = new BattleCharacter[5];
     }
     
     void Update()
     {
         stateMachine.BattleUpdate();
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            
+            battleCharacters[0] = CharacterManager.Instance.RegisterBattleCharacterData("Char_0");
+            battleCharacters[1] = CharacterManager.Instance.RegisterBattleCharacterData("Char_1");
+            battleCharacters[2] = CharacterManager.Instance.RegisterBattleCharacterData("Char_2");
+            battleCharacters[3] = CharacterManager.Instance.RegisterBattleCharacterData("Char_3");
+            battleCharacters[4] = CharacterManager.Instance.RegisterBattleCharacterData("Char_4");
+            BattleStartCoroutine();
+        }
     }
 
     public void BattleStartCoroutine() //전투 시작시 호출해야할 메서드
@@ -107,7 +119,7 @@ public class BattleManager : MonoBehaviour
         int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
         chapterIndex = 0; //임시
         enemyGO = StageManager.Instance.chapterData.chapterIndex[0].stageData.stageIndex[chapterIndex].NormalPhases[0].Enemies[0].EnemyPrefab;
-        Instantiate(enemyGO, new Vector3(8.77f, 0, -1.06f), Quaternion.identity, enemyContainer);
+        Instantiate(enemyGO, new Vector3(5.85f, -0.02f, -1.06f), Quaternion.identity, enemyContainer);
     }
 
     public void CharacterAttack(float diceWeighting)
