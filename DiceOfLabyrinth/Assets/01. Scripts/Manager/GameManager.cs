@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
     public void ExitGame()
     {
         // 게임 종료 로직 구현
-        // 현재까지 진행된 게인 상태를 저장하고, 게임을 종료함.
+        // 현재까지 진행된 게임 상태를 저장하고, 게임을 종료함.
         SaveGame();
         Debug.Log("게임 종료됨");
         Application.Quit();
@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("게임 초기화됨");
         // 예: 모든 데이터 초기화, 씬 재시작 등
         // 모든 매니저를 초기 상태로 되돌림( 클리어한 스테이지, 획득한 캐릭터, 강화된 캐릭터 등)
+        // 저장된 데이터도 삭제함
         
     }
 

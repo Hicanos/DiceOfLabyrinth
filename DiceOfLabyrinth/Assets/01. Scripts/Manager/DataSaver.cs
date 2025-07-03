@@ -39,8 +39,6 @@ public class DataSaver
         // 플레이어가 보유한 캐릭터 정보와 그 캐릭터의 레벨 정보(스킬, 주사위 포함)
         // 고유 식별자 : CharacterSO에서 캐릭터 정보를 가져올 수 있음
         public string CharacterID; // 캐릭터 ID
-        public string NameKr; // 캐릭터 이름 (한국어)
-        public string NameEn; // 캐릭터 이름 (영어)
         public int Level; // 캐릭터 레벨
         public int CurrentExp; // 현재 경험치
 
