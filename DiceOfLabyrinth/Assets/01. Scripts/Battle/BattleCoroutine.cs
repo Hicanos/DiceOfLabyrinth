@@ -7,7 +7,6 @@ public class BattleCoroutine : MonoBehaviour
     bool isPreparing = false;
     IEnumerator enumerator;
     GameObject[] characterGOs = new GameObject[5];
-    GameObject[] go = new GameObject[5];
 
     private void Update()
     {
@@ -36,7 +35,7 @@ public class BattleCoroutine : MonoBehaviour
 
         for (int i = 0; i < 5; i++)
         {
-            go[i].transform.localPosition = positions[i].Position;
+            BattleManager.Instance.characterPrefabs[i].transform.localPosition = positions[i].Position;
         }
 
         BattleManager.Instance.BattleStart();
@@ -55,7 +54,7 @@ public class BattleCoroutine : MonoBehaviour
         for(int i = 0; i < 5; i++)
         {
             characterGOs[i] = BattleManager.Instance.battleCharacters[i].CharacterData.charBattlePrefab;
-            go[i] = Instantiate(characterGOs[i], positions[i].Position - Vector3.right* 12, Quaternion.identity, BattleManager.Instance.characterContainer);
+            BattleManager.Instance.characterPrefabs[i] = Instantiate(characterGOs[i], positions[i].Position - Vector3.right* 12, Quaternion.identity, BattleManager.Instance.characterContainer);
         }
         yield return null;
 
@@ -63,7 +62,7 @@ public class BattleCoroutine : MonoBehaviour
         {
             for (int i = 0; i < 5; i++)
             {
-                go[i].transform.localPosition = Vector3.Lerp(positions[i].Position - Vector3.right * 12, positions[i].Position, pastTime/destTime);
+                BattleManager.Instance.characterPrefabs[i].transform.localPosition = Vector3.Lerp(positions[i].Position - Vector3.right * 12, positions[i].Position, pastTime/destTime);
             }
 
             pastTime += Time.deltaTime;

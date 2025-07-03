@@ -71,7 +71,11 @@ public class TestEnemy : MonoBehaviour, IEnemy, IDamagable // 테스트에너미
 
     public void TakeDamage(int damage)
     {
+        Debug.Log($"Monster hp : {currentHp}");
         currentHp = Mathf.Clamp(currentHp - damage, 0, currentHp);
+        float hpRatio = currentHp / enemyData.MaxHp;
+        
+        BattleManager.Instance.enemyHPImage.GetComponent<RectTransform>().localScale = new Vector3(hpRatio, 1, 1);
         if (currentHp == 0)
         {
             isDead = true;

@@ -43,7 +43,6 @@ public class DiceManager : MonoBehaviour
     public GameObject[] fakeDices;
     public GameObject ground;
     public GameObject DiceBoard;
-    public Image diceBackground;
 
     [SerializeField] RollMultipleDiceSynced roll;
     [SerializeField] Camera diceCamera;

@@ -19,12 +19,17 @@ public class TempEnemyAttack : MonoBehaviour
 
         Debug.Log("Enemy Attack!");
 
-        //int damage = BattleManager.Instance.enemy.ATK;
-        //IDamagerable target = getTarget;
+        //IDamagable target = getTarget;
+        //int damage = BattleManager.Instance.TestEnemy.EnemyData.Atk - 
         //battleManager.DealDamage(target , damage);
 
         yield return new WaitForSeconds(1.2f);
 
         BattleManager.Instance.stateMachine.ChangeState(BattleManager.Instance.playerTurnState);
+    }
+
+    private void getTarget()
+    {
+
     }
 }
