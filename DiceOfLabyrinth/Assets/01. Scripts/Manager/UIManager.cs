@@ -44,6 +44,7 @@ public class UIManager : MonoBehaviour
         };
 
         publicUIController.ApplyMode(hudmode);
+        publicUIController.Refresh();
         ActivateControllerForScene(scene.name);
     }
 
