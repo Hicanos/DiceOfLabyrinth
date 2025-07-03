@@ -100,7 +100,6 @@ public class BattleManager : MonoBehaviour
     {
         isBattle = false;
 
-        battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
     }
 
     private void GetMonster()
@@ -123,8 +122,15 @@ public class BattleManager : MonoBehaviour
 
             int damage = (characterAtk - monsterDef) * (int)diceWeighting;
             Debug.Log($"{characterAtk}-{monsterDef}*{(int)diceWeighting} = {damage}");
-            //enemy.currentHp -= damage;
+
             DealDamage(damagerableEnemy, damage);
+            if(enemy.IsDead == true)
+            {
+                //쓰러지는 애니메이션 있으면 좋을듯
+                battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
+
+                //결과창
+            }
         }
     }
 

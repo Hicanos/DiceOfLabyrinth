@@ -13,6 +13,7 @@ public class TestEnemy : MonoBehaviour, IEnemy, IDamagable // 테스트에너미
     [SerializeField] private float healthBarWidth = 100f; // 기본 너비 설정
 
     private bool isDead = false;
+    public bool IsDead => isDead;
     public EnemyData EnemyData
     {
         get => enemyData;
@@ -70,7 +71,11 @@ public class TestEnemy : MonoBehaviour, IEnemy, IDamagable // 테스트에너미
 
     public void TakeDamage(int damage)
     {
-        currentHp -= damage;
+        currentHp = Mathf.Clamp(currentHp - damage, 0, currentHp);
+        if (currentHp == 0)
+        {
+            isDead = true;
+        }
     }
 
     public void Heal(int amount)
