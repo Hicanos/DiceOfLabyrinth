@@ -249,7 +249,7 @@ public class StageManager : MonoBehaviour
         {
             if (stageSaveData.stagmas[i] == stagmaName)
             {
-                checkPanel.Open($"스태그마 {stagmaName.stagmaName}은(는) 이미 목록에 있습니다.");
+                messagePopup.Open($"스태그마 {stagmaName.stagmaName}은(는) 이미 목록에 있습니다.");
                 return;
             }
         }
@@ -260,13 +260,13 @@ public class StageManager : MonoBehaviour
             if (stageSaveData.stagmas[i] == null)
             {
                 stageSaveData.stagmas[i] = stagmaName;
-                checkPanel.Open($"스태그마 {stagmaName.stagmaName}이(가) 추가되었습니다.");
+                messagePopup.Open($"스태그마 {stagmaName.stagmaName}이(가) 추가되었습니다.");
                 return;
             }
         }
 
         // 모두 차 있으면 안내
-        checkPanel.Open("최대 3개의 각인을 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
+        messagePopup.Open("최대 3개의 각인을 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
     }
 
     public void AddArtifacts(ArtifactData artifactName)
@@ -282,7 +282,7 @@ public class StageManager : MonoBehaviour
         {
             if (stageSaveData.artifacts[i] == artifactName)
             {
-                checkPanel.Open($"아티팩트 {artifactName.artifactName}은(는) 이미 목록에 있습니다.");
+                messagePopup.Open($"아티팩트 {artifactName.artifactName}은(는) 이미 목록에 있습니다.");
                 return;
             }
         }
@@ -294,13 +294,13 @@ public class StageManager : MonoBehaviour
             {
                 stageSaveData.artifacts[i] = artifactName;
                 Debug.Log($"Artifact {artifactName} added.");
-                checkPanel.Open($"아티팩트 {artifactName.artifactName}이(가) 추가되었습니다.");
+                messagePopup.Open($"아티팩트 {artifactName.artifactName}이(가) 추가되었습니다.");
                 return;
             }
         }
 
         // 모두 차 있으면 안내
-        checkPanel.Open("최대 18개의 아티팩트를 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
+        messagePopup.Open("최대 18개의 아티팩트를 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
     }
 
     public void EquipArtifacts(ArtifactData artifactName)
