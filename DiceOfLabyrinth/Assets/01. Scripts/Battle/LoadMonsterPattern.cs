@@ -25,14 +25,16 @@ public class LoadMonsterPattern
     {
         if (patternLength == 0)
         {
-            SelectPattern();
+            index = SelectPattern();
         }
 
         string skillNum = pattern.pattern["Table"][index][patternCount].ToString();
         string skillName = pattern.skill[skillNum]["Name"].ToString();
         string skillDescription = pattern.skill[skillNum]["Description"].ToString();
+
         BattleManager.Instance.monsterSkillName.text = $"{skillName} 준비중";
         BattleManager.Instance.monsterSkillDescription.text = skillDescription;
+
         patternCount++;
         if (patternCount == patternLength)
         {
@@ -41,15 +43,16 @@ public class LoadMonsterPattern
         }
     }    
 
-    private void SelectPattern()
+    private string SelectPattern()
     {
         Debug.Log("새 패턴 받아옴");
         JToken patternIndex = pattern.pattern["Index"];
 
-        int iNum = UnityEngine.Random.Range(0, patternIndex.Count());
-        index = patternIndex[iNum].ToString();
+        string index = BattleManager.Instance.TestEnemy.EnemyData.Pattern.ToString();
 
         patternLength = pattern.pattern["Table"][index].Count();
+
+        return index;
     }
 }
 
