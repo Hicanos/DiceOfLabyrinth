@@ -27,6 +27,8 @@ public class BattleCharacter : IDamagable
 
     [Header("배틀 상태")]
     // 전투 중 실시간 변동 데이터
+    public string CharNameKr;
+    public string CharNameEn;
     public int CurrentHP;
     public int CurrentATK;
     public int CurrentDEF;
@@ -122,6 +124,8 @@ public class BattleCharacter : IDamagable
     /// </summary>
     public void ResetBattleData()
     {
+        CharNameKr = CharacterData.nameKr; // 캐릭터 이름 설정
+        CharNameEn = CharacterData.nameEn; // 캐릭터 영어 이름 설정
         CurrentHP = initialHP;
         CurrentATK = initialATK;
         CurrentDEF = initialDEF;
