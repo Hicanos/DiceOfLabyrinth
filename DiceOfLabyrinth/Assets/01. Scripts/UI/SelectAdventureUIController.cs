@@ -56,24 +56,28 @@ public class SelectAdventureUIController : MonoBehaviour
             chapterIndex++; // 하드 챕터의 인덱스는 Normal 챕터 인덱스 + 1입니다.
         }
         Debug.Log($"Selected Chapter Index: {chapterIndex}");
-        if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
+        if (chapterIndex < -1 || chapterIndex >= chapterData.chapterIndex.Count)
         {
-            Debug.Log($"Invalid chapter index: {chapterIndex}. 인덱스에 해당하는 챕터 데이터가 없습니다.");
+            checkPanel.Open("선택한 챕터가 유효하지 않습니다. 다시 시도해 주세요.");
+            return;
+        }
+        else if (CharacterManager.Instance.OwnedCharacters.Count < 5) // 캐릭터가 5개 미만일 때
+        {
+            checkPanel.Open("캐릭터를 5개 이상 보유해야 챕터를 선택할 수 있습니다.");
             return;
         }
         else if (!StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isUnLocked)
         {
-            // 챕터가 잠겨있을 때 잠김 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
             checkPanel.Open("이 챕터는 아직 잠겨 있습니다. 다른 챕터를 완료한 후 다시 시도해 주세요.");
 
             return;
         }
-        else if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted)
-        {
-            Debug.Log("Chapter is already completed.");
-            // 이미 완료된 챕터를 선택했을 때 완료 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
-            return;
-        }
+        //else if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted)
+        //{
+        //    Debug.Log("Chapter is already completed.");
+        //    // 이미 완료된 챕터를 선택했을 때 완료 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
+        //    return;
+        //}
         else if (StageManager.Instance.stageSaveData.currentChapterIndex == -1) // -1은 진행중인 챕터가 없음을 의미합니다.
         {
             OpenCostCalculationPanel(chapterIndex); // 입장 코스트를 묻는 패널을 엽니다.
@@ -90,6 +94,7 @@ public class SelectAdventureUIController : MonoBehaviour
             // 진행중이던 챕터를 다시 시작했다는 팝업을 띄우는 로직을 추가할 수 있습니다.
             SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
             StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태를 복원합니다.
+            checkPanel.Open($"진행 중이던 챕터 {chapterIndex}를 다시 선택했습니다. 배틀 씬으로 이동합니다.");
             return;
         }
     }
@@ -117,7 +122,7 @@ public class SelectAdventureUIController : MonoBehaviour
         int chapterIndex = selectedChapterIndex; // 선택된 챕터 인덱스 가져오기
         if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
         {
-            Debug.Log($"Invalid chapter index: {chapterIndex}. Cannot start battle.");
+            checkPanel.Open("선택한 챕터가 유효하지 않습니다. 다시 시도해 주세요.");
             return;
         }
         var selectedChapter = chapterData.chapterIndex[chapterIndex];
@@ -162,7 +167,6 @@ public class SelectAdventureUIController : MonoBehaviour
     }
     public void OnClickScaresStaminaPanelBackButton()
     {
-        Debug.Log("Scares Stamina Panel Back Button Clicked");
         OpenCostCalculationPanel(selectedChapterIndex); // 선택된 챕터 인덱스를 다시 설정
     }
 

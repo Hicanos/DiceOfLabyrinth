@@ -5,6 +5,7 @@ using System;
 /// 배틀(전투)에서 사용되는 캐릭터 정보 및 기능
 /// (실시간 변동 데이터, 버프 등)
 /// </summary>
+[System.Serializable]
 public class BattleCharacter : IDamagable
 {
     /*
