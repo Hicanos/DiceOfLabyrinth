@@ -1,6 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System;
+using System.Collections;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
@@ -32,12 +34,13 @@ public class BattleManager : MonoBehaviour
         }
     }
     #endregion
-    //public CharacterSO[] entryCharacters;
-    public GameObject[] entryCharacters; //임시
+    //public GameObject[] entryCharacters; //임시
+    public BattleCharacter[] battleCharacters; //임시
     GameObject enemyGO;
     public TestEnemy TestEnemy => enemyGO.GetComponent<TestEnemy>();
 
     [SerializeField] Transform enemyContainer;
+    public Transform characterContainer;
 
     public LoadMonsterPattern LoadMonsterPattern;
     public MonsterPattern MonsterPattern;
@@ -70,10 +73,7 @@ public class BattleManager : MonoBehaviour
 
         LoadMonsterPattern = new LoadMonsterPattern();
         MonsterPattern = new MonsterPattern();
-
-        BattleStartCoroutine(); //테스트용
     }
-
     
     void Update()
     {
@@ -104,16 +104,17 @@ public class BattleManager : MonoBehaviour
 
     private void GetMonster()
     {
-        enemyGO = StageManager.Instance.stageData.stageIndex[0].NormalPhases[0].Enemies[0].EnemyPrefab;
+        int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
+        chapterIndex = 0; //임시
+        enemyGO = StageManager.Instance.chapterData.chapterIndex[0].stageData.stageIndex[chapterIndex].NormalPhases[0].Enemies[0].EnemyPrefab;
         Instantiate(enemyGO, new Vector3(8.77f, 0, -1.06f), Quaternion.identity, enemyContainer);
     }
 
     public void CharacterAttack(float diceWeighting)
     {
-        for (int i = 0; i < entryCharacters.Length; i++)
-        {
-            //float characterAtk = entryCharacters[i].CurrentATK;
-            int characterAtk = 110;
+        for (int i = 0; i < battleCharacters.Length; i++)
+        {                        
+            int characterAtk = battleCharacters[i].CurrentATK;
 
             IDamagable damagerableEnemy = enemyGO.GetComponent<IDamagable>();
             TestEnemy enemy = (TestEnemy)damagerableEnemy;
@@ -121,6 +122,7 @@ public class BattleManager : MonoBehaviour
             int monsterDef = enemy.EnemyData.Def;
 
             int damage = (characterAtk - monsterDef) * (int)diceWeighting;
+            damage = Mathf.Clamp(damage, 0, damage);
             Debug.Log($"{characterAtk}-{monsterDef}*{(int)diceWeighting} = {damage}");
 
             DealDamage(damagerableEnemy, damage);
@@ -128,7 +130,7 @@ public class BattleManager : MonoBehaviour
             {
                 //쓰러지는 애니메이션 있으면 좋을듯
                 battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
-
+                Debug.Log("몬스터 쓰러짐");
                 //결과창
             }
         }

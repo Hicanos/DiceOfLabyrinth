@@ -6,6 +6,7 @@ public class BattleCoroutine : MonoBehaviour
 {
     bool isPreparing = false;
     IEnumerator enumerator;
+    GameObject[] characterGOs = new GameObject[5];
 
     private void Update()
     {
@@ -27,12 +28,14 @@ public class BattleCoroutine : MonoBehaviour
         isPreparing = false;
         StopCoroutine(enumerator);
 
+        int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
+        chapterIndex = 0; //임시
         int iFormation = ((int)StageManager.Instance.stageSaveData.currentFormationType);
-        List<PlayerPositions> positions = StageManager.Instance.stageData.PlayerFormations[iFormation].PlayerPositions;
+        List<PlayerPositions> positions = StageManager.Instance.chapterManager.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
 
         for (int i = 0; i < 5; i++)
         {
-            BattleManager.Instance.entryCharacters[i].transform.localPosition = positions[i].Position;
+            characterGOs[i].transform.localPosition = positions[i].Position;
         }
 
         BattleManager.Instance.BattleStart();
@@ -41,25 +44,32 @@ public class BattleCoroutine : MonoBehaviour
     IEnumerator BattlePrepare()
     {
         isPreparing = true;
-
+        int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
+        chapterIndex = 0; //임시
         int iFormation = ((int)StageManager.Instance.stageSaveData.currentFormationType);
-        List<PlayerPositions> positions = StageManager.Instance.stageData.PlayerFormations[iFormation].PlayerPositions;
+        List<PlayerPositions> positions = StageManager.Instance.chapterManager.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
 
         float pastTime = 0, destTime = 2.5f;
+
+        for(int i = 0; i < 5; i++)
+        {
+            characterGOs[i] = BattleManager.Instance.battleCharacters[i].CharacterData.charBattlePrefab;
+            Instantiate(characterGOs[i], positions[i].Position - Vector3.right* 12, Quaternion.identity, BattleManager.Instance.characterContainer);
+        }
+        yield return null;
 
         while (pastTime < destTime)
         {
             for (int i = 0; i < 5; i++)
             {
-                BattleManager.Instance.entryCharacters[i].transform.localPosition = Vector3.Lerp(positions[i].Position - Vector3.right * 12, positions[i].Position, pastTime/destTime);
+                characterGOs[i].transform.localPosition = Vector3.Lerp(positions[i].Position - Vector3.right * 12, positions[i].Position, pastTime/destTime);
             }
 
             pastTime += Time.deltaTime;
             yield return null;
         }
 
-        isPreparing = false;
-        Debug.Log("작동");
+        isPreparing = false;        
         BattleManager.Instance.BattleStart();
     }
 }
