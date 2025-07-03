@@ -257,26 +257,37 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickExploreButton()
     {
-        //if (StageManager.Instance.stageSaveData.entryCharacters.FindIndex(c => c != null) < 5) // 팀에 캐릭터가 5개 이상인지 확인
-        //{
-        //    OpenBattlePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 배틀 패널 열기
-        //    return;
-        //}
-        //else
-        //{
-        //    checkPanel.Open("팀에 캐릭터가 5개 이상 있어야 탐색을 시작할 수 있습니다.");
-        //    return;
-        //}
+        // 배틀 캐릭터 크기를 5로 고정
+        while (StageManager.Instance.stageSaveData.battleCharacters.Count < 5)
+            StageManager.Instance.stageSaveData.battleCharacters.Add(null);
+        while (StageManager.Instance.stageSaveData.battleCharacters.Count > 5)
+            StageManager.Instance.stageSaveData.battleCharacters.RemoveAt(StageManager.Instance.stageSaveData.battleCharacters.Count - 1);
+
+        // 팀에 5명 모두 채워져 있는지 확인
+        if (StageManager.Instance.stageSaveData.entryCharacters.Count(c => c != null) == 5)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                var so = StageManager.Instance.stageSaveData.entryCharacters[i];
+                StageManager.Instance.stageSaveData.battleCharacters[i] = CharacterManager.Instance.RegisterBattleCharacterData(so.charID);
+            }
+            // 엔트리 캐릭터는 비우고 리프레시
+            for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++)
+            {
+                StageManager.Instance.stageSaveData.entryCharacters[i] = null;
+            }
+            DeleteSpawnedCharacters(); // 월드에 스폰된 캐릭터 제거
+            OpenSelectStagmaPanel("StartReward"); // 시작 시 각인 선택 패널 열기
+        }
+        else
+        {
+            checkPanel.Open("팀에 캐릭터가 5명 모두 있어야 탐색을 시작할 수 있습니다.");
+        }
     }
 
     private void RefreshSpawnedCharacters(int formationIndex) // 월드에 스폰된 캐릭터를 갱신하는 함수
     {
-        // 기존에 월드에 스폰된 캐릭터들을 제거하는 로직
-        var characters = FindObjectsByType<SpawnedCharacter>(FindObjectsInactive.Include, FindObjectsSortMode.None); // 현재 씬에 있는 모든 BattleCharacter를 찾아서
-        foreach (var character in characters)
-        {
-            Destroy(character.gameObject); // 제거
-        }
+        DeleteSpawnedCharacters(); // 기존에 스폰된 캐릭터 제거
         for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++)
         {
             if (StageManager.Instance.stageSaveData.entryCharacters[i] != null)
@@ -286,6 +297,14 @@ public class BattleUIController : MonoBehaviour
                 Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.PlayerFormations[formationIndex].PlayerPositions[i].Position;
                 GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity); // 스폰 포인트에 캐릭터 스폰
             }
+        }
+    }
+    private void DeleteSpawnedCharacters() // 월드에 스폰된 캐릭터를 제거하는 함수
+    {
+        var characters = FindObjectsByType<SpawnedCharacter>(FindObjectsInactive.Include, FindObjectsSortMode.None); // 현재 씬에 있는 모든 SpawnedCharacter를 찾아서
+        foreach (var character in characters)
+        {
+            Destroy(character.gameObject); // 제거
         }
     }
 
@@ -417,6 +436,32 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(true);
         selectEventPanel.SetActive(false);
+    }
+
+    public void OnClickSelectItemNumber(int selectIndex) // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
+    {
+        if (selectIndex < 0 || selectIndex >= 3)
+        {
+            checkPanel.Open("잘못된 선택입니다. 다시 시도해 주세요.");
+            return;
+        }
+        switch (StageManager.Instance.stageSaveData.currentPhaseState)
+        {
+            case "StartReward":
+            case "EliteStagmaReward":
+                itemTitleText.text = stagmaChoices[selectIndex].name; // 선택된 스태그마 이름 설정
+                itemDescriptionText.text = stagmaChoices[selectIndex].description; // 선택된 스태그마 설명 설정
+                break;
+            case "NormalReward":
+            case "EliteArtifactReward":
+            case "BossReward":
+                itemTitleText.text = artifactChoices[selectIndex].name; // 선택된 아티팩트 이름 설정
+                itemDescriptionText.text = artifactChoices[selectIndex].description; // 선택된 아티팩트 설명 설정
+                break;
+            default:
+                checkPanel.Open("잘못된 페이즈 상태입니다. 다시 시도해 주세요.");
+                return;
+        }
     }
 
     public void OnClickSelectItem(int selectIndex) // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
