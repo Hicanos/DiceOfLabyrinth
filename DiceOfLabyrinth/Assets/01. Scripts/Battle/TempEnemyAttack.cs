@@ -20,7 +20,8 @@ public class TempEnemyAttack : MonoBehaviour
         Debug.Log("Enemy Attack!");
 
         //int damage = BattleManager.Instance.enemy.ATK;
-        //battleManager.DealDamage(IDamagerable target , int damage);
+        //IDamagerable target = getTarget;
+        //battleManager.DealDamage(target , damage);
 
         yield return new WaitForSeconds(1.2f);
 

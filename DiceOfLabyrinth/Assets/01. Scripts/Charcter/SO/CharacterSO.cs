@@ -32,5 +32,6 @@ public class CharacterSO : ScriptableObject
     public GameObject charBattlePrefab; // 배틀에서 사용되는 캐릭터 프리팹
     public CharDiceData charDiceData; // 캐릭터 전용 주사위 데이터
     public Sprite icon; // 캐릭터 아이콘
+    public Sprite Upper; // 캐릭터 상체 이미지
     public Sprite Standing; // 캐릭터 스탠딩 이미지
 }

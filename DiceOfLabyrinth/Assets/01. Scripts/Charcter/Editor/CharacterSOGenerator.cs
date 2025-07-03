@@ -99,6 +99,7 @@ public class CharacterSOGenerator : EditorWindow
             so.dialog2 = data.dialog2;
             so.diceID = data.DiceID;
 
+
             // 프리팹 할당
             if (!string.IsNullOrEmpty(data.LobbyPrefabPath))
             {
@@ -112,6 +113,18 @@ public class CharacterSOGenerator : EditorWindow
                 so.charBattlePrefab = BattlePrefab;
             }
             // 아이콘 및 스탠딩 이미지 할당
+            if (!string.IsNullOrEmpty(data.iconPath))
+            {
+                so.icon = AssetDatabase.LoadAssetAtPath<Sprite>(data.iconPath);
+            }
+            if (!string.IsNullOrEmpty(data.UpperPath))
+            {
+                so.Upper = AssetDatabase.LoadAssetAtPath<Sprite>(data.UpperPath);
+            }
+            if (!string.IsNullOrEmpty(data.StandingPath))
+            {
+                so.Standing = AssetDatabase.LoadAssetAtPath<Sprite>(data.StandingPath);
+            }
 
 
             // DiceDataLoader를 통해 Dice 데이터 로드
@@ -149,6 +162,9 @@ public class CharacterSOGenerator : EditorWindow
                 string guid = AssetDatabase.AssetPathToGUID(assetPath);
                 var entry = Asettings.CreateOrMoveEntry(guid, group);
                 entry.address = so.nameEn;
+
+                // Addressable 라벨 자동 할당
+                entry.SetLabel("CharacterSO", true);
             }
 
             // 에셋 저장 및 데이터베이스 갱신
@@ -216,5 +232,8 @@ public class CharacterSOGenerator : EditorWindow
         public string dialog2;
         public string LobbyPrefabPath;
         public string BattlePrefabPath; // 프리팹 경로 추가
+        public string iconPath; // 아이콘 경로 추가
+        public string UpperPath; // 상체 이미지 경로 추가
+        public string StandingPath; // 스탠딩 이미지 경로 추가
     }
 }
