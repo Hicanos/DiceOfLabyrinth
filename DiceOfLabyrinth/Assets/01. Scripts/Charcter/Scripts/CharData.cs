@@ -116,6 +116,21 @@ public class CharData
     /// </summary>
     public string BattlePrefabPath;
 
+    /// <summary>
+    /// IconPath
+    /// </summary>
+    public string IconPath;
+
+    /// <summary>
+    /// UpperPath
+    /// </summary>
+    public string UpperPath;
+
+    /// <summary>
+    /// StandingPath
+    /// </summary>
+    public string StandingPath;
+
 }
 public class CharDataLoader
 {
