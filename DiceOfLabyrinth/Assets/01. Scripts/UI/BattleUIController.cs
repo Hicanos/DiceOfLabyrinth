@@ -21,6 +21,7 @@ public class BattleUIController : MonoBehaviour
     [Header("Select Item Panel")]
     [SerializeField] private TMP_Text itemTitleText;
     [SerializeField] private TMP_Text itemDescriptionText;
+    [SerializeField] private int selectIndex = 0; // 선택된 아이템 인덱스, 스태그마와 아티팩트 선택을 위한 인덱스
 
     [Header("Panels")]
     [SerializeField] private GameObject selectDungeonPanel;
@@ -410,8 +411,37 @@ public class BattleUIController : MonoBehaviour
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태 저장
         itemTitleText.text = "아티팩트 선택"; // 아티팩트 선택 UI 제목 설정
         itemDescriptionText.text = ""; // 초기화
-            
-        List<ArtifactData> availableArtifacts = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ArtifactList; // 현재 스테이지의 아티팩트 목록을 가져옴
+
+        List<ArtifactData> allArtifacts = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+    .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ArtifactList;
+
+        List<ArtifactData> availableArtifacts = null;
+        switch (phaseState)
+        {
+            case "NormalReward":
+                // 커먼, 언커먼만
+                availableArtifacts = allArtifacts
+                    .Where(a => a.artifactType == ArtifactData.ArtifactType.Common || a.artifactType == ArtifactData.ArtifactType.Uncommon)
+                    .ToList();
+                break;
+            case "EliteArtifactReward":
+                // 언커먼, 레어만
+                availableArtifacts = allArtifacts
+                    .Where(a => a.artifactType == ArtifactData.ArtifactType.Uncommon || a.artifactType == ArtifactData.ArtifactType.Rare)
+                    .ToList();
+                break;
+            case "BossReward":
+                // 레어, 유니크, 레전더리만
+                availableArtifacts = allArtifacts
+                    .Where(a => a.artifactType == ArtifactData.ArtifactType.Rare
+                             || a.artifactType == ArtifactData.ArtifactType.Unique
+                             || a.artifactType == ArtifactData.ArtifactType.Legendary)
+                    .ToList();
+                break;
+            default:
+                availableArtifacts = allArtifacts.ToList();
+                break;
+        }
         List<ArtifactData> selectedArtifacts = new List<ArtifactData>();
         while (selectedArtifacts.Count < 3)
         {
@@ -436,14 +466,36 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(true);
         selectEventPanel.SetActive(false);
+        OnClickSelectItemNumber(0); // 첫 번째 아이템을 선택한 것으로 초기화
     }
 
     public void OnClickSelectItemNumber(int selectIndex) // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
     {
+        this.selectIndex = selectIndex; // 선택된 아이템 인덱스 설정
         if (selectIndex < 0 || selectIndex >= 3)
         {
             messagePopup.Open("잘못된 선택입니다. 다시 시도해 주세요.");
             return;
+        }
+        // 모든 아이콘의 부모 Outline을 비활성화
+        for (int i = 0; i < itemChoiceIcon.Length; i++)
+        {
+            var parent = itemChoiceIcon[i].transform.parent;
+            if (parent != null)
+            {
+                var outline = parent.GetComponent<Outline>();
+                if (outline != null)
+                    outline.enabled = false;
+            }
+        }
+
+        // 선택된 아이콘의 부모 Outline만 활성화
+        var selectedParent = itemChoiceIcon[selectIndex].transform.parent;
+        if (selectedParent != null)
+        {
+            var selectedOutline = selectedParent.GetComponent<Outline>();
+            if (selectedOutline != null)
+                selectedOutline.enabled = true;
         }
         switch (StageManager.Instance.stageSaveData.currentPhaseState)
         {
@@ -464,7 +516,7 @@ public class BattleUIController : MonoBehaviour
         }
     }
 
-    public void OnClickSelectItem(int selectIndex) // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
+    public void OnClickSelectItem() // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
     {
         string phaseState = StageManager.Instance.stageSaveData.currentPhaseState; // 현재 페이즈 상태를 가져옴
         selectItemPanel.SetActive(false);

@@ -238,38 +238,69 @@ public class StageManager : MonoBehaviour
 
     public void AddStagma(StagmaData stagmaName)
     {
-        // 스태그마 추가 로직을 구현합니다.
-        if (stageSaveData.stagmas.Count < 3) // 최대 3개까지 소지 가능
+        // 리스트 크기를 3으로 고정
+        while (stageSaveData.stagmas.Count < 3)
+            stageSaveData.stagmas.Add(null);
+        while (stageSaveData.stagmas.Count > 3)
+            stageSaveData.stagmas.RemoveAt(stageSaveData.stagmas.Count - 1);
+
+        // 이미 보유 중인지 체크
+        for (int i = 0; i < 3; i++)
         {
-            if (!stageSaveData.stagmas.Contains(stagmaName))
-            {
-                stageSaveData.stagmas.Add(stagmaName);
-                messagePopup.Open($"스태그마 {stagmaName.stagmaName}이(가) 추가되었습니다.");
-            }
-            else
+            if (stageSaveData.stagmas[i] == stagmaName)
             {
                 messagePopup.Open($"스태그마 {stagmaName.stagmaName}은(는) 이미 목록에 있습니다.");
+                return;
             }
         }
-        else
+
+        // 빈 슬롯(null) 찾아서 추가
+        for (int i = 0; i < 3; i++)
         {
-            messagePopup.Open("최대 3개의 각인을 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
+            if (stageSaveData.stagmas[i] == null)
+            {
+                stageSaveData.stagmas[i] = stagmaName;
+                messagePopup.Open($"스태그마 {stagmaName.stagmaName}이(가) 추가되었습니다.");
+                return;
+            }
         }
+
+        // 모두 차 있으면 안내
+        messagePopup.Open("최대 3개의 각인을 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
     }
 
     public void AddArtifacts(ArtifactData artifactName)
     {
-        // 아티팩트 추가 로직을 구현합니다.
-        if (!stageSaveData.artifacts.Contains(artifactName))
+        // 리스트 크기를 18로 고정
+        while (stageSaveData.artifacts.Count < 18)
+            stageSaveData.artifacts.Add(null);
+        while (stageSaveData.artifacts.Count > 18)
+            stageSaveData.artifacts.RemoveAt(stageSaveData.artifacts.Count - 1);
+
+        // 이미 보유 중인지 체크
+        for (int i = 0; i < 18; i++)
         {
-            stageSaveData.artifacts.Add(artifactName);
-            Debug.Log($"Artifact {artifactName} added.");
-            messagePopup.Open($"아티팩트 {artifactName.artifactName}이(가) 추가되었습니다.");
+            if (stageSaveData.artifacts[i] == artifactName)
+            {
+                messagePopup.Open($"아티팩트 {artifactName.artifactName}은(는) 이미 목록에 있습니다.");
+                return;
+            }
         }
-        else
+
+        // 빈 슬롯(null) 찾아서 추가
+        for (int i = 0; i < 18; i++)
         {
-            messagePopup.Open($"아티팩트 {artifactName.artifactName}은(는) 이미 목록에 있습니다.");
+            if (stageSaveData.artifacts[i] == null)
+            {
+                stageSaveData.artifacts[i] = artifactName;
+                Debug.Log($"Artifact {artifactName} added.");
+                messagePopup.Open($"아티팩트 {artifactName.artifactName}이(가) 추가되었습니다.");
+                return;
+            }
         }
+
+        // 모두 차 있으면 안내
+        messagePopup.Open("최대 18개의 아티팩트를 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
     }
 
     public void EquipArtifacts(ArtifactData artifactName)
