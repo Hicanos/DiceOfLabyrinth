@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using TMPro;
 using UnityEngine;
 
 public class MessagePopup : MonoBehaviour
 {
     [SerializeField] private TMP_Text msgText;
+    [SerializeField] private GameObject yesButton;
+    [SerializeField] private GameObject noButton;
 
     private Action _onYes, _onNo;
 
@@ -13,8 +16,19 @@ public class MessagePopup : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Open(string msg, Action onYes = null, Action onNo = null)
+    public void Open(string msg = null, Action onYes = null, Action onNo = null)
     {
+        if (_onYes == null && _onNo == null)
+        {
+            yesButton.SetActive(false);
+            noButton.SetActive(false);
+        }
+        else
+        {
+            yesButton.SetActive(true);
+            noButton.SetActive(true);
+        }
+
         msgText.text = msg;
         _onYes = onYes;
         _onNo = onNo;
