@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class ChapterManager : MonoBehaviour
 {
-    public UserData userData;
     public ChapterData chapterData;
     public StageManager stageManager;
 
@@ -51,9 +50,9 @@ public class ChapterManager : MonoBehaviour
             Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
             return;
         }
-        userData.exp += StageManager.Instance.stageSaveData.savedExpReward;
-        userData.gold += StageManager.Instance.stageSaveData.savedGoldReward;
-        userData.jewel += StageManager.Instance.stageSaveData.savedJewelReward;
+        UserDataManager.Instance.AddExp(StageManager.Instance.stageSaveData.savedExpReward);
+        UserDataManager.Instance.AddGold(StageManager.Instance.stageSaveData.savedGoldReward);
+        UserDataManager.Instance.AddJewel(StageManager.Instance.stageSaveData.savedJewelReward);
 
         var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
         states[chapterIndex].isCompleted = true;

@@ -2,10 +2,10 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Android.Gradle.Manifest;
 
 public class SelectAdventureUIController : MonoBehaviour
 {
-    public UserData userData; // 유저 데이터
     public ChapterData chapterData;
     public CheckPanel checkPanel; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
@@ -121,15 +121,14 @@ public class SelectAdventureUIController : MonoBehaviour
             return;
         }
         var selectedChapter = chapterData.chapterIndex[chapterIndex];
-        if (userData.stamina < selectedChapter.ChapterCost)
+        if (!UserDataManager.Instance.UseStamina(selectedChapter.ChapterCost)) // 코스트를 지불하지 못하면,
         {
             OpenScaresStaminaPanel();
-            return;
+            //return;
         }
         else
         {
             selectedChapterIndex = -1; // 선택된 챕터 인덱스 초기화
-            userData.stamina -= selectedChapter.ChapterCost; // 스테이지 시작 시 스태미너 차감
             StageManager.Instance.stageSaveData.currentChapterIndex = chapterIndex; // 현재 챕터 인덱스 설정
             StageManager.Instance.stageSaveData.ResetToDefault(chapterIndex); // 스테이지 상태 초기화
             Debug.Log($"Starting battle for chapter: {selectedChapter.ChapterName} (Index: {chapterIndex})");
@@ -149,14 +148,13 @@ public class SelectAdventureUIController : MonoBehaviour
     public void OnClickRechargeStaminaButton() // 스태미나 충전 버튼
     {
         Debug.Log("Recharge Stamina Button Clicked");
-        if (userData.jewel < 50) // 스태미나 충전 비용이 50 쥬얼이므로, 쥬얼이 부족할 경우
+        if (!UserDataManager.Instance.UseJewel(50)) // 스태미나 충전 비용이 50 쥬얼이므로, 쥬얼이 부족할 경우
         {
             checkPanel.Open("스태미나를 충전하려면 50 쥬얼이 필요합니다.");
         }
         else
         { 
-            userData.stamina += 50; // 스태미나 50 증가
-            userData.jewel -= 50; // 스태미나 충전 비용으로 50 젬 차감
+            UserDataManager.Instance.AddStamina(50); // 스태미나 50 증가
         }
         OpenCostCalculationPanel(selectedChapterIndex); // 선택된 챕터 인덱스를 다시 설정
     }
@@ -208,7 +206,7 @@ public class SelectAdventureUIController : MonoBehaviour
 
     private void UpdateStaminaUI()
     {
-        afterCostText.text = $"{userData.stamina}/50 -> {userData.stamina + 50}/50"; // 스태미나 충전 후의 상태를 보여줍니다.
+        afterCostText.text = $"{UserDataManager.Instance.userdata.stamina}/50 -> {UserDataManager.Instance.userdata.stamina + 50}/50"; // 스태미나 충전 후의 상태를 보여줍니다.
         //int regenerationTime = // 스태미나 재생 시간 계산 로직은 아직 구현되지 않았습니다.
     }
 }
