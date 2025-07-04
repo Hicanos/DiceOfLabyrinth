@@ -37,7 +37,7 @@ public class BattleManager : MonoBehaviour
     public BattleCharacter[] battleCharacters; //임시
 
     GameObject enemyGO;
-    public TestEnemy TestEnemy => enemyGO.GetComponent<TestEnemy>();
+    public TestEnemy TestEnemy;
 
     [SerializeField] Transform enemyContainer;
     public BattleUIValueChanger UIValueChanger;
@@ -125,7 +125,7 @@ public class BattleManager : MonoBehaviour
     {
         int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
         chapterIndex = 0; //임시
-        enemyGO = StageManager.Instance.chapterData.chapterIndex[0].stageData.stageIndex[chapterIndex].NormalPhases[0].Enemies[0].EnemyPrefab;
+        //enemyGO = StageManager.Instance.chapterData.chapterIndex[0].stageData.stageIndex[chapterIndex].NormalPhases[0].Enemies[0].EnemyPrefab; 추후 수정
         TestEnemy = enemyGO.GetComponent<TestEnemy>();
         TestEnemy.Init();
         Instantiate(enemyGO, new Vector3(5.85f, -0.02f, -1.06f), Quaternion.identity, enemyContainer);
