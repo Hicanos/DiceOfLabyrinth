@@ -528,8 +528,20 @@ public class BattleUIController : MonoBehaviour
         string phaseState = StageManager.Instance.stageSaveData.currentPhaseState; // 현재 페이즈 상태를 가져옴
         selectItemPanel.SetActive(false);
         StageManager.Instance.stageSaveData.currentPhaseState = ""; // 선택지 페이즈 상태 초기화
-        StageManager.Instance.AddStagma(selectedStagma);
-        StageManager.Instance.AddArtifacts(selectedArtifact);
+        switch (phaseState)
+        {
+            case "StartReward":
+            case "EliteStagmaReward":
+                if (selectedStagma != null)
+                    StageManager.Instance.AddStagma(selectedStagma);
+                break;
+            case "NormalReward":
+            case "EliteArtifactReward":
+            case "BossReward":
+                if (selectedArtifact != null)
+                    StageManager.Instance.AddArtifacts(selectedArtifact);
+                break;
+        }
         switch (phaseState)
         {
             case "StartReward":

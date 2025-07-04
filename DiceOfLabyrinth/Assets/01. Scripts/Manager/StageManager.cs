@@ -227,26 +227,6 @@ public class StageManager : MonoBehaviour
 
     public void AddArtifacts(ArtifactData artifactName)
     {
-        if (stageSaveData == null)
-        {
-            Debug.LogError("stageSaveData가 null입니다.");
-            return;
-        }
-        if (stageSaveData.artifacts == null)
-        {
-            Debug.LogError("stageSaveData.artifacts가 null입니다.");
-            return;
-        }
-        if (artifactName == null)
-        {
-            Debug.LogError("artifactName이 null입니다.");
-            return;
-        }
-        if (messagePopup == null)
-        {
-            Debug.LogError("messagePopup이 null입니다.");
-            return;
-        }
         // 리스트 크기를 18로 고정
         while (stageSaveData.artifacts.Count < 18)
             stageSaveData.artifacts.Add(null);
