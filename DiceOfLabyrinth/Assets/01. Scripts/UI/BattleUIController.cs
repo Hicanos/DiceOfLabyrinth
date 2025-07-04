@@ -335,19 +335,6 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
     }
 
-    private void OpenBattlePanel(int phaseIndex) // 스테이지 선택 후 배틀 패널을 여는 함수
-    {
-        StageManager.Instance.stageSaveData.currentPhaseState = "Battle"; // 현재 페이즈 상태를 "Battle"로 설정
-        selectDungeonPanel.SetActive(false);
-        teamFormationPenel.SetActive(false);
-        stagePanel.SetActive(false);
-        battlePanel.SetActive(true);
-        victoryPanel.SetActive(false);
-        defeatPanel.SetActive(false);
-        selectItemPanel.SetActive(false);
-        selectEventPanel.SetActive(false);
-    }
-
     public void OpenSelectStagmaPanel(string phaseState) // "Standby", "NormalReward", "EliteArtifactReward", "EliteStagmaReward" 등과 연결
     {
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태를 설정
@@ -579,16 +566,23 @@ public class BattleUIController : MonoBehaviour
             .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ChoiceOptions; // 현재 스테이지의 선택지 목록을 가져옴
         if (stageSelectChoices == null || stageSelectChoices.Count < 2)
         {
-            messagePopup.Open("선택지 이벤트가 잘못 설정되었습니다. 다시 시도해 주세요."); // 선택지 이벤트가 잘못 설정된 경우 경고 메시지 표시
+            messagePopup.Open("선택지 이벤트가 잘못 설정되었습니다. 스테이지 데이터를 확인하세요."); // 선택지 이벤트가 잘못 설정된 경우 경고 메시지 표시
             return;
         }
         StageManager.Instance.stageSaveData.currentPhaseState = "SelectChoice"; // 현재 페이즈 상태를 "SelectChoice"로 설정
-        // 스테이지의 선택지 목록 중 2개만 배열에 저장
+        // 스테이지의 선택지 목록 중 랜덤 2개를 선택
+        ChoiceOptions[] twoSelectChoices = new ChoiceOptions[2];
         for (int i = 0; i < 2; i++)
         {
-            selectChoiceText[i].text = stageSelectChoices[i].ChoiceText; // 선택지 텍스트 설정
-            selectChoiceIcon[i].sprite = stageSelectChoices[i].ChoiceIcon; // 선택지 아이콘 설정
-            ChoiceOptions[i] = stageSelectChoices[i]; // 선택지 옵션 저장
+            int randIndex = Random.Range(0, stageSelectChoices.Count);
+            twoSelectChoices[i] = stageSelectChoices[randIndex];
+            stageSelectChoices.RemoveAt(randIndex); // 선택된 선택지는 목록에서 제거
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            selectChoiceText[i].text = twoSelectChoices[i].ChoiceText; // 선택지 텍스트 설정
+            selectChoiceIcon[i].sprite = twoSelectChoices[i].ChoiceIcon; // 선택지 아이콘 설정
+            ChoiceOptions[i] = twoSelectChoices[i]; // 선택지 옵션 저장
         }
 
         selectDungeonPanel.SetActive(false);
@@ -603,15 +597,28 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickSelectChoice(int selectIndex)
     {
-        selectDungeonPanel.SetActive(false);
-        teamFormationPenel.SetActive(false);
-        stagePanel.SetActive(true);
-        battlePanel.SetActive(false);
-        victoryPanel.SetActive(false);
-        defeatPanel.SetActive(false);
-        selectItemPanel.SetActive(false);
-        selectEventPanel.SetActive(false);
-        // selectEquipmedArtifactPanel.SetActive(false); // 귀속 아티팩트 선택 패널 비활성화
+        if (selectIndex < 0 || selectIndex >= ChoiceOptions.Length)
+        {
+            messagePopup.Open("잘못된 선택입니다. 다시 시도해 주세요.");
+            return;
+        }
+        // 선택된 선택지 옵션을 적용
+        var selectedChoice = ChoiceOptions[selectIndex];
+        switch (selectedChoice.ChoiceText)
+        {
+            case "이벤트":
+                messagePopup.Open("이벤트는 아직 구현이 안되었습니다");
+                return; // 이벤트는 아직 구현되지 않았으므로 경고 메시지 표시
+            case "노말":
+                messagePopup.Open("선택지 노말이 선택되었습니다.");
+                break;
+            case "엘리트":
+                messagePopup.Open("선택지 하드가 선택되었습니다.");
+                break;
+            default:
+                messagePopup.Open("알 수 없는 선택입니다. 다시 시도해 주세요.");
+            return;
+        }
     }
 
     public void OpenSelectEquipmedArtifactPanel() // 아티팩트 선택 패널을 여는 함수
