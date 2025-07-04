@@ -84,7 +84,6 @@ public class BattleUIController : MonoBehaviour
         {
             StageManager.Instance.stageSaveData.currentStageIndex = stageIndex; // 현재 스테이지 인덱스 설정
             StageManager.Instance.stageSaveData.currentPhaseIndex = -1; // 초기 페이즈 인덱스 설정
-            messagePopup.Open("dddddddddddddddddddd.");
             OpenTeamFormationPanel(); // 팀 구성 패널 열기
         }
         else
