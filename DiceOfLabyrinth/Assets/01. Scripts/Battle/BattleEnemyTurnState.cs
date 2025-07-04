@@ -5,7 +5,7 @@ public class BattleEnemyTurnState : IBattleTurnState
     TempEnemyAttack enemyAtack;
     public void Enter()
     {        
-        //Debug.Log("Enemy's turn");
+        Debug.Log("Enemy's turn");
         enemyAtack = GameObject.FindAnyObjectByType<TempEnemyAttack>().GetComponent<TempEnemyAttack>();
         enemyAtack.EnemyAttack();
     }

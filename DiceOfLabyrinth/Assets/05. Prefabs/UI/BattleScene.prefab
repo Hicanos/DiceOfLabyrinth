@@ -92,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4337196165125459747
 RectTransform:
   m_ObjectHideFlags: 0
@@ -350,7 +350,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6776954470632737263}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickExploreButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &128704209702902774
 GameObject:
   m_ObjectHideFlags: 0
@@ -605,7 +617,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5629844556400460946}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectItemNumber
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8249820096946776512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1643,7 +1667,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8139674627777052566}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectItemNumber
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5485187224784543104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2560,7 +2596,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1102222741283054872}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectItem
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1535920619058937021
 GameObject:
   m_ObjectHideFlags: 0
@@ -4136,9 +4184,9 @@ RectTransform:
   - {fileID: 3224155967866324765}
   m_Father: {fileID: 4214309971881338121}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 525, y: -250}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 450, y: 500}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &3798665373921304092
@@ -4222,7 +4270,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6541710242788694501}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectChoice
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2999613424131299847
 GameObject:
   m_ObjectHideFlags: 0
@@ -4502,6 +4562,16 @@ MonoBehaviour:
   itemTitleText: {fileID: 4197204831119561405}
   itemDescriptionText: {fileID: 7557495056929577819}
   selectIndex: 0
+  stagmaChoices:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  artifactChoices:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  selectedStagma: {fileID: 0}
+  selectedArtifact: {fileID: 0}
   selectDungeonPanel: {fileID: 7398880750472421032}
   teamFormationPenel: {fileID: 102126530043097548}
   stagePanel: {fileID: 2999613424131299847}
@@ -4531,14 +4601,19 @@ MonoBehaviour:
   - {fileID: 8706252348830315475}
   - {fileID: 8817921858569026687}
   - {fileID: 6221180435193772941}
-  stagmaChoices:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  artifactChoices:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  selectChoiceText:
+  - {fileID: 1669319545806033495}
+  - {fileID: 4658053569767294606}
+  selectChoiceIcon:
+  - {fileID: 2144879098279076578}
+  - {fileID: 6353878399862581732}
+  ChoiceOptions:
+  - choiceText: 
+    description: 
+    choiceIcon: {fileID: 0}
+  - choiceText: 
+    description: 
+    choiceIcon: {fileID: 0}
 --- !u!1 &3625305517019798406
 GameObject:
   m_ObjectHideFlags: 0
@@ -5097,7 +5172,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8615587948827982089}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickStageNextButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3924105029500753802
 GameObject:
   m_ObjectHideFlags: 0
@@ -5420,9 +5507,9 @@ RectTransform:
   - {fileID: 17526675037042334}
   m_Father: {fileID: 4214309971881338121}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 25, y: -250}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 450, y: 500}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &3475294790208651323
@@ -5506,7 +5593,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3804757099370556498}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectChoice
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4491628198852716793
 GameObject:
   m_ObjectHideFlags: 0
@@ -6964,7 +7063,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5778181263159813441}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectItemNumber
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &156454183082800779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7735,7 +7846,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &541847953988470304
 RectTransform:
   m_ObjectHideFlags: 0

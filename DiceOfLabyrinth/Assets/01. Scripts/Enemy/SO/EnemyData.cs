@@ -55,6 +55,7 @@ public class EnemyData: ScriptableObject
     [SerializeField] private int atkPerLevel;
     [SerializeField] private int defPerLevel;
     [SerializeField] private string description;
+    [SerializeField] private GameObject enemyPrefab;
 
     public string EnemyName => enemyName;
     public int EnemyLevel => enemyLevel;

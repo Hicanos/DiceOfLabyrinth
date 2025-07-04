@@ -37,8 +37,7 @@ public class BattleManager : MonoBehaviour
     public BattleCharacter[] battleCharacters; //임시
 
     GameObject enemyGO;
-    [field:SerializeField] public TestEnemy TestEnemy;
-    //[field:SerializeField] EnemyData enemyData;
+    public TestEnemy TestEnemy => enemyGO.GetComponent<TestEnemy>();
 
     [SerializeField] Transform enemyContainer;
     public BattleUIValueChanger UIValueChanger;
@@ -89,13 +88,10 @@ public class BattleManager : MonoBehaviour
             battleCharacters[3] = CharacterManager.Instance.RegisterBattleCharacterData("Char_3");
             battleCharacters[4] = CharacterManager.Instance.RegisterBattleCharacterData("Char_4");
             BattleStartCoroutine();
-        }        
+        }
     }
 
-    /// <summary>
-    /// 전투를 시작할때 실행시켜야할 메서드
-    /// </summary>
-    public void BattleStartCoroutine()
+    public void BattleStartCoroutine() //전투 시작시 호출해야할 메서드
     {
         GetMonster();
         DiceManager.Instance.DiceSettingForBattle();
@@ -112,9 +108,6 @@ public class BattleManager : MonoBehaviour
         isBattle = true;
     }
 
-    /// <summary>
-    /// 전투가 끝났을 때 실행시켜야할 메서드, 결과창을 띄웁니다.
-    /// </summary>
     public void BattleEnd()
     {
         isBattle = false;

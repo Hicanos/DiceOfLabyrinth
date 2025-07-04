@@ -172,7 +172,7 @@ public class DiceManager : MonoBehaviour
                 signitureAmount++;
             }
         }
-        //Debug.Log($"{diceResult[0]},{diceResult[1]},{diceResult[2]},{diceResult[3]},{diceResult[4]}");
+        Debug.Log($"{diceResult[0]},{diceResult[1]},{diceResult[2]},{diceResult[3]},{diceResult[4]}");
     }
 
     IEnumerator SortingAfterRoll()
