@@ -64,6 +64,7 @@ public class EnemyData: ScriptableObject
     public EnemyAttribute Attribute => enemyAttribute;
     public EnemyPattern Pattern => enemyPattern;
     public string Description => description;
+    public GameObject EnemyPrefab => enemyPrefab;
 
     // 기초값
     public int BaseMaxHp => baseMaxHp;
