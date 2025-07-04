@@ -78,6 +78,10 @@ public class CharacterSOGenerator : EditorWindow
         foreach (var data in wrapper.Items)
         {
             CharacterSO so = ScriptableObject.CreateInstance<CharacterSO>();
+
+            // 반드시 hideFlags를 None으로 설정 (Assertion 방지)
+            so.hideFlags = HideFlags.None;
+
             so.key = data.key;
             so.charID = data.CharID;
             so.nameKr = data.NameKr;
@@ -139,6 +143,8 @@ public class CharacterSOGenerator : EditorWindow
             if (File.Exists(assetPath))
                 AssetDatabase.DeleteAsset(assetPath);
 
+            // 반드시 hideFlags가 None인 상태에서 저장 (Assertion 방지)
+            so.hideFlags = HideFlags.None;
             AssetDatabase.CreateAsset(so, assetPath);
 
             // SO를 저장한 후, 프로젝트에서 해당 에셋을 다시 불러옴
@@ -162,8 +168,6 @@ public class CharacterSOGenerator : EditorWindow
                 string guid = AssetDatabase.AssetPathToGUID(assetPath);
                 var entry = Asettings.CreateOrMoveEntry(guid, group);
                 entry.address = so.nameEn;
-
-                // Addressable 라벨 자동 할당
                 entry.SetLabel("CharacterSO", true);
             }
 
