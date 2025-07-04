@@ -627,6 +627,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ControllerContainer
       objectReference: {fileID: 0}
+    - target: {fileID: 3711235237100716437, guid: c95c543344a663d41bf05e361e65fc77, type: 3}
+      propertyPath: messagePopup
+      value: 
+      objectReference: {fileID: 811066101}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -731,7 +735,7 @@ PrefabInstance:
     - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
       propertyPath: battleUIController
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1771174810}
     - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.1093163
@@ -781,6 +785,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
+--- !u!114 &1771174810 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3711235237100716437, guid: c95c543344a663d41bf05e361e65fc77, type: 3}
+  m_PrefabInstance: {fileID: 1291546577}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92b7736a99e07534ea3a5f9513e88471, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2044644664
 GameObject:
   m_ObjectHideFlags: 0
@@ -811,6 +826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d2e465dbd996e34fafe43213ff7342f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterContainer: {fileID: 0}
 --- !u!114 &2044644666
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -824,15 +840,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleCharacters: []
-  characterPrefabs: []
+  TestEnemy: {fileID: 0}
   enemyContainer: {fileID: 832190026}
-  characterContainer: {fileID: 946799312}
+  UIValueChanger: {fileID: 0}
+  battleCoroutine: {fileID: 2044644665}
   currentPlayerState: 0
-  costTest: {fileID: 0}
-  monsterSkillName: {fileID: 0}
-  monsterSkillDescription: {fileID: 0}
-  turnText: {fileID: 0}
-  DiceRollButton: {fileID: 0}
   BattleButtons:
   - {fileID: 0}
   - {fileID: 0}
@@ -844,12 +856,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   turnDisplay: {fileID: 0}
-  enemyHPBar: {fileID: 0}
-  enemyHPImage: {fileID: 0}
-  CurrnetCost: 0
+  HPBar: []
   BattleTurn: 0
   isBattle: 0
-  battleCoroutine: {fileID: 2044644665}
 --- !u!4 &2044644667
 Transform:
   m_ObjectHideFlags: 0
