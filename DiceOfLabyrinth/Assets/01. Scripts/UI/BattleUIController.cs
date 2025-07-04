@@ -395,6 +395,7 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(true);
         selectEventPanel.SetActive(false);
+        OnClickSelectItemNumber(0); // 첫 번째 아이템을 선택한 것으로 초기화
     }
 
     public void OpenSelectArtifactPanel(string phaseState) // "NormalReward", "EliteArtifactReward", "BossReward" 와 연결
