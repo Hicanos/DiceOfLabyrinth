@@ -17,7 +17,7 @@ public class TempEnemyAttack : MonoBehaviour
     {
         yield return new WaitForSeconds(1.2f);
 
-        Debug.Log("Enemy Attack!");
+        //Debug.Log("Enemy Attack!");
 
         //IDamagable target = getTarget;
         //int damage = BattleManager.Instance.TestEnemy.EnemyData.Atk - 
