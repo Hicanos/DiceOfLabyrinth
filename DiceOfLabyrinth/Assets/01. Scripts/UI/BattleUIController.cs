@@ -22,6 +22,10 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private TMP_Text itemTitleText;
     [SerializeField] private TMP_Text itemDescriptionText;
     [SerializeField] private int selectIndex = 0; // 선택된 아이템 인덱스, 스태그마와 아티팩트 선택을 위한 인덱스
+    [SerializeField] private StagmaData[] stagmaChoices = new StagmaData[3];
+    [SerializeField] private ArtifactData[] artifactChoices = new ArtifactData[3];
+    [SerializeField] private StagmaData selectedStagma;
+    [SerializeField] private ArtifactData selectedArtifact;
 
     [Header("Panels")]
     [SerializeField] private GameObject selectDungeonPanel;
@@ -44,9 +48,9 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private Image[] teamFormationIcons = new Image[4]; // 팀 구성 아이콘 배열
     [SerializeField] Image[] characterButtons = new Image[7];
     
-    [Header("selected items")]
-    public StagmaData[] stagmaChoices = new StagmaData[3]; // 스태그마 선택을 위한 배열
-    public ArtifactData[] artifactChoices = new ArtifactData[3]; // 아티팩트 선택을 위한 배열
+    [Header("Select Choice Panel")]
+    [SerializeField] private TMP_Text[] selectChoiceText = new TMP_Text[2]; // 선택지 이벤트 패널 제목
+    [SerializeField] private Image[] selectChoiceIcon = new Image[2]; // 선택지 이벤트 패널 아이콘
 
     private void Start()
     {
@@ -78,7 +82,7 @@ public class BattleUIController : MonoBehaviour
         if (StageManager.Instance.stageSaveData.chapterAndStageStates[StageManager.Instance.stageSaveData.currentChapterIndex].stageStates[stageIndex].isUnLocked) // 스테이지가 잠금 해제되어 있는지 확인
         {
             StageManager.Instance.stageSaveData.currentStageIndex = stageIndex; // 현재 스테이지 인덱스 설정
-            StageManager.Instance.stageSaveData.currentPhaseIndex = 0; // 초기 페이즈 인덱스 설정
+            StageManager.Instance.stageSaveData.currentPhaseIndex = -1; // 초기 페이즈 인덱스 설정
             OpenTeamFormationPanel(); // 팀 구성 패널 열기
         }
         else
@@ -346,6 +350,8 @@ public class BattleUIController : MonoBehaviour
     public void OpenSelectStagmaPanel(string phaseState) // "Standby", "NormalReward", "EliteArtifactReward", "EliteStagmaReward" 등과 연결
     {
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태를 설정
+        selectedArtifact = null; // 선택된 아티팩트 초기화
+        selectedStagma = null; // 선택된 스태그마 초기화
         stagmaChoices = new StagmaData[3]; // 스태그마 선택 배열 초기화
         artifactChoices = new ArtifactData[3]; // 아티팩트 선택 배열 초기화
         //예외 상태 스트링 값을 처리하는 스위치
@@ -359,25 +365,24 @@ public class BattleUIController : MonoBehaviour
                 Debug.LogError($"잘못된 phase state: {phaseState}");
                 return;
         }
-        StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태 저장
+
         List<StagmaData> availableStagmas = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].StagmaList; // 현재 스테이지의 스태그마 목록을 가져옴
         itemTitleText.text = "각인 선택"; // 스태그마 선택 UI 제목 설정
         itemDescriptionText.text = ""; // 초기화
-        List<StagmaData> selectedStagmas = new List<StagmaData>();
-        while (selectedStagmas.Count < 3)
-        {
-            int rand = Random.Range(0, availableStagmas.Count);
-            StagmaData candidate = availableStagmas[rand];
-            if (!selectedStagmas.Contains(candidate))
-                selectedStagmas.Add(candidate);
-        }
-
-        // 배열에 저장 및 UI 반영
+        HashSet<StagmaData> picked = new HashSet<StagmaData>();
         for (int i = 0; i < 3; i++)
         {
-            stagmaChoices[i] = selectedStagmas[i];
+            StagmaData candidate;
+            do
+            {
+                int rand = Random.Range(0, availableStagmas.Count);
+                candidate = availableStagmas[rand];
+            } while (picked.Contains(candidate));
+            stagmaChoices[i] = candidate;
+            picked.Add(candidate);
+
             var iconImage = itemChoiceIcon[i].GetComponent<Image>();
-            iconImage.sprite = stagmaChoices[i].icon;
+            iconImage.sprite = candidate.icon;
         }
 
         selectDungeonPanel.SetActive(false);
@@ -393,7 +398,8 @@ public class BattleUIController : MonoBehaviour
     public void OpenSelectArtifactPanel(string phaseState) // "NormalReward", "EliteArtifactReward", "BossReward" 와 연결
     {
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태를 설정
-
+        selectedArtifact = null; // 선택된 아티팩트 초기화
+        selectedStagma = null; // 선택된 스태그마 초기화
         stagmaChoices = new StagmaData[3]; // 스태그마 선택 배열 초기화
         artifactChoices = new ArtifactData[3]; // 아티팩트 선택 배열 초기화
         // 예외 상태 스트링 값을 처리하는 스위치
@@ -442,21 +448,20 @@ public class BattleUIController : MonoBehaviour
                 availableArtifacts = allArtifacts.ToList();
                 break;
         }
-        List<ArtifactData> selectedArtifacts = new List<ArtifactData>();
-        while (selectedArtifacts.Count < 3)
-        {
-            int rand = Random.Range(0, availableArtifacts.Count);
-            ArtifactData candidate = availableArtifacts[rand];
-            if (!selectedArtifacts.Contains(candidate))
-                selectedArtifacts.Add(candidate);
-        }
-
-        // 배열에 저장 및 UI 반영
+        HashSet<ArtifactData> picked = new HashSet<ArtifactData>();
         for (int i = 0; i < 3; i++)
         {
-            artifactChoices[i] = selectedArtifacts[i];
+            ArtifactData candidate;
+            do
+            {
+                int rand = Random.Range(0, availableArtifacts.Count);
+                candidate = availableArtifacts[rand];
+            } while (picked.Contains(candidate));
+            artifactChoices[i] = candidate;
+            picked.Add(candidate);
+
             var iconImage = itemChoiceIcon[i].GetComponent<Image>();
-            iconImage.sprite = stagmaChoices[i].icon;
+            iconImage.sprite = candidate.icon;
         }
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
@@ -501,14 +506,16 @@ public class BattleUIController : MonoBehaviour
         {
             case "StartReward":
             case "EliteStagmaReward":
-                itemTitleText.text = stagmaChoices[selectIndex].name; // 선택된 스태그마 이름 설정
-                itemDescriptionText.text = stagmaChoices[selectIndex].description; // 선택된 스태그마 설명 설정
+                selectedStagma = stagmaChoices[selectIndex];
+                itemTitleText.text = selectedStagma.name; // 선택된 스태그마 이름 설정
+                itemDescriptionText.text = selectedStagma.description; // 선택된 스태그마 설명 설정
                 break;
             case "NormalReward":
             case "EliteArtifactReward":
             case "BossReward":
-                itemTitleText.text = artifactChoices[selectIndex].name; // 선택된 아티팩트 이름 설정
-                itemDescriptionText.text = artifactChoices[selectIndex].description; // 선택된 아티팩트 설명 설정
+                selectedArtifact = artifactChoices[selectIndex];
+                itemTitleText.text = selectedArtifact.name; // 선택된 아티팩트 이름 설정
+                itemDescriptionText.text = selectedArtifact.description; // 선택된 아티팩트 설명 설정
                 break;
             default:
                 messagePopup.Open("잘못된 페이즈 상태입니다. 다시 시도해 주세요.");
@@ -521,10 +528,8 @@ public class BattleUIController : MonoBehaviour
         string phaseState = StageManager.Instance.stageSaveData.currentPhaseState; // 현재 페이즈 상태를 가져옴
         selectItemPanel.SetActive(false);
         StageManager.Instance.stageSaveData.currentPhaseState = ""; // 선택지 페이즈 상태 초기화
-        StageManager.Instance.AddStagma(stagmaChoices[selectIndex]);
-        StageManager.Instance.AddArtifacts(artifactChoices[selectIndex]);
-        stagmaChoices = new StagmaData[3]; // 스태그마 선택 배열 초기화
-        artifactChoices = new ArtifactData[3]; // 아티팩트 선택 배열 초기화
+        StageManager.Instance.AddStagma(selectedStagma);
+        StageManager.Instance.AddArtifacts(selectedArtifact);
         switch (phaseState)
         {
             case "StartReward":
@@ -547,6 +552,12 @@ public class BattleUIController : MonoBehaviour
                 Debug.LogError($"잘못된 phase state: {phaseState}");
                 break;
         }
+    }
+
+    public void OnClickStageNextButton() // 스테이지 패널에서 다음 버튼 클릭 시 호출되는 함수
+    {
+        StageManager.Instance.stageSaveData.currentPhaseIndex++; // 다음 페이즈로 이동
+        OpenSelectChoicePanel(); // 선택지 이벤트 패널 열기
     }
 
     public void OpenSelectChoicePanel() // 선택지 이벤트 패널을 여는 함수

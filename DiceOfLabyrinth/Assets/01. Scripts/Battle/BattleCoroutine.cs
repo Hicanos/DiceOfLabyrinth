@@ -31,7 +31,7 @@ public class BattleCoroutine : MonoBehaviour
         int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
         chapterIndex = 0; //임시
         int iFormation = ((int)StageManager.Instance.stageSaveData.currentFormationType);
-        List<PlayerPositions> positions = StageManager.Instance.chapterManager.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
+        List<PlayerPositions> positions = StageManager.Instance.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
 
         for (int i = 0; i < 5; i++)
         {
@@ -47,7 +47,7 @@ public class BattleCoroutine : MonoBehaviour
         int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
         chapterIndex = 0; //임시
         int iFormation = ((int)StageManager.Instance.stageSaveData.currentFormationType);
-        List<PlayerPositions> positions = StageManager.Instance.chapterManager.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
+        List<PlayerPositions> positions = StageManager.Instance.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
 
         float pastTime = 0, destTime = 2.5f;
 
