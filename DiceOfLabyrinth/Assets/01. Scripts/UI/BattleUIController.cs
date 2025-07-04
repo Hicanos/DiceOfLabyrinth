@@ -335,6 +335,20 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
     }
 
+    private void OpenBattlePanel(string difficulty) // 난이도에 따라 
+    {
+        StageManager.Instance.stageSaveData.currentPhaseState = "Battle"; // 현재 페이즈 상태를 "Battle"로 설정
+        
+        selectDungeonPanel.SetActive(false);
+        teamFormationPenel.SetActive(false);
+        stagePanel.SetActive(false);
+        battlePanel.SetActive(true);
+        victoryPanel.SetActive(false);
+        defeatPanel.SetActive(false);
+        selectItemPanel.SetActive(false);
+        selectEventPanel.SetActive(false);
+    }
+
     public void OpenSelectStagmaPanel(string phaseState) // "Standby", "NormalReward", "EliteArtifactReward", "EliteStagmaReward" 등과 연결
     {
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태를 설정
