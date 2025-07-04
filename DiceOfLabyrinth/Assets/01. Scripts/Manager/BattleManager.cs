@@ -36,6 +36,7 @@ public class BattleManager : MonoBehaviour
 
     public BattleCharacter[] battleCharacters; //임시
 
+    public EnemyData EnemyData;
     GameObject enemyGO;
     public TestEnemy TestEnemy;
 
@@ -126,7 +127,7 @@ public class BattleManager : MonoBehaviour
         int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
         chapterIndex = 0; //임시
 
-        EnemyData enemyData = StageManager.Instance.stageSaveData.selectedEnemy;
+        EnemyData = StageManager.Instance.stageSaveData.selectedEnemy;
         //enemyGO = enemyData.EnemyPrefab
         TestEnemy = enemyGO.GetComponent<TestEnemy>();
         TestEnemy.Init();

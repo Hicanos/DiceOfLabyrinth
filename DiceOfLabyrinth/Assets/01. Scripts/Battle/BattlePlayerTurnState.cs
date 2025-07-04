@@ -20,7 +20,7 @@ public class BattlePlayerTurnState : IBattleTurnState
             battleManager.LoadMonsterPattern.Load();
         }
 
-        battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.Turn, battleManager.BattleTurn.ToString());        
+        battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.Turn, battleManager.BattleTurn.ToString());
         ChangePlayerTurnState(PlayerTurnState.Enter);
     }
 
