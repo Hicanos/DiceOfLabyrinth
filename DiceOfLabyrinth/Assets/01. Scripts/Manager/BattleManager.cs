@@ -56,7 +56,7 @@ public class BattleManager : MonoBehaviour
     [Header("UI")]
     public AbstractBattleButton[] BattleButtons;        
     [SerializeField] Image turnDisplay;
-    [SerializeField] Image enemyHPBar;    
+    public Image[] HPBar;    
 
     public  readonly int MaxCost = 12;
     public  int     BattleTurn = 0;
@@ -98,14 +98,13 @@ public class BattleManager : MonoBehaviour
     public void BattleStartCoroutine()
     {
         GetMonster();
-        
         DiceManager.Instance.DiceSettingForBattle();
         battleCoroutine.CharacterSpwan();
     }
 
     public void BattleStart()
-    {                
-        enemyHPBar.gameObject.SetActive(true);
+    {
+        HPBar[(int)HPEnum.enemy].gameObject.SetActive(true);
         turnDisplay.gameObject.SetActive(true);
         playerTurnState.Enter();
         DiceManager.Instance.LoadDiceData();
@@ -119,8 +118,12 @@ public class BattleManager : MonoBehaviour
     public void BattleEnd()
     {
         isBattle = false;
-        enemyHPBar.gameObject.SetActive(false);
-        turnDisplay.gameObject.SetActive(false);
+        HPBar[(int)HPEnum.enemy].gameObject.SetActive(false);
+        //for(int i = 0; i < battleCharacters.Length; i++)
+        //{
+        //    HPBar[i].gameObject.SetActive(false);
+        //}
+        //turnDisplay.gameObject.SetActive(false);
 
         //결과창 실행
     }

@@ -8,13 +8,13 @@ public class BattleCoroutine : MonoBehaviour
     IEnumerator enumeratorSpawn;
     IEnumerator enumeratorAttack;
 
-    GameObject[] characterPrefabs;
-    BattleManager battleManager = BattleManager.Instance;
-    Transform characterContainer;
+    GameObject[] characterPrefabs = new GameObject[5];
+    BattleManager battleManager;
+    [SerializeField] Transform characterContainer;
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             SkipCharacterSpwan();
         }
@@ -22,6 +22,7 @@ public class BattleCoroutine : MonoBehaviour
 
     public void CharacterSpwan()
     {
+        battleManager = BattleManager.Instance;
         enumeratorSpawn = CharacterSpawn();
         StartCoroutine(enumeratorSpawn);
     }
@@ -36,10 +37,13 @@ public class BattleCoroutine : MonoBehaviour
         chapterIndex = 0; //임시
         int iFormation = ((int)StageManager.Instance.stageSaveData.currentFormationType);
         List<PlayerPositions> positions = StageManager.Instance.chapterManager.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
-
+        Camera cam = Camera.main;
         for (int i = 0; i < 5; i++)
         {
             characterPrefabs[i].transform.localPosition = positions[i].Position;
+            //Vector3 vec2 = cam.WorldToViewportPoint(positions[i].Position + Vector3.up * 50);
+            //battleManager.HPBar[i].transform.position = vec2;
+            //battleManager.HPBar[i].gameObject.SetActive(true);
         }
 
         battleManager.BattleStart();
@@ -68,11 +72,11 @@ public class BattleCoroutine : MonoBehaviour
         List<PlayerPositions> positions = StageManager.Instance.chapterManager.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
 
         float pastTime = 0, destTime = 2.5f;
-
-        for(int i = 0; i < 5; i++)
+        GameObject go;
+        for (int i = 0; i < 5; i++)
         {
-            GameObject go = battleManager.battleCharacters[i].CharacterData.charBattlePrefab;
-            characterPrefabs[i] = Instantiate(go, positions[i].Position - Vector3.right* 12, Quaternion.identity, characterContainer);
+            go = battleManager.battleCharacters[i].CharacterData.charBattlePrefab;
+            characterPrefabs[i] = Instantiate(go, positions[i].Position - Vector3.right * 12, Quaternion.identity, characterContainer);
         }
         yield return null;
 
@@ -80,14 +84,20 @@ public class BattleCoroutine : MonoBehaviour
         {
             for (int i = 0; i < 5; i++)
             {
-                characterPrefabs[i].transform.localPosition = Vector3.Lerp(positions[i].Position - Vector3.right * 12, positions[i].Position, pastTime/destTime);
+                characterPrefabs[i].transform.localPosition = Vector3.Lerp(positions[i].Position - Vector3.right * 12, positions[i].Position, pastTime / destTime);
             }
 
             pastTime += Time.deltaTime;
             yield return null;
         }
 
-        isPreparing = false;        
+        //for (int i = 0; i < 5; i++)
+        //{
+        //    battleManager.HPBar[i].transform.localPosition = positions[i].Position + Vector3.up * 5;
+        //    battleManager.HPBar[i].gameObject.SetActive(true);
+        //}
+
+        isPreparing = false;
         battleManager.BattleStart();
     }
 
