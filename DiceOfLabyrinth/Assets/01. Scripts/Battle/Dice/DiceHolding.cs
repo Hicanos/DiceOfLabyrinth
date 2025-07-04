@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 using PredictedDice;
@@ -8,6 +9,7 @@ public class DiceHolding : MonoBehaviour
 {
     [SerializeField] Camera diceCamera;
     [SerializeField] RollMultipleDiceSynced rollMultipleDice;
+    [SerializeField] Button DiceRollButton;
     List<int> fixedDiceList;
     List<int> tempFixedDiceList;
     void Update()
@@ -79,7 +81,7 @@ public class DiceHolding : MonoBehaviour
             DiceManager.Instance.fakeDices[index].transform.localPosition = DiceManager.Instance.FixedPos[index];
             if (fixedDiceList.Count + tempFixedDiceList.Count == DiceManager.Instance.dices.Length)
             {
-                BattleManager.Instance.DiceRollButton.interactable = false;
+                DiceRollButton.interactable = false;
             }
         }
         else if (tempFixedDiceList.Contains<int>(index) == true)
@@ -87,7 +89,7 @@ public class DiceHolding : MonoBehaviour
             tempFixedDiceList.Remove(index);
             rollMultipleDice.diceAndOutcomeArray[index].dice = DiceManager.Instance.dices[index].GetComponent<Dice>();
             DiceManager.Instance.fakeDices[index].transform.localPosition = DiceManager.Instance.DicePos[index];
-            BattleManager.Instance.DiceRollButton.interactable = true;
+            DiceRollButton.interactable = true;
         }
     }
 

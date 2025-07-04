@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using TMPro;
 
 public class BattleManager : MonoBehaviour
 {
@@ -35,14 +35,16 @@ public class BattleManager : MonoBehaviour
     #endregion
 
     public BattleCharacter[] battleCharacters; //임시
-    public GameObject[] characterPrefabs;
+
     GameObject enemyGO;
     [field:SerializeField] public TestEnemy TestEnemy;
     //[field:SerializeField] EnemyData enemyData;
 
     [SerializeField] Transform enemyContainer;
-    public Transform characterContainer;
+    public BattleUIValueChanger UIValueChanger;
+    public BattleCoroutine battleCoroutine;
 
+    [Header("Battle State")]
     public LoadMonsterPattern LoadMonsterPattern;
     public MonsterPattern MonsterPattern;
     public BattleStateMachine stateMachine;
@@ -51,23 +53,16 @@ public class BattleManager : MonoBehaviour
     public IBattleTurnState enemyTurnState;
     public BattlePlayerTurnState battlePlayerTurnState;
 
-    public TextMeshProUGUI costTest;
-    public TextMeshProUGUI monsterSkillName;
-    public TextMeshProUGUI monsterSkillDescription;
-    public TextMeshProUGUI turnText;
-    public Button DiceRollButton;
-    public AbstractBattleButton[] BattleButtons;
+    [Header("UI")]
+    public AbstractBattleButton[] BattleButtons;        
     [SerializeField] Image turnDisplay;
-    [SerializeField] Image enemyHPBar;
-    public RectTransform enemyHPImage;
+    [SerializeField] Image enemyHPBar;    
 
-    public readonly int MaxCost = 12;
-    public int CurrnetCost = 0;
-    public int BattleTurn = 0;
-    public bool isBattle;
-
-    public BattleCoroutine battleCoroutine;
-    IEnumerator moveAttackCoroutine;
+    public  readonly int MaxCost = 12;
+    public  int     BattleTurn = 0;
+    private int     currnetCost = 0;
+    public  bool    isBattle;
+        
     void Start()
     {
         playerTurnState = new BattlePlayerTurnState();
@@ -81,7 +76,6 @@ public class BattleManager : MonoBehaviour
         MonsterPattern = new MonsterPattern();
 
         battleCharacters = new BattleCharacter[5];
-        characterPrefabs = new GameObject[5];
     }
     
     void Update()
@@ -106,7 +100,7 @@ public class BattleManager : MonoBehaviour
         GetMonster();
         
         DiceManager.Instance.DiceSettingForBattle();
-        battleCoroutine.StartPrepareBattle();
+        battleCoroutine.CharacterSpwan();
     }
 
     public void BattleStart()
@@ -137,87 +131,21 @@ public class BattleManager : MonoBehaviour
         chapterIndex = 0; //임시
         enemyGO = StageManager.Instance.chapterData.chapterIndex[0].stageData.stageIndex[chapterIndex].NormalPhases[0].Enemies[0].EnemyPrefab;
         TestEnemy = enemyGO.GetComponent<TestEnemy>();
-
+        TestEnemy.Init();
         Instantiate(enemyGO, new Vector3(5.85f, -0.02f, -1.06f), Quaternion.identity, enemyContainer);
-    }
+    }    
 
     /// <summary>
-    /// 캐릭터가 공격할 때 실행하는 코루틴을 실행하는 메서드입니다.
-    /// </summary>    
-    public void CharacterAttack(float diceWeighting)
-    {
-        moveAttackCoroutine = CharacterAttackCoroutine(diceWeighting);
-        StartCoroutine(moveAttackCoroutine);
-    }
-
-    private void StopCharacterAttack()
-    {
-        StopCoroutine(moveAttackCoroutine);
-    }
-
-    IEnumerator CharacterAttackCoroutine(float diceWeighting)
-    {
-        int monsterDef = TestEnemy.EnemyData.Def;
-        float pastTime, destTime = 0.5f;
-        Vector3 attackPosition = new Vector3(3.25f, 0, 0);
-
-        for (int i = 0; i < battleCharacters.Length; i++)
-        {
-            int characterAtk = battleCharacters[i].CurrentATK;
-
-            int damage = (characterAtk - monsterDef) * (int)diceWeighting;
-            damage = Mathf.Clamp(damage, 0, damage);            
-
-            Vector3 firstPosition = characterPrefabs[i].transform.position;
-
-            pastTime = 0;
-            while (pastTime < destTime)
-            {
-                characterPrefabs[i].transform.position = Vector3.Lerp(firstPosition, attackPosition, pastTime / destTime);
-
-                pastTime += Time.deltaTime;
-                yield return null;
-            }
-            DealDamage(TestEnemy, damage/10);
-            pastTime = 0;
-            while (pastTime < destTime)
-            {
-                characterPrefabs[i].transform.position = Vector3.Lerp(attackPosition, firstPosition, pastTime / destTime);
-
-                pastTime += Time.deltaTime;
-                yield return null;
-            }
-
-            if (TestEnemy.IsDead == true)
-            {
-                //쓰러지는 애니메이션 있으면 좋을듯
-                battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
-                Debug.Log("몬스터 쓰러짐");
-                BattleEnd();
-                StopCharacterAttack();
-                //결과창
-            }            
-            yield return null;
-        }
-        stateMachine.ChangeState(enemyTurnState);
-    }
-
-    public void DealDamage(IDamagable target, int damage)
-    {
-        target.TakeDamage(damage);
-    }
-
-    /// <summary>
-    /// 
+    /// 스킬 사용에 필요한 코스트를 매개변수만큼 얻는 메서드입니다.
     /// </summary>
     /// <param name="iNum"></param>
     public void GetCost(int iNum)
     {
-        int cost = CurrnetCost;
+        int cost = currnetCost;
 
         cost = Mathf.Clamp(cost + iNum, 0, MaxCost);
 
-        CurrnetCost = cost;
-        costTest.text = cost.ToString();
+        currnetCost = cost;
+        UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, cost.ToString());        
     }
 }

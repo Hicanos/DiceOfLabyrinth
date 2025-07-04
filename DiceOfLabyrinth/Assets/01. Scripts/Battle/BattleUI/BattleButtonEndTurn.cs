@@ -40,7 +40,7 @@ public class BattleButtonEndTurn : AbstractBattleButton
 
         float diceWeighting = DiceManager.Instance.DiceBattle.GetDiceWeighting(); //족보별 계수
         //공격 애니메이션실행
-        battleManager.CharacterAttack(diceWeighting);
+        battleManager.battleCoroutine.CharacterAttack(diceWeighting);
 
         
     }
