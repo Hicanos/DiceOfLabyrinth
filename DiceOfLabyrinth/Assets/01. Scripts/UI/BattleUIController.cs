@@ -51,6 +51,7 @@ public class BattleUIController : MonoBehaviour
     [Header("Select Choice Panel")]
     [SerializeField] private TMP_Text[] selectChoiceText = new TMP_Text[2]; // 선택지 이벤트 패널 제목
     [SerializeField] private Image[] selectChoiceIcon = new Image[2]; // 선택지 이벤트 패널 아이콘
+    [SerializeField] private ChoiceOptions[] ChoiceOptions = new ChoiceOptions[2]; // 선택지 이벤트 패널 선택지 옵션, 선택지는 2개까지만 뜸
 
     private void Start()
     {
@@ -574,10 +575,25 @@ public class BattleUIController : MonoBehaviour
 
     public void OpenSelectChoicePanel() // 선택지 이벤트 패널을 여는 함수
     {
+        var stageSelectChoices = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+            .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ChoiceOptions; // 현재 스테이지의 선택지 목록을 가져옴
+        if (stageSelectChoices == null || stageSelectChoices.Count < 2)
+        {
+            messagePopup.Open("선택지 이벤트가 잘못 설정되었습니다. 다시 시도해 주세요."); // 선택지 이벤트가 잘못 설정된 경우 경고 메시지 표시
+            return;
+        }
         StageManager.Instance.stageSaveData.currentPhaseState = "SelectChoice"; // 현재 페이즈 상태를 "SelectChoice"로 설정
+        // 스테이지의 선택지 목록 중 2개만 배열에 저장
+        for (int i = 0; i < 2; i++)
+        {
+            selectChoiceText[i].text = stageSelectChoices[i].ChoiceText; // 선택지 텍스트 설정
+            selectChoiceIcon[i].sprite = stageSelectChoices[i].ChoiceIcon; // 선택지 아이콘 설정
+            ChoiceOptions[i] = stageSelectChoices[i]; // 선택지 옵션 저장
+        }
+
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
-        stagePanel.SetActive(false);
+        stagePanel.SetActive(true);
         battlePanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
@@ -585,7 +601,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(true); // 선택지 이벤트 패널 활성화
     }
 
-    public void OnClickSelectChoice(int phaseStage) // 나중에 쓰도록 만들어 놓음
+    public void OnClickSelectChoice(int selectIndex)
     {
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);

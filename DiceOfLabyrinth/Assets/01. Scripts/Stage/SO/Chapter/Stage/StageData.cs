@@ -25,7 +25,7 @@ public class StageInfo
     [SerializeField] private BossPhaseData bossPhase;
     [SerializeField] private List<NormalPhaseData> normalPhases;
     [SerializeField] private List<ElitePhaseData> elitePhases;
-    [SerializeField] private List<ChooseOptions> choose;
+    [SerializeField] private List<ChoiceOptions> choiceOptions;
     [SerializeField] private List<StagmaData> stagmaList;
     [SerializeField] private List<ArtifactData> artifactList;
 
@@ -38,7 +38,7 @@ public class StageInfo
     public int JewelReward => jewelReward;
     public List<NormalPhaseData> NormalPhases => normalPhases;
     public List<ElitePhaseData> ElitePhases => elitePhases;
-    public List<ChooseOptions> Choose => choose;
+    public List<ChoiceOptions> ChoiceOptions => choiceOptions;
 
     public List<StagmaData> StagmaList => stagmaList;
     public List<ArtifactData> ArtifactList => artifactList;
@@ -118,15 +118,15 @@ public class EnemySpawnData
 }
 
 [System.Serializable]
-public class ChooseOptions
+public class ChoiceOptions
 {
     // 선택지 정보 필드들
-    [SerializeField] private string chooseName;
+    [SerializeField] private string choiceText;
     [SerializeField] private string description;
-    [SerializeField] private Sprite iconImage;
+    [SerializeField] private Sprite choiceIcon;
 
     // 읽기 전용 프로퍼티들
-    public string ChooseName => chooseName;
+    public string ChoiceText => choiceText;
     public string Description => description;
-    public Sprite IconImage => iconImage;
+    public Sprite ChoiceIcon => choiceIcon;
 }

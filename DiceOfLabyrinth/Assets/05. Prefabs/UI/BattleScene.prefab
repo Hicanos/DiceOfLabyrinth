@@ -350,7 +350,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6776954470632737263}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickExploreButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &128704209702902774
 GameObject:
   m_ObjectHideFlags: 0
@@ -385,10 +397,10 @@ RectTransform:
   - {fileID: 4600120935195289602}
   m_Father: {fileID: 5736528491236257652}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 35, y: -35}
+  m_SizeDelta: {x: 250, y: 250}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &2075185668050521976
 CanvasRenderer:
@@ -605,7 +617,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5629844556400460946}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectItemNumber
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8249820096946776512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1366,9 +1390,9 @@ RectTransform:
   - {fileID: 5230238028257587906}
   m_Father: {fileID: 5634968170211859681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1025, y: -125}
   m_SizeDelta: {x: 180, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &4133715265475393201
@@ -1498,9 +1522,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6266948128388269557}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 75, y: -187.5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7492860517489965757
@@ -1718,7 +1742,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8139674627777052566}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectItemNumber
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5485187224784543104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2295,9 +2331,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6266948128388269557}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 75, y: -62.5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1053063119414460610
@@ -2416,10 +2452,10 @@ RectTransform:
   - {fileID: 6967267345187396319}
   m_Father: {fileID: 5736528491236257652}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 35, y: -565}
+  m_SizeDelta: {x: 250, y: 250}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &7140962683763825911
 CanvasRenderer:
@@ -2635,7 +2671,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1102222741283054872}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectItem
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1535920619058937021
 GameObject:
   m_ObjectHideFlags: 0
@@ -3140,9 +3188,9 @@ RectTransform:
   - {fileID: 60285002050931801}
   m_Father: {fileID: 5634968170211859681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 205, y: -125}
   m_SizeDelta: {x: 180, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &7473381477362205727
@@ -3731,9 +3779,9 @@ RectTransform:
   - {fileID: 6331689437420566897}
   m_Father: {fileID: 5634968170211859681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1230, y: -125}
   m_SizeDelta: {x: 180, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &544770191850308604
@@ -4076,10 +4124,10 @@ RectTransform:
   - {fileID: 1279555339720185295}
   m_Father: {fileID: 5736528491236257652}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 565, y: -565}
+  m_SizeDelta: {x: 250, y: 250}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &9084589412288419428
 CanvasRenderer:
@@ -4620,7 +4668,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5630454420217438078
 Transform:
   m_ObjectHideFlags: 0
@@ -4650,10 +4698,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chapterData: {fileID: 11400000, guid: 7e9784863b1f3db4f98bfa3f47f22c51, type: 2}
-  checkPanel: {fileID: 0}
+  messagePopup: {fileID: 0}
   itemTitleText: {fileID: 4197204831119561405}
   itemDescriptionText: {fileID: 7557495056929577819}
   selectIndex: 0
+  stagmaChoices:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  artifactChoices:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  selectedStagma: {fileID: 0}
+  selectedArtifact: {fileID: 0}
   selectDungeonPanel: {fileID: 7398880750472421032}
   teamFormationPenel: {fileID: 102126530043097548}
   stagePanel: {fileID: 2999613424131299847}
@@ -4683,12 +4741,10 @@ MonoBehaviour:
   - {fileID: 8706252348830315475}
   - {fileID: 8817921858569026687}
   - {fileID: 6221180435193772941}
-  stagmaChoices:
+  selectChoiceText:
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  artifactChoices:
-  - {fileID: 0}
+  selectChoiceIcon:
   - {fileID: 0}
   - {fileID: 0}
 --- !u!1 &3625305517019798406
@@ -5814,10 +5870,10 @@ RectTransform:
   - {fileID: 4587474407443885888}
   m_Father: {fileID: 5736528491236257652}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 565, y: -35}
+  m_SizeDelta: {x: 250, y: 250}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &6725729929665972205
 CanvasRenderer:
@@ -6369,9 +6425,9 @@ RectTransform:
   - {fileID: 8611723337951825759}
   m_Father: {fileID: 5634968170211859681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 410, y: -125}
   m_SizeDelta: {x: 180, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5941164439739282910
@@ -7237,7 +7293,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5778181263159813441}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectItemNumber
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &156454183082800779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7953,9 +8021,9 @@ RectTransform:
   - {fileID: 7174635028439681161}
   m_Father: {fileID: 5634968170211859681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 820, y: -125}
   m_SizeDelta: {x: 180, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &3692365419309142848
@@ -8992,9 +9060,9 @@ RectTransform:
   - {fileID: 5396559538103512406}
   m_Father: {fileID: 5634968170211859681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 615, y: -125}
   m_SizeDelta: {x: 180, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &4493869682628524805
@@ -9853,9 +9921,9 @@ RectTransform:
   - {fileID: 579458719130525890}
   m_Father: {fileID: 5634968170211859681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: -125}
   m_SizeDelta: {x: 180, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &1921089940597126144
