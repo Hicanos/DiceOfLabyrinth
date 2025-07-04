@@ -34,20 +34,14 @@ public class BattleButtonEndTurn : AbstractBattleButton
 
     public override void OnPush()
     {
-        float diceWeighting = DiceManager.Instance.DiceBattle.GetDiceWeighting(); //족보별 계수
         BattleManager battleManager = BattleManager.Instance;
+
+        battleManager.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.EndTurn);
+
+        float diceWeighting = DiceManager.Instance.DiceBattle.GetDiceWeighting(); //족보별 계수
         //공격 애니메이션실행
         battleManager.CharacterAttack(diceWeighting);
 
-        battleManager.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.EndTurn);
-        if(battleManager.TestEnemy.IsDead == true)
-        {
-            Debug.Log("전투 종료");
-            battleManager.BattleEnd();
-        }
-        else
-        {
-            battleManager.stateMachine.ChangeState(battleManager.enemyTurnState);
-        }
+        
     }
 }
