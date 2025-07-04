@@ -78,6 +78,10 @@ public class CharacterSOGenerator : EditorWindow
         foreach (var data in wrapper.Items)
         {
             CharacterSO so = ScriptableObject.CreateInstance<CharacterSO>();
+
+            // 반드시 hideFlags를 None으로 설정 (Assertion 방지)
+            so.hideFlags = HideFlags.None;
+
             so.key = data.key;
             so.charID = data.CharID;
             so.nameKr = data.NameKr;
@@ -93,12 +97,11 @@ public class CharacterSOGenerator : EditorWindow
             so.critDamage = data.CritDamage;
             so.penetration = data.Penetration;
             so.elementDMG = data.ElementDMG;
-            so.elementType = data.ElementType;            
+            so.elementType = data.ElementType;
             so.description = data.Description;
             so.dialog1 = data.dialog1;
             so.dialog2 = data.dialog2;
             so.diceID = data.DiceID;
-
 
             // 프리팹 할당
             if (!string.IsNullOrEmpty(data.LobbyPrefabPath))
@@ -126,7 +129,6 @@ public class CharacterSOGenerator : EditorWindow
                 so.Standing = AssetDatabase.LoadAssetAtPath<Sprite>(data.StandingPath);
             }
 
-
             // DiceDataLoader를 통해 Dice 데이터 로드
             DiceDataLoader diceLoader = new DiceDataLoader(); // 기본 경로 사용
             CharDiceData diceData = diceLoader.ItemsList.Find(d => d.DiceID == data.DiceID);
@@ -139,6 +141,8 @@ public class CharacterSOGenerator : EditorWindow
             if (File.Exists(assetPath))
                 AssetDatabase.DeleteAsset(assetPath);
 
+            // 반드시 hideFlags가 None인 상태에서 저장 (Assertion 방지)
+            so.hideFlags = HideFlags.None;
             AssetDatabase.CreateAsset(so, assetPath);
 
             // SO를 저장한 후, 프로젝트에서 해당 에셋을 다시 불러옴
@@ -162,8 +166,6 @@ public class CharacterSOGenerator : EditorWindow
                 string guid = AssetDatabase.AssetPathToGUID(assetPath);
                 var entry = Asettings.CreateOrMoveEntry(guid, group);
                 entry.address = so.nameEn;
-
-                // Addressable 라벨 자동 할당
                 entry.SetLabel("CharacterSO", true);
             }
 
@@ -196,7 +198,6 @@ public class CharacterSOGenerator : EditorWindow
     /// <summary>
     /// 역직렬화를 위한 래퍼(캐릭터 데이터 리스트 보관)
     /// </summary>
-
     [System.Serializable]
     private class CharDataListWrapper
     {
@@ -204,7 +205,6 @@ public class CharacterSOGenerator : EditorWindow
     }
 
     /// <summary>
-    /// 
     /// JSON 데이터 구조와 매칭되는 캐릭터 데이터 클래스
     /// </summary>
     [System.Serializable]
