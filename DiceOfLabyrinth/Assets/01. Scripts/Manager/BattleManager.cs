@@ -125,7 +125,9 @@ public class BattleManager : MonoBehaviour
     {
         int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
         chapterIndex = 0; //임시
-        //enemyGO = StageManager.Instance.chapterData.chapterIndex[0].stageData.stageIndex[chapterIndex].NormalPhases[0].Enemies[0].EnemyPrefab; 추후 수정
+
+        EnemyData enemyData = StageManager.Instance.stageSaveData.selectedEnemy;
+        //enemyGO = enemyData.EnemyPrefab
         TestEnemy = enemyGO.GetComponent<TestEnemy>();
         TestEnemy.Init();
         Instantiate(enemyGO, new Vector3(5.85f, -0.02f, -1.06f), Quaternion.identity, enemyContainer);
