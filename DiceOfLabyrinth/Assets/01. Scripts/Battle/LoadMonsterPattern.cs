@@ -45,7 +45,7 @@ public class LoadMonsterPattern
 
     private string SelectPattern()
     {
-        Debug.Log("새 패턴 받아옴");
+        //Debug.Log("새 패턴 받아옴");
         JToken patternIndex = pattern.pattern["Index"];
 
         string index = BattleManager.Instance.TestEnemy.EnemyData.Pattern.ToString();

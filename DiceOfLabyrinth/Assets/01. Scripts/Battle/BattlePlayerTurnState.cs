@@ -7,8 +7,8 @@ public class BattlePlayerTurnState : IBattleTurnState
     public void Enter()
     {
         battleManager.BattleTurn++;
-        Debug.Log($"Turn{BattleManager.Instance.BattleTurn}");
-        Debug.Log("Player's turn");
+        //Debug.Log($"Turn{BattleManager.Instance.BattleTurn}");
+        //Debug.Log("Player's turn");
         
         battleManager.GetCost(AlivedCharacter());
 

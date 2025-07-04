@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class BattleManager : MonoBehaviour
 {
@@ -40,7 +37,8 @@ public class BattleManager : MonoBehaviour
     public BattleCharacter[] battleCharacters; //임시
     public GameObject[] characterPrefabs;
     GameObject enemyGO;
-    public TestEnemy TestEnemy => enemyGO.GetComponent<TestEnemy>();
+    [field:SerializeField] public TestEnemy TestEnemy;
+    //[field:SerializeField] EnemyData enemyData;
 
     [SerializeField] Transform enemyContainer;
     public Transform characterContainer;
@@ -61,7 +59,7 @@ public class BattleManager : MonoBehaviour
     public AbstractBattleButton[] BattleButtons;
     [SerializeField] Image turnDisplay;
     [SerializeField] Image enemyHPBar;
-    public Image enemyHPImage;
+    public RectTransform enemyHPImage;
 
     public readonly int MaxCost = 12;
     public int CurrnetCost = 0;
@@ -97,10 +95,13 @@ public class BattleManager : MonoBehaviour
             battleCharacters[3] = CharacterManager.Instance.RegisterBattleCharacterData("Char_3");
             battleCharacters[4] = CharacterManager.Instance.RegisterBattleCharacterData("Char_4");
             BattleStartCoroutine();
-        }
+        }        
     }
 
-    public void BattleStartCoroutine() //전투 시작시 호출해야할 메서드
+    /// <summary>
+    /// 전투를 시작할때 실행시켜야할 메서드
+    /// </summary>
+    public void BattleStartCoroutine()
     {
         GetMonster();
         
@@ -109,8 +110,7 @@ public class BattleManager : MonoBehaviour
     }
 
     public void BattleStart()
-    {
-        //entryCharacters = StageManager.Instance.stageSaveData.entryCharacters;
+    {                
         enemyHPBar.gameObject.SetActive(true);
         turnDisplay.gameObject.SetActive(true);
         playerTurnState.Enter();
@@ -119,6 +119,9 @@ public class BattleManager : MonoBehaviour
         isBattle = true;
     }
 
+    /// <summary>
+    /// 전투가 끝났을 때 실행시켜야할 메서드, 결과창을 띄웁니다.
+    /// </summary>
     public void BattleEnd()
     {
         isBattle = false;
@@ -133,9 +136,14 @@ public class BattleManager : MonoBehaviour
         int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
         chapterIndex = 0; //임시
         enemyGO = StageManager.Instance.chapterData.chapterIndex[0].stageData.stageIndex[chapterIndex].NormalPhases[0].Enemies[0].EnemyPrefab;
+        TestEnemy = enemyGO.GetComponent<TestEnemy>();
+
         Instantiate(enemyGO, new Vector3(5.85f, -0.02f, -1.06f), Quaternion.identity, enemyContainer);
     }
 
+    /// <summary>
+    /// 캐릭터가 공격할 때 실행하는 코루틴을 실행하는 메서드입니다.
+    /// </summary>    
     public void CharacterAttack(float diceWeighting)
     {
         moveAttackCoroutine = CharacterAttackCoroutine(diceWeighting);
@@ -149,9 +157,7 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator CharacterAttackCoroutine(float diceWeighting)
     {
-        IDamagable damagerableEnemy = enemyGO.GetComponent<IDamagable>();
-        TestEnemy enemy = (TestEnemy)damagerableEnemy;
-        int monsterDef = enemy.EnemyData.Def;
+        int monsterDef = TestEnemy.EnemyData.Def;
         float pastTime, destTime = 0.5f;
         Vector3 attackPosition = new Vector3(3.25f, 0, 0);
 
@@ -172,8 +178,7 @@ public class BattleManager : MonoBehaviour
                 pastTime += Time.deltaTime;
                 yield return null;
             }
-            //Debug.Log($"{characterAtk}-{monsterDef}*{(int)diceWeighting} = {damage}");
-            DealDamage(damagerableEnemy, damage);
+            DealDamage(TestEnemy, damage/10);
             pastTime = 0;
             while (pastTime < destTime)
             {
@@ -183,16 +188,18 @@ public class BattleManager : MonoBehaviour
                 yield return null;
             }
 
-            if (enemy.IsDead == true)
+            if (TestEnemy.IsDead == true)
             {
                 //쓰러지는 애니메이션 있으면 좋을듯
                 battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
                 Debug.Log("몬스터 쓰러짐");
+                BattleEnd();
                 StopCharacterAttack();
                 //결과창
-            }
+            }            
             yield return null;
         }
+        stateMachine.ChangeState(enemyTurnState);
     }
 
     public void DealDamage(IDamagable target, int damage)
@@ -200,6 +207,10 @@ public class BattleManager : MonoBehaviour
         target.TakeDamage(damage);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="iNum"></param>
     public void GetCost(int iNum)
     {
         int cost = CurrnetCost;
