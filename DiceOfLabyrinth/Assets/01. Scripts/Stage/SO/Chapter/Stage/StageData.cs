@@ -25,7 +25,7 @@ public class StageInfo
     [SerializeField] private BossPhaseData bossPhase;
     [SerializeField] private List<NormalPhaseData> normalPhases;
     [SerializeField] private List<ElitePhaseData> elitePhases;
-    [SerializeField] private List<ChooseOptions> choose;
+    [SerializeField] private List<ChoiceOptions> choiceOptions;
     [SerializeField] private List<StagmaData> stagmaList;
     [SerializeField] private List<ArtifactData> artifactList;
 
@@ -38,7 +38,7 @@ public class StageInfo
     public int JewelReward => jewelReward;
     public List<NormalPhaseData> NormalPhases => normalPhases;
     public List<ElitePhaseData> ElitePhases => elitePhases;
-    public List<ChooseOptions> Choose => choose;
+    public List<ChoiceOptions> ChoiceOptions => choiceOptions;
 
     public List<StagmaData> StagmaList => stagmaList;
     public List<ArtifactData> ArtifactList => artifactList;
@@ -51,14 +51,11 @@ public class NormalPhaseData
     // Phase 정보 필드들
     [SerializeField] private string phaseName;
     [SerializeField] private List<EnemySpawnData> enemies;
-    [SerializeField] private List<PhaseRewardData> phaseRewardObjects;
     [SerializeField] private int manaStoneReward;
 
     // 읽기 전용 프로퍼티들
     public string PhaseName => phaseName;
     public List<EnemySpawnData> Enemies => enemies;
-    public List<PhaseRewardData> PhaseRewardObjects => phaseRewardObjects;
-
     public int ManaStoneReward => manaStoneReward;
 }
 
@@ -68,13 +65,11 @@ public class ElitePhaseData
     // 보스 페이즈 정보 필드들
     [SerializeField] private string phaseName;
     [SerializeField] private List<EnemySpawnData> enemies;
-    [SerializeField] private List<PhaseRewardData> phaseRewardObjects;
     [SerializeField] private int manaStoneReward;
 
     // 읽기 전용 프로퍼티들
     public string PhaseName => phaseName;
     public List<EnemySpawnData> Enemies => enemies;
-    public List<PhaseRewardData> PhaseRewardObjects => phaseRewardObjects;
     public int ManaStoneReward => manaStoneReward;
 }
 [System.Serializable]
@@ -83,12 +78,13 @@ public class BossPhaseData
     // 보스 페이즈 정보 필드들
     [SerializeField] private string bossName;
     [SerializeField] private string description;
-    [SerializeField] private GameObject bossPrefab;
+    //[SerializeField] private GameObject bossPrefab; // 이제 에너미 데이타에 프리펩이 정의되어 있으므로 프리펩은 StageData에서 정의하지 않고 에너미 데이타를 사용합니다.
+    [SerializeField] private EnemyData enemyData;
     [SerializeField] private Vector3 spawnPosition;
     // 읽기 전용 프로퍼티들
     public string BossName => bossName;
     public string Description => description;
-    public GameObject BossPrefab => bossPrefab;
+    public EnemyData EnemyData => enemyData; // 에너미 데이타를 통해 프리펩을 가져올 수 있습니다.
     public Vector3 SpawnPosition => spawnPosition;
 }
 
@@ -113,38 +109,24 @@ public class PlayerPositions
 public class EnemySpawnData
 {
     // 적 스폰 정보 필드들
-    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private EnemyData enemyData; // 에너미 데이타를 사용하여 프리펩을 가져옵니다.
     [SerializeField] private Vector3 spawnPosition;
 
     // 읽기 전용 프로퍼티들
-    public GameObject EnemyPrefab => enemyPrefab;
+    public EnemyData EnemyData => enemyData; // 에너미 데이타를 통해 프리펩을 가져올 수 있습니다.
     public Vector3 SpawnPosition => spawnPosition;
 }
 
 [System.Serializable]
-public class PhaseRewardData
-{
-    // Phase 보상 정보 필드들
-    [SerializeField] private string rewardName;
-    [SerializeField] private string description;
-    [SerializeField] private int rewardAmount;
-
-    // 읽기 전용 프로퍼티들
-    public string RewardName => rewardName;
-    public string Description => description;
-    public int RewardAmount => rewardAmount;
-}
-
-[System.Serializable]
-public class ChooseOptions
+public class ChoiceOptions
 {
     // 선택지 정보 필드들
-    [SerializeField] private string chooseName;
+    [SerializeField] private string choiceText;
     [SerializeField] private string description;
-    [SerializeField] private Sprite iconImage;
+    [SerializeField] private Sprite choiceIcon;
 
     // 읽기 전용 프로퍼티들
-    public string ChooseName => chooseName;
+    public string ChoiceText => choiceText;
     public string Description => description;
-    public Sprite IconImage => iconImage;
+    public Sprite ChoiceIcon => choiceIcon;
 }

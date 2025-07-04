@@ -73,9 +73,10 @@ public class TestEnemy : MonoBehaviour, IEnemy, IDamagable // 테스트에너미
     {
         Debug.Log($"Monster hp : {currentHp}");
         currentHp = Mathf.Clamp(currentHp - damage, 0, currentHp);
-        float hpRatio = currentHp / enemyData.MaxHp;
+        float hpRatio = (float)currentHp / enemyData.MaxHp;
         
-        BattleManager.Instance.enemyHPImage.GetComponent<RectTransform>().localScale = new Vector3(hpRatio, 1, 1);
+        BattleManager.Instance.UIValueChanger.ChangeEnemyHpRatio(HPEnum.enemy, hpRatio);
+        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterHP, $"{currentHp} / {enemyData.MaxHp}");
         if (currentHp == 0)
         {
             isDead = true;

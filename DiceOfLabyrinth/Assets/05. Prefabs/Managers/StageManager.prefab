@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52abc6c2a90f6184fabe85310d96adf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chapterManager: {fileID: 1758076233628826970}
   chapterData: {fileID: 11400000, guid: 7e9784863b1f3db4f98bfa3f47f22c51, type: 2}
   stageSaveData:
     currentChapterIndex: -1
@@ -54,8 +53,30 @@ MonoBehaviour:
     currentFormationType: 0
     currentPhaseState: 
     manaStone: 0
-    artifacts: []
-    stagmas: []
+    artifacts:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    stagmas:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    equipedArtifacts: []
     entryCharacters:
     - {fileID: 0}
     - {fileID: 0}
@@ -64,6 +85,8 @@ MonoBehaviour:
     - {fileID: 0}
     leaderCharacter: {fileID: 0}
     battleCharacters: []
+    currentEnemyHP: 0
+    selectedEnemy: {fileID: 0}
     savedExpReward: 0
     savedGoldReward: 0
     savedJewelReward: 0
@@ -82,6 +105,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: febcc8e586b6ed0489a08eb65c7ea3e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chapterData: {fileID: 11400000, guid: 7e9784863b1f3db4f98bfa3f47f22c51, type: 2}
-  stageManager: {fileID: 252293346350618144}
-  equipedArtifacts: []

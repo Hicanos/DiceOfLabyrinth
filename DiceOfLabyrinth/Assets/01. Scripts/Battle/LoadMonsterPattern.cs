@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 public class LoadMonsterPattern
 {
@@ -32,8 +32,8 @@ public class LoadMonsterPattern
         string skillName = pattern.skill[skillNum]["Name"].ToString();
         string skillDescription = pattern.skill[skillNum]["Description"].ToString();
 
-        BattleManager.Instance.monsterSkillName.text = $"{skillName} 준비중";
-        BattleManager.Instance.monsterSkillDescription.text = skillDescription;
+        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillName, $"{skillName} 준비중");
+        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillDescription, skillDescription);        
 
         patternCount++;
         if (patternCount == patternLength)

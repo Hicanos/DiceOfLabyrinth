@@ -55,6 +55,7 @@ public class EnemyData: ScriptableObject
     [SerializeField] private int atkPerLevel;
     [SerializeField] private int defPerLevel;
     [SerializeField] private string description;
+    [SerializeField] private GameObject enemyPrefab;
 
     public string EnemyName => enemyName;
     public int EnemyLevel => enemyLevel;
@@ -63,6 +64,7 @@ public class EnemyData: ScriptableObject
     public EnemyAttribute Attribute => enemyAttribute;
     public EnemyPattern Pattern => enemyPattern;
     public string Description => description;
+    public GameObject EnemyPrefab => enemyPrefab;
 
     // 기초값
     public int BaseMaxHp => baseMaxHp;
