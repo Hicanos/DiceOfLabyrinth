@@ -22,9 +22,10 @@ public class StageInfo
     [SerializeField] private int expReward;
     [SerializeField] private int goldReward;
     [SerializeField] private int jewelReward;
-    [SerializeField] private BossPhaseData bossPhase;
-    [SerializeField] private List<NormalPhaseData> normalPhases;
-    [SerializeField] private List<ElitePhaseData> elitePhases;
+    //[SerializeField] private BossPhaseData bossPhase;
+    //[SerializeField] private List<NormalPhaseData> normalPhases;
+    //[SerializeField] private List<ElitePhaseData> elitePhases;
+    [SerializeField] private List<EnemyData> enemies;
     [SerializeField] private List<ChoiceOptions> choiceOptions;
     [SerializeField] private List<StagmaData> stagmaList;
     [SerializeField] private List<ArtifactData> artifactList;
@@ -36,9 +37,10 @@ public class StageInfo
     public int ExpReward => expReward;
     public int GoldReward => goldReward;
     public int JewelReward => jewelReward;
-    public List<NormalPhaseData> NormalPhases => normalPhases;
-    public List<ElitePhaseData> ElitePhases => elitePhases;
-    public BossPhaseData BossPhase => bossPhase;
+    //public List<NormalPhaseData> NormalPhases => normalPhases;
+    //public List<ElitePhaseData> ElitePhases => elitePhases;
+    //public BossPhaseData BossPhase => bossPhase;
+    public List<EnemyData> Enemies => enemies;
     public List<ChoiceOptions> ChoiceOptions => choiceOptions;
 
     public List<StagmaData> StagmaList => stagmaList;

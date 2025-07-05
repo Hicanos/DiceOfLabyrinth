@@ -148,6 +148,9 @@ public class SelectAdventureUIController : MonoBehaviour
             StageManager.Instance.stageSaveData.ResetToDefault(chapterIndex); // 스테이지 상태 초기화
             Debug.Log($"Starting battle for chapter: {selectedChapter.ChapterName} (Index: {chapterIndex})");
             //SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
+            StageManager.Instance.stageSaveData.equipedArtifacts.Clear();
+            while (StageManager.Instance.stageSaveData.equipedArtifacts.Count < 4)
+                StageManager.Instance.stageSaveData.equipedArtifacts.Add(null); // 장착된 아티팩트 초기화
             StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태 복원
         }
     }

@@ -18,15 +18,24 @@ public class MessagePopup : MonoBehaviour
 
     public void Open(string msg = null, Action onYes = null, Action onNo = null)
     {
-        if (_onYes == null && _onNo == null)
+        switch (onYes, onNo)
         {
-            yesButton.SetActive(false);
-            noButton.SetActive(false);
-        }
-        else
-        {
-            yesButton.SetActive(true);
-            noButton.SetActive(true);
+            case (null, null):
+                yesButton.SetActive(false);
+                noButton.SetActive(false);
+                break;
+            case (null, _):
+                yesButton.SetActive(false);
+                noButton.SetActive(true);
+                break;
+            case (_, null):
+                yesButton.SetActive(true);
+                noButton.SetActive(false);
+                break;
+            default:
+                yesButton.SetActive(true);
+                noButton.SetActive(true);
+                break;
         }
 
         msgText.text = msg;
