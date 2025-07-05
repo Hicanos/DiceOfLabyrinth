@@ -13,6 +13,21 @@ public class StageSaveData
         FormationC,
         FormationD,
     }
+    public enum CurrentPhaseState
+    {
+        None,
+        TeamSelect,
+        StartReward,
+        SelectChoice,
+        Standby,
+        Battle,
+        NormalReward,
+        EliteArtifactReward,
+        EliteStagmaReward,
+        BossReward,
+        Shop,
+        EquipmedArtifact
+    }
     [Header("Stage Save Data")]
     public int currentChapterIndex; // 현재 챕터 인덱스
     public int currentStageIndex; // 현재 스테이지 인덱스
@@ -20,9 +35,7 @@ public class StageSaveData
     public CurrentFormationType currentFormationType;
     public int normalStageCompleteCount; // 현재 스테이지의 노멀 룸 완료 개수, 챕터가 완료되면 초기화됩니다.
     public int eliteStageCompleteCount; // 현재 스테이지의 엘리트 룸 완료 개수, 챕터가 완료되면 초기화됩니다.
-
-    public string currentPhaseState; //""은 던전선택에서 사용되는 상태입니다.
-    // "". "StartReward", "NormalReward", "EliteArtifactReward", "EliteStagmaReward", "BossReward", "Shop" , "TeamSelect",  "Standby", "Battle" 중 하나
+    public CurrentPhaseState currentPhaseState; // 현재 페이즈 상태
 
     [Header("Stage Resources")]
     public int manaStone; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
@@ -50,7 +63,7 @@ public class StageSaveData
         currentStageIndex = -1; // 초기화 시 스테이지 인덱스는 -1로 설정, 셀렉트 된 스테이지가 없는 상태를 의미합니다.
         currentPhaseIndex = 0;
         currentFormationType = CurrentFormationType.FormationA;
-        currentPhaseState = ""; // 초기 상태는 ""로 설정
+        currentPhaseState = CurrentPhaseState.None;
         manaStone = 0; 
         for (int i = 0; i < 18; i++)
             artifacts[i] = null; // 아티팩트 목록 초기화
@@ -150,7 +163,7 @@ public class StageManager : MonoBehaviour
             Debug.LogError("현재의 페이즈 인덱스가 유효하지 않습니다. 페이즈 데이터를 확인해주세요.");
             return;
         }
-        else if (stageSaveData.currentStageIndex == -1 || stageSaveData.currentPhaseState == "") // 던전 선택 상태
+        else if (stageSaveData.currentStageIndex == -1 || stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.None) // 던전 선택 상태
         {
             battleUIController.OpenSelectDungeonPanel(); // 스테이지 선택 UI를 엽니다.
             return;
@@ -160,33 +173,40 @@ public class StageManager : MonoBehaviour
         {
             switch (stageSaveData.currentPhaseState)
             {
-                case "TeamSelect":
+                case StageSaveData.CurrentPhaseState.TeamSelect:
                     battleUIController.OpenTeamFormationPanel(); // 팀 선택 UI를 엽니다.
                     return;
-                case "StartReward":
-                    battleUIController.OpenSelectStagmaPanel("StartReward"); // 스탠바이 상태에 해당하는 스태그마 선택 UI를 엽니다.
+                case StageSaveData.CurrentPhaseState.StartReward:
+                    battleUIController.OpenSelectStagmaPanel(StageSaveData.CurrentPhaseState.StartReward);
                     return;
-                case "NormalReward":
-                    battleUIController.OpenSelectStagmaPanel("NormalReward"); // 노멀 리워드 상태에 해당하는 스태그마 선택 UI를 엽니다.
+                case StageSaveData.CurrentPhaseState.NormalReward:
+                    battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.NormalReward); // 노멀 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
-                case "EliteArtifactReward":
-                    battleUIController.OpenSelectArtifactPanel("EliteArtifactReward"); // 엘리트 아티팩트 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
+                case StageSaveData.CurrentPhaseState.EliteArtifactReward:
+                    battleUIController.OpenSelectStagmaPanel(StageSaveData.CurrentPhaseState.EliteArtifactReward); // 엘리트 아티팩트 리워드 상태에 해당하는 스태그마 선택 UI를 엽니다.
                     return;
-                case "EliteStagmaReward":
-                    battleUIController.OpenSelectStagmaPanel("EliteStagmaReward"); // 엘리트 스태그마 리워드 상태에 해당하는 스태그마 선택 UI를 엽니다.
+                case StageSaveData.CurrentPhaseState.EliteStagmaReward:
+                    battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.EliteStagmaReward); // 엘리트 스태그마 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
-                case "BossReward":
-                    battleUIController.OpenSelectStagmaPanel("BossReward"); // 보스 리워드 상태에 해당하는 스태그마 선택 UI를 엽니다.
+                case StageSaveData.CurrentPhaseState.BossReward:
+                    battleUIController.OpenSelectStagmaPanel(StageSaveData.CurrentPhaseState.BossReward); // 보스 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
-                case "Standby":
+                case StageSaveData.CurrentPhaseState.Standby:
                     battleUIController.OpenStagePanel(stageSaveData.currentPhaseIndex); // 스탠바이 상태에 해당하는 UI를 엽니다.
                     return;
-                case "Battle":
+                case StageSaveData.CurrentPhaseState.Battle:
                     battleUIController.OpenStagePanel(stageSaveData.currentPhaseIndex); // 배틀 중이었어도 복구시엔 스테이지 패널을 엽니다.
                     return;
-                case "Shop":
+                case StageSaveData.CurrentPhaseState.Shop:
                     // 상점 상태에 해당하는 UI를 엽니다.
                     return;
+                case StageSaveData.CurrentPhaseState.EquipmedArtifact:
+                    battleUIController.OpenSelectEquipedArtifactPanel(); // 아티팩트 장착 상태에 해당하는 UI를 엽니다.
+                    return;
+                case StageSaveData.CurrentPhaseState.SelectChoice:
+                    battleUIController.OpenSelectChoicePanel(); // 선택지 상태에 해당하는 UI를 엽니다.
+                    return;
+
                 default:
                     Debug.LogError($"Unknown choice state: {stageSaveData.currentPhaseState}");
                     return;

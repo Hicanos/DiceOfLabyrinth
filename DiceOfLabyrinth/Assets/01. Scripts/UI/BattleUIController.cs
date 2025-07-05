@@ -61,9 +61,39 @@ public class BattleUIController : MonoBehaviour
         //StageManager.Instance.RestoreStageState();
     }
 
+#if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
+    private void Update()
+    {
+        // 배틀 상태일 때만 동작
+        if (StageManager.Instance != null &&
+            StageManager.Instance.stageSaveData != null &&
+            StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
+        {
+            // F9: 즉시 승리
+            if (Input.GetKeyDown(KeyCode.F9))
+            {
+                Debug.Log("디버그: 즉시 승리 처리");
+                messagePopup.Open("디버그: 즉시 승리 처리"); // 메시지 팝업 표시
+                // 승리 처리 함수 호출
+                victoryPanel.SetActive(true);
+                battlePanel.SetActive(false);
+            }
+            // F10: 즉시 패배
+            if (Input.GetKeyDown(KeyCode.F10))
+            {
+                Debug.Log("디버그: 즉시 패배 처리");
+                messagePopup.Open("디버그: 즉시 패배 처리"); // 메시지 팝업 표시
+                // 패배 처리 함수 호출
+                defeatPanel.SetActive(true);
+                battlePanel.SetActive(false);
+            }
+        }
+    }
+#endif
+
     public void OpenSelectDungeonPanel() // 스테이지 선택 패널을 여는 함수
     {
-        StageManager.Instance.stageSaveData.currentPhaseState = ""; // 현재 페이즈 상태를 ""으로 설정, 던전 선택이 최초이므로
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.None;
         selectDungeonPanel.SetActive(true);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(false);
@@ -96,7 +126,7 @@ public class BattleUIController : MonoBehaviour
         RefreshTeamFormationButton(); // 팀 구성 버튼 상태 갱신
         RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
         //Debug.Log($"[TeamFormation] AcquiredCharacters Count: {CharacterManager.Instance.AcquiredCharacters.Count}");
-        StageManager.Instance.stageSaveData.currentPhaseState = "TeamSelect"; // 팀 선택 패널
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.TeamSelect; // 현재 페이즈 상태를 팀 구성으로 설정
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(true);
         stagePanel.SetActive(false);
@@ -283,7 +313,7 @@ public class BattleUIController : MonoBehaviour
                 StageManager.Instance.stageSaveData.entryCharacters[i] = null;
             }
             DeleteSpawnedCharacters(); // 월드에 스폰된 캐릭터 제거
-            OpenSelectStagmaPanel("StartReward"); // 시작 시 각인 선택 패널 열기
+            OpenSelectStagmaPanel(StageSaveData.CurrentPhaseState.StartReward); // 시작 시 각인 선택 패널 열기
         }
         else
         {
@@ -324,7 +354,7 @@ public class BattleUIController : MonoBehaviour
     }
     public void OpenStagePanel(int phaseIndex) // 스테이지 패널을 여는 함수
     {
-        StageManager.Instance.stageSaveData.currentPhaseState = "Standby"; // 초기 페이즈 상태 설정
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby; // 현재 페이즈 상태를 대기 상태로 설정
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(true);
@@ -337,8 +367,8 @@ public class BattleUIController : MonoBehaviour
 
     private void OpenBattlePanel(string difficulty) // 난이도에 따라 
     {
-        StageManager.Instance.stageSaveData.currentPhaseState = "Battle"; // 현재 페이즈 상태를 "Battle"로 설정
-        
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Battle; // 현재 페이즈 상태를 배틀 상태로 설정
+
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(false);
@@ -349,7 +379,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
     }
 
-    public void OpenSelectStagmaPanel(string phaseState) // "Standby", "NormalReward", "EliteArtifactReward", "EliteStagmaReward" 등과 연결
+    public void OpenSelectStagmaPanel(StageSaveData.CurrentPhaseState phaseState) // "Standby", "NormalReward", "EliteArtifactReward", "EliteStagmaReward" 등과 연결
     {
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태를 설정
         selectedArtifact = null; // 선택된 아티팩트 초기화
@@ -359,8 +389,8 @@ public class BattleUIController : MonoBehaviour
         //예외 상태 스트링 값을 처리하는 스위치
         switch (phaseState)
         {
-            case "StartReward":
-            case "EliteStagmaReward":
+            case StageSaveData.CurrentPhaseState.StartReward:
+            case StageSaveData.CurrentPhaseState.EliteStagmaReward:
                 // 스태그마 선택 UI를 열어야 하는 경우만 break(아래 코드 실행)
                 break;
             default:
@@ -398,7 +428,7 @@ public class BattleUIController : MonoBehaviour
         OnClickSelectItemNumber(0); // 첫 번째 아이템을 선택한 것으로 초기화
     }
 
-    public void OpenSelectArtifactPanel(string phaseState) // "NormalReward", "EliteArtifactReward", "BossReward" 와 연결
+    public void OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState phaseState) // "NormalReward", "EliteArtifactReward", "BossReward" 와 연결
     {
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태를 설정
         selectedArtifact = null; // 선택된 아티팩트 초기화
@@ -408,9 +438,9 @@ public class BattleUIController : MonoBehaviour
         // 예외 상태 스트링 값을 처리하는 스위치
         switch (phaseState)
         {
-            case "BossReward":
-            case "NormalReward":
-            case "EliteArtifactReward":
+            case StageSaveData.CurrentPhaseState.NormalReward:
+            case StageSaveData.CurrentPhaseState.EliteArtifactReward:
+            case StageSaveData.CurrentPhaseState.BossReward:
                 // 아티팩트 선택 UI를 열어야 하는 경우만 break(아래 코드 실행)
                 break;
             default:
@@ -427,19 +457,19 @@ public class BattleUIController : MonoBehaviour
         List<ArtifactData> availableArtifacts = null;
         switch (phaseState)
         {
-            case "NormalReward":
+            case StageSaveData.CurrentPhaseState.NormalReward:
                 // 커먼, 언커먼만
                 availableArtifacts = allArtifacts
                     .Where(a => a.artifactType == ArtifactData.ArtifactType.Common || a.artifactType == ArtifactData.ArtifactType.Uncommon)
                     .ToList();
                 break;
-            case "EliteArtifactReward":
+            case StageSaveData.CurrentPhaseState.EliteArtifactReward:
                 // 언커먼, 레어만
                 availableArtifacts = allArtifacts
                     .Where(a => a.artifactType == ArtifactData.ArtifactType.Uncommon || a.artifactType == ArtifactData.ArtifactType.Rare)
                     .ToList();
                 break;
-            case "BossReward":
+            case StageSaveData.CurrentPhaseState.BossReward:
                 // 레어, 유니크, 레전더리만
                 availableArtifacts = allArtifacts
                     .Where(a => a.artifactType == ArtifactData.ArtifactType.Rare
@@ -507,15 +537,15 @@ public class BattleUIController : MonoBehaviour
         }
         switch (StageManager.Instance.stageSaveData.currentPhaseState)
         {
-            case "StartReward":
-            case "EliteStagmaReward":
+            case StageSaveData.CurrentPhaseState.StartReward:
+            case StageSaveData.CurrentPhaseState.EliteStagmaReward:
                 selectedStagma = stagmaChoices[selectIndex];
                 itemTitleText.text = selectedStagma.name; // 선택된 스태그마 이름 설정
                 itemDescriptionText.text = selectedStagma.description; // 선택된 스태그마 설명 설정
                 break;
-            case "NormalReward":
-            case "EliteArtifactReward":
-            case "BossReward":
+            case StageSaveData.CurrentPhaseState.NormalReward:
+            case StageSaveData.CurrentPhaseState.EliteArtifactReward:
+            case StageSaveData.CurrentPhaseState.BossReward:
                 selectedArtifact = artifactChoices[selectIndex];
                 itemTitleText.text = selectedArtifact.name; // 선택된 아티팩트 이름 설정
                 itemDescriptionText.text = selectedArtifact.description; // 선택된 아티팩트 설명 설정
@@ -528,40 +558,39 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickSelectItem() // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
     {
-        string phaseState = StageManager.Instance.stageSaveData.currentPhaseState; // 현재 페이즈 상태를 가져옴
+        var phaseState = StageManager.Instance.stageSaveData.currentPhaseState; // 현재 페이즈 상태를 가져옴
         selectItemPanel.SetActive(false);
-        StageManager.Instance.stageSaveData.currentPhaseState = ""; // 선택지 페이즈 상태 초기화
         switch (phaseState)
         {
-            case "StartReward":
-            case "EliteStagmaReward":
+            case StageSaveData.CurrentPhaseState.StartReward:
+            case StageSaveData.CurrentPhaseState.EliteStagmaReward:
                 if (selectedStagma != null)
                     StageManager.Instance.AddStagma(selectedStagma);
                 break;
-            case "NormalReward":
-            case "EliteArtifactReward":
-            case "BossReward":
+            case StageSaveData.CurrentPhaseState.NormalReward:
+            case StageSaveData.CurrentPhaseState.EliteArtifactReward:
+            case StageSaveData.CurrentPhaseState.BossReward:
                 if (selectedArtifact != null)
                     StageManager.Instance.AddArtifacts(selectedArtifact);
                 break;
         }
         switch (phaseState)
         {
-            case "StartReward":
+            case StageSaveData.CurrentPhaseState.StartReward:
                 // StartReward 페이즈 이후에는 다른 선택지 없이 스테이지1을 시작할 예정
                 OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 스테이지 패널을 열도록 함
                 break;
-            case "NormalReward":
+            case StageSaveData.CurrentPhaseState.NormalReward:
                 OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 노멀 리워드 페이즈에서는 배틀 패널을 열도록 함
                 break;
-            case "EliteArtifactReward":
+            case StageSaveData.CurrentPhaseState.EliteArtifactReward:
                 OpenSelectStagmaPanel(phaseState); // 엘리트 아티팩트 리워드 페이즈에서는 스태그마 선택 패널을 열도록 함
                 break;
-            case "EliteStagmaReward":
-                OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 엘리트 스태그마 리워드 페이즈에서는 배틀 패널을 열도록 함
+            case StageSaveData.CurrentPhaseState.EliteStagmaReward:
+                OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 엘리트 스태그마 리워드 페이즈에서는 스테이지 패널을 열도록 함
                 break;
-            case "BossReward":
-                OpenSelectEquipmedArtifactPanel(); // 보스 리워드 페이즈에서는 아티팩트 선택 패널을 열도록 함
+            case StageSaveData.CurrentPhaseState.BossReward:
+                OpenSelectEquipedArtifactPanel(); // 보스 리워드 페이즈에서는 아티팩트 선택 패널을 열도록 함
                 break;
             default:
                 Debug.LogError($"잘못된 phase state: {phaseState}");
@@ -584,7 +613,7 @@ public class BattleUIController : MonoBehaviour
             messagePopup.Open("선택지 이벤트가 잘못 설정되었습니다. 스테이지 데이터를 확인하세요."); // 선택지 이벤트가 잘못 설정된 경우 경고 메시지 표시
             return;
         }
-        StageManager.Instance.stageSaveData.currentPhaseState = "SelectChoice"; // 현재 페이즈 상태를 "SelectChoice"로 설정
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.SelectChoice; // 현재 페이즈 상태를 "SelectChoice"로 설정
         // 스테이지의 선택지 목록 중 랜덤 2개를 선택
         ChoiceOptions[] twoSelectChoices = new ChoiceOptions[2];
         for (int i = 0; i < 2; i++)
@@ -636,9 +665,9 @@ public class BattleUIController : MonoBehaviour
         }
     }
 
-    public void OpenSelectEquipmedArtifactPanel() // 아티팩트 선택 패널을 여는 함수
+    public void OpenSelectEquipedArtifactPanel() // 아티팩트 선택 패널을 여는 함수
     {
-        StageManager.Instance.stageSaveData.currentPhaseState = "EquipmedArtifact"; // 현재 페이즈 상태를 "EquipmentArtifact"로 설정
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.EquipmedArtifact; // 현재 페이즈 상태를 "EquipmedArtifact"로 설정
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(false);
