@@ -365,7 +365,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
     }
 
-    private void OpenBattlePanel(string difficulty) // 난이도에 따라 
+    public void OpenBattlePanel()
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Battle; // 현재 페이즈 상태를 배틀 상태로 설정
 
@@ -577,23 +577,19 @@ public class BattleUIController : MonoBehaviour
         switch (phaseState)
         {
             case StageSaveData.CurrentPhaseState.StartReward:
-                // StartReward 페이즈 이후에는 다른 선택지 없이 스테이지1을 시작할 예정
-                OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 스테이지 패널을 열도록 함
-                break;
             case StageSaveData.CurrentPhaseState.NormalReward:
-                OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 노멀 리워드 페이즈에서는 배틀 패널을 열도록 함
+            case StageSaveData.CurrentPhaseState.EliteStagmaReward:
+                OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 스타트,노멀,엘리트 각인 페이즈 이후에는 다른 선택지 없이 스탠바이를 시작할 예정
+            
                 break;
             case StageSaveData.CurrentPhaseState.EliteArtifactReward:
                 OpenSelectStagmaPanel(phaseState); // 엘리트 아티팩트 리워드 페이즈에서는 스태그마 선택 패널을 열도록 함
                 break;
-            case StageSaveData.CurrentPhaseState.EliteStagmaReward:
-                OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 엘리트 스태그마 리워드 페이즈에서는 스테이지 패널을 열도록 함
-                break;
             case StageSaveData.CurrentPhaseState.BossReward:
-                OpenSelectEquipedArtifactPanel(); // 보스 리워드 페이즈에서는 아티팩트 선택 패널을 열도록 함
+                OpenSelectEquipedArtifactPanel(); // 보스 리워드 페이즈에서는 아티팩트 장착 패널을 열도록 함
                 break;
             default:
-                Debug.LogError($"잘못된 phase state: {phaseState}");
+                messagePopup.Open("잘못된 페이즈 상태입니다. 리워드 페이즈가 아닙니다.");
                 break;
         }
     }
@@ -665,7 +661,7 @@ public class BattleUIController : MonoBehaviour
         }
     }
 
-    public void OpenSelectEquipedArtifactPanel() // 아티팩트 선택 패널을 여는 함수
+    public void OpenSelectEquipedArtifactPanel() // 아티팩트 장착 선택 패널을 여는 함수
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.EquipmedArtifact; // 현재 페이즈 상태를 "EquipmedArtifact"로 설정
         selectDungeonPanel.SetActive(false);

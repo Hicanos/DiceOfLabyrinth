@@ -83,7 +83,6 @@ public class StageSaveData
             chapterAndStageStates[chapterIndex].stageStates[i].isCompleted = false; // 모든 스테이지는 미완료 상태로 초기화
             chapterAndStageStates[chapterIndex].stageStates[i].isUnLocked = (i == 0); // 첫 번째 스테이지만 잠금 해제, 나머지는 잠금 상태로 초기화
         }
-        
     }
 }
 
@@ -130,7 +129,7 @@ public class StageManager : MonoBehaviour
 
     public void RestoreStageState()//배틀씬에 입장시 세이브 데이터에 따라 진행도를 복원하고 UI 컨트롤러에 알려줍니다.
     {
-        if(SceneManager.GetActiveScene().name != "BattleScene")
+        if (SceneManager.GetActiveScene().name != "BattleScene")
         {
             SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
         }
@@ -326,6 +325,9 @@ public class StageManager : MonoBehaviour
         }
         else
         {
+            stageSaveData.savedExpReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].ExpReward; // 마지막 스테이지의 경험치 보상 저장
+            stageSaveData.savedGoldReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].GoldReward; // 마지막 스테이지의 골드 보상 저장
+            stageSaveData.savedJewelReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].JewelReward; // 마지막 스테이지의 보석 보상 저장
             CompleteChapter(stageSaveData.currentChapterIndex); // 마지막 스테이지 클리어 시 챕터 완료 처리
         }
     }
@@ -428,5 +430,28 @@ public class StageManager : MonoBehaviour
                 stageState.isCompleted = false;      // 모두 미완료
             }
         }
+    }
+
+    public void selectNormalEnemy()
+    {
+        int randomIndex = Random.Range(0, chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].NormalPhases.Count);
+        stageSaveData.selectedEnemy = chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].NormalPhases[randomIndex].EnemyData;
+        stageSaveData.currentEnemyHP = stageSaveData.selectedEnemy.MaxHp; // 선택된 적의 최대 HP를 저장합니다.
+        battleUIController.OpenBattlePanel();
+    }
+
+    public void selectEliteEnemy()
+    {
+        int randomIndex = Random.Range(0, chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].ElitePhases.Count);
+        stageSaveData.selectedEnemy = chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].ElitePhases[randomIndex].EnemyData;
+        stageSaveData.currentEnemyHP = stageSaveData.selectedEnemy.MaxHp; // 선택된 적의 최대 HP를 저장합니다.
+        battleUIController.OpenBattlePanel();
+    }
+
+    public void selectBossEnemy()
+    {
+        stageSaveData.selectedEnemy = chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].BossPhase.EnemyData; // 보스 적을 선택합니다.
+        stageSaveData.currentEnemyHP = stageSaveData.selectedEnemy.MaxHp; // 선택된 적의 최대 HP를 저장합니다.
+        battleUIController.OpenBattlePanel();
     }
 }
