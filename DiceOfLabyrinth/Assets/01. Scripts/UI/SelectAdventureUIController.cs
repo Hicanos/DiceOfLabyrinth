@@ -72,30 +72,40 @@ public class SelectAdventureUIController : MonoBehaviour
 
             return;
         }
-        //else if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted)
-        //{
-        //    Debug.Log("Chapter is already completed.");
-        //    // 이미 완료된 챕터를 선택했을 때 완료 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
-        //    return;
-        //}
         else if (StageManager.Instance.stageSaveData.currentChapterIndex == -1) // -1은 진행중인 챕터가 없음을 의미합니다.
         {
+            if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted)
+            {
+                messagePopup.Open(
+                $"챕터 {chapterIndex}는 이미 완료되었습니다. 다시 시작하시겠습니까?.",
+                 () => OpenCostCalculationPanel(chapterIndex), // 확인(Yes) 버튼 클릭 시, 입장 코스트를 묻는 패널을 엽니다.
+                 () => messagePopup.Close() // 취소(No) 버튼 클릭 시
+            );
+                return;
+            }
             OpenCostCalculationPanel(chapterIndex); // 입장 코스트를 묻는 패널을 엽니다.
         }
         else if (chapterIndex != StageManager.Instance.stageSaveData.currentChapterIndex) // 현재 챕터와 선택한 챕터가 다를 때엔 이전 챕터의 종료를 먼저 하라는 팝업을 띄워야 합니다.
         {
-            messagePopup.Open($"진행 중인 챕터 {StageManager.Instance.stageSaveData.currentChapterIndex}가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
+            messagePopup.Open($"진행 중인 챕터 {StageManager.Instance.stageSaveData.currentChapterIndex + 1}가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
             return;
         }
-        else // 현재 챕터와 선택한 챕터가 같을 때
+        else // 진행 중이던 챕터를 다시 선택한 경우
         {
-            // 코스트 지불 없이 바로 배틀 씬으로 이동할 수 있도록 처리합니다.
-            Debug.Log($"진행 중이던 챕터 {chapterIndex}를 다시 선택했습니다. 코스트 계산 패널을 열지 않습니다.");
-            // 진행중이던 챕터를 다시 시작했다는 팝업을 띄우는 로직을 추가할 수 있습니다.
-            SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
-            StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태를 복원합니다.
-            messagePopup.Open($"진행 중이던 챕터 {chapterIndex}를 다시 선택했습니다. 배틀 씬으로 이동합니다.");
-            return;
+            selectChapterPanel.SetActive(false);
+            costCalculationPanel.SetActive(false);
+            scarceStaminaPanel.SetActive(false);
+            {
+                // 코스트 지불 없이 바로 배틀 씬으로 이동할 수 있도록 처리합니다.
+                Debug.Log($"진행 중이던 챕터 {chapterIndex + 1}를 다시 선택했습니다. 코스트 계산 패널을 열지 않습니다.");
+                // 진행중이던 챕터를 다시 시작했다는 팝업을 띄우는 로직을 추가할 수 있습니다.
+                messagePopup.Open($"진행 중이던 챕터 {chapterIndex + 1}를 다시 선택했습니다. 배틀 씬으로 이동하시겠습니까?",
+                () => StageManager.Instance.RestoreStageState(), // 확인(Yes) 버튼 클릭 시
+                () => messagePopup.Close() // 취소(No) 버튼 클릭 시
+                );
+                messagePopup.Open($"진행 중이던 챕터 {chapterIndex + 1}를 다시 선택했습니다. 배틀 씬으로 이동했습니다.");
+                return;
+            }
         }
     }
 
@@ -111,7 +121,6 @@ public class SelectAdventureUIController : MonoBehaviour
     private void OpenCostCalculationPanel(int chapterIndex)
     {
         UpdateSelectedChapterUI(chapterIndex); // 선택된 챕터의 UI 업데이트
-        selectedChapterIndex = chapterIndex; // 선택된 챕터 인덱스 저장
         selectChapterPanel.SetActive(true);
         costCalculationPanel.SetActive(true);
         scarceStaminaPanel.SetActive(false);
