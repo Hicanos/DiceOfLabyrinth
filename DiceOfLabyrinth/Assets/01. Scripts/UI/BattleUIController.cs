@@ -377,6 +377,8 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
+
+
     }
 
     public void OpenSelectStagmaPanel(StageSaveData.CurrentPhaseState phaseState) // "Standby", "NormalReward", "EliteArtifactReward", "EliteStagmaReward" 등과 연결
@@ -597,7 +599,19 @@ public class BattleUIController : MonoBehaviour
     public void OnClickStageNextButton() // 스테이지 패널에서 다음 버튼 클릭 시 호출되는 함수
     {
         StageManager.Instance.stageSaveData.currentPhaseIndex++; // 다음 페이즈로 이동
-        OpenSelectChoicePanel(); // 선택지 이벤트 패널 열기
+        if (StageManager.Instance.stageSaveData.currentPhaseIndex < 4) // 4룸 까지가 일반 또는 노말 스테이지
+        {
+            OpenSelectChoicePanel(); // 선택지 이벤트 패널 열기
+        }
+        else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 4) // 5룸은 보스 룸
+        {
+            StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.BossReward; // 현재 페이즈 상태를 보스 리워드로 설정
+            OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.BossReward); // 아티팩트 선택 패널 열기
+        }
+        else // 페이즈 인덱스가 범위를 벗어난 경우
+        {
+            messagePopup.Open("잘못된 페이즈 인덱스입니다. 다시 시도해 주세요.");
+        }
     }
 
     public void OpenSelectChoicePanel() // 선택지 이벤트 패널을 여는 함수
@@ -651,9 +665,11 @@ public class BattleUIController : MonoBehaviour
                 return; // 이벤트는 아직 구현되지 않았으므로 경고 메시지 표시
             case "노말":
                 messagePopup.Open("선택지 노말이 선택되었습니다.");
+                StageManager.Instance.selectNormalEnemy();
                 break;
             case "엘리트":
-                messagePopup.Open("선택지 하드가 선택되었습니다.");
+                messagePopup.Open("선택지 엘리트가 선택되었습니다.");
+                StageManager.Instance.selectEliteEnemy(); // 엘리트 적 선택
                 break;
             default:
                 messagePopup.Open("알 수 없는 선택입니다. 다시 시도해 주세요.");

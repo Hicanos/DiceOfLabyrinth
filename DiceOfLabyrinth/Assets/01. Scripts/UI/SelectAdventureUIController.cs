@@ -55,6 +55,7 @@ public class SelectAdventureUIController : MonoBehaviour
         {
             chapterIndex++; // 하드 챕터의 인덱스는 Normal 챕터 인덱스 + 1입니다.
         }
+        selectedChapterIndex = chapterIndex; // 선택된 챕터 인덱스 설정
         Debug.Log($"Selected Chapter Index: {chapterIndex}");
         if (chapterIndex < -1 || chapterIndex >= chapterData.chapterIndex.Count)
         {
