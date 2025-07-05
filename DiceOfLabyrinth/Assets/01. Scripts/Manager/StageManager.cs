@@ -36,6 +36,7 @@ public class StageSaveData
     public List<BattleCharacter> battleCharacters = new List<BattleCharacter>(5); // 전투에 참여하는 캐릭터 목록, 탐험 버튼을 누를 때 엔트리 캐릭터 목록의 캐릭터들이 할당됩니다.
     [Header("Selected Enemy")]
     public int currentEnemyHP; // 현재 적의 HP, 스테이지에 진입할 때 선택한 적의 HP를 저장합니다.
+    public int currentEnemyLevel; // 현재 적의 레벨, 스테이지에 진입할 때 선택한 적의 레벨을 저장합니다.
     public EnemyData selectedEnemy; // 선택된 적, 스테이지에 진입할 때 선택한 적을 저장합니다. 현재는 스테이지에 진입할 때마다 초기화됩니다.
     [Header("Stage Rewards")]
     public int savedExpReward; // 스테이지에서 획득한 경험치 보상, 스테이지 종료시 정산합니다.
@@ -361,12 +362,11 @@ public class StageManager : MonoBehaviour
     {
         if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
         {
+            messagePopup.Open($"챕터 {chapterIndex}가 존재하지 않습니다. 챕터 인덱스를 확인해주세요.");
             Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
             return;
         }
         var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
-        states[chapterIndex].isCompleted = false; // 챕터 완료 상태를 해제
-        states[chapterIndex].isUnLocked = true; // 챕터 잠금 해제 상태 유지
         StageManager.Instance.stageSaveData.ResetToDefault(-1); // 챕터 패배 후 스테이지 데이터 초기화, -1은 현재 챕터가 셀렉트되지 않았음을 의미합니다.
     }
     public void InitializeStageStates(ChapterData chapterData)

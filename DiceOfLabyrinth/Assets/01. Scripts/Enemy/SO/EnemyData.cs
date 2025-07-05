@@ -75,7 +75,34 @@ public class EnemyData: ScriptableObject
     public int DefPerLevel => defPerLevel;
 
     // 실제 능력치 (레벨 반영)
-    public int MaxHp => baseMaxHp + hpPerLevel * (enemyLevel - 1);
-    public int Atk => baseAtk + atkPerLevel * (enemyLevel - 1);
-    public int Def => baseDef + defPerLevel * (enemyLevel - 1);
+    public int MaxHp
+    {
+        get
+        {
+            int level = 1;
+            if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
+                level = StageManager.Instance.stageSaveData.currentEnemyLevel;
+            return baseMaxHp + hpPerLevel * (level - 1);
+        }
+    }
+    public int Atk
+    {
+        get
+        {
+            int level = 1;
+            if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
+                level = StageManager.Instance.stageSaveData.currentEnemyLevel;
+            return baseAtk + atkPerLevel * (level - 1);
+        }
+    }
+    public int Def
+    {
+        get
+        {
+            int level = 1;
+            if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
+                level = StageManager.Instance.stageSaveData.currentEnemyLevel;
+            return baseDef + defPerLevel * (level - 1);
+        }
+    }
 }
