@@ -77,12 +77,12 @@ public class BattleUIController : MonoBehaviour
                 messagePopup.Open("디버그: 즉시 패배 처리"); // 메시지 팝업 표시
                 StageManager.Instance.StageDefeat(StageManager.Instance.stageSaveData.currentChapterIndex); // 배틀 패배 처리
             }
-            // F10: 즉시 챕터 승리
-            if (Input.GetKeyDown(KeyCode.F11) && StageManager.Instance.stageSaveData.currentPhaseIndex != -1)
+            // F11: 즉시 챕터 종료(컴플리트 아님)
+            if (Input.GetKeyDown(KeyCode.F11) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
             {
                 Debug.Log("디버그: 즉시 챕터 종료 처리");
                 messagePopup.Open("디버그: 즉시 챕터 종료 처리"); // 메시지 팝업 표시
-                StageManager.Instance.CompleteChapter(StageManager.Instance.stageSaveData.currentChapterIndex); // 챕터 완료 처리
+                StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex); // 챕터 완료 처리
             }
         }
     }
@@ -387,6 +387,7 @@ public class BattleUIController : MonoBehaviour
     public void OpenBattlePanel()
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Battle; // 현재 페이즈 상태를 배틀 상태로 설정
+        StageManager.Instance.stageSaveData.currentPhaseIndex++; // 다음 페이즈로 이동
 
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
@@ -621,7 +622,6 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickStageNextButton() // 스테이지 패널에서 다음 버튼 클릭 시 호출되는 함수
     {
-        StageManager.Instance.stageSaveData.currentPhaseIndex++; // 다음 페이즈로 이동
         if (StageManager.Instance.stageSaveData.currentPhaseIndex < 4) // 4룸 까지가 일반 또는 노말 스테이지
         {
             OpenSelectChoicePanel(); // 선택지 이벤트 패널 열기
@@ -747,7 +747,7 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickDefeatNextButton() // 패배 패널에서 다음 버튼 클릭 시 호출되는 함수
     {
-        StageManager.Instance.DefeatChapter(StageManager.Instance.stageSaveData.currentChapterIndex); // 현재 챕터 패배 처리
+        StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex); // 현재 챕터 패배 처리
     }
 
     public void OpenShopPanel()
@@ -780,8 +780,8 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
         // selectEquipmedArtifactPanel.SetActive(true); // 아티팩트 선택 패널 활성화
-        messagePopup.Open("장착할 아티팩트 선택은 아직 구현되지 않았으므로 바로 챕터 클리어로 넘어갑니다.",
-        () => StageManager.Instance.CompleteChapter(StageManager.Instance.stageSaveData.currentChapterIndex), // 챕터 클리어 함수 호출
+        messagePopup.Open("장착할 아티팩트 선택은 아직 구현되지 않았으므로 바로 스테이지 클리어로 넘어갑니다.",
+        () => StageManager.Instance.StageComplete(StageManager.Instance.stageSaveData.currentStageIndex), // 스테이지 클리어 처리
         () => messagePopup.Close());
     }
 }

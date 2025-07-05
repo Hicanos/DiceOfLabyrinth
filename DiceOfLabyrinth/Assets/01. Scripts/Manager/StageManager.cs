@@ -57,53 +57,39 @@ public class StageSaveData
 
 
     public List<ChapterAndStageStates> chapterAndStageStates = new List<ChapterAndStageStates>();
- 
-    public void ResetToDefault(int chapterIndex)// 셀렉트된 챕터의 인덱스를 받아 현재 챕터를 세팅하고 초기화합니다. 셀렉트 된 챕터가 없는 상태는 -1로 설정합니다.
+
+    public void ResetToDefault(int chapterIndex) //챕터 단위 초기화
     {
-        switch (chapterIndex)
-        {
-            case -1:
-                Debug.LogWarning("ResetToDefault called with chapterIndex -1, no chapter selected.");
-                break;
-            default:
-                if (chapterIndex < 0 || chapterIndex >= chapterAndStageStates.Count)
-                {
-                    Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
-                    return;
-                }
-                break;
-        }
         currentChapterIndex = chapterIndex;
-        currentStageIndex = 0; // 초기화 시 스테이지 인덱스는 0로 설정, 셀렉트 된 스테이지가 없는 상태를 의미합니다.
+        currentStageIndex = 0;
+        for(int i = 0; i < 4; i++) // 아티팩트 장착 슬롯 초기화
+            equipedArtifacts[i] = null;
+        // 챕터 단위로만 초기화할 데이터가 있다면 여기에 추가
+
+        ResetStageProgress(); // 스테이지 관련 데이터 일괄 초기화
+    }
+    public void ResetStageProgress() // 스테이지 진행중에만 사용하는 데이터 초기화
+    {
         currentPhaseIndex = 0;
         currentFormationType = CurrentFormationType.FormationA;
         currentPhaseState = CurrentPhaseState.None;
-        manaStone = 0; 
+        manaStone = 0;
         for (int i = 0; i < 18; i++)
-            artifacts[i] = null; // 아티팩트 목록 초기화
+            artifacts[i] = null;
         for (int i = 0; i < 3; i++)
-            stagmas[i] = null; // 스태그마 목록 초기화
+            stagmas[i] = null;
         for (int i = 0; i < entryCharacters.Count; i++)
             entryCharacters[i] = null;
         leaderCharacter = null;
         for (int i = 0; i < battleCharacters.Count; i++)
-            battleCharacters[i] = null; // 전투 캐릭터 목록 초기화
-        currentEnemyHP = 0; // 현재 적의 HP 초기화
-        selectedEnemy = null; // 선택된 적 초기화
-        //보상 초기화
+            battleCharacters[i] = null;
+        currentEnemyHP = 0;
+        selectedEnemy = null;
         savedExpReward = 0;
         savedGoldReward = 0;
         savedJewelReward = 0;
-
         normalStageCompleteCount = 0;
         eliteStageCompleteCount = 0;
-
-        StageManager.Instance.InitializeStageStates(StageManager.Instance.chapterData); // 챕터와 스테이지 상태 초기화
-        for (int i = 0; i < chapterAndStageStates[chapterIndex].stageStates.Count; i++)
-        {
-            chapterAndStageStates[chapterIndex].stageStates[i].isCompleted = false; // 모든 스테이지는 미완료 상태로 초기화
-            chapterAndStageStates[chapterIndex].stageStates[i].isUnLocked = (i == 0); // 첫 번째 스테이지만 잠금 해제, 나머지는 잠금 상태로 초기화
-        }
     }
 }
 
@@ -364,8 +350,10 @@ public class StageManager : MonoBehaviour
                 battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.EliteArtifactReward); // 엘리트 룸 클리어 시 아티팩트 선택 UI를 엽니다.
                 break;
             case EnemyData.EnemyType.Guardian:
-            case EnemyData.EnemyType.Lord:
                 battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.BossReward); // 보스 룸 클리어 시 아티팩트 선택 UI를 엽니다.
+                break;
+            case EnemyData.EnemyType.Lord:
+                CompleteChapter(stageSaveData.currentChapterIndex); // 챕터 완료 로직을 호출합니다.
                 break;
             default:
                 Debug.LogError($"Unknown enemy type: {type}");
@@ -385,7 +373,8 @@ public class StageManager : MonoBehaviour
             stageSaveData.savedGoldReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].GoldReward; // 골드 보상 저장
             stageSaveData.savedJewelReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].JewelReward; // 보석 보상 저장
             stageSaveData.currentStageIndex = stageIndex + 1; // 다음 스테이지로 진행
-            battleUIController.OpenVictoryPanel(); // 스테이지 선택 UI를 엽니다.
+            stageSaveData.ResetStageProgress(); // 스테이지 진행 상태 초기화
+            battleUIController.OpenSelectDungeonPanel(); // 스테이지 선택 UI를 엽니다.
         }
         else
         {
@@ -410,14 +399,14 @@ public class StageManager : MonoBehaviour
             Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
             return;
         }
-        UserDataManager.Instance.AddExp(StageManager.Instance.stageSaveData.savedExpReward);
-        UserDataManager.Instance.AddGold(StageManager.Instance.stageSaveData.savedGoldReward);
-        UserDataManager.Instance.AddJewel(StageManager.Instance.stageSaveData.savedJewelReward);
         messagePopup.Open("챕터 완료! 정산되는 재화:" +
             $"\n경험치: {StageManager.Instance.stageSaveData.savedExpReward}" +
             $"\n골드: {StageManager.Instance.stageSaveData.savedGoldReward}" +
             $"\n보석: {StageManager.Instance.stageSaveData.savedJewelReward}"); // 챕터 완료 안내
-
+        UserDataManager.Instance.AddExp(StageManager.Instance.stageSaveData.savedExpReward);
+        UserDataManager.Instance.AddGold(StageManager.Instance.stageSaveData.savedGoldReward);
+        UserDataManager.Instance.AddJewel(StageManager.Instance.stageSaveData.savedJewelReward);
+        
         var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
         states[chapterIndex].isCompleted = true;
 
@@ -450,19 +439,19 @@ public class StageManager : MonoBehaviour
                     states[nextNormalIdx].isUnLocked = true;
             }
         }
-
+        SceneManagerEx.Instance.LoadScene("LobbyScene"); // 로비 씬으로 이동
         StageManager.Instance.stageSaveData.ResetToDefault(-1); // 챕터 완료 후 스테이지 데이터 초기화, -1은 현재 챕터가 셀렉트되지 않았음을 의미합니다.
     }
 
-    public void DefeatChapter(int chapterIndex)
+    public void EndChapterEarly(int chapterIndex)
     {
         if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
         {
             Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
             return;
         }
+        SceneManagerEx.Instance.LoadScene("LobbyScene"); // 로비 씬으로 이동
         var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
-        SceneManagerEx.Instance.LoadScene("SelectChapterScene"); // 챕터 셀렉트 씬으로 이동
         UserDataManager.Instance.AddExp(StageManager.Instance.stageSaveData.savedExpReward); // 경험치 보상 추가
         UserDataManager.Instance.AddGold(StageManager.Instance.stageSaveData.savedGoldReward); // 골드 보상 추가
         UserDataManager.Instance.AddJewel(StageManager.Instance.stageSaveData.savedJewelReward); // 보석 보상 추가
@@ -470,7 +459,8 @@ public class StageManager : MonoBehaviour
             $"\n경험치: {StageManager.Instance.stageSaveData.savedExpReward}" +
             $"\n골드: {StageManager.Instance.stageSaveData.savedGoldReward}" +
             $"\n보석: {StageManager.Instance.stageSaveData.savedJewelReward}"); // 정산되는 재화 안내
-        StageManager.Instance.stageSaveData.ResetToDefault(-1); // 챕터 패배 후 스테이지 데이터 초기화, -1은 현재 챕터가 셀렉트되지 않았음을 의미합니다.
+        StageManager.Instance.stageSaveData.ResetToDefault(-1); // 챕터 종료 후 스테이지 데이터 초기화, -1은 현재 챕터가 셀렉트되지 않았음을 의미합니다.
+    
     }
     public void InitializeStageStates(ChapterData chapterData)
     {
