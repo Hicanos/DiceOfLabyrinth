@@ -53,14 +53,6 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private Image[] selectChoiceIcon = new Image[2]; // 선택지 이벤트 패널 아이콘
     [SerializeField] private ChoiceOptions[] ChoiceOptions = new ChoiceOptions[2]; // 선택지 이벤트 패널 선택지 옵션, 선택지는 2개까지만 뜸
 
-    private void Start()
-    {
-        // 초기 설정
-        //OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex); // 현재 페이즈 인덱스에 해당하는 스테이지 패널을 엽니다.
-        
-        //StageManager.Instance.RestoreStageState();
-    }
-
 #if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
     private void Update()
     {
@@ -69,23 +61,24 @@ public class BattleUIController : MonoBehaviour
             StageManager.Instance.stageSaveData != null &&
             StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
         {
-            // F9: 즉시 승리
-            if (Input.GetKeyDown(KeyCode.F9))
+            // F9: 즉시 배틀 승리
+            if (Input.GetKeyDown(KeyCode.F9)&& StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
             {
-                Debug.Log("디버그: 즉시 승리 처리");
-                messagePopup.Open("디버그: 즉시 승리 처리"); // 메시지 팝업 표시
-                // 승리 처리 함수 호출
-                victoryPanel.SetActive(true);
-                battlePanel.SetActive(false);
+                messagePopup.Open("디버그: 즉시 배틀 승리 처리"); // 메시지 팝업 표시
+                StageManager.Instance.StageComplete(StageManager.Instance.stageSaveData.currentPhaseIndex); // 배틀 승리 처리
             }
-            // F10: 즉시 패배
-            if (Input.GetKeyDown(KeyCode.F10))
+            // F10: 즉시 전투 패배
+            if (Input.GetKeyDown(KeyCode.F10) && StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
             {
-                Debug.Log("디버그: 즉시 패배 처리");
                 messagePopup.Open("디버그: 즉시 패배 처리"); // 메시지 팝업 표시
-                // 패배 처리 함수 호출
-                defeatPanel.SetActive(true);
-                battlePanel.SetActive(false);
+                StageManager.Instance.StageDefeat(StageManager.Instance.stageSaveData.currentChapterIndex); // 배틀 패배 처리
+            }
+            // F10: 즉시 챕터 승리
+            if (Input.GetKeyDown(KeyCode.F11) && StageManager.Instance.stageSaveData.currentPhaseIndex != -1)
+            {
+                Debug.Log("디버그: 즉시 챕터 종료 처리");
+                messagePopup.Open("디버그: 즉시 챕터 종료 처리"); // 메시지 팝업 표시
+                StageManager.Instance.CompleteChapter(StageManager.Instance.stageSaveData.currentChapterIndex); // 챕터 완료 처리
             }
         }
     }
@@ -110,15 +103,19 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickDungeonButton(int stageIndex) // 스테이지 선택 버튼 클릭 시 호출되는 함수
     {
-        if (StageManager.Instance.stageSaveData.chapterAndStageStates[StageManager.Instance.stageSaveData.currentChapterIndex].stageStates[stageIndex].isUnLocked) // 스테이지가 잠금 해제되어 있는지 확인
+        if (StageManager.Instance.stageSaveData.chapterAndStageStates[StageManager.Instance.stageSaveData.currentChapterIndex].stageStates[stageIndex].isCompleted) // 스테이지가 이미 클리어되었을 때
+        {
+            messagePopup.Open("이 던전은 이미 클리어 했습니다. 다음 스테이지를 선택해 주세요.");
+        }
+        else if (!StageManager.Instance.stageSaveData.chapterAndStageStates[StageManager.Instance.stageSaveData.currentChapterIndex].stageStates[stageIndex].isUnLocked) // 스테이지가 잠겨있을 때
+        {
+            messagePopup.Open("이 던전은 아직 잠겨 있습니다. 다른 스테이지를 완료한 후 다시 시도해 주세요."); // 스테이지가 잠겨있을 때 경고 메시지 표시
+        }
+        else
         {
             StageManager.Instance.stageSaveData.currentStageIndex = stageIndex; // 현재 스테이지 인덱스 설정
             StageManager.Instance.stageSaveData.currentPhaseIndex = -1; // 초기 페이즈 인덱스 설정
             OpenTeamFormationPanel(); // 팀 구성 패널 열기
-        }
-        else
-        {
-            messagePopup.Open("이 스테이지는 아직 잠겨 있습니다. 다른 스테이지를 완료한 후 다시 시도해 주세요."); // 스테이지가 잠겨있을 때 경고 메시지 표시
         }
     }
     public void OpenTeamFormationPanel()
@@ -618,19 +615,23 @@ public class BattleUIController : MonoBehaviour
     {
         var stageSelectChoices = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
             .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ChoiceOptions; // 현재 스테이지의 선택지 목록을 가져옴
+
         if (stageSelectChoices == null || stageSelectChoices.Count < 2)
         {
-            messagePopup.Open("선택지 이벤트가 잘못 설정되었습니다. 스테이지 데이터를 확인하세요."); // 선택지 이벤트가 잘못 설정된 경우 경고 메시지 표시
+            messagePopup.Open("선택지가 2개 이상 필요합니다. 스테이지 데이터의 ChoiceOptions를 확인하세요.");
             return;
         }
+
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.SelectChoice; // 현재 페이즈 상태를 "SelectChoice"로 설정
+
         // 스테이지의 선택지 목록 중 랜덤 2개를 선택
+        List<ChoiceOptions> tempChoices = new List<ChoiceOptions>(stageSelectChoices);
         ChoiceOptions[] twoSelectChoices = new ChoiceOptions[2];
         for (int i = 0; i < 2; i++)
         {
-            int randIndex = Random.Range(0, stageSelectChoices.Count);
-            twoSelectChoices[i] = stageSelectChoices[randIndex];
-            stageSelectChoices.RemoveAt(randIndex); // 선택된 선택지는 목록에서 제거
+            int randIndex = Random.Range(0, tempChoices.Count);
+            twoSelectChoices[i] = tempChoices[randIndex];
+            tempChoices.RemoveAt(randIndex);
         }
         for (int i = 0; i < 2; i++)
         {
@@ -675,6 +676,44 @@ public class BattleUIController : MonoBehaviour
                 messagePopup.Open("알 수 없는 선택입니다. 다시 시도해 주세요.");
             return;
         }
+        for (int i = 0; i < ChoiceOptions.Length; i++)
+            ChoiceOptions[i] = null; // 선택된 선택지 옵션을 null로 설정하여 중복 선택 방지
+    }
+
+    public void OpenVictoryPanel() // 승리 패널을 여는 함수
+    {
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Battle; // 현재 페이즈 상태를 승리로 설정
+        selectDungeonPanel.SetActive(false);
+        teamFormationPenel.SetActive(false);
+        stagePanel.SetActive(false);
+        battlePanel.SetActive(true);
+        victoryPanel.SetActive(true); // 승리 패널 활성화
+        defeatPanel.SetActive(false);
+        selectItemPanel.SetActive(false);
+        selectEventPanel.SetActive(false);
+    }
+
+    public void OpenDefeatPanel() // 패배 패널을 여는 함수
+    {
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Battle; // 현재 페이즈 상태를 패배로 설정
+        selectDungeonPanel.SetActive(false);
+        teamFormationPenel.SetActive(false);
+        stagePanel.SetActive(false);
+        battlePanel.SetActive(true);
+        victoryPanel.SetActive(false);
+        defeatPanel.SetActive(true); // 패배 패널 활성화
+        selectItemPanel.SetActive(false);
+        selectEventPanel.SetActive(false);
+    }
+
+    public void OnClickVictoryNextButton() // 승리 패널에서 다음 버튼 클릭 시 호출되는 함수
+    {
+        OpenSelectDungeonPanel();
+    }
+
+    public void OnClickDefeatNextButton() // 패배 패널에서 다음 버튼 클릭 시 호출되는 함수
+    {
+        StageManager.Instance.DefeatChapter(StageManager.Instance.stageSaveData.currentChapterIndex); // 현재 챕터 패배 처리
     }
 
     public void OpenSelectEquipedArtifactPanel() // 아티팩트 장착 선택 패널을 여는 함수

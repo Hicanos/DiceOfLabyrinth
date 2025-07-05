@@ -55,10 +55,24 @@ public class StageSaveData
     public int savedGoldReward; // 스테이지에서 획득한 골드 보상, 스테이지 종료시 정산합니다.
     public int savedJewelReward; // 스테이지에서 획득한 보석 보상, 스테이지 종료시 정산합니다.
 
+
     public List<ChapterAndStageStates> chapterAndStageStates = new List<ChapterAndStageStates>();
  
     public void ResetToDefault(int chapterIndex)// 셀렉트된 챕터의 인덱스를 받아 현재 챕터를 세팅하고 초기화합니다. 셀렉트 된 챕터가 없는 상태는 -1로 설정합니다.
     {
+        switch (chapterIndex)
+        {
+            case -1:
+                Debug.LogWarning("ResetToDefault called with chapterIndex -1, no chapter selected.");
+                break;
+            default:
+                if (chapterIndex < 0 || chapterIndex >= chapterAndStageStates.Count)
+                {
+                    Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
+                    return;
+                }
+                break;
+        }
         currentChapterIndex = chapterIndex;
         currentStageIndex = -1; // 초기화 시 스테이지 인덱스는 -1로 설정, 셀렉트 된 스테이지가 없는 상태를 의미합니다.
         currentPhaseIndex = 0;
@@ -74,6 +88,9 @@ public class StageSaveData
         leaderCharacter = null;
         for (int i = 0; i < battleCharacters.Count; i++)
             battleCharacters[i] = null; // 전투 캐릭터 목록 초기화
+        currentEnemyHP = 0; // 현재 적의 HP 초기화
+        selectedEnemy = null; // 선택된 적 초기화
+        //보상 초기화
         savedExpReward = 0;
         savedGoldReward = 0;
         savedJewelReward = 0;
@@ -304,16 +321,11 @@ public class StageManager : MonoBehaviour
             // 아티팩트 장착 UI 업데이트 메서드를 호출할 예정입니다.
         }
     }
-    //private void RewardPhase(int currentPhaseIndex)
-    //{
-
-    //}
     public void StageComplete(int stageIndex)
     {
         // 스테이지 종료 로직을 구현합니다.
 
         Debug.Log($"Stage {stageIndex} cleared!");
-        // 클리어된 스테이지 정보를 저장하는 로직을 추가할 예정입니다.
         StageManager.Instance.stageSaveData.chapterAndStageStates[StageManager.Instance.stageSaveData.currentChapterIndex].stageStates[stageIndex].isCompleted = true; // 스테이지 완료 상태 업데이트
         if (stageIndex < chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex.Count - 1) // 다음 스테이지가 있다면
         {
@@ -322,6 +334,7 @@ public class StageManager : MonoBehaviour
             stageSaveData.savedGoldReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].GoldReward; // 골드 보상 저장
             stageSaveData.savedJewelReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].JewelReward; // 보석 보상 저장
             stageSaveData.currentStageIndex = -1; // 스테이지 인덱스 초기화
+            battleUIController.OpenVictoryPanel(); // 스테이지 선택 UI를 엽니다.
         }
         else
         {
@@ -330,6 +343,13 @@ public class StageManager : MonoBehaviour
             stageSaveData.savedJewelReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].JewelReward; // 마지막 스테이지의 보석 보상 저장
             CompleteChapter(stageSaveData.currentChapterIndex); // 마지막 스테이지 클리어 시 챕터 완료 처리
         }
+    }
+    public void StageDefeat(int stageIndex)
+    {
+        stageSaveData.savedExpReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].ExpReward; // 경험치 보상 저장
+        stageSaveData.savedGoldReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].GoldReward; // 골드 보상 저장
+        stageSaveData.savedJewelReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].JewelReward; // 보석 보상 저장
+        battleUIController.OpenDefeatPanel(); // 스테이지 패배 UI를 엽니다.
     }
 
     public void CompleteChapter(int chapterIndex)
@@ -342,6 +362,10 @@ public class StageManager : MonoBehaviour
         UserDataManager.Instance.AddExp(StageManager.Instance.stageSaveData.savedExpReward);
         UserDataManager.Instance.AddGold(StageManager.Instance.stageSaveData.savedGoldReward);
         UserDataManager.Instance.AddJewel(StageManager.Instance.stageSaveData.savedJewelReward);
+        messagePopup.Open("챕터 완료! 정산되는 재화:" +
+            $"\n경험치: {StageManager.Instance.stageSaveData.savedExpReward}" +
+            $"\n골드: {StageManager.Instance.stageSaveData.savedGoldReward}" +
+            $"\n보석: {StageManager.Instance.stageSaveData.savedJewelReward}"); // 챕터 완료 안내
 
         var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
         states[chapterIndex].isCompleted = true;
@@ -387,8 +411,14 @@ public class StageManager : MonoBehaviour
             return;
         }
         var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
-        states[chapterIndex].isCompleted = false; // 챕터 완료 상태를 해제
-        states[chapterIndex].isUnLocked = true; // 챕터 잠금 해제 상태 유지
+        SceneManagerEx.Instance.LoadScene("SelectChapterScene"); // 챕터 셀렉트 씬으로 이동
+        UserDataManager.Instance.AddExp(StageManager.Instance.stageSaveData.savedExpReward); // 경험치 보상 추가
+        UserDataManager.Instance.AddGold(StageManager.Instance.stageSaveData.savedGoldReward); // 골드 보상 추가
+        UserDataManager.Instance.AddJewel(StageManager.Instance.stageSaveData.savedJewelReward); // 보석 보상 추가
+        messagePopup.Open("정산되는 재화:" +
+            $"\n경험치: {StageManager.Instance.stageSaveData.savedExpReward}" +
+            $"\n골드: {StageManager.Instance.stageSaveData.savedGoldReward}" +
+            $"\n보석: {StageManager.Instance.stageSaveData.savedJewelReward}"); // 정산되는 재화 안내
         StageManager.Instance.stageSaveData.ResetToDefault(-1); // 챕터 패배 후 스테이지 데이터 초기화, -1은 현재 챕터가 셀렉트되지 않았음을 의미합니다.
     }
     public void InitializeStageStates(ChapterData chapterData)
@@ -434,6 +464,27 @@ public class StageManager : MonoBehaviour
 
     public void selectNormalEnemy()
     {
+        var chapterIdx = stageSaveData.currentChapterIndex;
+        var stageIdx = stageSaveData.currentStageIndex;
+        if (chapterData == null || chapterData.chapterIndex == null ||
+            chapterIdx < 0 || chapterIdx >= chapterData.chapterIndex.Count)
+        {
+            messagePopup.Open("챕터 데이터가 올바르지 않습니다.");
+            return;
+        }
+        var chapter = chapterData.chapterIndex[chapterIdx];
+        if (chapter.stageData == null || chapter.stageData.stageIndex == null ||
+            stageIdx < 0 || stageIdx >= chapter.stageData.stageIndex.Count)
+        {
+            messagePopup.Open("스테이지 데이터가 올바르지 않습니다.");
+            return;
+        }
+        var stage = chapter.stageData.stageIndex[stageIdx];
+        if (stage.NormalPhases == null || stage.NormalPhases.Count == 0)
+        {
+            messagePopup.Open("노멀 페이즈 데이터가 없습니다.");
+            return;
+        }
         int randomIndex = Random.Range(0, chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].NormalPhases.Count);
         stageSaveData.selectedEnemy = chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].NormalPhases[randomIndex].EnemyData;
         stageSaveData.currentEnemyHP = stageSaveData.selectedEnemy.MaxHp; // 선택된 적의 최대 HP를 저장합니다.
@@ -442,9 +493,38 @@ public class StageManager : MonoBehaviour
 
     public void selectEliteEnemy()
     {
-        int randomIndex = Random.Range(0, chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].ElitePhases.Count);
-        stageSaveData.selectedEnemy = chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].ElitePhases[randomIndex].EnemyData;
-        stageSaveData.currentEnemyHP = stageSaveData.selectedEnemy.MaxHp; // 선택된 적의 최대 HP를 저장합니다.
+        var chapterIdx = stageSaveData.currentChapterIndex;
+        var stageIdx = stageSaveData.currentStageIndex;
+
+        if (chapterData == null || chapterData.chapterIndex == null ||
+            chapterIdx < 0 || chapterIdx >= chapterData.chapterIndex.Count)
+        {
+            messagePopup.Open("챕터 데이터가 올바르지 않습니다.");
+            return;
+        }
+        var chapter = chapterData.chapterIndex[chapterIdx];
+        if (chapter.stageData == null || chapter.stageData.stageIndex == null ||
+            stageIdx < 0 || stageIdx >= chapter.stageData.stageIndex.Count)
+        {
+            messagePopup.Open("스테이지 데이터가 올바르지 않습니다.");
+            return;
+        }
+        var stage = chapter.stageData.stageIndex[stageIdx];
+        if (stage.ElitePhases == null || stage.ElitePhases.Count == 0)
+        {
+            messagePopup.Open("엘리트 페이즈 데이터가 없습니다.");
+            return;
+        }
+
+        int randomIndex = Random.Range(0, stage.ElitePhases.Count);
+        var elitePhase = stage.ElitePhases[randomIndex];
+        if (elitePhase == null || elitePhase.EnemyData == null)
+        {
+            messagePopup.Open("엘리트 적 데이터가 없습니다.");
+            return;
+        }
+        stageSaveData.selectedEnemy = elitePhase.EnemyData;
+        stageSaveData.currentEnemyHP = stageSaveData.selectedEnemy.MaxHp;
         battleUIController.OpenBattlePanel();
     }
 
