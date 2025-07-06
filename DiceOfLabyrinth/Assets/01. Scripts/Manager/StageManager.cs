@@ -62,7 +62,11 @@ public class StageSaveData
     {
         currentChapterIndex = chapterIndex;
         currentStageIndex = 0;
-        for(int i = 0; i < 4; i++) // 아티팩트 장착 슬롯 초기화
+        while(equipedArtifacts.Count < 4) // 아티팩트 장착 슬롯 크기를 4로 고정
+            equipedArtifacts.Add(null);
+        while(equipedArtifacts.Count > 4)
+            equipedArtifacts.RemoveAt(equipedArtifacts.Count - 1); // 아티팩트 장착 슬롯 크기를 4로 고정
+        for (int i = 0; i < 4; i++) // 아티팩트 장착 슬롯 초기화
             equipedArtifacts[i] = null;
         // 챕터 단위로만 초기화할 데이터가 있다면 여기에 추가
 
@@ -74,6 +78,22 @@ public class StageSaveData
         currentFormationType = CurrentFormationType.FormationA;
         currentPhaseState = CurrentPhaseState.None;
         manaStone = 0;
+        while (artifacts.Count < 18) // 아티팩트 목록 크기를 18로 고정
+            artifacts.Add(null);
+        while (artifacts.Count > 18)
+            artifacts.RemoveAt(artifacts.Count - 1); // 아티팩트 목록 크기를 18로 고정
+        while (stagmas.Count < 3) // 스태그마 목록 크기를 3으로 고정
+            stagmas.Add(null);
+        while (stagmas.Count > 3)
+            stagmas.RemoveAt(stagmas.Count - 1); // 스태그마 목록 크기를 3으로 고정
+        while (entryCharacters.Count < 5) // 엔트리 캐릭터 목록 크기를 5로 고정
+            entryCharacters.Add(null);
+        while (entryCharacters.Count > 5)
+            entryCharacters.RemoveAt(entryCharacters.Count - 1); // 엔트리 캐릭터 목록 크기를 5로 고정
+        while (battleCharacters.Count < 5) // 전투 캐릭터 목록 크기를 5로 고정
+            battleCharacters.Add(null);
+        while (battleCharacters.Count > 5)
+            battleCharacters.RemoveAt(battleCharacters.Count - 1); // 전투 캐릭터 목록 크기를 5로 고정
         for (int i = 0; i < 18; i++)
             artifacts[i] = null;
         for (int i = 0; i < 3; i++)
@@ -409,6 +429,7 @@ public class StageManager : MonoBehaviour
         
         var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
         states[chapterIndex].isCompleted = true;
+        Debug.Log($"Chapter complete boolean: {states[chapterIndex].isCompleted}");
 
         int groupIndex = chapterIndex / 10;
         List<int> normalChapters = new List<int>();

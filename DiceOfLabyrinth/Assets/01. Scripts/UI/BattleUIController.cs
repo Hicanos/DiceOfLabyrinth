@@ -77,12 +77,22 @@ public class BattleUIController : MonoBehaviour
                 messagePopup.Open("디버그: 즉시 패배 처리"); // 메시지 팝업 표시
                 StageManager.Instance.StageDefeat(StageManager.Instance.stageSaveData.currentChapterIndex); // 배틀 패배 처리
             }
-            // F11: 즉시 챕터 종료(컴플리트 아님)
+        }
+        if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
+        {
+            // F11: 즉시 챕터 종료 처리 (컴플리트 아님)
             if (Input.GetKeyDown(KeyCode.F11) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
             {
                 Debug.Log("디버그: 즉시 챕터 종료 처리");
-                messagePopup.Open("디버그: 즉시 챕터 종료 처리"); // 메시지 팝업 표시
-                StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex); // 챕터 완료 처리
+                messagePopup.Open("디버그: 즉시 챕터 종료 처리");
+                StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex);
+            }
+            // F12: 즉시 챕터 완료 처리 (컴플리트 처리)
+            if (Input.GetKeyDown(KeyCode.F12) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
+            {
+                Debug.Log("디버그: 즉시 챕터 완료 처리");
+                messagePopup.Open("디버그: 즉시 챕터 완료 처리");
+                StageManager.Instance.CompleteChapter(StageManager.Instance.stageSaveData.currentChapterIndex);
             }
         }
     }
