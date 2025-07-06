@@ -72,13 +72,13 @@ public class SelectAdventureUIController : MonoBehaviour
 
             return;
         }
-        //else if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted)
-        //{
-        //    Debug.Log("Chapter is already completed.");
-        //    // 이미 완료된 챕터를 선택했을 때 완료 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
-        //    return;
-        //}
-        else if (StageManager.Instance.stageSaveData.currentChapterIndex == -1) // -1은 진행중인 챕터가 없음을 의미합니다.
+        else if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted && StageManager.Instance.stageSaveData.currentChapterIndex == -1) // 챕터가 완료되었고 현재 진행 중인 챕터가 없을 때
+        {
+            Debug.Log("Chapter is already completed.");
+            // 이미 완료된 챕터를 선택했을 때 완료 상태를 알려주는 UI를 표시하는 로직을 추가할 수 있습니다.
+            return;
+        }
+        else if (StageManager.Instance.stageSaveData.currentChapterIndex == -1 && !StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted) // 진행 중인 챕터가 없고 완료되지 않은 챕터
         {
             OpenCostCalculationPanel(chapterIndex); // 입장 코스트를 묻는 패널을 엽니다.
         }
