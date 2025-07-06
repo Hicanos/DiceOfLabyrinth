@@ -11,7 +11,7 @@ public class TestEnemy : MonoBehaviour, IEnemy // 테스트에너미 클래스�
     [SerializeField] private RectTransform healthBarContainer;
     [SerializeField] private float healthBarWidth = 100f; // 기본 너비 설정
 
-    public int CurrentHp => StageManager.Instance.stageSaveData.currentEnemyHP;
+    //public int CurrentHp => //배틀 매니저에서 현재 체력을 가져올 수 있도록 프로퍼티를 정의합니다.
 
     private bool isDead = false;
     public bool IsDead => isDead;

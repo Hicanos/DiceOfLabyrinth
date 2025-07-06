@@ -48,7 +48,6 @@ public class StageSaveData
     public CharacterSO leaderCharacter; // 리더 캐릭터, 스테이지에 진입할 때 선택한 캐릭터 중 하나를 리더로 설정합니다.
     public List<BattleCharacter> battleCharacters = new List<BattleCharacter>(5); // 전투에 참여하는 캐릭터 목록, 탐험 버튼을 누를 때 엔트리 캐릭터 목록의 캐릭터들이 할당됩니다.
     [Header("Selected Enemy")]
-    public int currentEnemyHP; // 현재 적의 HP, 스테이지에 진입할 때 선택한 적의 HP를 저장합니다.
     public EnemyData selectedEnemy; // 선택된 적, 스테이지에 진입할 때 선택한 적을 저장합니다. 현재는 스테이지에 진입할 때마다 초기화됩니다.
     [Header("Stage Rewards")]
     public int savedExpReward; // 스테이지에서 획득한 경험치 보상, 스테이지 종료시 정산합니다.
@@ -103,7 +102,6 @@ public class StageSaveData
         leaderCharacter = null;
         for (int i = 0; i < battleCharacters.Count; i++)
             battleCharacters[i] = null;
-        currentEnemyHP = 0;
         selectedEnemy = null;
         savedExpReward = 0;
         savedGoldReward = 0;
@@ -561,7 +559,6 @@ public class StageManager : MonoBehaviour
         }
         int randomIndex = Random.Range(0, normalEnemies.Count);
         stageSaveData.selectedEnemy = normalEnemies[randomIndex];
-        stageSaveData.currentEnemyHP = stageSaveData.selectedEnemy.MaxHp;
         battleUIController.OpenBattlePanel();
     }
 
@@ -592,7 +589,6 @@ public class StageManager : MonoBehaviour
         }
         int randomIndex = Random.Range(0, eliteEnemies.Count);
         stageSaveData.selectedEnemy = eliteEnemies[randomIndex];
-        stageSaveData.currentEnemyHP = stageSaveData.selectedEnemy.MaxHp;
         battleUIController.OpenBattlePanel();
     }
 
@@ -646,7 +642,6 @@ public class StageManager : MonoBehaviour
         }
 
         stageSaveData.selectedEnemy = selectedBoss;
-        stageSaveData.currentEnemyHP = selectedBoss.MaxHp;
         battleUIController.OpenBattlePanel();
     }
 }
