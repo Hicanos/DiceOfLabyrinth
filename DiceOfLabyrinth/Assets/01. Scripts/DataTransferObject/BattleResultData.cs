@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 [System.Serializable]
-public class BattleResultData
+public class BattleResultData // Data Transfer Object (DTO) for battle result data
 {
     public bool isVictory;
     public List<BattleCharacter> battleCharacters;
