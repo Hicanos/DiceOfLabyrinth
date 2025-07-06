@@ -378,6 +378,20 @@ public class StageManager : MonoBehaviour
                 return;
         }
     }
+    public void OnBattleResult(BattleResultData result)
+    {
+        // 배틀 종료 후 아군 상태(체력 등) 반영
+        stageSaveData.battleCharacters = result.battleCharacters;
+
+        if (result.isVictory)
+        {
+            StageComplete(stageSaveData.currentStageIndex);
+        }
+        else
+        {
+            StageDefeat(stageSaveData.currentStageIndex);
+        }
+    }
     public void StageComplete(int stageIndex)
     {
         // 스테이지 종료 로직을 구현합니다.
@@ -559,7 +573,12 @@ public class StageManager : MonoBehaviour
         }
         int randomIndex = Random.Range(0, normalEnemies.Count);
         stageSaveData.selectedEnemy = normalEnemies[randomIndex];
+        var battleStartData = new BattleStartData(
+            stageSaveData.battleCharacters,
+            stageSaveData.selectedEnemy
+        );
         battleUIController.OpenBattlePanel();
+        // BattleManager.Instance.StartBattle(battleStartData); // 실제 전달 방식에 맞게 호출
     }
 
     public void selectEliteEnemy()
@@ -589,7 +608,12 @@ public class StageManager : MonoBehaviour
         }
         int randomIndex = Random.Range(0, eliteEnemies.Count);
         stageSaveData.selectedEnemy = eliteEnemies[randomIndex];
+        var battleStartData = new BattleStartData(
+            stageSaveData.battleCharacters,
+            stageSaveData.selectedEnemy
+        );
         battleUIController.OpenBattlePanel();
+        // BattleManager.Instance.StartBattle(battleStartData); // 실제 전달 방식에 맞게 호출
     }
 
     public void selectBossEnemy()
@@ -642,6 +666,11 @@ public class StageManager : MonoBehaviour
         }
 
         stageSaveData.selectedEnemy = selectedBoss;
+        var battleStartData = new BattleStartData(
+            stageSaveData.battleCharacters,
+            stageSaveData.selectedEnemy
+        );
         battleUIController.OpenBattlePanel();
+        // BattleManager.Instance.StartBattle(battleStartData); // 실제 전달 방식에 맞게 호출
     }
 }
