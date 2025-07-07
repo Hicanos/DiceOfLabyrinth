@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PredictedDice;
 using PredictedDice.Demo;
+using UnityEngine.InputSystem;
 
 public class DiceManager : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class DiceManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+        _inputActions = new InputSystem_Actions();
     }
 
     public static DiceManager Instance
@@ -45,7 +47,7 @@ public class DiceManager : MonoBehaviour
     public GameObject DiceBoard;
 
     [SerializeField] RollMultipleDiceSynced roll;
-    [SerializeField] Camera diceCamera;
+    public Camera diceCamera;
     public DiceBattle DiceBattle = new DiceBattle();
     DiceMy[] dicesDatas;
 
@@ -80,6 +82,8 @@ public class DiceManager : MonoBehaviour
 
     Vector3[] rotationVectors; //굴린 후 정렬시 적용할 회전값
     Vector3[] defaultPos; //주사위 굴리는 기본 위치 화면 아래쪽
+
+    public InputSystem_Actions _inputActions;
 
     void Start()
     {
@@ -172,7 +176,7 @@ public class DiceManager : MonoBehaviour
                 signitureAmount++;
             }
         }
-        Debug.Log($"{diceResult[0]},{diceResult[1]},{diceResult[2]},{diceResult[3]},{diceResult[4]}");
+        //Debug.Log($"{diceResult[0]},{diceResult[1]},{diceResult[2]},{diceResult[3]},{diceResult[4]}");
     }
 
     IEnumerator SortingAfterRoll()
@@ -250,6 +254,11 @@ public class DiceManager : MonoBehaviour
 
     public void ResetSetting() // 한 턴이 끝났을때 주사위 관련 데이터를 리셋
     {
+        int childCount = BattleManager.Instance.fixedDiceArea.transform.childCount;
+        for (int i = 0;i < childCount; i++)
+        {
+            BattleManager.Instance.fixedDiceArea.transform.GetChild(i).gameObject.SetActive(false);
+        }
 
         rollCount = 0;
 

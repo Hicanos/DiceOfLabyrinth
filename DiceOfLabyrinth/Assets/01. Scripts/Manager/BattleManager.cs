@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using UnityEngine.InputSystem;
+
 
 public class BattleManager : MonoBehaviour
 {
@@ -39,8 +41,8 @@ public class BattleManager : MonoBehaviour
     private BattleEnemy enemy;
     public BattleEnemy Enemy => enemy;
 
-    GameObject enemyGO;
-    public TestEnemy TestEnemy;
+    GameObject enemyPrefab;
+    public InputAction inputAction;
 
     [SerializeField] Transform enemyContainer;
     public BattleUIValueChanger UIValueChanger;
@@ -56,11 +58,15 @@ public class BattleManager : MonoBehaviour
     public BattlePlayerTurnState battlePlayerTurnState;
 
     [Header("UIs")]
-    public AbstractBattleButton[] BattleButtons;        
+    public AbstractBattleButton[] BattleButtons;
     public Image[] HPBar;
+    public GameObject fixedDiceArea;
+    public GameObject area;
     [SerializeField] Image turnDisplay;
     [SerializeField] GameObject victoryUI;
     [SerializeField] GameObject defeatUI;
+    public Canvas battleCanvas;
+    public CanvasScaler canvasScaler;
 
     [Header("Values")]
     public  readonly int MaxCost = 12;
@@ -80,20 +86,12 @@ public class BattleManager : MonoBehaviour
 
         LoadMonsterPattern = new LoadMonsterPattern();
         MonsterPattern = new MonsterPattern();
+        canvasScaler = battleCanvas.gameObject.GetComponent<CanvasScaler>();
     }
     
     void Update()
     {
         stateMachine.BattleUpdate();
-        //if(Input.GetKeyDown(KeyCode.Space))
-        //{            
-        //    battleCharacters[0] = CharacterManager.Instance.RegisterBattleCharacterData("Char_0");
-        //    battleCharacters[1] = CharacterManager.Instance.RegisterBattleCharacterData("Char_1");
-        //    battleCharacters[2] = CharacterManager.Instance.RegisterBattleCharacterData("Char_2");
-        //    battleCharacters[3] = CharacterManager.Instance.RegisterBattleCharacterData("Char_3");
-        //    battleCharacters[4] = CharacterManager.Instance.RegisterBattleCharacterData("Char_4");
-        //    BattleStartCoroutine();
-        //}
     }
 
     public void BattleStartCoroutine(BattleStartData data) //전투 시작시 호출해야할 메서드
@@ -101,37 +99,68 @@ public class BattleManager : MonoBehaviour
         GetStartData(data);
         SpawnEnemy();
         DiceManager.Instance.DiceSettingForBattle();
-        battleCoroutine.CharacterSpwan();
+
+        if(StageManager.Instance.stageSaveData.currentPhaseIndex == 1)
+        {
+            Debug.Log("Spawn");
+            battleCoroutine.CharacterSpwan();
+        }
+        else
+        {
+            battleCoroutine.CharacterActive();
+            BattleStart();
+        }
+        
     }
 
     public void BattleStart()
     {
+        if (StageManager.Instance.stageSaveData.currentPhaseIndex == 1)
+        {
+            battleCanvas.worldCamera = DiceManager.Instance.diceCamera;
+            DiceManager.Instance.LoadDiceData();
+        }
+
+        BattleTurn = 0;
         HPBar[(int)HPEnum.enemy].gameObject.SetActive(true);
+        UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterHP, $"{enemy.CurrentHP} / {enemy.MaxHP}");
+        UIValueChanger.ChangeEnemyHpRatio(HPEnum.enemy, 1.0f);
+
         turnDisplay.gameObject.SetActive(true);
         playerTurnState.Enter();
-        DiceManager.Instance.LoadDiceData();
         
         isBattle = true;
     }
 
     public void BattleEnd()
     {
+        BattleResultData data;
         isBattle = false;
         HPBar[(int)HPEnum.enemy].gameObject.SetActive(false);
-        //for(int i = 0; i < battleCharacters.Length; i++)
+        turnDisplay.gameObject.SetActive(false);
+        DiceManager.Instance.ResetSetting();
+        //for (int i = 0; i < battleCharacters.Count; i++)
         //{
         //    HPBar[i].gameObject.SetActive(false);
         //}
         //turnDisplay.gameObject.SetActive(false);
-
+        battleCoroutine.CharacterDeActive();
+        Destroy(enemyPrefab);
         //결과창 실행
-        if(isWon)
+        if (isWon)
         {
-            victoryUI.SetActive(true);
+            data = new BattleResultData(true, battleCharacters);
+            StageManager.Instance.RoomClear(enemy.Data);
         }
         else
         {
-            defeatUI.SetActive(true);
+            data = new BattleResultData(false, battleCharacters);
+            StageManager.Instance.battleUIController.OpenDefeatPanel();
+        }
+
+        if(StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
+        {
+            StageManager.Instance.OnBattleResult(data);
         }
     }
 
@@ -143,9 +172,9 @@ public class BattleManager : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        enemyGO = enemy.Data.EnemyPrefab;
+        GameObject enemyGO = enemy.Data.EnemyPrefab;
 
-        Instantiate(enemyGO, new Vector3(5.85f, -0.02f, -1.06f), Quaternion.identity, enemyContainer);
+        enemyPrefab = Instantiate(enemyGO, new Vector3(5.85f, -0.02f, -1.06f), Quaternion.identity, enemyContainer);
     }
 
     /// <summary>
@@ -170,11 +199,13 @@ public class BattleEnemy : IDamagable
     private int currentHP;
     private int currentAtk;
     private int currentDef;
-
+    private bool isDead;
     public EnemyData Data => data;
     public int CurrentHP => currentHP;
     public int CurrentAtk => currentAtk;
     public int CurrentDef => currentDef;
+    public int MaxHP => currentMaxHP;
+    public bool IsDead => isDead;
 
     public BattleEnemy(EnemyData data)
     {
@@ -183,6 +214,7 @@ public class BattleEnemy : IDamagable
         currentHP = currentMaxHP;
         currentAtk = data.Atk;
         currentDef = data.Def;
+        isDead = false;
     }
 
     public void Heal(int amount)
@@ -193,5 +225,10 @@ public class BattleEnemy : IDamagable
     public void TakeDamage(int damage)
     {
         currentHP = Mathf.Clamp(currentHP - damage, 0, currentMaxHP);
+
+        if(currentHP == 0)
+        {
+            isDead = true;
+        }
     }
 }

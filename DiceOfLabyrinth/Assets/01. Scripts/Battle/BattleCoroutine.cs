@@ -14,10 +14,7 @@ public class BattleCoroutine : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            SkipCharacterSpwan();
-        }
+        
     }
 
     public void CharacterSpwan()
@@ -25,6 +22,22 @@ public class BattleCoroutine : MonoBehaviour
         battleManager = BattleManager.Instance;
         enumeratorSpawn = CharacterSpawn();
         StartCoroutine(enumeratorSpawn);
+    }
+
+    public void CharacterActive()
+    {
+        for (int i = 0; i < characterPrefabs.Length; i++)
+        {
+            characterPrefabs[i].SetActive(true);
+        }
+    }
+
+    public void CharacterDeActive()
+    {
+        for(int i = 0; i < characterPrefabs.Length; i++)
+        {
+            characterPrefabs[i].SetActive(false);
+        }
     }
 
     public void SkipCharacterSpwan()
@@ -128,7 +141,7 @@ public class BattleCoroutine : MonoBehaviour
                 pastTime += Time.deltaTime;
                 yield return null;
             }
-            DealDamage(battleManager.Enemy, damage / 10);
+            DealDamage(battleManager.Enemy, damage);
             pastTime = 0;
             while (pastTime < destTime)
             {
@@ -138,14 +151,13 @@ public class BattleCoroutine : MonoBehaviour
                 yield return null;
             }
 
-            if (battleManager.TestEnemy.IsDead == true)
+            if (battleManager.Enemy.IsDead)
             {
                 //쓰러지는 애니메이션 있으면 좋을듯
                 battleManager.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
-                Debug.Log("몬스터 쓰러짐");
+                battleManager.isWon = true;
                 battleManager.BattleEnd();
                 StopCharacterAttack();
-                //결과창
             }
             yield return null;
         }
@@ -155,5 +167,10 @@ public class BattleCoroutine : MonoBehaviour
     public void DealDamage(IDamagable target, int damage)
     {
         target.TakeDamage(damage);
+        BattleEnemy enemy = (BattleEnemy)target;
+        float ratio = (float)enemy.CurrentHP / enemy.MaxHP;
+
+        battleManager.UIValueChanger.ChangeEnemyHpRatio(HPEnum.enemy, ratio);
+        battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterHP, $"{enemy.CurrentHP} / {enemy.MaxHP}");
     }
 }
