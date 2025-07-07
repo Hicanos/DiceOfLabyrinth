@@ -18,6 +18,9 @@ public class EnemyData: ScriptableObject
         Gnole,
         Orc,
         Ogre,
+        Treant,
+        Spirit,
+        EtherCreature,
     }
 
     public enum EnemyAttribute
