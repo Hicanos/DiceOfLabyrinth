@@ -573,10 +573,7 @@ public class StageManager : MonoBehaviour
         }
         int randomIndex = Random.Range(0, normalEnemies.Count);
         stageSaveData.selectedEnemy = normalEnemies[randomIndex];
-        var battleStartData = new BattleStartData(
-            stageSaveData.battleCharacters,
-            stageSaveData.selectedEnemy
-        );
+        var battleStartData = new BattleStartData(stageSaveData);
         battleUIController.OpenBattlePanel();
         // BattleManager.Instance.StartBattle(battleStartData); // 실제 전달 방식에 맞게 호출
     }
@@ -608,10 +605,7 @@ public class StageManager : MonoBehaviour
         }
         int randomIndex = Random.Range(0, eliteEnemies.Count);
         stageSaveData.selectedEnemy = eliteEnemies[randomIndex];
-        var battleStartData = new BattleStartData(
-            stageSaveData.battleCharacters,
-            stageSaveData.selectedEnemy
-        );
+        var battleStartData = new BattleStartData(stageSaveData);
         battleUIController.OpenBattlePanel();
         // BattleManager.Instance.StartBattle(battleStartData); // 실제 전달 방식에 맞게 호출
     }
@@ -666,10 +660,7 @@ public class StageManager : MonoBehaviour
         }
 
         stageSaveData.selectedEnemy = selectedBoss;
-        var battleStartData = new BattleStartData(
-            stageSaveData.battleCharacters,
-            stageSaveData.selectedEnemy
-        );
+        var battleStartData = new BattleStartData(stageSaveData);
         battleUIController.OpenBattlePanel();
         // BattleManager.Instance.StartBattle(battleStartData); // 실제 전달 방식에 맞게 호출
     }
