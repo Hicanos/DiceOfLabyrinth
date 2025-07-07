@@ -6,9 +6,8 @@ public class BattlePlayerTurnState : IBattleTurnState
 
     public void Enter()
     {
+        Debug.Log("Enter");
         battleManager.BattleTurn++;
-        Debug.Log($"Turn{BattleManager.Instance.BattleTurn}");
-        Debug.Log("Player's turn");
         
         battleManager.GetCost(AlivedCharacter());
 
@@ -20,7 +19,8 @@ public class BattlePlayerTurnState : IBattleTurnState
             battleManager.LoadMonsterPattern.Load();
         }
 
-        battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.Turn, battleManager.BattleTurn.ToString());
+        string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
+        battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.Turn, stageString);
         ChangePlayerTurnState(PlayerTurnState.Enter);
     }
 

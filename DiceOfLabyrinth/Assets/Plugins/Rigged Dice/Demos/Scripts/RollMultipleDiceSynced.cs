@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using UnityEngine.InputSystem;
+//using UnityEngine.InputSystem;
 
 namespace PredictedDice.Demo
 {
@@ -19,12 +19,12 @@ namespace PredictedDice.Demo
         float lerpTime = 2.5f;
         [field: SerializeField] public DiceAndOutcome[] diceAndOutcomeArray { get; private set; }
 
-        private InputSystem_Actions _inputActions;
+        //private InputSystem_Actions _inputActions;
 
-        private void Awake()
-        {
-            _inputActions = new InputSystem_Actions();
-        }
+        //private void Awake()
+        //{
+        //    _inputActions = new InputSystem_Actions();
+        //}
 
         public void SetDiceOutcome(int[] outcome)
         {
@@ -66,21 +66,21 @@ namespace PredictedDice.Demo
             return new Vector3(Random.Range(1, 10), Random.Range(1, 10), Random.Range(1, 10));
         }
 
-        private void OnTapPerformed(InputAction.CallbackContext context)
-        {
-            RollAll();
-        }
+        //private void OnTapPerformed(InputAction.CallbackContext context)
+        //{
+        //    RollAll();
+        //}
 
-        private void OnEnable()
-        {
-            _inputActions.Enable();
-            _inputActions.Player.GamePlay.performed += OnTapPerformed;
-        }
+        //private void OnEnable()
+        //{
+        //    _inputActions.Enable();
+        //    _inputActions.Player.GamePlay.performed += OnTapPerformed;
+        //}
 
-        private void OnDisable()
-        {
-            _inputActions.Player.GamePlay.performed -= OnTapPerformed;
-            _inputActions.Disable();
-        }
+        //private void OnDisable()
+        //{
+        //    _inputActions.Player.GamePlay.performed -= OnTapPerformed;
+        //    _inputActions.Disable();
+        //}
     }
 }

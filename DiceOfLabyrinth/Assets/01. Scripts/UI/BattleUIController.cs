@@ -57,46 +57,46 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private Image[] selectChoiceIcon = new Image[2]; // 선택지 이벤트 패널 아이콘
     [SerializeField] private ChoiceOptions[] ChoiceOptions = new ChoiceOptions[2]; // 선택지 이벤트 패널 선택지 옵션, 선택지는 2개까지만 뜸
 
-#if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
-    private void Update()
-    {
-        // 배틀 상태일 때만 동작
-        if (StageManager.Instance != null &&
-            StageManager.Instance.stageSaveData != null &&
-            StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
-        {
-            // F9: 즉시 배틀 승리
-            if (Input.GetKeyDown(KeyCode.F9)&& StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
-            {
-                messagePopup.Open("디버그: 즉시 배틀 승리 처리"); // 메시지 팝업 표시
-                StageManager.Instance.RoomClear(StageManager.Instance.stageSaveData.selectedEnemy); // 배틀 승리 처리
-            }
-            // F10: 즉시 전투 패배
-            if (Input.GetKeyDown(KeyCode.F10) && StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
-            {
-                messagePopup.Open("디버그: 즉시 패배 처리"); // 메시지 팝업 표시
-                StageManager.Instance.StageDefeat(StageManager.Instance.stageSaveData.currentChapterIndex); // 배틀 패배 처리
-            }
-        }
-        if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
-        {
-            // F11: 즉시 챕터 종료 처리 (컴플리트 아님)
-            if (Input.GetKeyDown(KeyCode.F11) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
-            {
-                Debug.Log("디버그: 즉시 챕터 종료 처리");
-                messagePopup.Open("디버그: 즉시 챕터 종료 처리");
-                StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex);
-            }
-            // F12: 즉시 챕터 완료 처리 (컴플리트 처리)
-            if (Input.GetKeyDown(KeyCode.F12) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
-            {
-                Debug.Log("디버그: 즉시 챕터 완료 처리");
-                messagePopup.Open("디버그: 즉시 챕터 완료 처리");
-                StageManager.Instance.CompleteChapter(StageManager.Instance.stageSaveData.currentChapterIndex);
-            }
-        }
-    }
-#endif
+//#if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
+//    private void Update()
+//    {
+//        // 배틀 상태일 때만 동작
+//        if (StageManager.Instance != null &&
+//            StageManager.Instance.stageSaveData != null &&
+//            StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
+//        {
+//            // F9: 즉시 배틀 승리
+//            if (Input.GetKeyDown(KeyCode.F9)&& StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
+//            {
+//                messagePopup.Open("디버그: 즉시 배틀 승리 처리"); // 메시지 팝업 표시
+//                StageManager.Instance.RoomClear(StageManager.Instance.stageSaveData.selectedEnemy); // 배틀 승리 처리
+//            }
+//            // F10: 즉시 전투 패배
+//            if (Input.GetKeyDown(KeyCode.F10) && StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
+//            {
+//                messagePopup.Open("디버그: 즉시 패배 처리"); // 메시지 팝업 표시
+//                StageManager.Instance.StageDefeat(StageManager.Instance.stageSaveData.currentChapterIndex); // 배틀 패배 처리
+//            }
+//        }
+//        if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
+//        {
+//            // F11: 즉시 챕터 종료 처리 (컴플리트 아님)
+//            if (Input.GetKeyDown(KeyCode.F11) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
+//            {
+//                Debug.Log("디버그: 즉시 챕터 종료 처리");
+//                messagePopup.Open("디버그: 즉시 챕터 종료 처리");
+//                StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex);
+//            }
+//            // F12: 즉시 챕터 완료 처리 (컴플리트 처리)
+//            if (Input.GetKeyDown(KeyCode.F12) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
+//            {
+//                Debug.Log("디버그: 즉시 챕터 완료 처리");
+//                messagePopup.Open("디버그: 즉시 챕터 완료 처리");
+//                StageManager.Instance.CompleteChapter(StageManager.Instance.stageSaveData.currentChapterIndex);
+//            }
+//        }
+//    }
+//#endif
 
     public void OpenSelectDungeonPanel() // 스테이지 선택 패널을 여는 함수
     {

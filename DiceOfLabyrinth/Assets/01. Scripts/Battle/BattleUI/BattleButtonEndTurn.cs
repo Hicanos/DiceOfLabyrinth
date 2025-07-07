@@ -38,16 +38,5 @@ public class BattleButtonEndTurn : AbstractBattleButton
         BattleManager battleManager = BattleManager.Instance;
         //공격 애니메이션실행
         battleManager.battleCoroutine.CharacterAttack(diceWeighting);
-
-        battleManager.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.EndTurn);
-        if (battleManager.TestEnemy.IsDead == true)
-        {
-            Debug.Log("전투 종료");
-            battleManager.BattleEnd();
-        }
-        else
-        {
-            battleManager.stateMachine.ChangeState(battleManager.enemyTurnState);
-        }
     }
 }
