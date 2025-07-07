@@ -430,7 +430,9 @@ public class BattleUIController : MonoBehaviour
                 return;
         }
 
-        List<StagmaData> availableStagmas = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].StagmaList; // 현재 스테이지의 스태그마 목록을 가져옴
+        List<StagmaData> allStagmas = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].StagmaList; // 현재 스테이지의 스태그마 목록을 가져옴
+        var owned = StageManager.Instance.stageSaveData.stagmas.Where(s => s != null).ToList();
+        var availableStagmas = allStagmas.Except(owned).ToList();
         itemTitleText.text = "각인 선택"; // 스태그마 선택 UI 제목 설정
         itemDescriptionText.text = ""; // 초기화
         HashSet<StagmaData> picked = new HashSet<StagmaData>();
@@ -487,32 +489,34 @@ public class BattleUIController : MonoBehaviour
 
         List<ArtifactData> allArtifacts = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
     .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ArtifactList;
+        var owned = StageManager.Instance.stageSaveData.artifacts.Where(a => a != null).ToList(); // 현재 소유한 아티팩트 목록
+        var available = allArtifacts.Except(owned).ToList();
 
         List<ArtifactData> availableArtifacts = null;
         switch (phaseState)
         {
             case StageSaveData.CurrentPhaseState.NormalReward:
                 // 커먼, 언커먼만
-                availableArtifacts = allArtifacts
+                availableArtifacts = available
                     .Where(a => a.artifactType == ArtifactData.ArtifactType.Common || a.artifactType == ArtifactData.ArtifactType.Uncommon)
                     .ToList();
                 break;
             case StageSaveData.CurrentPhaseState.EliteArtifactReward:
                 // 언커먼, 레어만
-                availableArtifacts = allArtifacts
+                availableArtifacts = available
                     .Where(a => a.artifactType == ArtifactData.ArtifactType.Uncommon || a.artifactType == ArtifactData.ArtifactType.Rare)
                     .ToList();
                 break;
             case StageSaveData.CurrentPhaseState.BossReward:
                 // 레어, 유니크, 레전더리만
-                availableArtifacts = allArtifacts
+                availableArtifacts = available
                     .Where(a => a.artifactType == ArtifactData.ArtifactType.Rare
                              || a.artifactType == ArtifactData.ArtifactType.Unique
                              || a.artifactType == ArtifactData.ArtifactType.Legendary)
                     .ToList();
                 break;
             default:
-                availableArtifacts = allArtifacts.ToList();
+                availableArtifacts = available.ToList();
                 break;
         }
         HashSet<ArtifactData> picked = new HashSet<ArtifactData>();
