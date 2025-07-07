@@ -98,36 +98,6 @@ public class BattleUIController : MonoBehaviour
     }
 #endif
 
-#if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
-    private void Update()
-    {
-        // 배틀 상태일 때만 동작
-        if (StageManager.Instance != null &&
-            StageManager.Instance.stageSaveData != null &&
-            StageManager.Instance.stageSaveData.currentPhaseState == "Battle")
-        {
-            // F9: 즉시 승리
-            if (Input.GetKeyDown(KeyCode.F9))
-            {
-                Debug.Log("디버그: 즉시 승리 처리");
-                messagePopup.Open("디버그: 즉시 승리 처리"); // 메시지 팝업 표시
-                // 승리 처리 함수 호출
-                victoryPanel.SetActive(true);
-                battlePanel.SetActive(false);
-            }
-            // F10: 즉시 패배
-            if (Input.GetKeyDown(KeyCode.F10))
-            {
-                Debug.Log("디버그: 즉시 패배 처리");
-                messagePopup.Open("디버그: 즉시 패배 처리"); // 메시지 팝업 표시
-                // 패배 처리 함수 호출
-                defeatPanel.SetActive(true);
-                battlePanel.SetActive(false);
-            }
-        }
-    }
-#endif
-
     public void OpenSelectDungeonPanel() // 스테이지 선택 패널을 여는 함수
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.None;

@@ -578,7 +578,7 @@ public class StageManager : MonoBehaviour
             stageSaveData.selectedEnemy
         );
         battleUIController.OpenBattlePanel();
-        // BattleManager.Instance.StartBattle(battleStartData); // 실제 전달 방식에 맞게 호출
+        BattleManager.Instance.BattleStartCoroutine(battleStartData);
     }
 
     public void selectEliteEnemy()
@@ -613,7 +613,7 @@ public class StageManager : MonoBehaviour
             stageSaveData.selectedEnemy
         );
         battleUIController.OpenBattlePanel();
-        // BattleManager.Instance.StartBattle(battleStartData); // 실제 전달 방식에 맞게 호출
+        BattleManager.Instance.BattleStartCoroutine(battleStartData);
     }
 
     public void selectBossEnemy()
@@ -671,6 +671,6 @@ public class StageManager : MonoBehaviour
             stageSaveData.selectedEnemy
         );
         battleUIController.OpenBattlePanel();
-        // BattleManager.Instance.StartBattle(battleStartData); // 실제 전달 방식에 맞게 호출
+        BattleManager.Instance.BattleStartCoroutine(battleStartData);
     }
 }

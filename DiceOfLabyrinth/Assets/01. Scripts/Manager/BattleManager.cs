@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
-using TMPro;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 public class BattleManager : MonoBehaviour
 {
@@ -34,9 +34,11 @@ public class BattleManager : MonoBehaviour
     }
     #endregion
 
-    public BattleCharacter[] battleCharacters; //임시
+    public List<BattleCharacter> battleCharacters;
 
-    public EnemyData EnemyData;
+    private BattleEnemy enemy;
+    public BattleEnemy Enemy => enemy;
+
     GameObject enemyGO;
     public TestEnemy TestEnemy;
 
@@ -78,27 +80,26 @@ public class BattleManager : MonoBehaviour
 
         LoadMonsterPattern = new LoadMonsterPattern();
         MonsterPattern = new MonsterPattern();
-
-        battleCharacters = new BattleCharacter[5];
     }
     
     void Update()
     {
         stateMachine.BattleUpdate();
-        if(Input.GetKeyDown(KeyCode.Space))
-        {            
-            battleCharacters[0] = CharacterManager.Instance.RegisterBattleCharacterData("Char_0");
-            battleCharacters[1] = CharacterManager.Instance.RegisterBattleCharacterData("Char_1");
-            battleCharacters[2] = CharacterManager.Instance.RegisterBattleCharacterData("Char_2");
-            battleCharacters[3] = CharacterManager.Instance.RegisterBattleCharacterData("Char_3");
-            battleCharacters[4] = CharacterManager.Instance.RegisterBattleCharacterData("Char_4");
-            BattleStartCoroutine();
-        }
+        //if(Input.GetKeyDown(KeyCode.Space))
+        //{            
+        //    battleCharacters[0] = CharacterManager.Instance.RegisterBattleCharacterData("Char_0");
+        //    battleCharacters[1] = CharacterManager.Instance.RegisterBattleCharacterData("Char_1");
+        //    battleCharacters[2] = CharacterManager.Instance.RegisterBattleCharacterData("Char_2");
+        //    battleCharacters[3] = CharacterManager.Instance.RegisterBattleCharacterData("Char_3");
+        //    battleCharacters[4] = CharacterManager.Instance.RegisterBattleCharacterData("Char_4");
+        //    BattleStartCoroutine();
+        //}
     }
 
-    public void BattleStartCoroutine() //전투 시작시 호출해야할 메서드
+    public void BattleStartCoroutine(BattleStartData data) //전투 시작시 호출해야할 메서드
     {
-        GetMonster();
+        GetStartData(data);
+        SpawnEnemy();
         DiceManager.Instance.DiceSettingForBattle();
         battleCoroutine.CharacterSpwan();
     }
@@ -134,17 +135,18 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    private void GetMonster()
+    public void GetStartData(BattleStartData data)
     {
-        int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
-        chapterIndex = 0; //임시
+        enemy = new BattleEnemy(data.selectedEnemy);
+        battleCharacters = data.battleCharacters;
+    }
 
-        EnemyData = StageManager.Instance.stageSaveData.selectedEnemy;
-        enemyGO = EnemyData.EnemyPrefab;
-        TestEnemy = enemyGO.GetComponent<TestEnemy>();
-        TestEnemy.Init();
+    private void SpawnEnemy()
+    {
+        enemyGO = enemy.Data.EnemyPrefab;
+
         Instantiate(enemyGO, new Vector3(5.85f, -0.02f, -1.06f), Quaternion.identity, enemyContainer);
-    }    
+    }
 
     /// <summary>
     /// 스킬 사용에 필요한 코스트를 매개변수만큼 얻는 메서드입니다.
@@ -158,5 +160,38 @@ public class BattleManager : MonoBehaviour
 
         currnetCost = cost;
         UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, cost.ToString());        
+    }
+}
+
+public class BattleEnemy : IDamagable
+{
+    private EnemyData data;
+    private int currentMaxHP;
+    private int currentHP;
+    private int currentAtk;
+    private int currentDef;
+
+    public EnemyData Data => data;
+    public int CurrentHP => currentHP;
+    public int CurrentAtk => currentAtk;
+    public int CurrentDef => currentDef;
+
+    public BattleEnemy(EnemyData data)
+    {
+        this.data = data;
+        currentMaxHP = data.MaxHp;
+        currentHP = currentMaxHP;
+        currentAtk = data.Atk;
+        currentDef = data.Def;
+    }
+
+    public void Heal(int amount)
+    {        
+        currentHP = Mathf.Clamp(currentHP + amount, 0, currentMaxHP);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHP = Mathf.Clamp(currentHP - damage, 0, currentMaxHP);
     }
 }
