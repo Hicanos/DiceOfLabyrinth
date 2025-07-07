@@ -102,7 +102,6 @@ public class BattleManager : MonoBehaviour
 
         if(StageManager.Instance.stageSaveData.currentPhaseIndex == 1)
         {
-            Debug.Log("Spawn");
             battleCoroutine.CharacterSpwan();
         }
         else
