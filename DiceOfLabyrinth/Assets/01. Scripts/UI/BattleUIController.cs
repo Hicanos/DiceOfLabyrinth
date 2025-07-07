@@ -4,6 +4,9 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEngine.InputSystem;
+#endif
 
 public class BattleUIController : MonoBehaviour
 {
@@ -60,35 +63,67 @@ public class BattleUIController : MonoBehaviour
 #if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
     private void Update()
     {
-        // 배틀 상태일 때만 동작
+        //// 배틀 상태일 때만 동작
+        //if (StageManager.Instance != null &&
+        //    StageManager.Instance.stageSaveData != null &&
+        //    StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
+        //{
+        //    // F9: 즉시 배틀 승리
+        //    if (Input.GetKeyDown(KeyCode.F9)&& StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
+        //    {
+        //        messagePopup.Open("디버그: 즉시 배틀 승리 처리"); // 메시지 팝업 표시
+        //        StageManager.Instance.RoomClear(StageManager.Instance.stageSaveData.selectedEnemy); // 배틀 승리 처리
+        //    }
+        //    // F10: 즉시 전투 패배
+        //    if (Input.GetKeyDown(KeyCode.F10) && StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
+        //    {
+        //        messagePopup.Open("디버그: 즉시 패배 처리"); // 메시지 팝업 표시
+        //        StageManager.Instance.StageDefeat(StageManager.Instance.stageSaveData.currentChapterIndex); // 배틀 패배 처리
+        //    }
+        //}
+        //if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
+        //{
+        //    // F11: 즉시 챕터 종료 처리 (컴플리트 아님)
+        //    if (Input.GetKeyDown(KeyCode.F11) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
+        //    {
+        //        Debug.Log("디버그: 즉시 챕터 종료 처리");
+        //        messagePopup.Open("디버그: 즉시 챕터 종료 처리");
+        //        StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex);
+        //    }
+        //    // F12: 즉시 챕터 완료 처리 (컴플리트 처리)
+        //    if (Input.GetKeyDown(KeyCode.F12) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
+        //    {
+        //        Debug.Log("디버그: 즉시 챕터 완료 처리");
+        //        messagePopup.Open("디버그: 즉시 챕터 완료 처리");
+        //        StageManager.Instance.CompleteChapter(StageManager.Instance.stageSaveData.currentChapterIndex);
+        //    }
+        //}
+        if (Keyboard.current == null) return; // Input System이 없으면 무시
+
         if (StageManager.Instance != null &&
             StageManager.Instance.stageSaveData != null &&
             StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
         {
-            // F9: 즉시 배틀 승리
-            if (Input.GetKeyDown(KeyCode.F9)&& StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
+            if (Keyboard.current.f9Key.wasPressedThisFrame)
             {
-                messagePopup.Open("디버그: 즉시 배틀 승리 처리"); // 메시지 팝업 표시
-                StageManager.Instance.RoomClear(StageManager.Instance.stageSaveData.selectedEnemy); // 배틀 승리 처리
+                messagePopup.Open("디버그: 즉시 배틀 승리 처리");
+                StageManager.Instance.RoomClear(StageManager.Instance.stageSaveData.selectedEnemy);
             }
-            // F10: 즉시 전투 패배
-            if (Input.GetKeyDown(KeyCode.F10) && StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
+            if (Keyboard.current.f10Key.wasPressedThisFrame)
             {
-                messagePopup.Open("디버그: 즉시 패배 처리"); // 메시지 팝업 표시
-                StageManager.Instance.StageDefeat(StageManager.Instance.stageSaveData.currentChapterIndex); // 배틀 패배 처리
+                messagePopup.Open("디버그: 즉시 패배 처리");
+                StageManager.Instance.StageDefeat(StageManager.Instance.stageSaveData.currentChapterIndex);
             }
         }
         if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
         {
-            // F11: 즉시 챕터 종료 처리 (컴플리트 아님)
-            if (Input.GetKeyDown(KeyCode.F11) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
+            if (Keyboard.current.f11Key.wasPressedThisFrame && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
             {
                 Debug.Log("디버그: 즉시 챕터 종료 처리");
                 messagePopup.Open("디버그: 즉시 챕터 종료 처리");
                 StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex);
             }
-            // F12: 즉시 챕터 완료 처리 (컴플리트 처리)
-            if (Input.GetKeyDown(KeyCode.F12) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
+            if (Keyboard.current.f12Key.wasPressedThisFrame && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
             {
                 Debug.Log("디버그: 즉시 챕터 완료 처리");
                 messagePopup.Open("디버그: 즉시 챕터 완료 처리");
