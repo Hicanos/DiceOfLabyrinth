@@ -43,7 +43,6 @@ public class EnemyData: ScriptableObject
     }
 
     [SerializeField] private string enemyName;
-    [SerializeField] private int enemyLevel;
     [SerializeField] private EnemyType enemyType;
     [SerializeField] private EnemySpecies enemySpecies;
     [SerializeField] private EnemyAttribute enemyAttribute;
@@ -58,7 +57,7 @@ public class EnemyData: ScriptableObject
     [SerializeField] private GameObject enemyPrefab;
 
     public string EnemyName => enemyName;
-    public int EnemyLevel => enemyLevel;
+    public int EnemyLevel => StageManager.Instance.stageSaveData.currentStageIndex + 1;
     public EnemyType Type => enemyType;
     public EnemySpecies Species => enemySpecies;
     public EnemyAttribute Attribute => enemyAttribute;
@@ -75,34 +74,7 @@ public class EnemyData: ScriptableObject
     public int DefPerLevel => defPerLevel;
 
     // 실제 능력치 (레벨 반영)
-    public int MaxHp
-    {
-        get
-        {
-            int level = 1;
-            if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
-                level = StageManager.Instance.stageSaveData.currentEnemyLevel;
-            return baseMaxHp + hpPerLevel * (level - 1);
-        }
-    }
-    public int Atk
-    {
-        get
-        {
-            int level = 1;
-            if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
-                level = StageManager.Instance.stageSaveData.currentEnemyLevel;
-            return baseAtk + atkPerLevel * (level - 1);
-        }
-    }
-    public int Def
-    {
-        get
-        {
-            int level = 1;
-            if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
-                level = StageManager.Instance.stageSaveData.currentEnemyLevel;
-            return baseDef + defPerLevel * (level - 1);
-        }
-    }
+    public int MaxHp => baseMaxHp + hpPerLevel * (EnemyLevel - 1);
+    public int Atk => baseAtk + atkPerLevel * (EnemyLevel - 1);
+    public int Def => baseDef + defPerLevel * (EnemyLevel - 1);
 }

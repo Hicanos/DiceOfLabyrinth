@@ -90,7 +90,7 @@ public class ChapterManager : MonoBehaviour
     //    StageManager.Instance.stageSaveData.ResetToDefault(-1); // 챕터 완료 후 스테이지 데이터 초기화, -1은 현재 챕터가 셀렉트되지 않았음을 의미합니다.
     //}
 
-    //public void DefeatChapter(int chapterIndex)
+    //public void EndChapterEarly(int chapterIndex)
     //{
     //    if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
     //    {

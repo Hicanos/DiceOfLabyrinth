@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 public class LoadMonsterPattern
 {
@@ -44,9 +45,10 @@ public class LoadMonsterPattern
 
     private string SelectPattern()
     {
+        Debug.Log("새 패턴 받아옴");
         JToken patternIndex = pattern.pattern["Index"];
 
-        string index = BattleManager.Instance.EnemyData.Pattern.ToString();
+        //string index = BattleManager.Instance.TestEnemy.EnemyData.Pattern.ToString();
 
         patternLength = pattern.pattern["Table"][index].Count();
 
@@ -58,4 +60,12 @@ public class MonsterPattern
 {
     public JObject pattern;
     public JObject skill;
+}
+
+public class MonsterSkillData
+{
+    string name;
+    string description;
+
+
 }
