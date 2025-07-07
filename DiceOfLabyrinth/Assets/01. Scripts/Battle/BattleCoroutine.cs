@@ -12,13 +12,13 @@ public class BattleCoroutine : MonoBehaviour
     BattleManager battleManager;
     [SerializeField] Transform characterContainer;
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            SkipCharacterSpwan();
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetMouseButtonDown(0))
+    //    {
+    //        SkipCharacterSpwan();
+    //    }
+    //}
 
     public void CharacterSpwan()
     {

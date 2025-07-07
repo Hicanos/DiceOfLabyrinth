@@ -82,19 +82,19 @@ public class BattleManager : MonoBehaviour
         battleCharacters = new BattleCharacter[5];
     }
     
-    void Update()
-    {
-        stateMachine.BattleUpdate();
-        if(Input.GetKeyDown(KeyCode.Space))
-        {            
-            battleCharacters[0] = CharacterManager.Instance.RegisterBattleCharacterData("Char_0");
-            battleCharacters[1] = CharacterManager.Instance.RegisterBattleCharacterData("Char_1");
-            battleCharacters[2] = CharacterManager.Instance.RegisterBattleCharacterData("Char_2");
-            battleCharacters[3] = CharacterManager.Instance.RegisterBattleCharacterData("Char_3");
-            battleCharacters[4] = CharacterManager.Instance.RegisterBattleCharacterData("Char_4");
-            BattleStartCoroutine();
-        }
-    }
+    //void Update()
+    //{
+    //    stateMachine.BattleUpdate();
+    //    if(Input.GetKeyDown(KeyCode.Space))
+    //    {            
+    //        battleCharacters[0] = CharacterManager.Instance.RegisterBattleCharacterData("Char_0");
+    //        battleCharacters[1] = CharacterManager.Instance.RegisterBattleCharacterData("Char_1");
+    //        battleCharacters[2] = CharacterManager.Instance.RegisterBattleCharacterData("Char_2");
+    //        battleCharacters[3] = CharacterManager.Instance.RegisterBattleCharacterData("Char_3");
+    //        battleCharacters[4] = CharacterManager.Instance.RegisterBattleCharacterData("Char_4");
+    //        BattleStartCoroutine();
+    //    }
+    //}
 
     public void BattleStartCoroutine() //전투 시작시 호출해야할 메서드
     {
