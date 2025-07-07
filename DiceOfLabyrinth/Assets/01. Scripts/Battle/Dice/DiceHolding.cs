@@ -111,6 +111,7 @@ public class DiceHolding : MonoBehaviour
     {
         if (fixedDiceList == null && tempFixedDiceList == null)
         {
+            Debug.Log("리셋");
             index2 = 0;
         }
 
