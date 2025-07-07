@@ -44,7 +44,7 @@ public class BattleManager : MonoBehaviour
     public BattleUIValueChanger UIValueChanger;
     public BattleCoroutine battleCoroutine;
 
-    [Header("Battle State")]
+    [Header("Battle States")]
     public LoadMonsterPattern LoadMonsterPattern;
     public MonsterPattern MonsterPattern;
     public BattleStateMachine stateMachine;
@@ -53,16 +53,20 @@ public class BattleManager : MonoBehaviour
     public IBattleTurnState enemyTurnState;
     public BattlePlayerTurnState battlePlayerTurnState;
 
-    [Header("UI")]
+    [Header("UIs")]
     public AbstractBattleButton[] BattleButtons;        
+    public Image[] HPBar;
     [SerializeField] Image turnDisplay;
-    public Image[] HPBar;    
+    [SerializeField] GameObject victoryUI;
+    [SerializeField] GameObject defeatUI;
 
+    [Header("Values")]
     public  readonly int MaxCost = 12;
     public  int     BattleTurn = 0;
     private int     currnetCost = 0;
     public  bool    isBattle;
-        
+    public  bool    isWon;
+
     void Start()
     {
         playerTurnState = new BattlePlayerTurnState();
@@ -120,6 +124,14 @@ public class BattleManager : MonoBehaviour
         //turnDisplay.gameObject.SetActive(false);
 
         //결과창 실행
+        if(isWon)
+        {
+            victoryUI.SetActive(true);
+        }
+        else
+        {
+            defeatUI.SetActive(true);
+        }
     }
 
     private void GetMonster()
@@ -128,7 +140,7 @@ public class BattleManager : MonoBehaviour
         chapterIndex = 0; //임시
 
         EnemyData = StageManager.Instance.stageSaveData.selectedEnemy;
-        //enemyGO = enemyData.EnemyPrefab
+        enemyGO = EnemyData.EnemyPrefab;
         TestEnemy = enemyGO.GetComponent<TestEnemy>();
         TestEnemy.Init();
         Instantiate(enemyGO, new Vector3(5.85f, -0.02f, -1.06f), Quaternion.identity, enemyContainer);
