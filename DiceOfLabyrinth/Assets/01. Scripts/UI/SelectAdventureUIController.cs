@@ -146,6 +146,7 @@ public class SelectAdventureUIController : MonoBehaviour
             StageManager.Instance.stageSaveData.ResetToDefault(chapterIndex); // 스테이지 상태 초기화
             Debug.Log($"Starting battle for chapter: {selectedChapter.ChapterName} (Index: {chapterIndex})");
             //SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
+            costCalculationPanel.SetActive(false);
             StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태 복원
         }
     }

@@ -691,18 +691,26 @@ public class BattleUIController : MonoBehaviour
     public void OpenSelectChoicePanel() // 선택지 이벤트 패널을 여는 함수
     {
         var stageSelectChoices = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
-            .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ChoiceOptions; // 현재 스테이지의 선택지 목록을 가져옴
+            .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ChoiceOptions; // 현재 스테이지의 선택지 목록을 가져옴\
+                                                                                                        // 노말/엘리트 클리어 카운트 2 이상이면 해당 선택지 제외
+        int normalCount = StageManager.Instance.stageSaveData.normalStageCompleteCount;
+        int eliteCount = StageManager.Instance.stageSaveData.eliteStageCompleteCount;
+        var filteredChoices = stageSelectChoices
+            .Where(opt =>
+                !(opt.ChoiceText == "노말" && normalCount >= 2) &&
+                !(opt.ChoiceText == "엘리트" && eliteCount >= 2)
+            ).ToList();
 
-        if (stageSelectChoices == null || stageSelectChoices.Count < 2)
+        if (filteredChoices == null || filteredChoices.Count < 2)
         {
             messagePopup.Open("선택지가 2개 이상 필요합니다. 스테이지 데이터의 ChoiceOptions를 확인하세요.");
             return;
         }
 
-        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.SelectChoice; // 현재 페이즈 상태를 "SelectChoice"로 설정
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.SelectChoice;
 
-        // 스테이지의 선택지 목록 중 랜덤 2개를 선택
-        List<ChoiceOptions> tempChoices = new List<ChoiceOptions>(stageSelectChoices);
+        // 필터링된 선택지 중 랜덤 2개 선택
+        List<ChoiceOptions> tempChoices = new List<ChoiceOptions>(filteredChoices);
         ChoiceOptions[] twoSelectChoices = new ChoiceOptions[2];
         for (int i = 0; i < 2; i++)
         {
@@ -712,9 +720,9 @@ public class BattleUIController : MonoBehaviour
         }
         for (int i = 0; i < 2; i++)
         {
-            selectChoiceText[i].text = twoSelectChoices[i].ChoiceText; // 선택지 텍스트 설정
-            selectChoiceIcon[i].sprite = twoSelectChoices[i].ChoiceIcon; // 선택지 아이콘 설정
-            ChoiceOptions[i] = twoSelectChoices[i]; // 선택지 옵션 저장
+            selectChoiceText[i].text = twoSelectChoices[i].ChoiceText;
+            selectChoiceIcon[i].sprite = twoSelectChoices[i].ChoiceIcon;
+            ChoiceOptions[i] = twoSelectChoices[i];
         }
 
         selectDungeonPanel.SetActive(false);
