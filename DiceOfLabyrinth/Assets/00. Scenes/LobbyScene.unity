@@ -836,6 +836,10 @@ PrefabInstance:
       propertyPath: battleUIController
       value: 
       objectReference: {fileID: 1771174810}
+    - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
+      propertyPath: stageSaveData.battleCharacters.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.1093163
@@ -940,6 +944,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleCharacters: []
+  EnemyData: {fileID: 0}
   TestEnemy: {fileID: 0}
   enemyContainer: {fileID: 832190026}
   UIValueChanger: {fileID: 0}
@@ -955,10 +960,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  turnDisplay: {fileID: 0}
   HPBar: []
+  turnDisplay: {fileID: 0}
+  victoryUI: {fileID: 0}
+  defeatUI: {fileID: 0}
   BattleTurn: 0
   isBattle: 0
+  isWon: 0
 --- !u!4 &2044644667
 Transform:
   m_ObjectHideFlags: 0
