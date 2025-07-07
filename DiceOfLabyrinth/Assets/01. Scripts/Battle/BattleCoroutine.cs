@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class BattleCoroutine : MonoBehaviour
 {
@@ -40,9 +41,12 @@ public class BattleCoroutine : MonoBehaviour
         }
     }
 
-    public void SkipCharacterSpwan()
+    public void SkipCharacterSpwan(InputAction.CallbackContext context)
     {
+        Debug.Log("스킵 실행");
+        if (!context.started) return;
         if (isPreparing == false) return;
+
         isPreparing = false;
         StopCoroutine(enumeratorSpawn);
 

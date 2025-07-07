@@ -109,17 +109,17 @@ public class DiceHolding : MonoBehaviour
 
     private void DiceFixed(DiceMy dice)
     {
-        if (fixedDiceList == null && tempFixedDiceList == null)
-        {
-            Debug.Log("리셋");
-            index2 = 0;
-        }
-
         int index = dice.MyIndex;
         tempFixedDiceList = DiceManager.Instance.TempFixedDiceList;
         List<Vector3> fixedPos = new List<Vector3>();
         bool isAdd;
 
+        if (fixedDiceList.Count == 0 && tempFixedDiceList.Count == 0)
+        {
+            Debug.Log("리셋");
+            index2 = 0;
+        }
+       
         if (tempFixedDiceList == null || tempFixedDiceList.Contains<int>(index) == false)
         {
             isAdd = true;
