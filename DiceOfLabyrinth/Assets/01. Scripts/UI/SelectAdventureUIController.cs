@@ -2,7 +2,6 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Android.Gradle.Manifest;
 
 public class SelectAdventureUIController : MonoBehaviour
 {
