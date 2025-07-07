@@ -25,7 +25,10 @@ public class BattleUIPatternDisplay : AbstractBattleButton
                 images[1].gameObject.SetActive(false);
                 break;
             case PlayerTurnState.Enter:
-                StartCoroutine(BlinkUI());
+                if(BattleManager.Instance.isWon == false)
+                {
+                    StartCoroutine(BlinkUI());
+                }
                 break;
             case PlayerTurnState.Roll:
                 Button.interactable = false;
@@ -34,6 +37,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
                 Button.interactable = true;
                 break;
             case PlayerTurnState.BattleEnd:
+                images[1].gameObject.SetActive(true);
                 gameObject.SetActive(false);
                 break;
         }
