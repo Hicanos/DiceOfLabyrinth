@@ -1,5 +1,5 @@
-﻿using System;
-using System.Security.Cryptography.X509Certificates;
+﻿using DG.Tweening;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -8,11 +8,21 @@ public class MessagePopup : MonoBehaviour
     [SerializeField] private TMP_Text msgText;
     [SerializeField] private GameObject yesButton;
     [SerializeField] private GameObject noButton;
+    [SerializeField] private CanvasGroup cgFade;
+
+    [SerializeField] float fadeIn = .25f;
+    [SerializeField] float fadeOut = .20f;
+    [SerializeField] float popScale = 1.1f;
 
     private Action _onYes, _onNo;
 
     private void Awake()
     {
+        if (!cgFade)
+        {
+            cgFade = GetComponent<CanvasGroup>();
+        }
+
         gameObject.SetActive(false);
     }
 
@@ -42,6 +52,14 @@ public class MessagePopup : MonoBehaviour
         _onYes = onYes;
         _onNo = onNo;
         gameObject.SetActive(true);
+
+#if DOTWEEN
+        cgFade.alpha = 0;
+        cgFade.DOFade(1, fadeIn);
+
+        transform.localScale = Vector3.one * popScale;
+        transform.DOScale(1, fadeIn).SetEase(Ease.OutBack);
+#endif
     }
 
     public void OnClickYes()
@@ -58,8 +76,11 @@ public class MessagePopup : MonoBehaviour
 
     public void Close()
     {
-        _onYes = null;
-        _onNo = null;
+#if DOTWEEN
+        cgFade.DOFade(0, fadeOut).OnComplete(() => gameObject.SetActive(false));
+#else
         gameObject.SetActive(false);
+#endif
+        _onYes = _onNo = null;
     }
 }

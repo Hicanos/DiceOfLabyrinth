@@ -23,6 +23,11 @@ public class SelectAdventureUIController : MonoBehaviour
     [SerializeField] private GameObject HardDifficultyUnselect;
     [SerializeField] private GameObject HardDifficultySelect;
 
+    [Header("Select Dungeon")]
+    [SerializeField] private TMP_Text selectedChapterText; // 스테이지 선택 패널 제목
+    [SerializeField] private Image chapterIcon; // 스테이지 선택 패널 아이콘
+    [SerializeField] private TMP_Text chapterDescriptionText; // 스테이지 선택 패널 설명
+
     [Header("SelectedChapter")]
     [SerializeField] private List<TMP_Text> selectedChapterNameText = new List<TMP_Text>(); // 선택된 챕터 이름 텍스트, 여러 개의 챕터 이름을 표시할 수 있도록 리스트로 변경
     //[SerializeField] private TMP_Text selectedChapterDescriptionText; // 선택된 챕터 설명 텍스트, 현재 기획에선 설명이 필요하지 않으므로 주석 처리
@@ -123,6 +128,10 @@ public class SelectAdventureUIController : MonoBehaviour
         selectChapterPanel.SetActive(true);
         costCalculationPanel.SetActive(true);
         scarceStaminaPanel.SetActive(false);
+
+        selectedChapterText.text = chapterData.chapterIndex[selectedChapterIndex].ChapterName;
+        chapterIcon.sprite = chapterData.chapterIndex[selectedChapterIndex].Image;
+        chapterDescriptionText.text = chapterData.chapterIndex[selectedChapterIndex].Description;
     }
 
     public void OnClickCostCalculationPanelStartButton()
