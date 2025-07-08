@@ -45,10 +45,10 @@ public class BattleUIController : MonoBehaviour
     [Header("Item Choice Icons")]
     [SerializeField] private GameObject[] itemChoiceIcon = new GameObject[3]; // 아이템 선택 아이콘을 위한 배열
 
-    [Header("Select Dungeon")]
-    [SerializeField] private TMP_Text selectedChapterText; // 스테이지 선택 패널 제목
-    [SerializeField] private Image chapterIcon; // 스테이지 선택 패널 아이콘
-    [SerializeField] private TMP_Text chapterDescriptionText; // 스테이지 선택 패널 설명
+    //[Header("Select Dungeon")]
+    //[SerializeField] private TMP_Text selectedChapterText; // 스테이지 선택 패널 제목
+    //[SerializeField] private Image chapterIcon; // 스테이지 선택 패널 아이콘
+    //[SerializeField] private TMP_Text chapterDescriptionText; // 스테이지 선택 패널 설명
 
     [Header("Team Formation")]
     [SerializeField] private SelectedTeamFormation selectedTeamFormation; // 선택된 팀 구성
@@ -148,9 +148,9 @@ public class BattleUIController : MonoBehaviour
 
         selectEventPanel.SetActive(false);
         // 선택된 스테이지 정보 업데이트
-        selectedChapterText.text = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].ChapterName;
-        chapterIcon.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].Image;
-        chapterDescriptionText.text = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].Description;
+        //selectedChapterText.text = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].ChapterName;
+        //chapterIcon.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].Image;
+        //chapterDescriptionText.text = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].Description;
     }
 
     public void OnClickDungeonButton(int stageIndex) // 스테이지 선택 버튼 클릭 시 호출되는 함수
