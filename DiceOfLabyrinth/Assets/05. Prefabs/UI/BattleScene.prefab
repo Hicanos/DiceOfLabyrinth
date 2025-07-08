@@ -678,9 +678,9 @@ RectTransform:
   - {fileID: 7048115589886114773}
   m_Father: {fileID: 5652865047473810444}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1485.7144, y: -75}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1807972468956359724
@@ -1815,7 +1815,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5383656834209914738}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickDefeatNextButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &706096563071891591
 GameObject:
   m_ObjectHideFlags: 0
@@ -2180,9 +2192,9 @@ RectTransform:
   - {fileID: 5486616801279567772}
   m_Father: {fileID: 5652865047473810444}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 800, y: -75}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4014467908114859841
@@ -2642,9 +2654,9 @@ RectTransform:
   - {fileID: 5131096003289096495}
   m_Father: {fileID: 5652865047473810444}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 114.28571, y: -75}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6250383620949708629
@@ -2854,9 +2866,9 @@ RectTransform:
   - {fileID: 3534424552404167001}
   m_Father: {fileID: 5652865047473810444}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 571.4286, y: -75}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1162352511556446762
@@ -3246,7 +3258,7 @@ RectTransform:
   - {fileID: 8321778430586368213}
   - {fileID: 4337196165125459747}
   - {fileID: 115836197448247192}
-  - {fileID: 4081331441218787823}
+  - {fileID: 3711901649861219192}
   - {fileID: 5560126515048195629}
   - {fileID: 4932949681050003169}
   - {fileID: 6467191127159544661}
@@ -4469,9 +4481,9 @@ RectTransform:
   - {fileID: 4901898476821141088}
   m_Father: {fileID: 5652865047473810444}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 342.85715, y: -75}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3278635699928516532
@@ -4528,7 +4540,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5630454420217438078
 Transform:
   m_ObjectHideFlags: 0
@@ -4575,7 +4587,7 @@ MonoBehaviour:
   selectDungeonPanel: {fileID: 7398880750472421032}
   teamFormationPenel: {fileID: 102126530043097548}
   stagePanel: {fileID: 2999613424131299847}
-  battlePanel: {fileID: 9182343311077691861}
+  battlePanel: {fileID: 8380815346145745730}
   victoryPanel: {fileID: 2020174014879230415}
   defeatPanel: {fileID: 2843416051793870778}
   selectItemPanel: {fileID: 9204763285631996187}
@@ -4785,9 +4797,9 @@ RectTransform:
   - {fileID: 149397351482496066}
   m_Father: {fileID: 5652865047473810444}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1028.5714, y: -75}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4525603185214275170
@@ -5220,9 +5232,9 @@ RectTransform:
   - {fileID: 3236619227640384598}
   m_Father: {fileID: 5652865047473810444}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1257.143, y: -75}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6257240703757249457
@@ -8028,7 +8040,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7884952971692688455}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 463020077614185215}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickVictoryNextButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7691309088020183439
 GameObject:
   m_ObjectHideFlags: 0
@@ -9733,7 +9757,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1001 &5045832655146969900
+--- !u!1001 &5559405259438776763
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -9743,7 +9767,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4136655795760773881, guid: 7361384692583a142b714b5eefa49269, type: 3}
       propertyPath: m_Name
-      value: BattlePanel
+      value: BattlePanel 1
       objectReference: {fileID: 0}
     - target: {fileID: 9125888522885231299, guid: 7361384692583a142b714b5eefa49269, type: 3}
       propertyPath: m_Pivot.x
@@ -9830,15 +9854,15 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7361384692583a142b714b5eefa49269, type: 3}
---- !u!224 &4081331441218787823 stripped
+--- !u!224 &3711901649861219192 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9125888522885231299, guid: 7361384692583a142b714b5eefa49269, type: 3}
-  m_PrefabInstance: {fileID: 5045832655146969900}
+  m_PrefabInstance: {fileID: 5559405259438776763}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &9182343311077691861 stripped
+--- !u!1 &8380815346145745730 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4136655795760773881, guid: 7361384692583a142b714b5eefa49269, type: 3}
-  m_PrefabInstance: {fileID: 5045832655146969900}
+  m_PrefabInstance: {fileID: 5559405259438776763}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5643505399807594041
 PrefabInstance:
