@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,23 +9,38 @@ using PredictedDice.Demo;
 
 public class DiceHolding : MonoBehaviour
 {
+    DiceManager diceManager;
+    BattleManager battleManager;
+
     [SerializeField] Camera diceCamera;
     [SerializeField] RollMultipleDiceSynced rollMultipleDice;
     [SerializeField] Button DiceRollButton;
-    List<int> fixedDiceList;
-    List<int> tempFixedDiceList;
+    private List<int> fixedDiceList;
+    private List<int> tempFixedDiceList;
 
-    GameObject[] areas = new GameObject[5];
-    IEnumerator enumerator;
-    int index2 = 0;
+    private GameObject[] areas = new GameObject[5];
+    private IEnumerator enumerator;
+
+    private int index2 = 0;
+    public  bool isCantFix = false;
+
     private void Start()
     {
-        DiceRollButton = BattleManager.Instance.BattleButtons[(int)PlayerTurnState.Roll].GetComponent<Button>();
+        battleManager = BattleManager.Instance;
+        diceManager = DiceManager.Instance;
 
-        for(int i = 0; i < areas.Length; i++)
+        DiceRollButton = battleManager.BattleButtons[(int)PlayerTurnState.Roll].GetComponent<Button>();
+
+        for (int i = 0; i < areas.Length; i++)
         {
-            areas[i] = BattleManager.Instance.fixedDiceArea.transform.GetChild(i).gameObject;
+            areas[i] = battleManager.fixedDiceArea.transform.GetChild(i).gameObject;
         }
+    }
+
+    public void GetFixedList()
+    {
+        fixedDiceList = DiceManager.Instance.FixedDiceList;
+        tempFixedDiceList = DiceManager.Instance.TempFixedDiceList;
     }
 
     public void OnInput(InputAction.CallbackContext context)
@@ -40,7 +55,8 @@ public class DiceHolding : MonoBehaviour
 
     private void SelectDice(Vector2 vec)
     {
-        if (BattleManager.Instance.isBattle == false) return;
+        if(isCantFix) return;
+        if (battleManager.isBattle == false) return;
 
         DiceMy dice;
 
@@ -50,7 +66,6 @@ public class DiceHolding : MonoBehaviour
         {
             if (hit.collider.TryGetComponent(out dice))
             {
-                fixedDiceList = DiceManager.Instance.FixedDiceList;
                 dice = hit.collider.gameObject.GetComponent<DiceMy>();
                 dice.SetIndex();
                 if (fixedDiceList != null && fixedDiceList.Contains<int>(dice.MyIndex))
@@ -60,66 +75,22 @@ public class DiceHolding : MonoBehaviour
                 DiceFixed(dice);
             }
         }
-
-        //if (Input.touchCount > 0)
-        //{
-        //    RaycastHit hit;
-
-        //    Ray ray = diceCamera.ScreenPointToRay(Input.touches[0].position);
-
-        //    if (Physics.Raycast(ray, out hit))
-        //    {
-        //        if (hit.collider.gameObject.TryGetComponent<DiceMy>(out dice))
-        //        {
-        //            fixedDiceList = DiceManager.Instance.FixedDiceList;
-        //            dice.SetIndex();
-        //            if (fixedDiceList != null && fixedDiceList.Contains<int>(dice.MyIndex))
-        //            {
-        //                Debug.Log("이미 고정된 주사위입니다.");
-        //                return;
-        //            }
-        //            DiceFixed(dice);
-        //            Debug.Log("주사위 감지");
-        //        }
-        //    }
-        //}
-
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    RaycastHit hit;
-
-        //    Ray ray = diceCamera.ScreenPointToRay(Input.mousePosition);
-
-        //    if (Physics.Raycast(ray, out hit))
-        //    {
-        //        if (hit.collider.gameObject.tag == "FakeDice")
-        //        {
-        //            fixedDiceList = DiceManager.Instance.FixedDiceList;
-        //            dice = hit.collider.gameObject.GetComponent<DiceMy>();
-        //            dice.SetIndex();
-        //            if (fixedDiceList != null && fixedDiceList.Contains<int>(dice.MyIndex))
-        //            {
-        //                return;
-        //            }
-        //            DiceFixed(dice);                    
-        //        }
-        //    }
-        //}
     }
 
     private void DiceFixed(DiceMy dice)
     {
         int index = dice.MyIndex;
-        tempFixedDiceList = DiceManager.Instance.TempFixedDiceList;
         List<Vector3> fixedPos = new List<Vector3>();
         bool isAdd;
+        int fixedCount = fixedDiceList.Count;
+        int tempFixedCount = tempFixedDiceList.Count;
 
-        if (fixedDiceList.Count == 0 && tempFixedDiceList.Count == 0)
+        if (fixedCount == 0 && tempFixedCount == 0)
         {
             Debug.Log("리셋");
             index2 = 0;
         }
-       
+
         if (tempFixedDiceList == null || tempFixedDiceList.Contains<int>(index) == false)
         {
             isAdd = true;
@@ -135,8 +106,8 @@ public class DiceHolding : MonoBehaviour
             isAdd = false;
 
             tempFixedDiceList.Remove(index);
-            rollMultipleDice.diceAndOutcomeArray[index].dice = DiceManager.Instance.dices[index].GetComponent<Dice>();
-            DiceManager.Instance.fakeDices[index].transform.localPosition = DiceManager.Instance.DicePos[index];
+            rollMultipleDice.diceAndOutcomeArray[index].dice = diceManager.dices[index].GetComponent<Dice>();
+            diceManager.fakeDices[index].transform.localPosition = diceManager.DicePos[index];
 
             enumerator = WaitForPosition(isAdd);
             StartCoroutine(enumerator);
@@ -151,7 +122,7 @@ public class DiceHolding : MonoBehaviour
         List<RectTransform> targetRects = new List<RectTransform>();
         List<Vector3> results = new List<Vector3>();
         Vector3 result;
-        Canvas canvas = BattleManager.Instance.battleCanvas;
+        Canvas canvas = battleManager.battleCanvas;
 
 
         if (isAdd)
@@ -164,10 +135,10 @@ public class DiceHolding : MonoBehaviour
         }
         else
         {
-            areas[index2-1].SetActive(false);
+            areas[index2 - 1].SetActive(false);
             index2--;
         }
-        Debug.Log(index2);
+
         yield return new WaitForEndOfFrame();
 
         for (int i = 0; i < index2; i++)
@@ -187,20 +158,20 @@ public class DiceHolding : MonoBehaviour
 
         foreach (int i in fixedDiceList)
         {
-            DiceManager.Instance.fakeDices[i].transform.position = results[count];
+            diceManager.fakeDices[i].transform.position = results[count];
             count++;
         }
         foreach (int i in tempFixedDiceList)
         {
-            DiceManager.Instance.fakeDices[i].transform.position = results[count];
+            diceManager.fakeDices[i].transform.position = results[count];
             count++;
         }
 
-        if (fixedDiceList.Count + tempFixedDiceList.Count == DiceManager.Instance.dices.Length)
+        if (fixedDiceList.Count + tempFixedDiceList.Count == diceManager.dices.Length)
         {
             DiceRollButton.interactable = false;
         }
-        else
+        else if (diceManager.rollCount != diceManager.maxRollCount)
         {
             DiceRollButton.interactable = true;
         }
@@ -209,7 +180,7 @@ public class DiceHolding : MonoBehaviour
 
     private void SkipRolling(Vector2 vec)
     {
-        if (BattleManager.Instance.isBattle == false || DiceManager.Instance.isRolling == false) return;
+        if (battleManager.isBattle == false || diceManager.isRolling == false) return;
 
         Ray ray = diceCamera.ScreenPointToRay(vec);
 
@@ -217,9 +188,122 @@ public class DiceHolding : MonoBehaviour
         {
             if (hit.collider.gameObject.tag == "DiceBoard")
             {
-                DiceManager.Instance.StopSimulation();
-                DiceManager.Instance.isSkipped = true;
-                DiceManager.Instance.SortingFakeDice();
+                diceManager.StopSimulation();
+                diceManager.isSkipped = true;
+                diceManager.SortingFakeDice();
+            }
+        }
+    }
+
+    public void FixAllDIce()
+    {
+        StartCoroutine(AllDiceFixed());
+    }
+
+    public void ReleaseDice()
+    {
+        StartCoroutine(DiceRelease());
+    }
+
+    IEnumerator AllDiceFixed()
+    {
+        int count = 0;
+        Vector3 result;
+        Vector3[] results = new Vector3[5];
+        RectTransform targetRects;
+        Canvas canvas = battleManager.battleCanvas;
+        int fixedCount = fixedDiceList.Count;
+        int tempFixedCount = tempFixedDiceList.Count;
+
+        List<int> noFixed = new List<int>() { 0, 1, 2, 3, 4 };
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i))
+            {
+                count++;
+                noFixed.Remove(i);
+            }
+        }
+
+        for (int i = count; i < 5; i++)
+        {
+            areas[i].SetActive(true);
+        }
+
+        yield return new WaitForEndOfFrame();
+
+        for (int i = 0; i < 5; i++)
+        {
+            targetRects = areas[i].GetComponent<RectTransform>();
+            Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, targetRects.position);
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(targetRects, screenPos, canvas.worldCamera, out result);
+            result.y = 10;
+            results[i] = result;
+        }
+
+        int count2 = 0;
+        int index;
+
+        for (int i = 0; i < fixedCount; i++)
+        {
+            index = fixedDiceList[i];
+            diceManager.fakeDices[index].transform.position = results[count2];
+            count2++;
+        }
+        for (int i = 0; i < tempFixedCount; i++)
+        {
+            index = tempFixedDiceList[i];
+            diceManager.fakeDices[index].transform.position = results[count2];
+            count2++;
+        }
+        for (int i = 0; i < noFixed.Count; i++)
+        {
+            index = noFixed[i];
+            diceManager.fakeDices[index].transform.position = results[count2];
+            count2++;
+        }
+    }
+
+    IEnumerator DiceRelease()
+    {
+        Vector3 result;
+        Vector3[] results;
+        RectTransform targetRects;
+        Canvas canvas = battleManager.battleCanvas;
+        int fixedCount = fixedDiceList.Count;
+
+        for (int i = 4; i > fixedCount - 1; i--)
+        {
+            areas[i].SetActive(false);
+        }
+        diceManager.TempFixedDiceList.Clear();
+        tempFixedDiceList = diceManager.TempFixedDiceList;
+
+        yield return new WaitForEndOfFrame();
+
+        results = new Vector3[fixedCount];
+        int count = 0;
+
+        for (int i = 0; i < fixedCount; i++)
+        {
+            targetRects = areas[i].GetComponent<RectTransform>();
+            Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, targetRects.position);
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(targetRects, screenPos, canvas.worldCamera, out result);
+            result.y = 10;
+            results[i] = result;
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (fixedDiceList.Contains<int>(i))
+            {
+                diceManager.fakeDices[i].transform.position = results[count];
+                count++;
+            }
+            else
+            {
+                diceManager.fakeDices[i].transform.localPosition = diceManager.DicePos[i];
             }
         }
     }
