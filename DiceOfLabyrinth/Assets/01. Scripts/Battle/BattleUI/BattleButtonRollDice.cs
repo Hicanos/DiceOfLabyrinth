@@ -44,6 +44,7 @@ public class BattleButtonRollDice : AbstractBattleButton
     {
         DiceManager.Instance.RollDice();
 
+        DiceManager.Instance.DiceHolding.GetFixedList();
         BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Roll);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-enum DiceRankingEnum
+public enum DiceRankingEnum
 {
     Top,
     Triple,
@@ -15,15 +15,14 @@ public class DiceBattle
 {
     public float[] damageWightTable;    
 
-    public float GetDiceWeighting()
-    {        
-        Debug.Log(DiceRankingJudgement(DiceManager.Instance.DiceResultCount));
-        return DamageWeighting(DiceRankingJudgement(DiceManager.Instance.DiceResultCount));
+    public void GetDiceWeighting()
+    {
+        DiceManager.Instance.DiceRank = DiceRankingJudgement(DiceManager.Instance.DiceResultCount);        
     }
 
-    private float DamageWeighting(DiceRankingEnum diceRank) //족보별계수
+    public float GetDamageWeighting() //족보별계수
     {
-        return damageWightTable[(int)diceRank];
+        return damageWightTable[(int)DiceManager.Instance.DiceRank];
     }
 
     private DiceRankingEnum DiceRankingJudgement(int[] diceResultCount)

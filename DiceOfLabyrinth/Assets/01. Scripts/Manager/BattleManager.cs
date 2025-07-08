@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine.InputSystem;
 
 
@@ -61,12 +60,11 @@ public class BattleManager : MonoBehaviour
     public AbstractBattleButton[] BattleButtons;
     public Image[] HPBar;
     public GameObject fixedDiceArea;
-    public GameObject area;
     [SerializeField] Image turnDisplay;
     [SerializeField] GameObject victoryUI;
     [SerializeField] GameObject defeatUI;
     public Canvas battleCanvas;
-    public CanvasScaler canvasScaler;
+    public GameObject Stages;
 
     [Header("Values")]
     public  readonly int MaxCost = 12;
@@ -86,7 +84,6 @@ public class BattleManager : MonoBehaviour
 
         LoadMonsterPattern = new LoadMonsterPattern();
         MonsterPattern = new MonsterPattern();
-        canvasScaler = battleCanvas.gameObject.GetComponent<CanvasScaler>();
     }
     
     void Update()
@@ -102,13 +99,11 @@ public class BattleManager : MonoBehaviour
 
         if(StageManager.Instance.stageSaveData.currentPhaseIndex == 1)
         {
-            Debug.Log("Spawn");
-            battleCoroutine.CharacterSpwan();
+            battleCoroutine.CharacterSpawn();
         }
         else
         {
             battleCoroutine.CharacterActive();
-            BattleStart();
         }
         
     }
@@ -120,7 +115,6 @@ public class BattleManager : MonoBehaviour
             battleCanvas.worldCamera = DiceManager.Instance.diceCamera;
             DiceManager.Instance.LoadDiceData();
         }
-
         BattleTurn = 0;
         HPBar[(int)HPEnum.enemy].gameObject.SetActive(true);
         UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterHP, $"{enemy.CurrentHP} / {enemy.MaxHP}");
@@ -151,16 +145,16 @@ public class BattleManager : MonoBehaviour
         {
             data = new BattleResultData(true, battleCharacters);
             StageManager.Instance.RoomClear(enemy.Data);
+            if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
+            {
+                StageManager.Instance.battleUIController.OpenVictoryPanel();
+                StageManager.Instance.OnBattleResult(data);
+            }
         }
         else
         {
             data = new BattleResultData(false, battleCharacters);
             StageManager.Instance.battleUIController.OpenDefeatPanel();
-        }
-
-        if(StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
-        {
-            StageManager.Instance.OnBattleResult(data);
         }
     }
 

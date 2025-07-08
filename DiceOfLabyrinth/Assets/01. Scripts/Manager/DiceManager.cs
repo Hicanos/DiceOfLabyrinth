@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using PredictedDice;
 using PredictedDice.Demo;
-using UnityEngine.InputSystem;
 
 public class DiceManager : MonoBehaviour
 {
@@ -17,12 +15,12 @@ public class DiceManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            //DontDestroyOnLoad(this.gameObject);
         }
-        else
-        {
-            Destroy(this.gameObject);
-        }
+        //else
+        //{
+        //    Destroy(this.gameObject);
+        //}
         _inputActions = new InputSystem_Actions();
     }
 
@@ -41,6 +39,7 @@ public class DiceManager : MonoBehaviour
 
     [SerializeField] GameObject diceContainer;
     [SerializeField] GameObject fakeDiceContainer;
+    public DiceHolding DiceHolding;
     public GameObject[] dices;
     public GameObject[] fakeDices;
     public GameObject ground;
@@ -81,9 +80,10 @@ public class DiceManager : MonoBehaviour
     public Vector3[] FixedPos => fixedPos;
 
     Vector3[] rotationVectors; //굴린 후 정렬시 적용할 회전값
-    Vector3[] defaultPos; //주사위 굴리는 기본 위치 화면 아래쪽
-
+    Vector3[] defaultPos; //주사위 굴리는 기본 위치 화면 오른쪽
+    public DiceRankingEnum DiceRank;
     public InputSystem_Actions _inputActions;
+    public IEnumerator diceRollCoroutine;
 
     void Start()
     {
@@ -118,14 +118,15 @@ public class DiceManager : MonoBehaviour
     public void RollDice()
     {
         SettingForRoll();
+        diceRollCoroutine = SortingAfterRoll();
 
-        StopCoroutine(SortingAfterRoll());
+        StopCoroutine(diceRollCoroutine);
 
         GetRandomDiceNum();
         roll.SetDiceOutcome(diceResult);
         roll.RollAll();
 
-        StartCoroutine(SortingAfterRoll());
+        StartCoroutine(diceRollCoroutine);
     }
 
     private void SettingForRoll()
@@ -176,7 +177,6 @@ public class DiceManager : MonoBehaviour
                 signitureAmount++;
             }
         }
-        //Debug.Log($"{diceResult[0]},{diceResult[1]},{diceResult[2]},{diceResult[3]},{diceResult[4]}");
     }
 
     IEnumerator SortingAfterRoll()
@@ -229,30 +229,10 @@ public class DiceManager : MonoBehaviour
         }
     }
 
-    public void SortingFakeDice()
-    {
-        GoDefaultPositionDice();
-        for (int i = 0; i < fakeDices.Length; i++)
-        {
-            fakeDices[i].SetActive(true);
-        }
-        diceCamera.cullingMask = diceCamera.cullingMask & ~(1 << LayerMask.NameToLayer("Dice"));
-        ResetRotation();
-    }
-    private void ResetRotation() //표시용 주사위 회전값 조정
-    {
-        int i = 0;
-        Quaternion quaternion;
-        foreach (GameObject dice in fakeDices)
-        {
-            int iNum = diceResult[i] - 1;
-            quaternion = Quaternion.Euler(rotationVectors[iNum].x, rotationVectors[iNum].y, rotationVectors[iNum].z);
-            dice.transform.rotation = quaternion;
-            i++;
-        }
-    }
-
-    public void ResetSetting() // 한 턴이 끝났을때 주사위 관련 데이터를 리셋
+    /// <summary>
+    /// 한 턴이 끝났을때 주사위 관련 데이터를 리셋합니다.
+    /// </summary>
+    public void ResetSetting()
     {
         int childCount = BattleManager.Instance.fixedDiceArea.transform.childCount;
         for (int i = 0;i < childCount; i++)
@@ -284,6 +264,9 @@ public class DiceManager : MonoBehaviour
         }
     }    
 
+    /// <summary>
+    /// 주사위를 굴리기전 대기 위치로 이동시킵니다.
+    /// </summary>
     private void GoDefaultPositionDice()
     {
         for (int i = 0; i < dices.Length; i++)
@@ -292,6 +275,39 @@ public class DiceManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 표시용 주사위를 표시하는 메서드입니다.
+    /// </summary>
+    public void SortingFakeDice()
+    {
+        GoDefaultPositionDice();
+        for (int i = 0; i < fakeDices.Length; i++)
+        {
+            fakeDices[i].SetActive(true);
+        }
+        diceCamera.cullingMask = diceCamera.cullingMask & ~(1 << LayerMask.NameToLayer("Dice"));
+        ResetRotation();
+    }
+
+    /// <summary>
+    /// 표시용 주사위의 회전값을 조정합니다.
+    /// </summary>
+    private void ResetRotation()
+    {
+        int i = 0;
+        Quaternion quaternion;
+        foreach (GameObject dice in fakeDices)
+        {
+            int iNum = diceResult[i] - 1;
+            quaternion = Quaternion.Euler(rotationVectors[iNum].x, rotationVectors[iNum].y, rotationVectors[iNum].z);
+            dice.transform.rotation = quaternion;
+            i++;
+        }
+    }
+
+    /// <summary>
+    /// 표시용 주사위의 위치를 조정합니다.
+    /// </summary>
     private void GoDefaultPositionFakeDice()
     {
         for (int i = 0; i < fakeDices.Length; i++)
