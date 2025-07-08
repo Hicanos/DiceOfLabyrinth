@@ -6,7 +6,6 @@ public class BattlePlayerTurnState : IBattleTurnState
 
     public void Enter()
     {
-        Debug.Log("Enter");
         battleManager.BattleTurn++;
         
         battleManager.GetCost(AlivedCharacter());

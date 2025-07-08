@@ -1224,13 +1224,13 @@ GameObject:
   - component: {fileID: 1058215129}
   - component: {fileID: 1058215128}
   - component: {fileID: 1058215127}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: BackBoard
   m_TagString: DiceBoard
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1058215126
 Transform:
   m_ObjectHideFlags: 0
@@ -1368,7 +1368,7 @@ GameObject:
   - component: {fileID: 1112101463}
   - component: {fileID: 1112101462}
   - component: {fileID: 1112101461}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: CollisionGround
   m_TagString: DiceBoard
   m_Icon: {fileID: 0}
@@ -2118,6 +2118,7 @@ MonoBehaviour:
   diceCamera: {fileID: 872327847}
   rollMultipleDice: {fileID: 630142358}
   DiceRollButton: {fileID: 0}
+  isCantFix: 0
 --- !u!114 &1531840404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2132,6 +2133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   diceContainer: {fileID: 1069492832}
   fakeDiceContainer: {fileID: 1665175561}
+  DiceHolding: {fileID: 1531840403}
   dices: []
   fakeDices: []
   ground: {fileID: 1112101460}
@@ -2141,6 +2143,7 @@ MonoBehaviour:
   rollCount: 0
   isSkipped: 0
   isRolling: 0
+  DiceRank: 0
 --- !u!4 &1531840405
 Transform:
   m_ObjectHideFlags: 0
