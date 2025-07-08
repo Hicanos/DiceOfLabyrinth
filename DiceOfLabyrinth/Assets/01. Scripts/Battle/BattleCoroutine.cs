@@ -5,45 +5,88 @@ using UnityEngine.InputSystem;
 
 public class BattleCoroutine : MonoBehaviour
 {
+    BattleManager battleManager;
+
     bool isPreparing = false;
     IEnumerator enumeratorSpawn;
     IEnumerator enumeratorAttack;
-
-    GameObject[] characterPrefabs = new GameObject[5];
-    BattleManager battleManager;
+    private Vector3 spawnDetach = Vector3.right * 12;
+    private Vector3[] characterDestPos = new Vector3[5];
+    
     [SerializeField] Transform characterContainer;
+    [SerializeField] Transform ContainerForSelect;
+    private GameObject[] characterPrefabs = new GameObject[5];
 
-    private void Update()
-    {
-        
-    }
-
-    public void CharacterSpwan()
+    public void CharacterSpawn()
     {
         battleManager = BattleManager.Instance;
-        enumeratorSpawn = CharacterSpawn();
+
+        isPreparing = true;
+        int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
+        int iFormation = ((int)StageManager.Instance.stageSaveData.currentFormationType);
+        List<PlayerPositions> positions = StageManager.Instance.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
+
+        GameObject go;
+        for (int i = 0; i < 5; i++)
+        {
+            go = battleManager.battleCharacters[i].CharacterData.charBattlePrefab;
+            characterDestPos[i] = positions[i].Position;
+
+            characterPrefabs[i] = Instantiate(go, characterDestPos[i] - spawnDetach, Quaternion.identity, characterContainer);
+        }
+
+        enumeratorSpawn = CharacterSpawnCoroutine();
         StartCoroutine(enumeratorSpawn);
     }
 
     public void CharacterActive()
     {
+        isPreparing = true;
         for (int i = 0; i < characterPrefabs.Length; i++)
         {
             characterPrefabs[i].SetActive(true);
         }
+
+        enumeratorSpawn = CharacterSpawnCoroutine();
+        StartCoroutine(enumeratorSpawn);
     }
 
     public void CharacterDeActive()
     {
-        for(int i = 0; i < characterPrefabs.Length; i++)
+        for (int i = 0; i < characterPrefabs.Length; i++)
         {
             characterPrefabs[i].SetActive(false);
+            characterPrefabs[i].transform.localPosition = characterDestPos[i] - spawnDetach;
         }
+    }
+
+    IEnumerator CharacterSpawnCoroutine()
+    {
+        float pastTime = 0, destTime = 2.5f;
+
+        while (pastTime < destTime)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                characterPrefabs[i].transform.localPosition = Vector3.Lerp(characterDestPos[i] - spawnDetach, characterDestPos[i], pastTime / destTime);
+            }
+
+            pastTime += Time.deltaTime;
+            yield return null;
+        }
+
+        //for (int i = 0; i < 5; i++)
+        //{
+        //    battleManager.HPBar[i].transform.localPosition = positions[i].Position + Vector3.up * 5;
+        //    battleManager.HPBar[i].gameObject.SetActive(true);
+        //}
+
+        isPreparing = false;
+        battleManager.BattleStart();
     }
 
     public void SkipCharacterSpwan(InputAction.CallbackContext context)
     {
-        Debug.Log("스킵 실행");
         if (!context.started) return;
         if (isPreparing == false) return;
 
@@ -80,44 +123,6 @@ public class BattleCoroutine : MonoBehaviour
     public void StopCharacterAttack()
     {
         StopCoroutine(enumeratorAttack);
-    }
-
-    IEnumerator CharacterSpawn()
-    {
-        isPreparing = true;
-        int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
-        chapterIndex = 0; //임시
-        int iFormation = ((int)StageManager.Instance.stageSaveData.currentFormationType);
-        List<PlayerPositions> positions = StageManager.Instance.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
-
-        float pastTime = 0, destTime = 2.5f;
-        GameObject go;
-        for (int i = 0; i < 5; i++)
-        {
-            go = battleManager.battleCharacters[i].CharacterData.charBattlePrefab;
-            characterPrefabs[i] = Instantiate(go, positions[i].Position - Vector3.right * 12, Quaternion.identity, characterContainer);
-        }
-        yield return null;
-
-        while (pastTime < destTime)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                characterPrefabs[i].transform.localPosition = Vector3.Lerp(positions[i].Position - Vector3.right * 12, positions[i].Position, pastTime / destTime);
-            }
-
-            pastTime += Time.deltaTime;
-            yield return null;
-        }
-
-        //for (int i = 0; i < 5; i++)
-        //{
-        //    battleManager.HPBar[i].transform.localPosition = positions[i].Position + Vector3.up * 5;
-        //    battleManager.HPBar[i].gameObject.SetActive(true);
-        //}
-
-        isPreparing = false;
-        battleManager.BattleStart();
     }
 
     public IEnumerator CharacterAttackCoroutine(float diceWeighting)
@@ -177,4 +182,59 @@ public class BattleCoroutine : MonoBehaviour
         battleManager.UIValueChanger.ChangeEnemyHpRatio(HPEnum.enemy, ratio);
         battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterHP, $"{enemy.CurrentHP} / {enemy.MaxHP}");
     }
+
+    //public void SpawnInDungeonSelect()
+    //{
+    //    int curPhaseIndex = StageManager.Instance.stageSaveData.currentPhaseIndex;
+    //    battleManager = BattleManager.Instance;
+
+    //    if (curPhaseIndex == 0)
+    //    {
+    //        GameObject go;
+    //        int count = 0;
+    //        Vector3[] pos = new Vector3[4];
+
+    //        for (int i = 0; i < 5; i++)
+    //        {
+    //            go = StageManager.Instance.stageSaveData.battleCharacters[i].CharacterData.charBattlePrefab;
+    //            if (i == 0) //리더인덱스로 수정
+    //            {
+    //                Vector3 leaderPos;
+    //                RectTransform rectTransform = battleManager.Stages.transform.GetChild(curPhaseIndex).GetComponent<RectTransform>();
+    //                Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, rectTransform.position);
+    //                RectTransformUtility.ScreenPointToWorldPointInRectangle(rectTransform, screenPos, Camera.main, out leaderPos);
+
+    //                //Vector3 leaderPos = battleManager.Stages.transform.GetChild(curPhaseIndex).transform.position;
+    //                leaderPos = Camera.main.ScreenToWorldPoint(leaderPos);
+    //                prefabsForSelect[i] = Instantiate(go, leaderPos, Quaternion.identity, ContainerForSelect);
+    //            }
+    //            else
+    //            {
+    //                prefabsForSelect[i] = Instantiate(go, pos[count], Quaternion.identity, ContainerForSelect);
+    //                count++;
+    //            }                
+    //        }
+    //    }
+    //    else
+    //    {
+    //        CharacterActive(false);
+    //    }
+    //}
+
+    //IEnumerator MoveInDungeonSelect()
+    //{
+    //    float pastTime = 0, destTime = 0.5f;
+    //    Vector3 startPosition = characterPrefabs[0].transform.position;
+    //    Vector3 destPosition = Vector3.zero;
+
+    //    while(pastTime < destTime)
+    //    {
+    //        characterPrefabs[0].transform.position = Vector3.Lerp(startPosition, destPosition, pastTime / destTime);
+
+    //        pastTime += Time.deltaTime;
+    //        yield return null;
+    //    }
+
+    //    StageManager.Instance.battleUIController.OnClickStageNextButton();
+    //}
 }

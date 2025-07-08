@@ -181,6 +181,7 @@ public class DiceHolding : MonoBehaviour
     private void SkipRolling(Vector2 vec)
     {
         if (battleManager.isBattle == false || diceManager.isRolling == false) return;
+        StopCoroutine(diceManager.diceRollCoroutine);
 
         Ray ray = diceCamera.ScreenPointToRay(vec);
 
