@@ -22,7 +22,7 @@ public class BattleButtonRollDice : AbstractBattleButton
                 button.interactable = false;
                 break;
             case PlayerTurnState.RollEnd:
-                if (DiceManager.Instance.rollCount == DiceManager.Instance.maxRollCount)
+                if (DiceManager.Instance.RollRemain == 0)
                 {
                     button.interactable = false;
                 }
@@ -44,6 +44,7 @@ public class BattleButtonRollDice : AbstractBattleButton
     {
         DiceManager.Instance.RollDice();
 
+        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.Reroll, DiceManager.Instance.RollRemain.ToString());
         DiceManager.Instance.DiceHolding.GetFixedList();
         BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Roll);
     }

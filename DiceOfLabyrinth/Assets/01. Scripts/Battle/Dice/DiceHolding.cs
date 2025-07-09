@@ -171,7 +171,7 @@ public class DiceHolding : MonoBehaviour
         {
             DiceRollButton.interactable = false;
         }
-        else if (diceManager.rollCount != diceManager.maxRollCount)
+        else if (diceManager.RollRemain != 0)
         {
             DiceRollButton.interactable = true;
         }
@@ -194,6 +194,7 @@ public class DiceHolding : MonoBehaviour
                 diceManager.SortingFakeDice();
             }
         }
+        diceManager.isRolling = false;
     }
 
     public void FixAllDIce()

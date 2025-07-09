@@ -8,6 +8,7 @@ public class BattleStartData //Data Transfer Object (DTO) for battle start data
     public EnemyData selectedEnemy;
     public List<ArtifactData> artifacts;
     public List<StagmaData> stagmas;
+    public StageSaveData.CurrentFormationType currentFormationType;
 
     public BattleStartData(StageSaveData stageSaveData)
     {
@@ -15,5 +16,6 @@ public class BattleStartData //Data Transfer Object (DTO) for battle start data
         this.selectedEnemy = stageSaveData.selectedEnemy;
         this.artifacts = new List<ArtifactData>(stageSaveData.artifacts);
         this.stagmas = new List<StagmaData>(stageSaveData.stagmas);
+        this.currentFormationType = stageSaveData.currentFormationType;
     }
 }

@@ -2,13 +2,21 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using DG.Tweening;
 
 public class SelectAdventureUIController : MonoBehaviour
 {
     public ChapterData chapterData;
     public MessagePopup messagePopup; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
+
     private int selectedChapterIndex = -1; // 선택된 챕터 인덱스
+
+    [SerializeField] private CanvasGroup cgFade;
+
+    [SerializeField] float fadeIn = .25f;
+    [SerializeField] float fadeOut = .20f;
+    [SerializeField] float popScale = 1.1f;
 
     [Header("Panels")]
     [SerializeField] private GameObject selectChapterPanel;
@@ -116,10 +124,19 @@ public class SelectAdventureUIController : MonoBehaviour
     public void OnClickCostPanelBackButton()
     {
         selectChapterPanel.SetActive(true);
+#if DOTWEEN
+        cgFade.DOFade(0, fadeOut).OnComplete(() => costCalculationPanel.SetActive(false));
+#endif
         costCalculationPanel.SetActive(false);
-        //selectDungeonPanel.SetActive(false);
+    }
+
+    public void OnClickScarceStaminaPanelBackButton()
+    {
+        selectChapterPanel.SetActive(true);
+#if DOTWEEN
+        cgFade.DOFade(0, fadeOut).OnComplete(() => scarceStaminaPanel.SetActive(false));
+#endif
         scarceStaminaPanel.SetActive(false);
-        //teamFormationPanel.SetActive(false);
     }
 
     private void OpenCostCalculationPanel(int chapterIndex)
@@ -129,9 +146,18 @@ public class SelectAdventureUIController : MonoBehaviour
         costCalculationPanel.SetActive(true);
         scarceStaminaPanel.SetActive(false);
 
+#if DOTWEEN
+        cgFade.alpha = 0;
+        cgFade.DOFade(1, fadeIn);
+
+        transform.localScale = Vector3.one * popScale;
+        transform.DOScale(1, fadeIn).SetEase(Ease.OutBack);
+#endif
+
         selectedChapterText.text = chapterData.chapterIndex[selectedChapterIndex].ChapterName;
         chapterIcon.sprite = chapterData.chapterIndex[selectedChapterIndex].Image;
         chapterDescriptionText.text = chapterData.chapterIndex[selectedChapterIndex].Description;
+
     }
 
     public void OnClickCostCalculationPanelStartButton()
@@ -163,7 +189,7 @@ public class SelectAdventureUIController : MonoBehaviour
     private void OpenScaresStaminaPanel()
     {
         selectChapterPanel.SetActive(true);
-        costCalculationPanel.SetActive(true);
+        //costCalculationPanel.SetActive(true);
         scarceStaminaPanel.SetActive(true);
         UpdateStaminaUI(); // 스태미나 UI 업데이트
     }
@@ -179,11 +205,7 @@ public class SelectAdventureUIController : MonoBehaviour
         { 
             UserDataManager.Instance.AddStamina(50); // 스태미나 50 증가
         }
-        OpenCostCalculationPanel(selectedChapterIndex); // 선택된 챕터 인덱스를 다시 설정
-    }
-    public void OnClickScaresStaminaPanelBackButton()
-    {
-        OpenCostCalculationPanel(selectedChapterIndex); // 선택된 챕터 인덱스를 다시 설정
+        scarceStaminaPanel.SetActive(false);
     }
 
     public void OnClickDifficulty(bool DifficultyToggle)
