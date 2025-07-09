@@ -5,11 +5,6 @@ using System.Collections.Generic;
 
 public interface IEnemy //모든 에너미 클래스는 이 인터페이스를 구현해야 합니다.
 {
-<<<<<<< Updated upstream
-    public void Init();
-}
-
-=======
     
     void Init(); // 초기화 메서드
     bool IsDead { get; } // 에너미가 죽었는지 여부를 반환하는 프로퍼티
@@ -36,4 +31,3 @@ public interface IGnoll : IEnemy // 이 인터페이스는 Gnoll
     }
     void PlayAnimationByState(EnemyState state); // 상태에 따른 애니메이션 재생 메서드
 }
->>>>>>> Stashed changes

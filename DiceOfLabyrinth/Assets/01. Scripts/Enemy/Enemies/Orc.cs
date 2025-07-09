@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
 
-public class Orc : MonoBehaviour, IEnemy
+public class Orc : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private RectTransform healthBarContainer;
