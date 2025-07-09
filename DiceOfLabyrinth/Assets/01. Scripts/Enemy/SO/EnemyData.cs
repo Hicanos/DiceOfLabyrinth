@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "EnemyData", menuName = "ScriptableObjects/Enemy/EnemyData", order = 1)]
 [System.Serializable]
@@ -31,25 +33,10 @@ public class EnemyData: ScriptableObject
         Grass,
         Electric,
     }
-    public enum EnemyPattern
-    {
-        PT_101,
-        PT_102,
-        PT_103,
-        PT_104,
-        PT_105,
-        PT_106,
-        PT_107,
-        PT_108,
-        PT_109,
-        PT_110,
-    }
-
     [SerializeField] private string enemyName;
     [SerializeField] private EnemyType enemyType;
     [SerializeField] private EnemySpecies enemySpecies;
     [SerializeField] private EnemyAttribute enemyAttribute;
-    [SerializeField] private EnemyPattern enemyPattern;
     [SerializeField] private int baseMaxHp;
     [SerializeField] private int baseAtk;
     [SerializeField] private int baseDef;
@@ -58,15 +45,18 @@ public class EnemyData: ScriptableObject
     [SerializeField] private int defPerLevel;
     [SerializeField] private string description;
     [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private List<int> activeSkills; // 액티브 스킬 인덱스 리스트
+    [SerializeField] private List<int> passiveSkills; // 패시브 스킬 인덱스 리스트
 
     public string EnemyName => enemyName;
     public int EnemyLevel => StageManager.Instance.stageSaveData.currentStageIndex + 1;
     public EnemyType Type => enemyType;
     public EnemySpecies Species => enemySpecies;
     public EnemyAttribute Attribute => enemyAttribute;
-    public EnemyPattern Pattern => enemyPattern;
     public string Description => description;
     public GameObject EnemyPrefab => enemyPrefab;
+    public List<int> ActiveSkills => ActiveSkills;
+    public List<int> PassiveSkills => PassiveSkills;
 
     // 기초값
     public int BaseMaxHp => baseMaxHp;
