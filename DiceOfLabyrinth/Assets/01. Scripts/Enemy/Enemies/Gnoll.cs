@@ -160,10 +160,10 @@ public class Gnoll : MonoBehaviour, IGnoll // 테스트에너미 클래스는 �
 
     public void DoRightAttack(Vector3 targetPosition)
     {
-        StartCoroutine(LightAttackRoutine(targetPosition));
+        StartCoroutine(RightAttackRoutine(targetPosition));
     }
 
-    private IEnumerator LightAttackRoutine(Vector3 targetPosition)
+    private IEnumerator RightAttackRoutine(Vector3 targetPosition)
     {
         // 현재 위치와 회전 저장
         savedPosition = transform.position;
