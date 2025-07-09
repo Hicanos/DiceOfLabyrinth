@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6457814323582862815
+--- !u!1 &903852281517633053
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,11 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5131840248779261857}
-  - component: {fileID: 8044631606144670980}
-  - component: {fileID: 2972737979726214327}
-  - component: {fileID: 8548936879530575137}
-  - component: {fileID: 1477682484758873935}
+  - component: {fileID: 5114941650078444672}
+  - component: {fileID: 8547539503615100204}
+  - component: {fileID: 5879476970029059384}
+  - component: {fileID: 5052161355661176246}
+  - component: {fileID: 6441155395007387501}
   m_Layer: 0
   m_Name: BattleManager
   m_TagString: Untagged
@@ -20,13 +20,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5131840248779261857
+--- !u!4 &5114941650078444672
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6457814323582862815}
+  m_GameObject: {fileID: 903852281517633053}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -35,13 +35,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8044631606144670980
+--- !u!114 &8547539503615100204
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6457814323582862815}
+  m_GameObject: {fileID: 903852281517633053}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a3250463c1fb174b81619841f7289aa, type: 3}
@@ -61,8 +61,8 @@ MonoBehaviour:
     m_SingletonActionBindings: []
     m_Flags: 0
   enemyContainer: {fileID: 0}
-  UIValueChanger: {fileID: 8548936879530575137}
-  battleCoroutine: {fileID: 2972737979726214327}
+  UIValueChanger: {fileID: 5052161355661176246}
+  battleCoroutine: {fileID: 5879476970029059384}
   currentPlayerState: 0
   BattleButtons:
   - {fileID: 0}
@@ -91,13 +91,13 @@ MonoBehaviour:
   BattleTurn: 0
   isBattle: 0
   isWon: 0
---- !u!114 &2972737979726214327
+--- !u!114 &5879476970029059384
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6457814323582862815}
+  m_GameObject: {fileID: 903852281517633053}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d2e465dbd996e34fafe43213ff7342f, type: 3}
@@ -105,13 +105,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterContainer: {fileID: 0}
   ContainerForSelect: {fileID: 0}
---- !u!114 &8548936879530575137
+--- !u!114 &5052161355661176246
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6457814323582862815}
+  m_GameObject: {fileID: 903852281517633053}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0247f2434998d5345ba55967c50477da, type: 3}
@@ -132,13 +132,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
---- !u!114 &1477682484758873935
+--- !u!114 &6441155395007387501
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6457814323582862815}
+  m_GameObject: {fileID: 903852281517633053}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
@@ -195,7 +195,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Sprint[/Keyboard/leftShift]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2972737979726214327}
+      - m_Target: {fileID: 5879476970029059384}
         m_TargetAssemblyTypeName: BattleCoroutine, Assembly-CSharp
         m_MethodName: SkipCharacterSpwan
         m_Mode: 0
