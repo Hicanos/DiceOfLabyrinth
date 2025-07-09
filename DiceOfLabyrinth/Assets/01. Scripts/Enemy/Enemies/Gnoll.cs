@@ -1,9 +1,11 @@
 ﻿using System.Collections;
-using UnityEngine.UI;
-using UnityEngine;
-using UnityEngine.InputSystem;
+using System;
+using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Gnoll : MonoBehaviour, IGnoll // 테스트에너미 클래스는 모든 에너미 클래스들이 구현해야하는 메서드들의 디폴트를 제공합니다. IEnemy 인터페이스를 상속받고 구체적인 구현을 해주세요
 {
@@ -17,25 +19,48 @@ public class Gnoll : MonoBehaviour, IGnoll // 테스트에너미 클래스는 �
 
     private Vector3 savedPosition;
     private Quaternion savedRotation;
+    private Vector3 targetPosition => Vector3.zero;// 배틀 매니저에서 설정한 타겟 포지션을 사용합니다. 임시로 Vector3.zero로 설정
+
+    public List<Action> PassiveSkills { get; private set; }
+    public List<Action> ActiveSkills { get; private set; }
+
 
     private void Awake()
     {
         Init();
-        //DoJumpAttack(Vector3 .forward * -5 + Vector3.right * -3); // 테스트용 점프 어택
-        //DoLightAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 라이트 어택
+        DoJumpAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 점프 어택
+        //DoRightAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 라이트 어택
         //DoLeftAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 레프트 어택
         //DoKickAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 킥 어택
-        DoSpinAttack(); // 테스트용 스핀 어택
+        //DoSpinAttack(); // 테스트용 스핀 어택
     }
     public void Init()
     {
         UpdateHealthBar();
+        InitActiveSkills();
+        //InitPassiveSkills();
     }
 
     private void UpdateHealthBar()
     {
         // Implement health bar update logic here
     }
+    private void InitActiveSkills()
+    {
+        ActiveSkills = new List<Action>(new Action[15]);
+        ActiveSkills[0] += () => DoKickAttack(targetPosition);
+        ActiveSkills[1] += () => DoRightAttack(targetPosition);
+        ActiveSkills[4] += () => DoJumpAttack(targetPosition);
+    }
+    //private void InitPassiveSkills()
+    //{
+    //    PassiveSkills = new List<Action>(new Action[12]); // 0~11, 12개 null로 초기화
+
+    //    // 예시: 0번 패시브에 재생 메서드 할당
+    //    PassiveSkills[0] = DoPassiveRegeneration;
+    //    // PassiveSkills[1] = DoPassiveSomething; // 다른 패시브가 있다면 추가
+    //    // 나머지는 null 유지
+    //}
     public void DoJumpAttack(Vector3 targetPosition)
     {
         StartCoroutine(JumpAttackRoutine(targetPosition));
@@ -133,12 +158,12 @@ public class Gnoll : MonoBehaviour, IGnoll // 테스트에너미 클래스는 �
         PlayAnimationByState(IGnoll.EnemyState.Idle);
     }
 
-    public void DoLightAttack(Vector3 targetPosition)
+    public void DoRightAttack(Vector3 targetPosition)
     {
-        StartCoroutine(LightAttackRoutine(targetPosition));
+        StartCoroutine(RightAttackRoutine(targetPosition));
     }
 
-    private IEnumerator LightAttackRoutine(Vector3 targetPosition)
+    private IEnumerator RightAttackRoutine(Vector3 targetPosition)
     {
         // 현재 위치와 회전 저장
         savedPosition = transform.position;
