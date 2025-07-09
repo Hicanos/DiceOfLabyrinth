@@ -67,7 +67,9 @@ public class DiceManager : MonoBehaviour
     const int maxDiceNum = 6;
     const int diceCount = 5;
 
-    int signitureAmount;
+    private int[,] faceProbability = new int[5, 6];
+    private int[] signitureArr = new int[5];
+    private int signitureAmount;
     private int rollCount = 0;
     private readonly int maxRollCount = 3;
     public int RollRemain => maxRollCount - rollCount;
@@ -76,9 +78,6 @@ public class DiceManager : MonoBehaviour
 
     private Vector3[] dicePos; //굴린 후 정렬 위치
     public Vector3[] DicePos => dicePos;
-
-    private Vector3[] fixedPos; //주사위 고정시 이동 위치
-    public Vector3[] FixedPos => fixedPos;
 
     Vector3[] rotationVectors; //굴린 후 정렬시 적용할 회전값
     Vector3[] defaultPos; //주사위 굴리는 기본 위치 화면 오른쪽
@@ -97,22 +96,51 @@ public class DiceManager : MonoBehaviour
         dicesDatas = new DiceMy[diceCount];
         fixedDiceList = new List<int>();
         tempFixedDiceList = new List<int>();
-
-        fixedPos = new Vector3[] { new Vector3(-3, 5, 10.5f), new Vector3(-3, 5, 8.8f), new Vector3(-3, 5, 6.43f), new Vector3(-1.55f, 5, 10.5f), new Vector3(-1.55f, 5, 8.8f) };
-        defaultPos = new Vector3[] { new Vector3(2.29f, 0, 2.07f), new Vector3(2.82f, 3.33f, 1.35f), new Vector3(4.57f, 0, 2.11f), new Vector3(6.05f, 2.96f, 1.35f), new Vector3(7.1f, -0.2f, 1.94f) };
+        
+        defaultPos = new Vector3[] { new Vector3(2.29f, 0, 2.07f), new Vector3(3.73f, 3.33f, 1.35f), new Vector3(4.57f, 0, 2.11f), new Vector3(6.05f, 2.96f, 1.35f), new Vector3(7.1f, -0.2f, 1.94f) };
     }
 
     public void DiceSettingForBattle()
     {
-        for (int i = 0; i < diceContainer.transform.childCount; i++)
+        for (int i = 0; i < diceCount; i++)
         {
+            CharDiceData diceData = BattleManager.Instance.battleCharacters[i].CharacterData.charDiceData;
+
             dices[i] = diceContainer.transform.GetChild(i).gameObject;
             dicesDatas[i] = dices[i].GetComponent<DiceMy>();
-        }
-        for (int i = 0; i < fakeDiceContainer.transform.childCount; i++)
-        {
+            signitureArr[i] = diceData.CignatureNo;
+
+            faceProbability[i, 0] = diceData.FaceProbability1;
+            faceProbability[i, 1] = faceProbability[i, 0] + diceData.FaceProbability2;
+            faceProbability[i, 2] = faceProbability[i, 1] + diceData.FaceProbability3;
+            faceProbability[i, 3] = faceProbability[i, 2] + diceData.FaceProbability4;
+            faceProbability[i, 4] = faceProbability[i, 3] + diceData.FaceProbability5;
+            faceProbability[i, 5] = faceProbability[i, 4] + diceData.FaceProbability6;
+
             fakeDices[i] = fakeDiceContainer.transform.GetChild(i).gameObject;
             fakeDices[i].SetActive(false);
+        }
+    }
+
+    private void tempLoadDice() //추후 DIcsSettingForBattle을 대체
+    {
+        GameObject go;
+        for (int i = 0; i < diceCount; i++)
+        {
+            CharDiceData diceData = BattleManager.Instance.battleCharacters[i].CharacterData.charDiceData;
+            //go = diceData.prefab;
+
+            //dices[i] = Instantiate(go, defaultPos[i], Quaternion.identity, diceContainer.transform);
+            //fakeDices[i] = Instantiate(go, dicePos[i], Quaternion.identity, fakeDiceContainer.transform);
+
+            signitureArr[i] = diceData.CignatureNo;
+
+            faceProbability[i, 0] = diceData.FaceProbability1;
+            faceProbability[i, 1] = faceProbability[i, 0] + diceData.FaceProbability2;
+            faceProbability[i, 2] = faceProbability[i, 1] + diceData.FaceProbability3;
+            faceProbability[i, 3] = faceProbability[i, 2] + diceData.FaceProbability4;
+            faceProbability[i, 4] = faceProbability[i, 3] + diceData.FaceProbability5;
+            faceProbability[i, 5] = faceProbability[i, 4] + diceData.FaceProbability6;
         }
     }
 
@@ -162,6 +190,8 @@ public class DiceManager : MonoBehaviour
     private void GetRandomDiceNum()
     {
         diceResultCount = defaultDiceResultCount.ToArray();
+        int randNum;
+        int resultNum;
 
         for (int i = 0; i < diceResult.Length; i++)
         {
@@ -170,10 +200,20 @@ public class DiceManager : MonoBehaviour
                 diceResultCount[diceResult[i] - 1]++;
                 continue;
             }
-            diceResult[i] = UnityEngine.Random.Range(1, maxDiceNum);
+
+            randNum = Random.Range(1, 101);
+
+            if      (randNum <= faceProbability[i, 0]) resultNum = 1;
+            else if (randNum <= faceProbability[i, 1]) resultNum = 2;
+            else if (randNum <= faceProbability[i, 2]) resultNum = 3;
+            else if (randNum <= faceProbability[i, 3]) resultNum = 4;
+            else if (randNum <= faceProbability[i, 4]) resultNum = 5;
+            else                                       resultNum = 6;
+
+            diceResult[i] = resultNum;
             diceResultCount[diceResult[i] - 1]++;
-            
-            if (dicesDatas[i].diceSO.C_No == diceResult[i])
+
+            if (signitureArr[i] == diceResult[i])
             {
                 signitureAmount++;
             }
@@ -186,7 +226,7 @@ public class DiceManager : MonoBehaviour
         List<Dice> diceList = new List<Dice>();
         int rollEndCount = 0;
 
-        for (int i = 0; i < dices.Length; i++) //현재 굴러가는 주사위의 Dice 컴포넌트를 리스트로
+        for (int i = 0; i < diceCount; i++) //현재 굴러가는 주사위의 Dice 컴포넌트를 리스트로
         {
             if (fixedDiceList.Contains<int>(i)) continue;
 
@@ -208,8 +248,8 @@ public class DiceManager : MonoBehaviour
             {
                 BattleManager.Instance.GetCost(signitureAmount);
                 isRolling = false;
-                
-                if(BattleManager.Instance.currentPlayerState == PlayerTurnState.Roll || BattleManager.Instance.currentPlayerState == PlayerTurnState.Enter)
+
+                if (BattleManager.Instance.currentPlayerState == PlayerTurnState.Roll || BattleManager.Instance.currentPlayerState == PlayerTurnState.Enter)
                 {
                     BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
                 }
@@ -224,7 +264,7 @@ public class DiceManager : MonoBehaviour
                     GoDefaultPositionDice();
                 }
                 break;
-            }                        
+            }
             rollEndCount = 0;
             yield return null;
         }
@@ -236,7 +276,7 @@ public class DiceManager : MonoBehaviour
     public void ResetSetting()
     {
         int childCount = BattleManager.Instance.fixedDiceArea.transform.childCount;
-        for (int i = 0;i < childCount; i++)
+        for (int i = 0; i < childCount; i++)
         {
             BattleManager.Instance.fixedDiceArea.transform.GetChild(i).gameObject.SetActive(false);
         }
@@ -259,11 +299,11 @@ public class DiceManager : MonoBehaviour
         GoDefaultPositionDice();
         GoDefaultPositionFakeDice();
 
-        for (int i = 0; i < fakeDices.Length; i++)
-        {     
+        for (int i = 0; i < diceCount; i++)
+        {
             fakeDices[i].SetActive(false);
         }
-    }    
+    }
 
     /// <summary>
     /// 주사위를 굴리기전 대기 위치로 이동시킵니다.
@@ -271,7 +311,7 @@ public class DiceManager : MonoBehaviour
     private void GoDefaultPositionDice()
     {
         for (int i = 0; i < dices.Length; i++)
-        {            
+        {
             dices[i].transform.localPosition = defaultPos[i];
         }
     }
@@ -342,10 +382,10 @@ public class DiceManager : MonoBehaviour
         foreach (GameObject diceGO in dices)
         {
             Dice dice = diceGO.GetComponent<Dice>();
- 
+
             dice.StopSimulation();
-            StopCoroutine(SortingAfterRoll());            
-            
+            StopCoroutine(SortingAfterRoll());
+
             BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
         }
         BattleManager.Instance.GetCost(signitureAmount);
