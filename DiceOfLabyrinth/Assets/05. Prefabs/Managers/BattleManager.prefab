@@ -79,12 +79,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   fixedDiceArea: {fileID: 0}
-  area: {fileID: 0}
   turnDisplay: {fileID: 0}
   victoryUI: {fileID: 0}
   defeatUI: {fileID: 0}
   battleCanvas: {fileID: 0}
-  canvasScaler: {fileID: 0}
+  Stages: {fileID: 0}
   BattleTurn: 0
   isBattle: 0
   isWon: 0
@@ -101,6 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterContainer: {fileID: 0}
+  ContainerForSelect: {fileID: 0}
 --- !u!114 &186420044846951456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,6 +114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   texts:
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -192,7 +193,7 @@ MonoBehaviour:
       - m_Target: {fileID: 837684539112077765}
         m_TargetAssemblyTypeName: BattleCoroutine, Assembly-CSharp
         m_MethodName: SkipCharacterSpwan
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
