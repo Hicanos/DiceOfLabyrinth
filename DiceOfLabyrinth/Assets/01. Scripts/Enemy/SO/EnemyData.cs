@@ -17,7 +17,7 @@ public class EnemyData: ScriptableObject
     public enum EnemySpecies
     {
         Goblin,
-        Gnole,
+        Gnoll,
         Orc,
         Ogre,
         Treant,
