@@ -194,6 +194,7 @@ public class DiceHolding : MonoBehaviour
                 diceManager.SortingFakeDice();
             }
         }
+        diceManager.isRolling = false;
     }
 
     public void FixAllDIce()

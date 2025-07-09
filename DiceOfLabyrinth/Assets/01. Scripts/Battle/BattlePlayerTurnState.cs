@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class BattlePlayerTurnState : IBattleTurnState
+﻿public class BattlePlayerTurnState : IBattleTurnState
 {
     BattleManager battleManager = BattleManager.Instance;
 
@@ -15,7 +13,7 @@ public class BattlePlayerTurnState : IBattleTurnState
             GetButton();
             ChangePlayerTurnState(PlayerTurnState.BattleStart);            
 
-            battleManager.LoadMonsterPattern.Load();
+            //battleManager.LoadMonsterPattern.Load();
         }
 
         string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
