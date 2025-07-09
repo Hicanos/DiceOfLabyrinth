@@ -6,41 +6,43 @@ using UnityEngine;
 public class LoadMonsterPattern
 {
     MonsterPattern pattern = new MonsterPattern();
-    private const string filePath = "Assets/Resources/Json/tempMonsterPattern.json";
+    //private const string filePath = "Assets/Resources/Json/tempMonsterPattern.json";
 
     string index;
     int patternLength;
     int patternCount;
 
-    public void Load()
-    {
-        string jsonString = File.ReadAllText(filePath);
-        JObject root = JObject.Parse(jsonString);
+    //public void Load()
+    //{
+    //    string jsonString = File.ReadAllText(filePath);
+    //    JObject root = JObject.Parse(jsonString);
 
-        pattern.pattern = (JObject)root["Pattern"];
-        pattern.skill = (JObject)root["Skill"];
-    }
+    //    pattern.pattern = (JObject)root["Pattern"];
+    //    pattern.skill = (JObject)root["Skill"];
+    //}
 
     public void PrepareSkill()
     {
-        if (patternLength == 0)
-        {
-            index = SelectPattern();
-        }
+        //if (patternLength == 0)
+        //{
+        //    index = SelectPattern();
+        //}
 
-        string skillNum = pattern.pattern["Table"][index][patternCount].ToString();
-        string skillName = pattern.skill[skillNum]["Name"].ToString();
-        string skillDescription = pattern.skill[skillNum]["Description"].ToString();
+        ////string skillNum = pattern.pattern["Table"][index][patternCount].ToString();
+        ////string skillName = pattern.skill[skillNum]["Name"].ToString();
+        ////string skillDescription = pattern.skill[skillNum]["Description"].ToString();
 
-        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillName, $"{skillName} 준비중");
-        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillDescription, skillDescription);        
+        //BattleManager.Instance.Enemy.Data
 
-        patternCount++;
-        if (patternCount == patternLength)
-        {
-            patternLength = 0;
-            patternCount = 0;
-        }
+        //BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillName, $"{skillName} 준비중");
+        //BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillDescription, skillDescription);        
+
+        //patternCount++;
+        //if (patternCount == patternLength)
+        //{
+        //    patternLength = 0;
+        //    patternCount = 0;
+        //}
     }    
 
     private string SelectPattern()
