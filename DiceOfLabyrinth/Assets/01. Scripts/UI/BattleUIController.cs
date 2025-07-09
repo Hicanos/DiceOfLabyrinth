@@ -701,12 +701,6 @@ public class BattleUIController : MonoBehaviour
                 !(opt.ChoiceText == "엘리트" && eliteCount >= 2)
             ).ToList();
 
-        if (filteredChoices == null || filteredChoices.Count < 2)
-        {
-            messagePopup.Open("선택지가 2개 이상 필요합니다. 스테이지 데이터의 ChoiceOptions를 확인하세요.");
-            return;
-        }
-
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.SelectChoice;
 
         // 필터링된 선택지 중 랜덤 2개 선택
