@@ -6,6 +6,7 @@ using UnityEngine;
 public class MessagePopup : MonoBehaviour
 {
     [SerializeField] private TMP_Text msgText;
+    [SerializeField] private GameObject bottomUI;
     [SerializeField] private GameObject yesButton;
     [SerializeField] private GameObject noButton;
     [SerializeField] private CanvasGroup cgFade;
@@ -31,18 +32,20 @@ public class MessagePopup : MonoBehaviour
         switch (onYes, onNo)
         {
             case (null, null):
-                yesButton.SetActive(false);
-                noButton.SetActive(false);
+                bottomUI.SetActive(false);
                 break;
             case (null, _):
+                bottomUI.SetActive(true);
                 yesButton.SetActive(false);
                 noButton.SetActive(true);
                 break;
             case (_, null):
+                bottomUI.SetActive(true);
                 yesButton.SetActive(true);
                 noButton.SetActive(false);
                 break;
             default:
+                bottomUI.SetActive(true);
                 yesButton.SetActive(true);
                 noButton.SetActive(true);
                 break;
