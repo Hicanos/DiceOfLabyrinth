@@ -50,7 +50,7 @@ public class Gnoll : MonoBehaviour, IGnoll // 테스트에너미 클래스는 �
         ActiveSkills = new List<Action>(new Action[15]);
         ActiveSkills[0] += () => DoKickAttack(targetPosition);
         ActiveSkills[1] += () => DoRightAttack(targetPosition);
-        ActiveSkills[2] += () => DoJumpAttack(targetPosition);
+        ActiveSkills[4] += () => DoJumpAttack(targetPosition);
     }
     //private void InitPassiveSkills()
     //{
