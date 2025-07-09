@@ -68,8 +68,9 @@ public class DiceManager : MonoBehaviour
     const int diceCount = 5;
 
     int signitureAmount;
-    public int rollCount = 0;
-    public readonly int maxRollCount = 3;
+    private int rollCount = 0;
+    private readonly int maxRollCount = 3;
+    public int RollRemain => maxRollCount - rollCount;
     public bool isSkipped = false;
     public bool isRolling = false;
 

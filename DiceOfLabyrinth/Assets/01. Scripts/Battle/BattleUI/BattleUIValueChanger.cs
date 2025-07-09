@@ -8,7 +8,8 @@ public enum BattleTextUIEnum
     MonsterSkillDescription,
     MonsterHP,
     Turn,
-    Rank
+    Rank,
+    Reroll
 }
 
 public enum HPEnum
