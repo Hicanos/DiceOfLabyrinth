@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
 
-public class Orc : MonoBehaviour, IEnemy
+public class Orc : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private RectTransform healthBarContainer;
@@ -16,8 +16,6 @@ public class Orc : MonoBehaviour, IEnemy
 
     private Vector3 savedPosition;
     private Quaternion savedRotation;
-
-    private InputAction debugJumpAction;
 
     public enum EnemyState
     {
@@ -36,28 +34,12 @@ public class Orc : MonoBehaviour, IEnemy
 
     private void Awake()
     {
-        UpdateHealthBar();
-        UpdateEnemyName();
-
-        debugJumpAction = new InputAction(type: InputActionType.Button, binding: "<Keyboard>/q");
-        debugJumpAction.performed += ctx => TryJumpSkill(transform.position + transform.forward * 3f);
-        debugJumpAction.Enable();
-    }
-
-    private void OnDestroy()
-    {
-        if (debugJumpAction != null)
-        {
-            debugJumpAction.Disable();
-            debugJumpAction.Dispose();
-        }
+        Init();
     }
 
     public void Init()
     {
         UpdateHealthBar();
-        UpdateEnemyName();
-        SetState(EnemyState.Idle);
     }
 
     private void SetState(EnemyState state)
@@ -173,11 +155,6 @@ public class Orc : MonoBehaviour, IEnemy
     private void UpdateHealthBar()
     {
         // 체력바 갱신 로직
-    }
-
-    private void UpdateEnemyName()
-    {
-        // 이름 갱신 로직
     }
 
     // 상태에 따라 애니메이션 트리거 및 상태 변경
