@@ -28,7 +28,7 @@ public class Gnoll : MonoBehaviour, IGnoll // 테스트에너미 클래스는 �
     private void Awake()
     {
         Init();
-        //DoJumpAttack(Vector3 .forward * -5 + Vector3.right * -3); // 테스트용 점프 어택
+        DoJumpAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 점프 어택
         //DoRightAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 라이트 어택
         //DoLeftAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 레프트 어택
         //DoKickAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 킥 어택
