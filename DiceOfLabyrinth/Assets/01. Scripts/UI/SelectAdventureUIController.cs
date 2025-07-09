@@ -124,11 +124,19 @@ public class SelectAdventureUIController : MonoBehaviour
     public void OnClickCostPanelBackButton()
     {
         selectChapterPanel.SetActive(true);
-        scarceStaminaPanel.SetActive(false);
 #if DOTWEEN
         cgFade.DOFade(0, fadeOut).OnComplete(() => costCalculationPanel.SetActive(false));
 #endif
         costCalculationPanel.SetActive(false);
+    }
+
+    public void OnClickScarceStaminaPanelBackButton()
+    {
+        selectChapterPanel.SetActive(true);
+#if DOTWEEN
+        cgFade.DOFade(0, fadeOut).OnComplete(() => scarceStaminaPanel.SetActive(false));
+#endif
+        scarceStaminaPanel.SetActive(false);
     }
 
     private void OpenCostCalculationPanel(int chapterIndex)
@@ -197,10 +205,6 @@ public class SelectAdventureUIController : MonoBehaviour
         { 
             UserDataManager.Instance.AddStamina(50); // 스태미나 50 증가
         }
-        scarceStaminaPanel.SetActive(false);
-    }
-    public void OnClickScaresStaminaPanelBackButton()
-    {
         scarceStaminaPanel.SetActive(false);
     }
 
