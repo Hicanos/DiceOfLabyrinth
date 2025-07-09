@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 
 public class BattleManager : MonoBehaviour
@@ -36,11 +36,15 @@ public class BattleManager : MonoBehaviour
     #endregion
 
     public List<BattleCharacter> battleCharacters;
+    public StageSaveData.CurrentFormationType currentFormationType;
 
     private BattleEnemy enemy;
     public BattleEnemy Enemy => enemy;
-
     GameObject enemyPrefab;
+
+    public List<ArtifactData> artifacts;
+    public List<StagmaData> stagmas;    
+
     public InputAction inputAction;
 
     [SerializeField] Transform enemyContainer;
@@ -65,6 +69,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] GameObject defeatUI;
     public Canvas battleCanvas;
     public GameObject Stages;
+    public GameObject stagmaDisplayer;
 
     [Header("Values")]
     public  readonly int MaxCost = 12;
@@ -108,6 +113,15 @@ public class BattleManager : MonoBehaviour
         
     }
 
+    private void GetStartData(BattleStartData data)
+    {
+        enemy = new BattleEnemy(data.selectedEnemy);
+        battleCharacters = data.battleCharacters;
+        artifacts = data.artifacts;
+        stagmas = data.stagmas;
+        //currentFormationType = data.
+    }
+
     public void BattleStart()
     {
         if (StageManager.Instance.stageSaveData.currentPhaseIndex == 1)
@@ -144,24 +158,18 @@ public class BattleManager : MonoBehaviour
         if (isWon)
         {
             data = new BattleResultData(true, battleCharacters);
-            StageManager.Instance.RoomClear(enemy.Data);
             if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
             {
                 StageManager.Instance.battleUIController.OpenVictoryPanel();
                 StageManager.Instance.OnBattleResult(data);
-            }
+            }            
+            StageManager.Instance.RoomClear(enemy.Data);
         }
         else
         {
             data = new BattleResultData(false, battleCharacters);
             StageManager.Instance.battleUIController.OpenDefeatPanel();
         }
-    }
-
-    public void GetStartData(BattleStartData data)
-    {
-        enemy = new BattleEnemy(data.selectedEnemy);
-        battleCharacters = data.battleCharacters;
     }
 
     private void SpawnEnemy()
