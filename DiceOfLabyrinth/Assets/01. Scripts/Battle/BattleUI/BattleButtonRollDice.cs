@@ -3,7 +3,7 @@
 public class BattleButtonRollDice : AbstractBattleButton
 {
     Button button;
-    public override void GetButtonComponent()
+    public override void Setting()
     {
         button = GetComponent<Button>();
     }

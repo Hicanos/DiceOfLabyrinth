@@ -13,7 +13,7 @@ public enum PlayerTurnState
 
 public abstract class AbstractBattleButton : MonoBehaviour
 {
-    public abstract void GetButtonComponent();
+    public abstract void Setting();
     public abstract void OnOffButton(PlayerTurnState state);
     public abstract void OnPush();    
 }
