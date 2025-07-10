@@ -107,11 +107,6 @@ public class CharData
     public string DiceID;
 
     /// <summary>
-    /// LobbyPrefabPath
-    /// </summary>
-    public string LobbyPrefabPath;
-
-    /// <summary>
     /// BattlePrefabPath
     /// </summary>
     public string BattlePrefabPath;

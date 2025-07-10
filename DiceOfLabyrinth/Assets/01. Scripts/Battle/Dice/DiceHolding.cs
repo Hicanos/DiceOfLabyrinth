@@ -28,9 +28,9 @@ public class DiceHolding : MonoBehaviour
     {
         battleManager = BattleManager.Instance;
         diceManager = DiceManager.Instance;
-
-        DiceRollButton = battleManager.BattleButtons[(int)PlayerTurnState.Roll].GetComponent<Button>();
-
+    }
+    public void SettingForHolding()
+    {
         for (int i = 0; i < areas.Length; i++)
         {
             areas[i] = battleManager.fixedDiceArea.transform.GetChild(i).gameObject;
@@ -123,6 +123,7 @@ public class DiceHolding : MonoBehaviour
         List<Vector3> results = new List<Vector3>();
         Vector3 result;
         Canvas canvas = battleManager.battleCanvas;
+        DiceRollButton = battleManager.BattleButtons[(int)PlayerTurnState.Roll].GetComponent<Button>();
 
 
         if (isAdd)
