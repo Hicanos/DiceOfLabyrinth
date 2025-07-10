@@ -48,8 +48,7 @@ public class BattleManager : MonoBehaviour
     public BattleUIValueChanger UIValueChanger;
     public BattleCoroutine battleCoroutine;
 
-    public LoadMonsterPattern LoadMonsterPattern;
-    public MonsterPattern MonsterPattern;
+    public EnemyPatternContainer EnemyPatternContainer;
     public BattleStateMachine stateMachine;
     public PlayerTurnState currentPlayerState;
     public IBattleTurnState playerTurnState;
@@ -83,9 +82,6 @@ public class BattleManager : MonoBehaviour
         enemyTurnState = new BattleEnemyTurnState();
 
         stateMachine = new BattleStateMachine(playerTurnState);
-
-        LoadMonsterPattern = new LoadMonsterPattern();
-        MonsterPattern = new MonsterPattern();
 
         GetUIs();
         DiceManager.Instance.DiceHolding.SettingForHolding();
@@ -182,7 +178,7 @@ public class BattleManager : MonoBehaviour
             {
                 StageManager.Instance.battleUIController.OpenVictoryPanel();
                 StageManager.Instance.OnBattleResult(data);
-            }            
+            }
             StageManager.Instance.RoomClear(enemy.Data);
         }
         else
@@ -228,6 +224,8 @@ public class BattleEnemy : IDamagable
     public int CurrentDef => currentDef;
     public int MaxHP => currentMaxHP;
     public bool IsDead => isDead;
+
+    public SOEnemySkill currentSkill;
 
     public BattleEnemy(EnemyData data)
     {

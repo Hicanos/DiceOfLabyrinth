@@ -98,8 +98,9 @@ public class TempEnemyAttack : MonoBehaviour
     }
 
     public void EnemyAttackTest()
-    { 
-        for(int i = 0; i < targetIndexTest.Count; i++)
+    {
+        //BattleManager.Instance.Enemy.currentSkill.Skills
+        for (int i = 0; i < targetIndexTest.Count; i++)
         {
             int damage = BattleManager.Instance.Enemy.CurrentAtk - BattleManager.Instance.battleCharacters[targetIndexTest[i]].CurrentDEF;
             BattleManager.Instance.battleCharacters[targetIndexTest[i]].TakeDamage(damage);

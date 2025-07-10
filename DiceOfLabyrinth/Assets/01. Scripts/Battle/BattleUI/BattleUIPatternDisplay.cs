@@ -70,7 +70,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
         }
 
         yield return new WaitForSeconds(0.15f);
-        BattleManager.Instance.LoadMonsterPattern.PrepareSkill();
+        BattleManager.Instance.EnemyPatternContainer.PrepareSkill();
         yield return new WaitForSeconds(0.15f);
 
         for (float f = 0.25f; f <= 1; f += Time.deltaTime)
