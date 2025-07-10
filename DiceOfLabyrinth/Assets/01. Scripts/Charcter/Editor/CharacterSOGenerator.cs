@@ -103,14 +103,6 @@ public class CharacterSOGenerator : EditorWindow
             so.dialog2 = data.dialog2;
             so.diceID = data.DiceID;
 
-
-            // 프리팹 할당
-            if (!string.IsNullOrEmpty(data.LobbyPrefabPath))
-            {
-                var LobbyPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(data.LobbyPrefabPath);
-                so.charLobbyPrefab = LobbyPrefab;
-            }
-
             if (!string.IsNullOrEmpty(data.BattlePrefabPath))
             {
                 var BattlePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(data.BattlePrefabPath);
@@ -234,7 +226,6 @@ public class CharacterSOGenerator : EditorWindow
         public string Description;
         public string dialog1;
         public string dialog2;
-        public string LobbyPrefabPath;
         public string BattlePrefabPath; // 프리팹 경로 추가
         public string iconPath; // 아이콘 경로 추가
         public string UpperPath; // 상체 이미지 경로 추가
