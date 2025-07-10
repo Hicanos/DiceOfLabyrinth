@@ -7,7 +7,7 @@ public class BattleButtonConfirm : AbstractBattleButton
     DiceManager diceManager;
     Button confirmButton;
 
-    public override void GetButtonComponent()
+    public override void Setting()
     {
         rankDisplayer = gameObject.transform.GetChild(2).gameObject;
         diceManager = DiceManager.Instance;
@@ -38,8 +38,8 @@ public class BattleButtonConfirm : AbstractBattleButton
         confirmButton.interactable = false;
         rankDisplayer.SetActive(true);
         diceManager.DiceHolding.FixAllDIce();
-        DiceManager.Instance.DiceHolding.isCantFix = true;
-        DiceManager.Instance.DiceBattle.GetDiceWeighting();
+        diceManager.DiceHolding.isCantFix = true;
+        diceManager.DiceBattle.GetDiceWeighting();
         BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.Rank, diceManager.DiceRank.ToString()); //일단 이름만
     }
 
@@ -50,7 +50,7 @@ public class BattleButtonConfirm : AbstractBattleButton
         diceManager.ground.SetActive(false);
         diceManager.DiceBoard.SetActive(false);
         diceManager.HideFakeDice();
-        DiceManager.Instance.DiceHolding.isCantFix = false;
+        diceManager.DiceHolding.isCantFix = false;
         BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Confirm);
     }
 
@@ -58,7 +58,12 @@ public class BattleButtonConfirm : AbstractBattleButton
     {
         confirmButton.interactable = true;
         rankDisplayer.SetActive(false);
-        DiceManager.Instance.DiceHolding.isCantFix = false;
+        diceManager.DiceHolding.isCantFix = false;
         diceManager.DiceHolding.ReleaseDice();
     }
+    
+    public void OnPushShowArtifact()
+    {
+        BattleManager.Instance.stagmaDisplayer.SetActive(true);
+    }   
 }

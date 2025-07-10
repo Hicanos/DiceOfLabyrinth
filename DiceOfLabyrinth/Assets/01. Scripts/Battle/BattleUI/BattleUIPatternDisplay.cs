@@ -9,7 +9,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
     TextMeshProUGUI text;   
     Button Button;
 
-    public override void GetButtonComponent()
+    public override void Setting()
     {
         images = GetComponentsInChildren<Image>();
         text = GetComponentInChildren<TextMeshProUGUI>();        

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class BattlePlayerTurnState : IBattleTurnState
+﻿public class BattlePlayerTurnState : IBattleTurnState
 {
     BattleManager battleManager = BattleManager.Instance;
 
@@ -12,14 +10,13 @@ public class BattlePlayerTurnState : IBattleTurnState
 
         if (battleManager.BattleTurn == 1)
         {
-            GetButton();
+            Setting();
             ChangePlayerTurnState(PlayerTurnState.BattleStart);            
 
-            battleManager.LoadMonsterPattern.Load();
+            //battleManager.LoadMonsterPattern.Load();
         }
 
         string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
-        battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.Turn, stageString);
         ChangePlayerTurnState(PlayerTurnState.Enter);
     }
 
@@ -47,11 +44,11 @@ public class BattlePlayerTurnState : IBattleTurnState
         }
     }
 
-    public void GetButton()
+    public void Setting()
     {
         foreach (AbstractBattleButton button in battleManager.BattleButtons)
         {
-            button.GetButtonComponent();
+            button.Setting();
         }
     }
 

@@ -14,7 +14,7 @@ public class BattleCoroutine : MonoBehaviour
     private Vector3[] characterDestPos = new Vector3[5];
     
     [SerializeField] Transform characterContainer;
-    [SerializeField] Transform ContainerForSelect;
+    //[SerializeField] Transform ContainerForSelect;
     private GameObject[] characterPrefabs = new GameObject[5];
 
     public void CharacterSpawn()
@@ -27,12 +27,16 @@ public class BattleCoroutine : MonoBehaviour
         List<PlayerPositions> positions = StageManager.Instance.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
 
         GameObject go;
+        SpawnedCharacter spawnedCharacter;
+
         for (int i = 0; i < 5; i++)
         {
             go = battleManager.battleCharacters[i].CharacterData.charBattlePrefab;
             characterDestPos[i] = positions[i].Position;
 
             characterPrefabs[i] = Instantiate(go, characterDestPos[i] - spawnDetach, Quaternion.identity, characterContainer);
+            spawnedCharacter = characterPrefabs[i].GetComponent<SpawnedCharacter>();
+            spawnedCharacter.SetCharacterID(battleManager.battleCharacters[i].CharacterData.charID);
         }
 
         enumeratorSpawn = CharacterSpawnCoroutine();
