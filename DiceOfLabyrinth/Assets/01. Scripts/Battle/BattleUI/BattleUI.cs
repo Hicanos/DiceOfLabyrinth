@@ -56,7 +56,6 @@ public class BattleUI : MonoBehaviour
 
     public void Setting()
     {
-        Debug.Log("자ㅣㄱ동");
         Buttons[0] = diceBackboard;
         Buttons[1] = endTurn;
         Buttons[2] = roll;
