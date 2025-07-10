@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
-
+// 에너미 클래스들은 데이터를 다루지 않으니 애니메이션만 처리합니다. 실제 데미지 처리는 BattleManager에서 처리합니다.
 public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 모든 에너미 클래스들이 구현해야하는 메서드들의 디폴트를 제공합니다. IEnemy 인터페이스를 상속받고 구체적인 구현을 해주세요
 {
     [SerializeField] private Animator animator;
-    [SerializeField] private RectTransform healthBarContainer;
-    [SerializeField] private float healthBarWidth = 100f; // 기본 너비 설정
+    //[SerializeField] private RectTransform healthBarContainer;
+    //[SerializeField] private float healthBarWidth = 100f; // 기본 너비 설정
     public enum EnemyState // 에너미의 상태를 정의하는 열거형
     {
         Idle, // 대기 상태
@@ -28,12 +27,7 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
         // 추가적인 상태를 여기에 정의할 수 있습니다.
     }
     private EnemyState currentState;
-    private bool isDead = false;
-    public bool IsDead => isDead;
-
-    private Vector3 savedPosition;
-    private Quaternion savedRotation;
-    private Vector3 targetPosition => Vector3.zero;// 배틀 매니저에서 설정한 타겟 포지션을 사용합니다. 임시로 Vector3.zero로 설정
+    public bool IsDead => BattleManager.Instance.Enemy.IsDead;
 
     //public List<Action> PassiveSkills { get; private set; }//현재 기획에선 패시브 스킬을 구현할 필요가 없습니다. 추후에 필요시 구현해주세요.
     public List<Action<Vector3>> ActiveSkills { get; private set; }
@@ -47,8 +41,8 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
         //DoLeftAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 레프트 어택
         //DoKickAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 킥 어택
         //DoSpinAttack(); // 테스트용 스핀 어택
-        UseActiveSkill(0, 0); // 테스트용 킥 어택 사용
-        UseActiveSkill(1, 2);
+        //UseActiveSkill(0, 0); // 테스트용 킥 어택 사용
+        //UseActiveSkill(4, 1); // 테스트용 점프 어택 사용
     }
     public void Init()
     {
@@ -62,7 +56,7 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
         // 예시: 미리 정의된 위치 배열
         Vector3[] positions = {
         new Vector3(0, 0, 0),
-        new Vector3(2, 0, 2),
+        new Vector3(-5, 0, -3),
         new Vector3(-2, 0, 2),
         new Vector3(0, 0, 5),
         new Vector3(5, 0, 0),
@@ -76,13 +70,13 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
     }
     public void UseActiveSkill(int skillIndex, int targetIndex)
     {
-        if (skillIndex < 0 || skillIndex >= ActiveSkills.Count || ActiveSkills[skillIndex] == null)
+        if (skillIndex < 0 || skillIndex >= ActiveSkills.Count)
         {
             Debug.LogWarning($"Invalid skill index: {skillIndex}");
             return;
         }
         Vector3 targetPos = GetTargetPositionByIndex(targetIndex);
-        ActiveSkills[skillIndex].Invoke(targetPos);
+        ActiveSkills[skillIndex]?.Invoke(targetPos);
     }
     public void DoJumpAttack(Vector3 targetPosition)
     {
@@ -92,8 +86,8 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
     private IEnumerator JumpAttackRoutine(Vector3 targetPosition)
     {
         // 현재 위치와 회전 저장
-        savedPosition = transform.position;
-        savedRotation = transform.rotation;
+        Vector3 savedPosition = transform.position;
+        Quaternion savedRotation = transform.rotation;
 
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
@@ -189,8 +183,8 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
     private IEnumerator RightAttackRoutine(Vector3 targetPosition)
     {
         // 현재 위치와 회전 저장
-        savedPosition = transform.position;
-        savedRotation = transform.rotation;
+        Vector3 savedPosition = transform.position;
+        Quaternion savedRotation = transform.rotation;
 
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
@@ -283,8 +277,8 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
     private IEnumerator LeftAttackRoutine(Vector3 targetPosition)
     {
         // 현재 위치와 회전 저장
-        savedPosition = transform.position;
-        savedRotation = transform.rotation;
+        Vector3 savedPosition = transform.position;
+        Quaternion savedRotation = transform.rotation;
 
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
@@ -376,8 +370,8 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
     private IEnumerator KickAttackRoutine(Vector3 targetPosition)
     {
         // 현재 위치와 회전 저장
-        savedPosition = transform.position;
-        savedRotation = transform.rotation;
+        Vector3 savedPosition = transform.position;
+        Quaternion savedRotation = transform.rotation;
 
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
@@ -476,6 +470,24 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
 
         // Idle 상태로 전환
         PlayAnimationByState(EnemyState.Idle);
+    }
+    public void TakeDamage()
+    {
+        StartCoroutine(HitRoutine());
+    }
+
+    private IEnumerator HitRoutine()
+    {
+        PlayAnimationByState(EnemyState.Hit);
+
+        // Hit 애니메이션 길이만큼 대기 (예: 0.7초)
+        float hitDuration = 0.7f; // 실제 애니메이션 길이로 조정
+        yield return new WaitForSeconds(hitDuration);
+
+        if (IsDead)
+            PlayAnimationByState(EnemyState.Dead);
+        else
+            PlayAnimationByState(EnemyState.Idle);
     }
     public void PlayAnimationByState(EnemyState state)
     {
