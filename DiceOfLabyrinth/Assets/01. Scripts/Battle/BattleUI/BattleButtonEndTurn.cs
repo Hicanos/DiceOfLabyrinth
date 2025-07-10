@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class BattleButtonEndTurn : AbstractBattleButton
 {
     Button button;
-    public override void GetButtonComponent()
+    public override void Setting()
     {
         button = GetComponent<Button>();
     }

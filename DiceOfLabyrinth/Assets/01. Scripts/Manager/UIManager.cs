@@ -7,7 +7,7 @@ public class UIManager : MonoBehaviour
 
     [field: SerializeField]
     public PublicUIController publicUIController { get; private set; }
-
+    public BattleUI BattleUI;
     private void Awake()
     {
         if (Instance == null)

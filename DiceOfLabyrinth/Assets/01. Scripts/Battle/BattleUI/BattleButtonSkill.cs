@@ -5,7 +5,7 @@ public class BattleButtonSkill : AbstractBattleButton
 {
     Button button;
     int index;
-    public override void GetButtonComponent()
+    public override void Setting()
     {
         button = GetComponent<Button>();
         GetIndex();

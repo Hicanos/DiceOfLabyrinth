@@ -12,11 +12,14 @@ public class SelectAdventureUIController : MonoBehaviour
 
     private int selectedChapterIndex = -1; // 선택된 챕터 인덱스
 
-    [SerializeField] private CanvasGroup cgFade;
+    [SerializeField] private CanvasGroup costCalculationFade;
+    [SerializeField] private CanvasGroup scarceStaminaFade;
 
     [SerializeField] float fadeIn = .25f;
     [SerializeField] float fadeOut = .20f;
     [SerializeField] float popScale = 1.1f;
+
+    [SerializeField] int jewelCost = 50; // 스테미나를 구매하는데 드는 쥬얼의 비용
 
     [Header("Panels")]
     [SerializeField] private GameObject selectChapterPanel;
@@ -45,8 +48,9 @@ public class SelectAdventureUIController : MonoBehaviour
     private int directCompleteMultiplier; // 직접 완료 배수 값
 
     [Header("스태미나 부족 패널")]
-    [SerializeField] private TMP_Text afterCostText; // 지불 후 스태미너를 보여주는 텍스트
-    [SerializeField] private TMP_Text staminaRegenerationText; // 스태미너 재생 시간 텍스트
+    [SerializeField] private TMP_Text beforeStaminaText; // 지불 전 스태미너를 보여주는 텍스트
+    [SerializeField] private TMP_Text afterStaminaText; // 지불 후 스태미너를 보여주는 텍스트
+    [SerializeField] private TMP_Text jewelCostText; // 지불 후 스태미너를 보여주는 텍스트
 
 
 
@@ -60,7 +64,8 @@ public class SelectAdventureUIController : MonoBehaviour
         DifficultyToggleRefresh(); // 초기 난이도 토글 상태 설정
 
     }
-    public void OnClickChapterButton(int normalChapterIndex)
+
+    public void OnClickChapterButton(int normalChapterIndex) // 챕터 버튼
     {
         int chapterIndex = normalChapterIndex; // 스테이지 인덱스는 Normal 챕터의 인덱스와 동일합니다.
         if (isDifficulty)
@@ -121,25 +126,7 @@ public class SelectAdventureUIController : MonoBehaviour
         }
     }
 
-    public void OnClickCostPanelBackButton()
-    {
-        selectChapterPanel.SetActive(true);
-#if DOTWEEN
-        cgFade.DOFade(0, fadeOut).OnComplete(() => costCalculationPanel.SetActive(false));
-#endif
-        costCalculationPanel.SetActive(false);
-    }
-
-    public void OnClickScarceStaminaPanelBackButton()
-    {
-        selectChapterPanel.SetActive(true);
-#if DOTWEEN
-        cgFade.DOFade(0, fadeOut).OnComplete(() => scarceStaminaPanel.SetActive(false));
-#endif
-        scarceStaminaPanel.SetActive(false);
-    }
-
-    private void OpenCostCalculationPanel(int chapterIndex)
+    private void OpenCostCalculationPanel(int chapterIndex) // 코스트 지불 UI 열기
     {
         UpdateSelectedChapterUI(chapterIndex); // 선택된 챕터의 UI 업데이트
         selectChapterPanel.SetActive(true);
@@ -147,8 +134,8 @@ public class SelectAdventureUIController : MonoBehaviour
         scarceStaminaPanel.SetActive(false);
 
 #if DOTWEEN
-        cgFade.alpha = 0;
-        cgFade.DOFade(1, fadeIn);
+        costCalculationFade.alpha = 0;
+        costCalculationFade.DOFade(1, fadeIn);
 
         transform.localScale = Vector3.one * popScale;
         transform.DOScale(1, fadeIn).SetEase(Ease.OutBack);
@@ -160,7 +147,17 @@ public class SelectAdventureUIController : MonoBehaviour
 
     }
 
-    public void OnClickCostCalculationPanelStartButton()
+    public void OnClickCostPanelBackButton() // 코스트 지불 UI 닫기
+    {
+        selectChapterPanel.SetActive(true);
+
+#if DOTWEEN
+        costCalculationFade.DOFade(0, fadeOut).OnComplete(() => costCalculationPanel.SetActive(false));
+#endif
+        costCalculationPanel.SetActive(false);
+    }
+
+    public void OnClickCostCalculationPanelStartButton() // 코스트 지불 UI의 시작 버튼
     {
         int chapterIndex = selectedChapterIndex; // 선택된 챕터 인덱스 가져오기
         if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
@@ -186,12 +183,29 @@ public class SelectAdventureUIController : MonoBehaviour
         }
     }
 
-    private void OpenScaresStaminaPanel()
+    private void OpenScaresStaminaPanel() // 스태미나 부족 UI 열기
     {
         selectChapterPanel.SetActive(true);
-        //costCalculationPanel.SetActive(true);
         scarceStaminaPanel.SetActive(true);
         UpdateStaminaUI(); // 스태미나 UI 업데이트
+
+#if DOTWEEN
+        scarceStaminaFade.alpha = 0;
+        scarceStaminaFade.DOFade(1, fadeIn);
+
+        transform.localScale = Vector3.one * popScale;
+        transform.DOScale(1, fadeIn).SetEase(Ease.OutBack);
+#endif
+    }
+
+    public void OnClickScarceStaminaPanelBackButton() // 스태미나 부족 UI 닫기
+    {
+        selectChapterPanel.SetActive(true);
+
+#if DOTWEEN
+        scarceStaminaFade.DOFade(0, fadeOut).OnComplete(() => scarceStaminaPanel.SetActive(false));
+#endif
+        scarceStaminaPanel.SetActive(false);
     }
 
     public void OnClickRechargeStaminaButton() // 스태미나 충전 버튼
@@ -248,9 +262,11 @@ public class SelectAdventureUIController : MonoBehaviour
         //selectedChapterDescriptionText.text = selectedChapter.Description; // 현재 기획에선 설명이 필요하지 않으므로 주석 처리
     }
 
-    private void UpdateStaminaUI()
+    private void UpdateStaminaUI() // 스태미나 부족 UI를 업데이트
     {
-        afterCostText.text = $"{UserDataManager.Instance.userdata.stamina}/50 -> {UserDataManager.Instance.userdata.stamina + 50}/50"; // 스태미나 충전 후의 상태를 보여줍니다.
-        //int regenerationTime = // 스태미나 재생 시간 계산 로직은 아직 구현되지 않았습니다.
+        // 스태미나 충전을 하게 되었을 때의 상태를 보여줍니다.
+        beforeStaminaText.text = $"{UserDataManager.Instance.userdata.stamina}";
+        afterStaminaText.text = $"{UserDataManager.Instance.userdata.stamina + 50}";
+        jewelCostText.text = $"{jewelCost}"; // 추후 구매 할 때마다 가격 증가하도록 변경
     }
 }

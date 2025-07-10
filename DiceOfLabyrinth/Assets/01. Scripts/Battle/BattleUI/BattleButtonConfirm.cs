@@ -7,7 +7,7 @@ public class BattleButtonConfirm : AbstractBattleButton
     DiceManager diceManager;
     Button confirmButton;
 
-    public override void GetButtonComponent()
+    public override void Setting()
     {
         rankDisplayer = gameObject.transform.GetChild(2).gameObject;
         diceManager = DiceManager.Instance;
