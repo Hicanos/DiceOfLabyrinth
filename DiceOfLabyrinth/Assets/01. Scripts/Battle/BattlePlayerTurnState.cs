@@ -10,14 +10,13 @@
 
         if (battleManager.BattleTurn == 1)
         {
-            GetButton();
+            Setting();
             ChangePlayerTurnState(PlayerTurnState.BattleStart);            
 
             //battleManager.LoadMonsterPattern.Load();
         }
 
         string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
-        battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.Turn, stageString);
         ChangePlayerTurnState(PlayerTurnState.Enter);
     }
 
@@ -45,11 +44,11 @@
         }
     }
 
-    public void GetButton()
+    public void Setting()
     {
         foreach (AbstractBattleButton button in battleManager.BattleButtons)
         {
-            button.GetButtonComponent();
+            button.Setting();
         }
     }
 

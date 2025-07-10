@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using TMPro;
 
 public enum BattleTextUIEnum
 { 
@@ -7,7 +6,6 @@ public enum BattleTextUIEnum
     MonsterSkillName,
     MonsterSkillDescription,
     MonsterHP,
-    Turn,
     Rank,
     Reroll
 }
@@ -19,15 +17,12 @@ public enum HPEnum
 
 public class BattleUIValueChanger : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI[] texts;
-    public RectTransform[] HPs;
-
     /// <summary>
     /// 배틀에서 사용할 UI의 텍스트을 변경하는 메서드입니다.
     /// </summary>
     public void ChangeUIText(BattleTextUIEnum uiEnum, string value)
     {
-        texts[(int)uiEnum].text = value;
+        UIManager.Instance.BattleUI.ChangeUIText(uiEnum, value);
     }
 
     /// <summary>
@@ -35,6 +30,6 @@ public class BattleUIValueChanger : MonoBehaviour
     /// </summary>
     public void ChangeEnemyHpRatio(HPEnum hpEnum, float value)
     {
-        HPs[(int)hpEnum].localScale = new Vector3(value, 1, 1);        
+        UIManager.Instance.BattleUI.ChangeEnemyHpRatio(hpEnum, value);
     }
 }
