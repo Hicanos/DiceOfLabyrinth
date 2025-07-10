@@ -38,8 +38,7 @@ public class SpawnedCharacter : MonoBehaviour
     }
 
     public void PrepareAttack()
-    {
-        Animator.SetBool("IsIdle", false); // 대기 애니메이션 해제
+    {        
         Animator.SetBool("AttackIdle", true); // 공격 준비 애니메이션 설정
     }
 
@@ -60,7 +59,7 @@ public class SpawnedCharacter : MonoBehaviour
     }
     public void Revive()
     {
-        Animator.SetBool("IsDead", false); // 죽음 애니메이션 해제
+        Animator.SetBool("IsDied", false); // 죽음 애니메이션 해제
         Animator.SetBool("IsIdle", true); // 대기 애니메이션 설정
     }
 

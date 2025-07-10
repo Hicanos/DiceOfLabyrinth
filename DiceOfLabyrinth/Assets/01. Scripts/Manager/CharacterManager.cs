@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -38,8 +40,8 @@ public class CharacterManager
 
     // 초기화(최초 Instance 접근 시 1회만 호출)
     private void Initialize()
-    {
-        LoadAllCharactersAsync();
+    {        
+
     }
 
     // Addressable로 등록된 캐릭터 SO들을 비동기로 로드
@@ -52,6 +54,9 @@ public class CharacterManager
             LoadOwnedCharactersFromData();
             onLoaded?.Invoke();
         };
+#if UNITY_EDITOR
+        Debug.Log($"캐릭터 데이터 로드 시작됨: {AllCharacters.Count}개");
+#endif
     }
 
     /// <summary>
@@ -75,6 +80,9 @@ public class CharacterManager
                 OwnedCharacters.Add(lobbyChar);
             }
         }
+#if UNITY_EDITOR
+        Debug.Log($"보유 캐릭터 로드됨: {OwnedCharacters.Count}개");
+#endif
     }
 
     /// <summary>

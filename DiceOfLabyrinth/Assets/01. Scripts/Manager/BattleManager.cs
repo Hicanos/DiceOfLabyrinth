@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using System;
 
 
 public class BattleManager : MonoBehaviour
@@ -14,12 +15,7 @@ public class BattleManager : MonoBehaviour
         if(instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(this.gameObject);
-        }
-        else
-        {
-            Destroy(this.gameObject);
-        }
+        }        
     }
 
     public static BattleManager Instance
@@ -28,6 +24,7 @@ public class BattleManager : MonoBehaviour
         {
             if(instance == null)
             {
+                Debug.LogWarning("BattleManager의 Instance가 null");
                 return null;
             }
             return instance;
@@ -51,9 +48,7 @@ public class BattleManager : MonoBehaviour
     public BattleUIValueChanger UIValueChanger;
     public BattleCoroutine battleCoroutine;
 
-    [Header("Battle States")]
-    public LoadMonsterPattern LoadMonsterPattern;
-    public MonsterPattern MonsterPattern;
+    public EnemyPatternContainer EnemyPatternContainer;
     public BattleStateMachine stateMachine;
     public PlayerTurnState currentPlayerState;
     public IBattleTurnState playerTurnState;
@@ -61,15 +56,15 @@ public class BattleManager : MonoBehaviour
     public BattlePlayerTurnState battlePlayerTurnState;
 
     [Header("UIs")]
-    public AbstractBattleButton[] BattleButtons;
-    public Image[] HPBar;
-    public GameObject fixedDiceArea;
-    [SerializeField] Image turnDisplay;
-    [SerializeField] GameObject victoryUI;
-    [SerializeField] GameObject defeatUI;
-    public Canvas battleCanvas;
-    public GameObject Stages;
-    public GameObject stagmaDisplayer;
+    public List<AbstractBattleButton> BattleButtons = new List<AbstractBattleButton>();
+    //public List<Image> HPBars = new List<Image>();
+    public Image[] HPBars;
+
+    //[SerializeField] Image turnDisplay;
+    //public GameObject Stages;    
+     [NonSerialized] public GameObject fixedDiceArea;
+     [NonSerialized] public GameObject stagmaDisplayer;
+     [NonSerialized] public Canvas     battleCanvas;
 
     [Header("Values")]
     public  readonly int MaxCost = 12;
@@ -81,19 +76,40 @@ public class BattleManager : MonoBehaviour
     void Start()
     {
         playerTurnState = new BattlePlayerTurnState();
+
         battlePlayerTurnState = (BattlePlayerTurnState)playerTurnState;
 
         enemyTurnState = new BattleEnemyTurnState();
 
         stateMachine = new BattleStateMachine(playerTurnState);
 
-        LoadMonsterPattern = new LoadMonsterPattern();
-        MonsterPattern = new MonsterPattern();
+        GetUIs();
+        DiceManager.Instance.DiceHolding.SettingForHolding();
     }
     
     void Update()
     {
         stateMachine.BattleUpdate();
+    }
+
+    private void GetUIs()
+    {
+        HPBars = new Image[6];
+        BattleUI battleUI = UIManager.Instance.BattleUI;
+        battleUI.Setting();
+
+        fixedDiceArea = battleUI.fixedDiceArea;
+        battleCanvas = battleUI.battleCanvas;
+        stagmaDisplayer = battleUI.stagmaDisplayer;
+        for(int i = 0; i < battleUI.Buttons.Length; i++)
+        {
+            BattleButtons.Add(battleUI.Buttons[i]);
+        }
+        for(int i = 0; i < battleUI.Images.Length; i++)
+        {
+            //HPBars.Add(battleUI.Images[i]);
+            HPBars[i] = battleUI.Images[i];
+        }        
     }
 
     public void BattleStartCoroutine(BattleStartData data) //전투 시작시 호출해야할 메서드
@@ -130,11 +146,11 @@ public class BattleManager : MonoBehaviour
             DiceManager.Instance.LoadDiceData();
         }
         BattleTurn = 0;
-        HPBar[(int)HPEnum.enemy].gameObject.SetActive(true);
+        HPBars[(int)HPEnum.enemy].gameObject.SetActive(true);
         UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterHP, $"{enemy.CurrentHP} / {enemy.MaxHP}");
         UIValueChanger.ChangeEnemyHpRatio(HPEnum.enemy, 1.0f);
 
-        turnDisplay.gameObject.SetActive(true);
+        //turnDisplay.gameObject.SetActive(true);
         playerTurnState.Enter();
         
         isBattle = true;
@@ -144,8 +160,8 @@ public class BattleManager : MonoBehaviour
     {
         BattleResultData data;
         isBattle = false;
-        HPBar[(int)HPEnum.enemy].gameObject.SetActive(false);
-        turnDisplay.gameObject.SetActive(false);
+        HPBars[(int)HPEnum.enemy].gameObject.SetActive(false);
+        //turnDisplay.gameObject.SetActive(false);
         DiceManager.Instance.ResetSetting();
         //for (int i = 0; i < battleCharacters.Count; i++)
         //{
@@ -162,7 +178,7 @@ public class BattleManager : MonoBehaviour
             {
                 StageManager.Instance.battleUIController.OpenVictoryPanel();
                 StageManager.Instance.OnBattleResult(data);
-            }            
+            }
             StageManager.Instance.RoomClear(enemy.Data);
         }
         else
@@ -208,6 +224,8 @@ public class BattleEnemy : IDamagable
     public int CurrentDef => currentDef;
     public int MaxHP => currentMaxHP;
     public bool IsDead => isDead;
+
+    public SOEnemySkill currentSkill;
 
     public BattleEnemy(EnemyData data)
     {

@@ -24,7 +24,7 @@ public class DataSaver
     static DataSaver()
     {
         Instance = new DataSaver();
-        Instance.Load(); // 인스턴스 생성 시 저장된 데이터 로드
+        Debug.Log("DataSaver 인스턴스 생성됨");
     }
 
     [Serializable]
@@ -178,6 +178,7 @@ public class DataSaver
             {
                 string json = File.ReadAllText(SavePath);
                 SaveData = JsonConvert.DeserializeObject<GameSaveData>(json);
+                CharacterManager.Instance.LoadAllCharactersAsync();
 #if UNITY_EDITOR
                 Debug.Log($"게임 데이터 로드됨: {SavePath}");
 #endif
