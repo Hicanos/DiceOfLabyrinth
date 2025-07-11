@@ -7,6 +7,7 @@ public enum PlayerTurnState
     Roll,
     RollEnd,
     Confirm,
+    ConfirmEnd,
     EndTurn,
     BattleEnd
 }

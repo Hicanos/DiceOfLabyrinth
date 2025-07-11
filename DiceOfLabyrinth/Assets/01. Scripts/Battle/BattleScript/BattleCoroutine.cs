@@ -174,7 +174,7 @@ public class BattleCoroutine : MonoBehaviour
             }
             yield return null;
         }
-        battleManager.stateMachine.ChangeState(battleManager.enemyTurnState);
+        BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.ConfirmEnd);
     }
 
     public void DealDamage(IDamagable target, int damage)

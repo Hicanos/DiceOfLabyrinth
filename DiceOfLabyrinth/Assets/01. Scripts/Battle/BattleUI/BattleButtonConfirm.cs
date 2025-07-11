@@ -51,7 +51,13 @@ public class BattleButtonConfirm : AbstractBattleButton
         diceManager.DiceBoard.SetActive(false);
         diceManager.HideFakeDice();
         diceManager.DiceHolding.isCantFix = false;
+
         BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Confirm);
+
+        float diceWeighting = DiceManager.Instance.DiceBattle.GetDamageWeighting(); //족보별 계수
+        BattleManager battleManager = BattleManager.Instance;
+        //공격 애니메이션실행
+        battleManager.battleCoroutine.CharacterAttack(diceWeighting);
     }
 
     public void OnPushCancel()
