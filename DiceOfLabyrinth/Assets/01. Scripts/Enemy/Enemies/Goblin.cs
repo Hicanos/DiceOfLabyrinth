@@ -288,35 +288,6 @@ public class Goblin : MonoBehaviour, IEnemy
             return;
         }
         currentState = state;
-        switch (state)
-        {
-            case EnemyState.Idle:
-                animator.SetTrigger("Idle");
-                break;
-            case EnemyState.RightAttack:
-                animator.SetTrigger("RightAttack");
-                break;
-            case EnemyState.SlashDown:
-                animator.SetTrigger("SlashDown");
-                break;
-            case EnemyState.SpinAttack:
-                animator.SetTrigger("SpinAttack");
-                break;
-            case EnemyState.Stun:
-                animator.SetTrigger("Stun");
-                break;
-            case EnemyState.Run:
-                animator.SetTrigger("Run");
-                break;
-            case EnemyState.Hit:
-                animator.SetTrigger("Hit");
-                break;
-            case EnemyState.Dead:
-                animator.SetTrigger("Dead");
-                break;
-            default:
-                Debug.LogWarning($"Goblin: Unhandled state {state}");
-                break;
-        }
+        animator.SetTrigger(state.ToString());
     }
 }

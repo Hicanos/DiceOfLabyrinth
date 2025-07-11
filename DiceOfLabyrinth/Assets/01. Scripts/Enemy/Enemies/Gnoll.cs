@@ -511,46 +511,8 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
     public void PlayAnimationByState(EnemyState state)
     {
         if (currentState == state) return; // 중복 상태 방지
-
-
         currentState = state; // 상태 변경
-
-        switch (state)
-        {
-            case EnemyState.Idle:
-                animator.SetTrigger("Idle");
-                break;
-            case EnemyState.RightAttack:
-                animator.SetTrigger("RightAttack");
-                break;
-            case EnemyState.LeftAttack:
-                animator.SetTrigger("LeftAttack");
-                break;
-            case EnemyState.SpinAttack:
-                animator.SetTrigger("SpinAttack");
-                break;
-            case EnemyState.Stun:
-                animator.SetTrigger("Stun");
-                break;
-            case EnemyState.JumpAttack:
-                animator.SetTrigger("JumpAttack");
-                break;
-            case EnemyState.Hit:
-                animator.SetTrigger("Hit");
-                break;
-            case EnemyState.Howling:
-                animator.SetTrigger("Howling");
-                break;
-            case EnemyState.Kick:
-                animator.SetTrigger("Kick");
-                break;
-            case EnemyState.Dead:
-                animator.SetTrigger("Dead");
-                break;
-            case EnemyState.Run:
-                animator.SetTrigger("Run");
-                break;
-        }
+        animator.SetTrigger(state.ToString()); // 애니메이션 트리거 설정
     }
 }
 

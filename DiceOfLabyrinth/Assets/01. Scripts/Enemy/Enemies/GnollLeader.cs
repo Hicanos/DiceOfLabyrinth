@@ -15,10 +15,13 @@ public class GnollLeader : MonoBehaviour,IEnemy // 테스트에너미 클래스�
     public enum EnemyState // 에너미의 상태를 정의하는 열거형
     {
         Idle, // 대기 상태
-        RightAttack, // 오른손 공격 상태
-        SpinAttack, // 회전 공격 상태
+        RightAttack, // 오른손 공격 상태, 0번 스킬
+        SpinAttack, // 회전 공격 상태, 14번 스킬
         Stun, // 기절 상태
-        JumpAttack, // 점프 공격 상태
+        StrongAttack, // 강력한 공격 상태, 1번 스킬
+        JumpAttack, // 점프 공격 상태, 4번 스킬
+        SlashDown, // 내려찍기 공격 상태, 5번 스킬
+        TripleAttack, // 삼연속 공격 상태, 3번 스킬
         Run, // 달리기 상태
         Hit, // 맞은 상태
         Howling, // 울부짖는 상태
@@ -42,11 +45,11 @@ public class GnollLeader : MonoBehaviour,IEnemy // 테스트에너미 클래스�
     {
         ActiveSkills = new List<Action<Vector3>>(new Action<Vector3>[15]);
         //ActiveSkills[0] += (pos) => DoRightAttack(pos);
-        //ActiveSkills[1] += (pos) =>
-        //ActiveSkills[3] += (pos) =>
-        //ActiveSkills[4] += (pos) =>
-        //ActiveSkills[5] += (pos) =>
-        //ActiveSkills[14] += (pos) =>
+        //ActiveSkills[1] += (pos) => DoStrongAttack(pos);
+        //ActiveSkills[3] += (pos) => DoTripleAttack(pos);
+        //ActiveSkills[4] += (pos) => DoJumpAttack(pos);
+        //ActiveSkills[5] += (pos) => DoSlashDownAttack(pos);
+        //ActiveSkills[14] += (pos) => DoSpinAttack();
     }
     private Vector3 GetTargetPositionByIndex(int index)
     {
@@ -90,6 +93,12 @@ public class GnollLeader : MonoBehaviour,IEnemy // 테스트에너미 클래스�
         ActiveSkills[skillIndex]?.Invoke(targetPos);
     }
 
-    public void PlayAnimationByState(EnemyState state) { }
+    public void PlayAnimationByState(EnemyState state) 
+    {
+        if (currentState == state) return; // 현재 상태와 동일하면 아무 작업도 하지 않음
+        currentState = state; // 상태 업데이트
+        animator.SetTrigger(state.ToString()); // 애니메이션 트리거 설정
+
+    }
 }
 
