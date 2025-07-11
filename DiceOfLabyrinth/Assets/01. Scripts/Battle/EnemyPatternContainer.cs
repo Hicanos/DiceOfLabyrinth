@@ -20,5 +20,5 @@ public class EnemyPatternContainer : MonoBehaviour
 
         battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillName, $"{skill.SkillName} 준비중");
         battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillDescription, skill.SkillDescription);
-    }    
+    }
 }

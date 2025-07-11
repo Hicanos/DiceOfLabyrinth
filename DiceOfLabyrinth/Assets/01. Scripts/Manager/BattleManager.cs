@@ -57,7 +57,6 @@ public class BattleManager : MonoBehaviour
 
     [Header("UIs")]
     public List<AbstractBattleButton> BattleButtons = new List<AbstractBattleButton>();
-    //public List<Image> HPBars = new List<Image>();
     public Image[] HPBars;
 
     //[SerializeField] Image turnDisplay;

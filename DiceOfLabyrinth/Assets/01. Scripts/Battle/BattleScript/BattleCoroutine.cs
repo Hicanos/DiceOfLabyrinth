@@ -79,11 +79,18 @@ public class BattleCoroutine : MonoBehaviour
             yield return null;
         }
 
-        //for (int i = 0; i < 5; i++)
-        //{
-        //    battleManager.HPBar[i].transform.localPosition = positions[i].Position + Vector3.up * 5;
-        //    battleManager.HPBar[i].gameObject.SetActive(true);
-        //}
+        int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
+        int iFormation = ((int)StageManager.Instance.stageSaveData.currentFormationType);
+
+        List<PlayerPositions> positions = StageManager.Instance.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
+        Camera cam = DiceManager.Instance.diceCamera;
+
+        for (int i = 0; i < 5; i++)
+        {
+            Vector3 vec2 = cam.WorldToViewportPoint(characterPrefabs[i].transform.position + Vector3.up * 50);
+            battleManager.HPBars[i].transform.localPosition = positions[i].Position + Vector3.up * 5;
+            battleManager.HPBars[i].gameObject.SetActive(true);
+        }
 
         isPreparing = false;
         battleManager.BattleStart();
@@ -98,18 +105,17 @@ public class BattleCoroutine : MonoBehaviour
         StopCoroutine(enumeratorSpawn);
 
         int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
-        chapterIndex = 0; //임시
         int iFormation = ((int)StageManager.Instance.stageSaveData.currentFormationType);
 
         List<PlayerPositions> positions = StageManager.Instance.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
-        Camera cam = Camera.main;
+        Camera cam = DiceManager.Instance.diceCamera;
 
         for (int i = 0; i < 5; i++)
         {
             characterPrefabs[i].transform.localPosition = positions[i].Position;
-            //Vector3 vec2 = cam.WorldToViewportPoint(positions[i].Position + Vector3.up * 50);
-            //battleManager.HPBar[i].transform.position = vec2;
-            //battleManager.HPBar[i].gameObject.SetActive(true);
+            Vector3 vec2 = cam.WorldToViewportPoint(characterPrefabs[i].transform.position + Vector3.up * 50);
+            battleManager.HPBars[i].transform.position = vec2;
+            battleManager.HPBars[i].gameObject.SetActive(true);
         }
 
         battleManager.BattleStart();

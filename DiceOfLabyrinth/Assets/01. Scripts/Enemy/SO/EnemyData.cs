@@ -55,8 +55,8 @@ public class EnemyData: ScriptableObject
     public EnemyAttribute Attribute => enemyAttribute;
     public string Description => description;
     public GameObject EnemyPrefab => enemyPrefab;
-    public List<int> ActiveSkills => ActiveSkills;
-    public List<int> PassiveSkills => PassiveSkills;
+    public List<int> ActiveSkills => activeSkills;
+    public List<int> PassiveSkills => passiveSkills;
 
     // 기초값
     public int BaseMaxHp => baseMaxHp;
