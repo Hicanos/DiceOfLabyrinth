@@ -16,7 +16,6 @@ public class DiceHolding : MonoBehaviour
     [SerializeField] RollMultipleDiceSynced rollMultipleDice;
     [SerializeField] Button DiceRollButton;
     private List<int> fixedDiceList;
-    private List<int> tempFixedDiceList;
 
     private GameObject[] areas = new GameObject[5];
     private IEnumerator enumerator;
@@ -40,7 +39,6 @@ public class DiceHolding : MonoBehaviour
     public void GetFixedList()
     {
         fixedDiceList = DiceManager.Instance.FixedDiceList;
-        tempFixedDiceList = DiceManager.Instance.TempFixedDiceList;
     }
 
     public void OnInput(InputAction.CallbackContext context)
@@ -68,10 +66,7 @@ public class DiceHolding : MonoBehaviour
             {
                 dice = hit.collider.gameObject.GetComponent<DiceMy>();
                 dice.SetIndex();
-                if (fixedDiceList != null && fixedDiceList.Contains<int>(dice.MyIndex))
-                {
-                    return;
-                }
+
                 DiceFixed(dice);
             }
         }
@@ -83,29 +78,29 @@ public class DiceHolding : MonoBehaviour
         List<Vector3> fixedPos = new List<Vector3>();
         bool isAdd;
         int fixedCount = fixedDiceList.Count;
-        int tempFixedCount = tempFixedDiceList.Count;
 
-        if (fixedCount == 0 && tempFixedCount == 0)
+
+        if (fixedCount == 0)
         {
             Debug.Log("리셋");
             index2 = 0;
         }
 
-        if (tempFixedDiceList == null || tempFixedDiceList.Contains<int>(index) == false)
+        if (fixedDiceList == null || fixedDiceList.Contains<int>(index) == false)
         {
             isAdd = true;
 
-            tempFixedDiceList.Add(index);
+            fixedDiceList.Add(index);
             rollMultipleDice.diceAndOutcomeArray[index].dice = null;
 
             enumerator = WaitForPosition(isAdd);
             StartCoroutine(enumerator);
         }
-        else if (tempFixedDiceList.Contains<int>(index) == true)
+        else if (fixedDiceList.Contains<int>(index) == true)
         {
             isAdd = false;
 
-            tempFixedDiceList.Remove(index);
+            fixedDiceList.Remove(index);
             rollMultipleDice.diceAndOutcomeArray[index].dice = diceManager.dices[index].GetComponent<Dice>();
             diceManager.fakeDices[index].transform.localPosition = diceManager.DicePos[index];
 
@@ -162,13 +157,8 @@ public class DiceHolding : MonoBehaviour
             diceManager.fakeDices[i].transform.position = results[count];
             count++;
         }
-        foreach (int i in tempFixedDiceList)
-        {
-            diceManager.fakeDices[i].transform.position = results[count];
-            count++;
-        }
 
-        if (fixedDiceList.Count + tempFixedDiceList.Count == diceManager.dices.Length)
+        if (fixedDiceList.Count == diceManager.dices.Length)
         {
             DiceRollButton.interactable = false;
         }
@@ -216,13 +206,12 @@ public class DiceHolding : MonoBehaviour
         RectTransform targetRects;
         Canvas canvas = battleManager.battleCanvas;
         int fixedCount = fixedDiceList.Count;
-        int tempFixedCount = tempFixedDiceList.Count;
 
         List<int> noFixed = new List<int>() { 0, 1, 2, 3, 4 };
 
         for (int i = 0; i < 5; i++)
         {
-            if (fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i))
+            if (fixedDiceList.Contains<int>(i))
             {
                 count++;
                 noFixed.Remove(i);
@@ -254,12 +243,6 @@ public class DiceHolding : MonoBehaviour
             diceManager.fakeDices[index].transform.position = results[count2];
             count2++;
         }
-        for (int i = 0; i < tempFixedCount; i++)
-        {
-            index = tempFixedDiceList[i];
-            diceManager.fakeDices[index].transform.position = results[count2];
-            count2++;
-        }
         for (int i = 0; i < noFixed.Count; i++)
         {
             index = noFixed[i];
@@ -280,8 +263,6 @@ public class DiceHolding : MonoBehaviour
         {
             areas[i].SetActive(false);
         }
-        diceManager.TempFixedDiceList.Clear();
-        tempFixedDiceList = diceManager.TempFixedDiceList;
 
         yield return new WaitForEndOfFrame();
 
