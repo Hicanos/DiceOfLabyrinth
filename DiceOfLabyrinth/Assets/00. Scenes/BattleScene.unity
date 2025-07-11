@@ -3401,6 +3401,7 @@ MonoBehaviour:
   enemyContainer: {fileID: 1415162113}
   UIValueChanger: {fileID: 303490232559084238}
   battleCoroutine: {fileID: 1419423440417571392}
+  EnemyPatternContainer: {fileID: 5666082356261757286}
   currentPlayerState: 0
   BattleButtons: []
   HPBars: []
@@ -3420,6 +3421,7 @@ GameObject:
   - component: {fileID: 1419423440417571392}
   - component: {fileID: 303490232559084238}
   - component: {fileID: 1966176972423714837}
+  - component: {fileID: 5666082356261757286}
   m_Layer: 0
   m_Name: BattleManager
   m_TagString: Untagged
@@ -3427,6 +3429,34 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &5666082356261757286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5666082356261757285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4df4d8630dc40541afefcd20e6dce36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemySkillDatas:
+  - {fileID: 11400000, guid: 378234ccc3196d2468f8d88282fa848c, type: 2}
+  - {fileID: 11400000, guid: 7305f969bbd18754d843d6eca5df2800, type: 2}
+  - {fileID: 11400000, guid: 22bf5600ba16c9f418a6b22d0b8594fa, type: 2}
+  - {fileID: 11400000, guid: 8a62b66a7597e9b4aa38a0d2b4aab5b0, type: 2}
+  - {fileID: 11400000, guid: 5d8b9c3bde5491349b32e25d95d80900, type: 2}
+  - {fileID: 11400000, guid: 9cfc613095bf1934b8088b80a92324b7, type: 2}
+  - {fileID: 11400000, guid: b4bf741f02b68dd4cbdef48af6b50a96, type: 2}
+  - {fileID: 11400000, guid: e6b21ad73ba3fb34390ad96f102054d6, type: 2}
+  - {fileID: 11400000, guid: 45263a76fd9616f419eaa082bb24303a, type: 2}
+  - {fileID: 11400000, guid: 9f2dbac585161514a95eb02f660a215f, type: 2}
+  - {fileID: 11400000, guid: 9c27f0fe8d17d3741a13d163df8ffbe1, type: 2}
+  - {fileID: 11400000, guid: 70693bd5eed975448b51e6b882584e84, type: 2}
+  - {fileID: 11400000, guid: bf3a641c5558e1a458200451051cf85f, type: 2}
+  - {fileID: 11400000, guid: df9b58ebb91ace94e881a465fbbd9299, type: 2}
+  - {fileID: 11400000, guid: 5b3bf196e6dbeac4e886670ef914d287, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

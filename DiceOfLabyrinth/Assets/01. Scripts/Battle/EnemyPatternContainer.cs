@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class EnemyPatternContainer : MonoBehaviour
 {
-    SOEnemySkill[] enemySkillDatas;
+    [SerializeField] SOEnemySkill[] enemySkillDatas;
 
     public void PrepareSkill()
     {
@@ -18,7 +18,7 @@ public class EnemyPatternContainer : MonoBehaviour
         SOEnemySkill skill = enemySkillDatas[skill_Index];
         battleManager.Enemy.currentSkill = skill;
 
-        battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillName, $"{skill.name} 준비중");
+        battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillName, $"{skill.SkillName} 준비중");
         battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillDescription, skill.SkillDescription);
-    }    
+    }
 }

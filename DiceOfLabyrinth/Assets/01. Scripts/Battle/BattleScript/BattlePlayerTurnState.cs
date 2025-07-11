@@ -13,7 +13,7 @@
             Setting();
             ChangePlayerTurnState(PlayerTurnState.BattleStart);            
 
-            //battleManager.LoadMonsterPattern.Load();
+            battleManager.EnemyPatternContainer.PrepareSkill();
         }
 
         string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
@@ -34,6 +34,11 @@
     {
         battleManager.currentPlayerState = state;
         OnOffButton();
+    }
+
+    public void EndPlayerTurn()
+    {
+        battleManager.stateMachine.ChangeState(battleManager.enemyTurnState);
     }
 
     private void OnOffButton()
