@@ -17,11 +17,9 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
         RightAttack, // 오른손 공격 상태
         LeftAttack, // 왼손 공격 상태
         SpinAttack, // 회전 공격 상태
-        Stun, // 기절 상태
         JumpAttack, // 점프 공격 상태
         Run, // 달리기 상태
         Hit, // 맞은 상태
-        Howling, // 울부짖는 상태
         Kick, // 발차기 상태
         Dead, // 사망 상태
         // 추가적인 상태를 여기에 정의할 수 있습니다.
@@ -33,16 +31,24 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
     public List<Action<Vector3>> ActiveSkills { get; private set; }
 
 
+    private Vector3 savedPosition;
+    private Quaternion savedRotation;
+
+
     private void Awake()
     {
         Init();
+    }
+    private void Start()
+    {
+
         //DoJumpAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 점프 어택, new Vector3(-5, 0, -3)와 같은 의미입니다.
         //DoRightAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 라이트 어택, new Vector3(-5, 0, -3)와 같은 의미입니다.
         //DoLeftAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 레프트 어택
         //DoKickAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 킥 어택
         //DoSpinAttack(); // 테스트용 스핀 어택
         //UseActiveSkill(0, 0); // 테스트용 킥 어택 사용
-        //UseActiveSkill(4, 1); // 테스트용 점프 어택 사용
+        //UseActiveSkill(4, 0); // 테스트용 점프 어택 사용
     }
     public void Init()
     {
@@ -50,23 +56,39 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
         ActiveSkills[0] += (pos) => DoKickAttack(pos);
         ActiveSkills[1] += (pos) => DoRightAttack(pos);
         ActiveSkills[4] += (pos) => DoJumpAttack(pos);
+
+        savedPosition = transform.position; // 현재 위치 저장
+        savedRotation = transform.rotation;
     }
     private Vector3 GetTargetPositionByIndex(int index)
     {
-        // 예시: 미리 정의된 위치 배열
-        Vector3[] positions = {
-        new Vector3(0, 0, 0),
-        new Vector3(-5, 0, -3),
-        new Vector3(-2, 0, 2),
-        new Vector3(0, 0, 5),
-        new Vector3(5, 0, 0),
-        // 필요에 따라 추가, 플레이어의 위치 바로앞을 타겟으로 하도록 수정 예정
-        };
+        // 플레이어 포메이션 정보를 스테이지 데이터에서 가져옴
+        var stageSaveData = StageManager.Instance.stageSaveData;
+        var chapterData = StageManager.Instance.chapterData;
 
-        if (index >= 0 && index < positions.Length)
-            return positions[index];
-        else
-            return Vector3.zero; // 기본값 또는 예외 처리
+        int chapterIdx = stageSaveData.currentChapterIndex;
+        int stageIdx = stageSaveData.currentStageIndex;
+        int formationIdx = (int)stageSaveData.currentFormationType;
+
+        // 방어적: null 체크 및 인덱스 범위 체크
+        if (chapterData == null ||
+            chapterData.chapterIndex == null ||
+            chapterIdx < 0 || chapterIdx >= chapterData.chapterIndex.Count)
+            return new Vector3 (-1,-1,-4);
+
+        var chapter = chapterData.chapterIndex[chapterIdx];
+        if (chapter.stageData == null ||
+            chapter.stageData.PlayerFormations == null ||
+            formationIdx < 0 || formationIdx >= chapter.stageData.PlayerFormations.Count)
+            return new Vector3(-1, -1, -4);
+
+        var formation = chapter.stageData.PlayerFormations[formationIdx];
+        if (formation.PlayerPositions == null ||
+            index < 0 || index >= formation.PlayerPositions.Count)
+            return new Vector3(-1, -1, -4);
+
+        // 실제 포지션 반환
+        return formation.PlayerPositions[index].Position;
     }
     public void UseActiveSkill(int skillIndex, int targetIndex)
     {
@@ -85,10 +107,6 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
 
     private IEnumerator JumpAttackRoutine(Vector3 targetPosition)
     {
-        // 현재 위치와 회전 저장
-        Vector3 savedPosition = transform.position;
-        Quaternion savedRotation = transform.rotation;
-
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
         if (direction.sqrMagnitude > 0.0001f)
@@ -182,10 +200,6 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
 
     private IEnumerator RightAttackRoutine(Vector3 targetPosition)
     {
-        // 현재 위치와 회전 저장
-        Vector3 savedPosition = transform.position;
-        Quaternion savedRotation = transform.rotation;
-
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
         if (direction.sqrMagnitude > 0.0001f)
@@ -276,10 +290,6 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
 
     private IEnumerator LeftAttackRoutine(Vector3 targetPosition)
     {
-        // 현재 위치와 회전 저장
-        Vector3 savedPosition = transform.position;
-        Quaternion savedRotation = transform.rotation;
-
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
         if (direction.sqrMagnitude > 0.0001f)
@@ -369,10 +379,6 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
 
     private IEnumerator KickAttackRoutine(Vector3 targetPosition)
     {
-        // 현재 위치와 회전 저장
-        Vector3 savedPosition = transform.position;
-        Quaternion savedRotation = transform.rotation;
-
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
         if (direction.sqrMagnitude > 0.0001f)
@@ -492,46 +498,8 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
     public void PlayAnimationByState(EnemyState state)
     {
         if (currentState == state) return; // 중복 상태 방지
-
-
         currentState = state; // 상태 변경
-
-        switch (state)
-        {
-            case EnemyState.Idle:
-                animator.SetTrigger("Idle");
-                break;
-            case EnemyState.RightAttack:
-                animator.SetTrigger("RightAttack");
-                break;
-            case EnemyState.LeftAttack:
-                animator.SetTrigger("LeftAttack");
-                break;
-            case EnemyState.SpinAttack:
-                animator.SetTrigger("SpinAttack");
-                break;
-            case EnemyState.Stun:
-                animator.SetTrigger("Stun");
-                break;
-            case EnemyState.JumpAttack:
-                animator.SetTrigger("JumpAttack");
-                break;
-            case EnemyState.Hit:
-                animator.SetTrigger("Hit");
-                break;
-            case EnemyState.Howling:
-                animator.SetTrigger("Howling");
-                break;
-            case EnemyState.Kick:
-                animator.SetTrigger("Kick");
-                break;
-            case EnemyState.Dead:
-                animator.SetTrigger("Dead");
-                break;
-            case EnemyState.Run:
-                animator.SetTrigger("Run");
-                break;
-        }
+        animator.SetTrigger(state.ToString()); // 애니메이션 트리거 설정
     }
 }
 
