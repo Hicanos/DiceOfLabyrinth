@@ -193,6 +193,8 @@ public class BattleManager : MonoBehaviour
         GameObject enemyGO = enemy.Data.EnemyPrefab;
 
         enemyPrefab = Instantiate(enemyGO, new Vector3(5.85f, -0.02f, -1.06f), Quaternion.identity, enemyContainer);
+        // 나중에 바꿀 내용 new Vector3 (4,-1,4)에 소환, 회전값은 enemy.Data.EnemySpawnRotation
+        // 배틀 매니저 필드에 public IEnemy iEnemy;를 선언하고, iEnemy = enemyGO.GetComponent<IEnemy>();로 설정
     }
 
     /// <summary>

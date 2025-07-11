@@ -49,8 +49,8 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
         ActiveSkills[1] += (pos) => DoStrongAttack(pos);
         ActiveSkills[3] += (pos) => DoTripleAttack(pos);
         ActiveSkills[4] += (pos) => DoJumpAttack(pos);
-        //ActiveSkills[5] += (pos) => DoSlashDownAttack(pos);
-        //ActiveSkills[14] += (pos) => DoSpinAttack();
+        ActiveSkills[5] += (pos) => DoSlashDown(pos);
+        ActiveSkills[14] += (pos) => DoSpinAttack();
 
         savedPosition = transform.position; // 현재 위치 저장
         savedRotation = transform.rotation;
@@ -458,6 +458,95 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
         }
 
         // Idle 상태로 전환
+        PlayAnimationByState(EnemyState.Idle);
+    }
+    public void DoSlashDown(Vector3 targetPosition)
+    {
+        StartCoroutine(SlashDownRoutine(targetPosition));
+    }
+
+    private IEnumerator SlashDownRoutine(Vector3 targetPosition)
+    {
+        Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
+        if (direction.sqrMagnitude > 0.0001f)
+            transform.rotation = Quaternion.LookRotation(direction);
+
+        PlayAnimationByState(EnemyState.Run);
+        float runDuration = 0.8f;
+        Vector3 start = transform.position;
+        Vector3 end = new Vector3(targetPosition.x, start.y, targetPosition.z);
+
+        float elapsed = 0f;
+        while (elapsed < runDuration)
+        {
+            float t = elapsed / runDuration;
+            transform.position = Vector3.Lerp(start, end, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = end;
+
+        PlayAnimationByState(EnemyState.SlashDown);
+        yield return new WaitForSeconds(2.24f);
+
+        // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
+        Vector3 returnDir = (savedPosition - transform.position).normalized;
+        if (returnDir.sqrMagnitude > 0.0001f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(returnDir);
+            float rotElapsed = 0f;
+            float rotDuration = 0.2f;
+            Quaternion rotStart = transform.rotation;
+            while (rotElapsed < rotDuration)
+            {
+                float t = rotElapsed / rotDuration;
+                transform.rotation = Quaternion.Slerp(rotStart, targetRot, t);
+                rotElapsed += Time.deltaTime;
+                yield return null;
+            }
+            transform.rotation = targetRot;
+        }
+        // 런 애니메이션 실행하며 복귀
+        PlayAnimationByState(EnemyState.Run);
+        float returnDuration = 0.8f;
+        Vector3 returnStart = transform.position;
+        Vector3 returnEnd = savedPosition;
+        elapsed = 0f;
+        while (elapsed < returnDuration)
+        {
+            float t = elapsed / returnDuration;
+            transform.position = Vector3.Lerp(returnStart, returnEnd, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = returnEnd;
+
+        // 세이브 로테이션으로 회전
+        {
+            Quaternion rotStart = transform.rotation;
+            Quaternion rotEnd = savedRotation;
+            float rotElapsed = 0f;
+            float rotDuration = 0.2f;
+            while (rotElapsed < rotDuration)
+            {
+                float t = rotElapsed / rotDuration;
+                transform.rotation = Quaternion.Slerp(rotStart, rotEnd, t);
+                rotElapsed += Time.deltaTime;
+                yield return null;
+            }
+            transform.rotation = rotEnd;
+        }
+        PlayAnimationByState(EnemyState.Idle);
+    }
+    public void DoSpinAttack()
+    {
+        StartCoroutine(SpinAttackRoutine());
+    }
+
+    private IEnumerator SpinAttackRoutine()
+    {
+        PlayAnimationByState(EnemyState.SpinAttack);
+        yield return new WaitForSeconds(2.25f);
         PlayAnimationByState(EnemyState.Idle);
     }
 }
