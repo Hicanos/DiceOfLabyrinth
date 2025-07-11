@@ -40,7 +40,12 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
     private void Start()
     {
         // 필요시 테스트용 스킬 호출 위치
-         UseActiveSkill(4, 1);
+        //UseActiveSkill(0, 1); // 오른손 공격
+        //UseActiveSkill(1, 1); // 강력한 공격
+        //UseActiveSkill(3, 1); // 삼연속 공격
+        //UseActiveSkill(4, 1);// 점프 공격
+        //UseActiveSkill(5, 1); // 내려찍기 공격
+        //UseActiveSkill(14, 1); // 회전 공격
     }
     public void Init()
     {
