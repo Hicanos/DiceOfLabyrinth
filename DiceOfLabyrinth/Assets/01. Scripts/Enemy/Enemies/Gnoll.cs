@@ -17,11 +17,9 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
         RightAttack, // 오른손 공격 상태
         LeftAttack, // 왼손 공격 상태
         SpinAttack, // 회전 공격 상태
-        Stun, // 기절 상태
         JumpAttack, // 점프 공격 상태
         Run, // 달리기 상태
         Hit, // 맞은 상태
-        Howling, // 울부짖는 상태
         Kick, // 발차기 상태
         Dead, // 사망 상태
         // 추가적인 상태를 여기에 정의할 수 있습니다.
@@ -58,6 +56,9 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
         ActiveSkills[0] += (pos) => DoKickAttack(pos);
         ActiveSkills[1] += (pos) => DoRightAttack(pos);
         ActiveSkills[4] += (pos) => DoJumpAttack(pos);
+
+        savedPosition = transform.position; // 현재 위치 저장
+        savedRotation = transform.rotation;
     }
     private Vector3 GetTargetPositionByIndex(int index)
     {
@@ -106,10 +107,6 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
 
     private IEnumerator JumpAttackRoutine(Vector3 targetPosition)
     {
-        // 현재 위치와 회전 저장
-        Vector3 savedPosition = transform.position;
-        Quaternion savedRotation = transform.rotation;
-
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
         if (direction.sqrMagnitude > 0.0001f)
@@ -203,10 +200,6 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
 
     private IEnumerator RightAttackRoutine(Vector3 targetPosition)
     {
-        // 현재 위치와 회전 저장
-        Vector3 savedPosition = transform.position;
-        Quaternion savedRotation = transform.rotation;
-
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
         if (direction.sqrMagnitude > 0.0001f)
@@ -297,10 +290,6 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
 
     private IEnumerator LeftAttackRoutine(Vector3 targetPosition)
     {
-        // 현재 위치와 회전 저장
-        Vector3 savedPosition = transform.position;
-        Quaternion savedRotation = transform.rotation;
-
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
         if (direction.sqrMagnitude > 0.0001f)
@@ -390,8 +379,6 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
 
     private IEnumerator KickAttackRoutine(Vector3 targetPosition)
     {
-        // Use field variables for saved position and rotation
-
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
         if (direction.sqrMagnitude > 0.0001f)

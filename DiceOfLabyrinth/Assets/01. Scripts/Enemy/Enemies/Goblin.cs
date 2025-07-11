@@ -35,7 +35,6 @@ public class Goblin : MonoBehaviour, IEnemy
     private void Awake()
     {
         Init();
-        
     }
 
     private void Start() // 테스트용 스킬
@@ -145,18 +144,20 @@ public class Goblin : MonoBehaviour, IEnemy
             }
             transform.rotation = targetRot;
         }
-
-        // 원래 위치로 복귀
+        // 런 애니메이션 실행하며 복귀
         PlayAnimationByState(EnemyState.Run);
+        float returnDuration = 0.8f;
+        Vector3 returnStart = transform.position;
+        Vector3 returnEnd = savedPosition;
         elapsed = 0f;
-        while (elapsed < runDuration)
+        while (elapsed < returnDuration)
         {
-            float t = elapsed / runDuration;
-            transform.position = Vector3.Lerp(end, savedPosition, t);
+            float t = elapsed / returnDuration;
+            transform.position = Vector3.Lerp(returnStart, returnEnd, t);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        transform.position = savedPosition;
+        transform.position = returnEnd;
         // 복귀 이동 후, 세이브 로테이션으로 회전 복원
         {
             Quaternion rotStart = transform.rotation;
@@ -222,16 +223,20 @@ public class Goblin : MonoBehaviour, IEnemy
             }
             transform.rotation = targetRot;
         }
+        // 런 애니메이션 실행하며 복귀
         PlayAnimationByState(EnemyState.Run);
+        float returnDuration = 0.8f;
+        Vector3 returnStart = transform.position;
+        Vector3 returnEnd = savedPosition;
         elapsed = 0f;
-        while (elapsed < runDuration)
+        while (elapsed < returnDuration)
         {
-            float t = elapsed / runDuration;
-            transform.position = Vector3.Lerp(end, savedPosition, t);
+            float t = elapsed / returnDuration;
+            transform.position = Vector3.Lerp(returnStart, returnEnd, t);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        transform.position = savedPosition;
+        transform.position = returnEnd;
 
         // 세이브 로테이션으로 회전
         {
