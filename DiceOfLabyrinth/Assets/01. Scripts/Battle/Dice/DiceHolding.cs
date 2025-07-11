@@ -82,7 +82,6 @@ public class DiceHolding : MonoBehaviour
 
         if (fixedCount == 0)
         {
-            Debug.Log("리셋");
             index2 = 0;
         }
 
@@ -181,7 +180,7 @@ public class DiceHolding : MonoBehaviour
             if (hit.collider.gameObject.tag == "DiceBoard")
             {
                 diceManager.StopSimulation();
-                diceManager.isSkipped = true;
+                //diceManager.isSkipped = true;
                 diceManager.SortingFakeDice();
             }
         }

@@ -17,7 +17,7 @@ public class BattleEnemyTurnState : IBattleTurnState
 
     public void Exit()
     {
-        enemyAtack.EnemyAttackEnd();        
+        enemyAtack.EnemyAttackEnd();
         DiceManager.Instance.ResetSetting();
     }
 }

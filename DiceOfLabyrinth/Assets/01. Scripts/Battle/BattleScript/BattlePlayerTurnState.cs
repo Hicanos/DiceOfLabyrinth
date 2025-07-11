@@ -10,10 +10,8 @@
 
         if (battleManager.BattleTurn == 1)
         {
-            Setting();
-            ChangePlayerTurnState(PlayerTurnState.BattleStart);            
-
-            battleManager.EnemyPatternContainer.PrepareSkill();
+            AbstractButtonSetting();
+            ChangePlayerTurnState(PlayerTurnState.BattleStart);
         }
 
         string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
@@ -49,7 +47,7 @@
         }
     }
 
-    public void Setting()
+    public void AbstractButtonSetting()
     {
         foreach (AbstractBattleButton button in battleManager.BattleButtons)
         {

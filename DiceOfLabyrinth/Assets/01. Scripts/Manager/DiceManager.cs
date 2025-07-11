@@ -70,7 +70,7 @@ public class DiceManager : MonoBehaviour
     private int rollCount = 0;
     private readonly int maxRollCount = 3;
     public int RollRemain => maxRollCount - rollCount;
-    public bool isSkipped = false;
+    //public bool isSkipped = false;
     public bool isRolling = false;
 
     private Vector3[] dicePos; //굴린 후 정렬 위치
@@ -135,7 +135,7 @@ public class DiceManager : MonoBehaviour
     private void SettingForRoll()
     {
         signitureAmount = 0;
-        isSkipped = false;
+        //isSkipped = false;
 
         ground.SetActive(true);
         DiceBoard.SetActive(true);
@@ -186,7 +186,6 @@ public class DiceManager : MonoBehaviour
                 signitureAmount++;
             }
         }
-        Debug.Log($"{diceResult[0]}, {diceResult[1]}, {diceResult[2]}, {diceResult[3]}, {diceResult[4]}");
     }
 
     IEnumerator SortingAfterRoll()
@@ -202,6 +201,17 @@ public class DiceManager : MonoBehaviour
             diceList.Add(dices[i].GetComponent<Dice>());
         }
         yield return null;
+
+        //Vector3 cameraPos = diceCamera.transform.position;
+        //float destTime = 1, passTime = 0;
+        //while(passTime <= destTime)
+        //{
+        //    cameraPos.z -= Time.deltaTime * 2;
+        //    diceCamera.transform.position = cameraPos;
+
+        //    passTime += Time.deltaTime;
+        //    yield return null;
+        //}
 
         while (true)
         {
@@ -223,15 +233,14 @@ public class DiceManager : MonoBehaviour
                     BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
                 }
 
-                Debug.Log($"남은 리롤 횟수 : {maxRollCount - rollCount}");
-                if (isSkipped == false)
-                {
+                //if (isSkipped == false)
+                //{
                     SortingFakeDice();
-                }
-                else
-                {
-                    GoDefaultPositionDice();
-                }
+                //}
+                //else
+                //{
+                //    GoDefaultPositionDice();
+                //}
                 break;
             }
             rollEndCount = 0;
@@ -303,7 +312,7 @@ public class DiceManager : MonoBehaviour
         foreach (GameObject dice in fakeDices)
         {
             int iNum = diceResult[i] - 1;
-            //Debug.Log($"X : {rotationVectors[iNum].x}, Y : {rotationVectors[iNum].y}, Z : {rotationVectors[iNum].z}");
+            //Debug.Log($"X : {rotationVectors[iNum].x}, Y : {rotationVectors[iNum].y}, Z : {rotationVectors[iNum].z}");            
             quaternion = Quaternion.Euler(rotationVectors[iNum].x, rotationVectors[iNum].y, rotationVectors[iNum].z);
             dice.transform.rotation = quaternion;
             i++;
