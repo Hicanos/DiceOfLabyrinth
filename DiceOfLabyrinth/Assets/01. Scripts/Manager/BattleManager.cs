@@ -35,7 +35,7 @@ public class BattleManager : MonoBehaviour
     public List<BattleCharacter> battleCharacters;
     public StageSaveData.CurrentFormationType currentFormationType;
 
-    private BattleEnemy enemy;
+    [SerializeField] private BattleEnemy enemy;
     public BattleEnemy Enemy => enemy;
     GameObject enemyPrefab;
 
@@ -57,13 +57,14 @@ public class BattleManager : MonoBehaviour
 
     [Header("UIs")]
     public List<AbstractBattleButton> BattleButtons = new List<AbstractBattleButton>();
-    public Image[] HPBars;
+    public Image[] CharacterHPBars;
+    public Image[] EnemyHPBars;
 
     //[SerializeField] Image turnDisplay;
     //public GameObject Stages;    
-     [NonSerialized] public GameObject fixedDiceArea;
-     [NonSerialized] public GameObject stagmaDisplayer;
-     [NonSerialized] public Canvas     battleCanvas;
+    [NonSerialized] public GameObject fixedDiceArea;
+    [NonSerialized] public GameObject stagmaDisplayer;
+    [NonSerialized] public Canvas     battleCanvas;
 
     [Header("Values")]
     public  readonly int MaxCost = 12;
@@ -93,7 +94,8 @@ public class BattleManager : MonoBehaviour
 
     private void GetUIs()
     {
-        HPBars = new Image[6];
+        CharacterHPBars = new Image[5];
+        EnemyHPBars = new Image[1];
         BattleUI battleUI = UIManager.Instance.BattleUI;
         battleUI.Setting();
 
@@ -104,11 +106,9 @@ public class BattleManager : MonoBehaviour
         {
             BattleButtons.Add(battleUI.Buttons[i]);
         }
-        for(int i = 0; i < battleUI.Images.Length; i++)
-        {
-            //HPBars.Add(battleUI.Images[i]);
-            HPBars[i] = battleUI.Images[i];
-        }        
+
+        CharacterHPBars = battleUI.CharacterHPBars;
+        EnemyHPBars = battleUI.EnemyHPBars;
     }
 
     public void BattleStartCoroutine(BattleStartData data) //전투 시작시 호출해야할 메서드
@@ -124,8 +124,7 @@ public class BattleManager : MonoBehaviour
         else
         {
             battleCoroutine.CharacterActive();
-        }
-        
+        }        
     }
 
     private void GetStartData(BattleStartData data)
@@ -145,21 +144,21 @@ public class BattleManager : MonoBehaviour
             DiceManager.Instance.LoadDiceData();
         }
         BattleTurn = 0;
-        HPBars[(int)HPEnum.enemy].gameObject.SetActive(true);
-        UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterHP, $"{enemy.CurrentHP} / {enemy.MaxHP}");
-        UIValueChanger.ChangeEnemyHpRatio(HPEnum.enemy, 1.0f);
+        EnemyHPBars[(int)HPEnumEnemy.enemy].gameObject.SetActive(true);
+        UIValueChanger.ChangeEnemyHpRatio(HPEnumEnemy.enemy);
 
         //turnDisplay.gameObject.SetActive(true);
-        playerTurnState.Enter();
-        
         isBattle = true;
+        isWon = false;
+
+        playerTurnState.Enter();        
     }
 
     public void BattleEnd()
     {
         BattleResultData data;
         isBattle = false;
-        HPBars[(int)HPEnum.enemy].gameObject.SetActive(false);
+        EnemyHPBars[(int)HPEnumEnemy.enemy].gameObject.SetActive(false);
         //turnDisplay.gameObject.SetActive(false);
         DiceManager.Instance.ResetSetting();
         //for (int i = 0; i < battleCharacters.Count; i++)
@@ -175,8 +174,8 @@ public class BattleManager : MonoBehaviour
             data = new BattleResultData(true, battleCharacters);
             if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
             {
-                StageManager.Instance.battleUIController.OpenVictoryPanel();
-                StageManager.Instance.OnBattleResult(data);
+                StageManager.Instance.battleUIController.OpenVictoryPanel();                
+            StageManager.Instance.OnBattleResult(data);
             }
             StageManager.Instance.RoomClear(enemy.Data);
         }

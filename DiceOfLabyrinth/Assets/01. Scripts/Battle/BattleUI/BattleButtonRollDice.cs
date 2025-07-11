@@ -3,6 +3,8 @@
 public class BattleButtonRollDice : AbstractBattleButton
 {
     Button button;
+    bool isRollOver = false;
+
     public override void Setting()
     {
         button = GetComponent<Button>();
@@ -16,6 +18,7 @@ public class BattleButtonRollDice : AbstractBattleButton
                 gameObject.SetActive(true);
                 break;
             case PlayerTurnState.Enter:
+                isRollOver = false;
                 button.interactable = true;
                 break;
             case PlayerTurnState.Roll:
@@ -34,6 +37,11 @@ public class BattleButtonRollDice : AbstractBattleButton
             case PlayerTurnState.Confirm:
                 button.interactable = false;
                 break;
+            case PlayerTurnState.ConfirmEnd:
+                ChangeRollToEndTurn();
+                button.interactable = true;
+                //버튼 외형 바꾸기
+                break;
             case PlayerTurnState.BattleEnd:
                 gameObject.SetActive(false);
                 break;
@@ -42,10 +50,24 @@ public class BattleButtonRollDice : AbstractBattleButton
 
     public override void OnPush()
     {
-        DiceManager.Instance.RollDice();
+        if(isRollOver == false)
+        {
+            DiceManager.Instance.RollDice();
 
-        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.Reroll, DiceManager.Instance.RollRemain.ToString());
-        DiceManager.Instance.DiceHolding.GetFixedList();
-        BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Roll);
+            BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.Reroll, DiceManager.Instance.RollRemain.ToString());
+            DiceManager.Instance.DiceHolding.GetFixedList();
+            BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Roll);
+        }
+        else
+        {
+            button.interactable = false;
+
+            BattleManager.Instance.battlePlayerTurnState.EndPlayerTurn();
+        }
+    }
+
+    private void ChangeRollToEndTurn()
+    {
+        isRollOver = true;
     }
 }

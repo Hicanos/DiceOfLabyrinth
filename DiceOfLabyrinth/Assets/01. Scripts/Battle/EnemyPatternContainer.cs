@@ -12,7 +12,7 @@ public class EnemyPatternContainer : MonoBehaviour
         List<int> pattern = battleManager.Enemy.Data.ActiveSkills;
         int patternLength = battleManager.Enemy.Data.ActiveSkills.Count;
         int patternIndex = (battleManager.BattleTurn - 1) % patternLength;
-
+        Debug.Log($"PrepareSkill\nIndex : {patternIndex}\nLength : {patternLength}");
         int skill_Index = pattern[patternIndex];
 
         SOEnemySkill skill = enemySkillDatas[skill_Index];

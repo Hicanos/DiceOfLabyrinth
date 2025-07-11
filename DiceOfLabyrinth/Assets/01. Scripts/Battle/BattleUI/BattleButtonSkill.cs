@@ -21,10 +21,10 @@ public class BattleButtonSkill : AbstractBattleButton
             case PlayerTurnState.Enter:
                 button.interactable = true;
                 break;
-            case PlayerTurnState.Roll:
+            case PlayerTurnState.Confirm:
                 button.interactable = false;
                 break;
-            case PlayerTurnState.Confirm:
+            case PlayerTurnState.ConfirmEnd:
                 button.interactable = true;
                 break;
             case PlayerTurnState.EndTurn:
