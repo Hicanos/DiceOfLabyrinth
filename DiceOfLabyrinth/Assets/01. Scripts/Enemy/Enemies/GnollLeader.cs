@@ -16,14 +16,12 @@ public class GnollLeader : MonoBehaviour,IEnemy // 테스트에너미 클래스�
     {
         Idle, // 대기 상태
         RightAttack, // 오른손 공격 상태
-        LeftAttack, // 왼손 공격 상태
         SpinAttack, // 회전 공격 상태
         Stun, // 기절 상태
         JumpAttack, // 점프 공격 상태
         Run, // 달리기 상태
         Hit, // 맞은 상태
         Howling, // 울부짖는 상태
-        Kick, // 발차기 상태
         Dead, // 사망 상태
     }
     private EnemyState currentState;
@@ -35,10 +33,15 @@ public class GnollLeader : MonoBehaviour,IEnemy // 테스트에너미 클래스�
     {
         Init();
     }
+    private void Start()
+    {
+        // 필요시 테스트용 스킬 호출 위치
+        // UseActiveSkill(0, 0);
+    }
     public void Init()
     {
         ActiveSkills = new List<Action<Vector3>>(new Action<Vector3>[15]);
-        //ActiveSkills[0] += (pos) =>
+        //ActiveSkills[0] += (pos) => DoRightAttack(pos);
         //ActiveSkills[1] += (pos) =>
         //ActiveSkills[3] += (pos) =>
         //ActiveSkills[4] += (pos) =>
@@ -47,20 +50,33 @@ public class GnollLeader : MonoBehaviour,IEnemy // 테스트에너미 클래스�
     }
     private Vector3 GetTargetPositionByIndex(int index)
     {
-        // 예시: 미리 정의된 위치 배열
-        Vector3[] positions = {
-        new Vector3(0, 0, 0),
-        new Vector3(-5, 0, -3),
-        new Vector3(-2, 0, 2),
-        new Vector3(0, 0, 5),
-        new Vector3(5, 0, 0),
-        // 필요에 따라 추가, 플레이어의 위치 바로앞을 타겟으로 하도록 수정 예정
-        };
+        // 플레이어 포메이션 정보를 스테이지 데이터에서 가져옴
+        var stageSaveData = StageManager.Instance?.stageSaveData;
+        var chapterData = StageManager.Instance?.chapterData;
 
-        if (index >= 0 && index < positions.Length)
-            return positions[index];
-        else
-            return Vector3.zero; // 기본값 또는 예외 처리
+        int chapterIdx = stageSaveData.currentChapterIndex;
+        int stageIdx = stageSaveData.currentStageIndex;
+        int formationIdx = (int)stageSaveData.currentFormationType;
+
+        // 방어적: null 체크 및 인덱스 범위 체크
+        if (chapterData == null ||
+            chapterData.chapterIndex == null ||
+            chapterIdx < 0 || chapterIdx >= chapterData.chapterIndex.Count)
+            return Vector3.zero;
+
+        var chapter = chapterData.chapterIndex[chapterIdx];
+        if (chapter.stageData == null ||
+            chapter.stageData.PlayerFormations == null ||
+            formationIdx < 0 || formationIdx >= chapter.stageData.PlayerFormations.Count)
+            return Vector3.zero;
+
+        var formation = chapter.stageData.PlayerFormations[formationIdx];
+        if (formation.PlayerPositions == null ||
+            index < 0 || index >= formation.PlayerPositions.Count)
+            return Vector3.zero;
+
+        // 실제 포지션 반환 (index로 접근)
+        return formation.PlayerPositions[index].Position;
     }
     public void UseActiveSkill(int skillIndex, int targetIndex)
     {

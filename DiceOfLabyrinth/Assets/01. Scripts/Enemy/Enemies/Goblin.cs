@@ -16,6 +16,9 @@ public class Goblin : MonoBehaviour, IEnemy
 
     public List<Action<Vector3>> ActiveSkills { get; private set; }
 
+    private Vector3 savedPosition;
+    private Quaternion savedRotation;
+
     public enum EnemyState // 에너미의 상태를 정의하는 열거형
     {
         Idle, // 대기 상태
@@ -32,9 +35,14 @@ public class Goblin : MonoBehaviour, IEnemy
     private void Awake()
     {
         Init();
+        
+    }
+
+    private void Start() // 테스트용 스킬
+    {
         //UseActiveSkill(0, 1); // 예시로 첫 번째 스킬을 사용합니다.
         //UseActiveSkill(1, 1); // 예시로 두 번째 스킬을 사용합니다.
-        UseActiveSkill(2, 1); // 예시로 세 번째 스킬을 사용합니다.
+        //UseActiveSkill(2, 1); // 예시로 세 번째 스킬을 사용합니다.
     }
 
     public void Init()
@@ -43,23 +51,39 @@ public class Goblin : MonoBehaviour, IEnemy
         ActiveSkills[0] += (pos) => DoRightAttack(pos);
         ActiveSkills[1] += (pos) => DoSlashDown(pos);
         ActiveSkills[2] += (pos) => DoSpinAttack();
+
+        savedPosition = transform.position;
+        savedRotation = transform.rotation;
     }
     private Vector3 GetTargetPositionByIndex(int index)
     {
-        // 예시: 미리 정의된 위치 배열
-        Vector3[] positions = {
-        new Vector3(0, 0, 0),
-        new Vector3(-5, 0, -3),
-        new Vector3(-2, 0, 2),
-        new Vector3(0, 0, 5),
-        new Vector3(5, 0, 0),
-        // 필요에 따라 추가, 플레이어의 위치 바로앞을 타겟으로 하도록 수정 예정
-        };
+        // 플레이어 포메이션 정보를 스테이지 데이터에서 가져옴
+        var stageSaveData = StageManager.Instance.stageSaveData;
+        var chapterData = StageManager.Instance.chapterData;
 
-        if (index >= 0 && index < positions.Length)
-            return positions[index];
-        else
-            return Vector3.zero; // 기본값 또는 예외 처리
+        int chapterIdx = stageSaveData.currentChapterIndex;
+        int stageIdx = stageSaveData.currentStageIndex;
+        int formationIdx = (int)stageSaveData.currentFormationType;
+
+        // 방어적: null 체크 및 인덱스 범위 체크
+        if (chapterData == null ||
+            chapterData.chapterIndex == null ||
+            chapterIdx < 0 || chapterIdx >= chapterData.chapterIndex.Count)
+            return Vector3.zero;
+
+        var chapter = chapterData.chapterIndex[chapterIdx];
+        if (chapter.stageData == null ||
+            chapter.stageData.PlayerFormations == null ||
+            formationIdx < 0 || formationIdx >= chapter.stageData.PlayerFormations.Count)
+            return Vector3.zero;
+
+        var formation = chapter.stageData.PlayerFormations[formationIdx];
+        if (formation.PlayerPositions == null ||
+            index < 0 || index >= formation.PlayerPositions.Count)
+            return Vector3.zero;
+
+        // 실제 포지션 반환
+        return formation.PlayerPositions[index].Position;
     }
 
     public void UseActiveSkill(int skillIndex, int targetIndex)
@@ -79,10 +103,6 @@ public class Goblin : MonoBehaviour, IEnemy
 
     private IEnumerator RightAttackRoutine(Vector3 targetPosition)
     {
-        // 현재 위치와 회전 저장
-        Vector3 savedPosition = transform.position;
-        Quaternion savedRotation = transform.rotation;
-
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
         if (direction.sqrMagnitude > 0.0001f)
@@ -163,9 +183,6 @@ public class Goblin : MonoBehaviour, IEnemy
 
     private IEnumerator SlashDownRoutine(Vector3 targetPosition)
     {
-        Vector3 savedPosition = transform.position;
-        Quaternion savedRotation = transform.rotation;
-
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
         if (direction.sqrMagnitude > 0.0001f)
             transform.rotation = Quaternion.LookRotation(direction);
@@ -244,6 +261,24 @@ public class Goblin : MonoBehaviour, IEnemy
         PlayAnimationByState(EnemyState.SpinAttack);
         yield return new WaitForSeconds(1f);
         PlayAnimationByState(EnemyState.Idle);
+    }
+    public void TakeDamage()
+    {
+        StartCoroutine(HitRoutine());
+    }
+
+    private IEnumerator HitRoutine()
+    {
+        PlayAnimationByState(EnemyState.Hit);
+
+        // Hit 애니메이션 길이만큼 대기 (예: 0.7초)
+        float hitDuration = 0.7f; // 실제 애니메이션 길이로 조정
+        yield return new WaitForSeconds(hitDuration);
+
+        if (IsDead)
+            PlayAnimationByState(EnemyState.Dead);
+        else
+            PlayAnimationByState(EnemyState.Idle);
     }
     public void PlayAnimationByState(EnemyState state)
     {

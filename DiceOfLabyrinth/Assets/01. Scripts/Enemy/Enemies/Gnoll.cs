@@ -33,16 +33,24 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
     public List<Action<Vector3>> ActiveSkills { get; private set; }
 
 
+    private Vector3 savedPosition;
+    private Quaternion savedRotation;
+
+
     private void Awake()
     {
         Init();
+    }
+    private void Start()
+    {
+
         //DoJumpAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 점프 어택, new Vector3(-5, 0, -3)와 같은 의미입니다.
         //DoRightAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 라이트 어택, new Vector3(-5, 0, -3)와 같은 의미입니다.
         //DoLeftAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 레프트 어택
         //DoKickAttack(Vector3.forward * -5 + Vector3.right * -3); // 테스트용 킥 어택
         //DoSpinAttack(); // 테스트용 스핀 어택
         //UseActiveSkill(0, 0); // 테스트용 킥 어택 사용
-        //UseActiveSkill(4, 1); // 테스트용 점프 어택 사용
+        //UseActiveSkill(4, 0); // 테스트용 점프 어택 사용
     }
     public void Init()
     {
@@ -53,20 +61,33 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
     }
     private Vector3 GetTargetPositionByIndex(int index)
     {
-        // 예시: 미리 정의된 위치 배열
-        Vector3[] positions = {
-        new Vector3(0, 0, 0),
-        new Vector3(-5, 0, -3),
-        new Vector3(-2, 0, 2),
-        new Vector3(0, 0, 5),
-        new Vector3(5, 0, 0),
-        // 필요에 따라 추가, 플레이어의 위치 바로앞을 타겟으로 하도록 수정 예정
-        };
+        // 플레이어 포메이션 정보를 스테이지 데이터에서 가져옴
+        var stageSaveData = StageManager.Instance.stageSaveData;
+        var chapterData = StageManager.Instance.chapterData;
 
-        if (index >= 0 && index < positions.Length)
-            return positions[index];
-        else
-            return Vector3.zero; // 기본값 또는 예외 처리
+        int chapterIdx = stageSaveData.currentChapterIndex;
+        int stageIdx = stageSaveData.currentStageIndex;
+        int formationIdx = (int)stageSaveData.currentFormationType;
+
+        // 방어적: null 체크 및 인덱스 범위 체크
+        if (chapterData == null ||
+            chapterData.chapterIndex == null ||
+            chapterIdx < 0 || chapterIdx >= chapterData.chapterIndex.Count)
+            return new Vector3 (-1,-1,-4);
+
+        var chapter = chapterData.chapterIndex[chapterIdx];
+        if (chapter.stageData == null ||
+            chapter.stageData.PlayerFormations == null ||
+            formationIdx < 0 || formationIdx >= chapter.stageData.PlayerFormations.Count)
+            return new Vector3(-1, -1, -4);
+
+        var formation = chapter.stageData.PlayerFormations[formationIdx];
+        if (formation.PlayerPositions == null ||
+            index < 0 || index >= formation.PlayerPositions.Count)
+            return new Vector3(-1, -1, -4);
+
+        // 실제 포지션 반환
+        return formation.PlayerPositions[index].Position;
     }
     public void UseActiveSkill(int skillIndex, int targetIndex)
     {
@@ -369,9 +390,7 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
 
     private IEnumerator KickAttackRoutine(Vector3 targetPosition)
     {
-        // 현재 위치와 회전 저장
-        Vector3 savedPosition = transform.position;
-        Quaternion savedRotation = transform.rotation;
+        // Use field variables for saved position and rotation
 
         // 목표 방향으로 회전
         Vector3 direction = (new Vector3(targetPosition.x, transform.position.y, targetPosition.z) - transform.position).normalized;
