@@ -69,18 +69,18 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
         if (chapterData == null ||
             chapterData.chapterIndex == null ||
             chapterIdx < 0 || chapterIdx >= chapterData.chapterIndex.Count)
-            return Vector3.zero;
+            return new Vector3(-1, -1, -4);
 
         var chapter = chapterData.chapterIndex[chapterIdx];
         if (chapter.stageData == null ||
             chapter.stageData.PlayerFormations == null ||
             formationIdx < 0 || formationIdx >= chapter.stageData.PlayerFormations.Count)
-            return Vector3.zero;
+            return new Vector3(-1, -1, -4);
 
         var formation = chapter.stageData.PlayerFormations[formationIdx];
         if (formation.PlayerPositions == null ||
             index < 0 || index >= formation.PlayerPositions.Count)
-            return Vector3.zero;
+            return new Vector3(-1, -1, -4);
 
         // 실제 포지션 반환 (index로 접근)
         return formation.PlayerPositions[index].Position;
@@ -94,6 +94,7 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
             return;
         }
         Vector3 targetPos = GetTargetPositionByIndex(targetIndex);
+        Debug.Log($"Using skill {skillIndex} on target index {targetIndex} at position {targetPos}");
         ActiveSkills[skillIndex]?.Invoke(targetPos);
     }
     public void TakeDamage()
