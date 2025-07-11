@@ -12,9 +12,9 @@ public class SelectAdventureUIController : MonoBehaviour
 
     private int selectedChapterIndex = -1; // 선택된 챕터 인덱스
 
-    [SerializeField] private CanvasGroup costCalculationFade;
     [SerializeField] private CanvasGroup scarceStaminaFade;
 
+    [Header("DOTWeen")]
     [SerializeField] float fadeIn = .25f;
     [SerializeField] float fadeOut = .20f;
     [SerializeField] float popScale = 1.1f;
@@ -23,7 +23,6 @@ public class SelectAdventureUIController : MonoBehaviour
 
     [Header("Panels")]
     [SerializeField] private GameObject selectChapterPanel;
-    [SerializeField] private GameObject costCalculationPanel;
     //[SerializeField] private GameObject selectDungeonPanel; //배틀씬으로 패널을 옮겼으므로 주석 처리
     [SerializeField] private GameObject scarceStaminaPanel;
     //[SerializeField] private GameObject teamFormationPanel; // 배틀씬으로 패널을 옮겼으므로 주석 처리
@@ -35,7 +34,6 @@ public class SelectAdventureUIController : MonoBehaviour
     [SerializeField] private GameObject HardDifficultySelect;
 
     [Header("Select Dungeon")]
-    [SerializeField] private TMP_Text selectedChapterText; // 스테이지 선택 패널 제목
     [SerializeField] private Image chapterIcon; // 스테이지 선택 패널 아이콘
     [SerializeField] private TMP_Text chapterDescriptionText; // 스테이지 선택 패널 설명
 
@@ -59,7 +57,6 @@ public class SelectAdventureUIController : MonoBehaviour
     private void Start()
     {
         selectChapterPanel.SetActive(true);
-        costCalculationPanel.SetActive(false);
         scarceStaminaPanel.SetActive(false);
         DifficultyToggleRefresh(); // 초기 난이도 토글 상태 설정
 
@@ -96,12 +93,11 @@ public class SelectAdventureUIController : MonoBehaviour
             {
                 messagePopup.Open(
                 $"해당 챕터()는 이미 완료되었습니다. 다시 시작하시겠습니까?.",
-                 () => OpenCostCalculationPanel(chapterIndex), // 확인(Yes) 버튼 클릭 시, 입장 코스트를 묻는 패널을 엽니다.
+                 () => messagePopup.Close(), // 확인(Yes) 버튼 클릭 시, 입장.
                  () => messagePopup.Close() // 취소(No) 버튼 클릭 시
             );
                 return;
             }
-            OpenCostCalculationPanel(chapterIndex); // 입장 코스트를 묻는 패널을 엽니다.
         }
         else if (chapterIndex != StageManager.Instance.stageSaveData.currentChapterIndex) // 현재 챕터와 선택한 챕터가 다를 때엔 이전 챕터의 종료를 먼저 하라는 팝업을 띄워야 합니다.
         {
@@ -111,7 +107,6 @@ public class SelectAdventureUIController : MonoBehaviour
         else // 진행 중이던 챕터를 다시 선택한 경우
         {
             selectChapterPanel.SetActive(false);
-            costCalculationPanel.SetActive(false);
             scarceStaminaPanel.SetActive(false);
             {
                 // 코스트 지불 없이 바로 배틀 씬으로 이동할 수 있도록 처리합니다.
@@ -126,38 +121,7 @@ public class SelectAdventureUIController : MonoBehaviour
         }
     }
 
-    private void OpenCostCalculationPanel(int chapterIndex) // 코스트 지불 UI 열기
-    {
-        UpdateSelectedChapterUI(chapterIndex); // 선택된 챕터의 UI 업데이트
-        selectChapterPanel.SetActive(true);
-        costCalculationPanel.SetActive(true);
-        scarceStaminaPanel.SetActive(false);
-
-#if DOTWEEN
-        costCalculationFade.alpha = 0;
-        costCalculationFade.DOFade(1, fadeIn);
-
-        transform.localScale = Vector3.one * popScale;
-        transform.DOScale(1, fadeIn).SetEase(Ease.OutBack);
-#endif
-
-        selectedChapterText.text = chapterData.chapterIndex[selectedChapterIndex].ChapterName;
-        chapterIcon.sprite = chapterData.chapterIndex[selectedChapterIndex].Image;
-        chapterDescriptionText.text = chapterData.chapterIndex[selectedChapterIndex].Description;
-
-    }
-
-    public void OnClickCostPanelBackButton() // 코스트 지불 UI 닫기
-    {
-        selectChapterPanel.SetActive(true);
-
-#if DOTWEEN
-        costCalculationFade.DOFade(0, fadeOut).OnComplete(() => costCalculationPanel.SetActive(false));
-#endif
-        costCalculationPanel.SetActive(false);
-    }
-
-    public void OnClickCostCalculationPanelStartButton() // 코스트 지불 UI의 시작 버튼
+    public void OnClickStartButton() // 진입 버튼
     {
         int chapterIndex = selectedChapterIndex; // 선택된 챕터 인덱스 가져오기
         if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count)
@@ -178,7 +142,6 @@ public class SelectAdventureUIController : MonoBehaviour
             StageManager.Instance.stageSaveData.ResetToDefault(chapterIndex); // 스테이지 상태 초기화
             Debug.Log($"Starting battle for chapter: {selectedChapter.ChapterName} (Index: {chapterIndex})");
             //SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
-            costCalculationPanel.SetActive(false);
             StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태 복원
         }
     }
