@@ -4,6 +4,7 @@
 /// 로비에서 사용되는 캐릭터 정보 및 기능
 /// (외부 강화, 경험치, 성장 등)
 /// </summary>
+[System.Serializable]
 public class LobbyCharacter : Character
 {
     [Header("로비 정보")]

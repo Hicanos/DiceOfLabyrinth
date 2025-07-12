@@ -9,8 +9,7 @@ public class SelectAdventureUIController : MonoBehaviour
     public ChapterData chapterData;
     public MessagePopup messagePopup; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
-
-    private int selectedChapterIndex = -1; // 선택된 챕터 인덱스
+    [SerializeField] private int selectedChapterIndex = 0; // 선택된 챕터 인덱스
 
     [SerializeField] private CanvasGroup scarceStaminaFade;
 
@@ -33,11 +32,7 @@ public class SelectAdventureUIController : MonoBehaviour
     [SerializeField] private GameObject HardDifficultyUnselect;
     [SerializeField] private GameObject HardDifficultySelect;
 
-    [Header("Select Dungeon")]
-    [SerializeField] private Image chapterIcon; // 스테이지 선택 패널 아이콘
-    [SerializeField] private TMP_Text chapterDescriptionText; // 스테이지 선택 패널 설명
-
-    [Header("SelectedChapter")]
+    [Header("Selected Chapter")]
     [SerializeField] private Image chapterIconSelected; // 선택된 챕터 아이콘
     //[SerializeField] private List<TMP_Text> selectedChapterNameText = new List<TMP_Text>(); // 선택된 챕터 이름 텍스트, 여러 개의 챕터 이름을 표시할 수 있도록 리스트로 변경
     [SerializeField] private TMP_Text selectedChapterDescriptionText; // 선택된 챕터 설명 텍스트, 현재 기획에선 설명이 필요하지 않으므로 주석 처리
@@ -243,7 +238,7 @@ public class SelectAdventureUIController : MonoBehaviour
         //{
         //    text.text = selectedChapter.ChapterName;
         //}
-        chapterIconSelected = chapterData.chapterIndex[selectedChapterIndex].Image;
+        chapterIconSelected.sprite = chapterData.chapterIndex[selectedChapterIndex].Sprite;
         selectedChapterDescriptionText.text = selectedChapter.Description;
     }
 

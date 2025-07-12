@@ -56,13 +56,13 @@ public class MessagePopup : MonoBehaviour
         _onNo = onNo;
         gameObject.SetActive(true);
 
-#if DOTWEEN
-        cgFade.alpha = 0;
-        cgFade.DOFade(1, fadeIn);
+//#if DOTWEEN
+//        cgFade.alpha = 0;
+//        cgFade.DOFade(1, fadeIn);
 
-        transform.localScale = Vector3.one * popScale;
-        transform.DOScale(1, fadeIn).SetEase(Ease.OutBack);
-#endif
+//        transform.localScale = Vector3.one * popScale;
+//        transform.DOScale(1, fadeIn).SetEase(Ease.OutBack);
+//#endif
     }
 
     public void OnClickYes()
@@ -79,11 +79,12 @@ public class MessagePopup : MonoBehaviour
 
     public void Close()
     {
-#if DOTWEEN
-        cgFade.DOFade(0, fadeOut).OnComplete(() => gameObject.SetActive(false));
-#else
+        //#if DOTWEEN
+        //        cgFade.DOFade(0, fadeOut).OnComplete(() => gameObject.SetActive(false));
+        //#else
+        //        gameObject.SetActive(false);
+        //#endif
+        //        _onYes = _onNo = null;
         gameObject.SetActive(false);
-#endif
-        _onYes = _onNo = null;
     }
 }
