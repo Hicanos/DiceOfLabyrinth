@@ -38,7 +38,7 @@ public class SelectAdventureUIController : MonoBehaviour
     [SerializeField] private TMP_Text chapterDescriptionText; // 스테이지 선택 패널 설명
 
     [Header("SelectedChapter")]
-    //[SerializeField] private Sprite chapterIconSelected; // 선택된 챕터 아이콘
+    [SerializeField] private Image chapterIconSelected; // 선택된 챕터 아이콘
     //[SerializeField] private List<TMP_Text> selectedChapterNameText = new List<TMP_Text>(); // 선택된 챕터 이름 텍스트, 여러 개의 챕터 이름을 표시할 수 있도록 리스트로 변경
     [SerializeField] private TMP_Text selectedChapterDescriptionText; // 선택된 챕터 설명 텍스트, 현재 기획에선 설명이 필요하지 않으므로 주석 처리
 
@@ -243,7 +243,7 @@ public class SelectAdventureUIController : MonoBehaviour
         //{
         //    text.text = selectedChapter.ChapterName;
         //}
-        //chapterIconSelected = chapterData.chapterIndex[selectedChapterIndex].Image;
+        chapterIconSelected = chapterData.chapterIndex[selectedChapterIndex].Image;
         selectedChapterDescriptionText.text = selectedChapter.Description;
     }
 
