@@ -18,7 +18,7 @@ public class StageInfo
     // 스테이지 정보 필드들
     [SerializeField] private string stageName;
     [SerializeField] private string description;
-    [SerializeField] private Sprite backgroundImage;
+    [SerializeField] private Image backgroundImage;
     [SerializeField] private int expReward;
     [SerializeField] private int goldReward;
     [SerializeField] private int jewelReward;
@@ -33,7 +33,7 @@ public class StageInfo
     // 읽기 전용 프로퍼티들
     public string StageName => stageName;
     public string Description => description;
-    public Sprite BackgroundImage => backgroundImage;
+    public Image BackgroundImage => backgroundImage;
     public int ExpReward => expReward;
     public int GoldReward => goldReward;
     public int JewelReward => jewelReward;

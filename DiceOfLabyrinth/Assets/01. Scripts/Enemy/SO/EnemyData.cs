@@ -47,6 +47,7 @@ public class EnemyData: ScriptableObject
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private List<int> activeSkills; // 액티브 스킬 인덱스 리스트
     [SerializeField] private List<int> passiveSkills; // 패시브 스킬 인덱스 리스트
+    [SerializeField] private Quaternion enemySpawnRotation; // 적 스폰 회전값
 
     public string EnemyName => enemyName;
     public int EnemyLevel => StageManager.Instance.stageSaveData.currentStageIndex + 1;
@@ -57,6 +58,7 @@ public class EnemyData: ScriptableObject
     public GameObject EnemyPrefab => enemyPrefab;
     public List<int> ActiveSkills => ActiveSkills;
     public List<int> PassiveSkills => PassiveSkills;
+    public Quaternion EnemySpawnRotation => enemySpawnRotation;
 
     // 기초값
     public int BaseMaxHp => baseMaxHp;

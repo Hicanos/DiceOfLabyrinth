@@ -79,11 +79,14 @@ public class BattleCoroutine : MonoBehaviour
             yield return null;
         }
 
-        //for (int i = 0; i < 5; i++)
-        //{
-        //    battleManager.HPBar[i].transform.localPosition = positions[i].Position + Vector3.up * 5;
-        //    battleManager.HPBar[i].gameObject.SetActive(true);
-        //}
+        Camera cam = DiceManager.Instance.diceCamera;
+        for (int i = 0; i < 5; i++)
+        {
+            Vector3 vec2 = cam.WorldToScreenPoint(characterPrefabs[i].transform.position);
+            battleManager.CharacterHPBars[i].gameObject.SetActive(true);
+            battleManager.CharacterHPBars[i].transform.localPosition = vec2;
+            battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+        }
 
         isPreparing = false;
         battleManager.BattleStart();
@@ -97,19 +100,15 @@ public class BattleCoroutine : MonoBehaviour
         isPreparing = false;
         StopCoroutine(enumeratorSpawn);
 
-        int chapterIndex = StageManager.Instance.stageSaveData.currentChapterIndex;
-        chapterIndex = 0; //임시
-        int iFormation = ((int)StageManager.Instance.stageSaveData.currentFormationType);
-
-        List<PlayerPositions> positions = StageManager.Instance.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
-        Camera cam = Camera.main;
-
+        Camera cam = DiceManager.Instance.diceCamera;
         for (int i = 0; i < 5; i++)
         {
-            characterPrefabs[i].transform.localPosition = positions[i].Position;
-            //Vector3 vec2 = cam.WorldToViewportPoint(positions[i].Position + Vector3.up * 50);
-            //battleManager.HPBar[i].transform.position = vec2;
-            //battleManager.HPBar[i].gameObject.SetActive(true);
+            characterPrefabs[i].transform.localPosition = characterDestPos[i];
+
+            Vector3 vec2 = cam.WorldToScreenPoint(characterPrefabs[i].transform.position);
+            battleManager.CharacterHPBars[i].gameObject.SetActive(true);
+            battleManager.CharacterHPBars[i].transform.localPosition = vec2;
+            battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
         }
 
         battleManager.BattleStart();
@@ -174,7 +173,7 @@ public class BattleCoroutine : MonoBehaviour
             }
             yield return null;
         }
-        battleManager.stateMachine.ChangeState(battleManager.enemyTurnState);
+        BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.ConfirmEnd);
     }
 
     public void DealDamage(IDamagable target, int damage)
@@ -183,8 +182,7 @@ public class BattleCoroutine : MonoBehaviour
         BattleEnemy enemy = (BattleEnemy)target;
         float ratio = (float)enemy.CurrentHP / enemy.MaxHP;
 
-        battleManager.UIValueChanger.ChangeEnemyHpRatio(HPEnum.enemy, ratio);
-        battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterHP, $"{enemy.CurrentHP} / {enemy.MaxHP}");
+        battleManager.UIValueChanger.ChangeEnemyHpRatio(HPEnumEnemy.enemy);
     }
 
     //public void SpawnInDungeonSelect()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ChapterData", menuName = "ScriptableObjects/Stages/ChapterData", order = 1)]
@@ -18,7 +19,7 @@ public class ChapterInfo
     [SerializeField] private string chapterName;
     [SerializeField] private ChapterDifficulty chapterDifficulty; // 챕터 난이도, Normal 또는 Hard로 설정 가능
     [SerializeField] private string description;
-    [SerializeField] private Sprite image;
+    [SerializeField] private Sprite sprite;
     [SerializeField] private int chapterCost;
     [SerializeField] private int directCompleteCost;
     [SerializeField] private bool defaultIsUnLocked; // 챕터가 기본적으로 잠금 해제되어 있는지 여부
@@ -28,7 +29,7 @@ public class ChapterInfo
 
     public string ChapterName => chapterName;
     public string Description => description;
-    public Sprite Image => image;
+    public Sprite Sprite => sprite;
     public int ChapterCost => chapterCost;
     public int DirectCompleteCost => directCompleteCost;
 

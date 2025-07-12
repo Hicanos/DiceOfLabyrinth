@@ -25,6 +25,14 @@ public class PublicUIController : MonoBehaviour
     [SerializeField] private TMP_Text goldText;
     [SerializeField] private TMP_Text jewelText;
 
+    [Header("Popup")]
+    [SerializeField] private GameObject messagePopup;
+
+    private void Start()
+    {
+        messagePopup.SetActive(false);
+    }
+
     public void Refresh()
     {
         UserData userdata = UserDataManager.Instance.userdata;

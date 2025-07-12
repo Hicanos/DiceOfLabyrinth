@@ -10,10 +10,8 @@
 
         if (battleManager.BattleTurn == 1)
         {
-            Setting();
-            ChangePlayerTurnState(PlayerTurnState.BattleStart);            
-
-            //battleManager.LoadMonsterPattern.Load();
+            AbstractButtonSetting();
+            ChangePlayerTurnState(PlayerTurnState.BattleStart);
         }
 
         string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
@@ -36,6 +34,11 @@
         OnOffButton();
     }
 
+    public void EndPlayerTurn()
+    {
+        battleManager.stateMachine.ChangeState(battleManager.enemyTurnState);
+    }
+
     private void OnOffButton()
     {
         foreach (AbstractBattleButton button in battleManager.BattleButtons)
@@ -44,7 +47,7 @@
         }
     }
 
-    public void Setting()
+    public void AbstractButtonSetting()
     {
         foreach (AbstractBattleButton button in battleManager.BattleButtons)
         {
