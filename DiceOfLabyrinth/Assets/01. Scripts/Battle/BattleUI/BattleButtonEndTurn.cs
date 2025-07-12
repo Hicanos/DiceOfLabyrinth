@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 
 public class BattleButtonEndTurn : AbstractBattleButton
 {
@@ -20,7 +18,7 @@ public class BattleButtonEndTurn : AbstractBattleButton
             case PlayerTurnState.Enter:
                 button.interactable = false;
                 break;
-            case PlayerTurnState.Confirm:
+            case PlayerTurnState.ConfirmEnd:
                 button.interactable = true;
                 break;
             case PlayerTurnState.EndTurn:
@@ -34,9 +32,8 @@ public class BattleButtonEndTurn : AbstractBattleButton
 
     public override void OnPush()
     {
-        float diceWeighting = DiceManager.Instance.DiceBattle.GetDamageWeighting(); //족보별 계수
-        BattleManager battleManager = BattleManager.Instance;
-        //공격 애니메이션실행
-        battleManager.battleCoroutine.CharacterAttack(diceWeighting);
+        button.interactable = false;
+        
+        BattleManager.Instance.battlePlayerTurnState.EndPlayerTurn();
     }
 }

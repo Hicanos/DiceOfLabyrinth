@@ -61,9 +61,6 @@ public class DiceManager : MonoBehaviour
     private List<int> fixedDiceList;
     public List<int> FixedDiceList => fixedDiceList;
 
-    private List<int> tempFixedDiceList;
-    public List<int> TempFixedDiceList => tempFixedDiceList;
-
     const int maxDiceNum = 6;
     const int diceCount = 5;
 
@@ -73,7 +70,7 @@ public class DiceManager : MonoBehaviour
     private int rollCount = 0;
     private readonly int maxRollCount = 3;
     public int RollRemain => maxRollCount - rollCount;
-    public bool isSkipped = false;
+    //public bool isSkipped = false;
     public bool isRolling = false;
 
     private Vector3[] dicePos; //굴린 후 정렬 위치
@@ -95,7 +92,6 @@ public class DiceManager : MonoBehaviour
         fakeDices = new GameObject[diceCount];
         dicesDatas = new DiceMy[diceCount];
         fixedDiceList = new List<int>();
-        tempFixedDiceList = new List<int>();
         
         defaultPos = new Vector3[] { new Vector3(2.29f, 0, 2.07f), new Vector3(3.73f, 3.33f, 1.35f), new Vector3(4.57f, 0, 2.11f), new Vector3(6.05f, 2.96f, 1.35f), new Vector3(7.1f, -0.2f, 1.94f) };
     }
@@ -122,28 +118,6 @@ public class DiceManager : MonoBehaviour
         }
     }
 
-    private void tempLoadDice() //추후 DIcsSettingForBattle을 대체
-    {
-        GameObject go;
-        for (int i = 0; i < diceCount; i++)
-        {
-            CharDiceData diceData = BattleManager.Instance.battleCharacters[i].CharacterData.charDiceData;
-            //go = diceData.prefab;
-
-            //dices[i] = Instantiate(go, defaultPos[i], Quaternion.identity, diceContainer.transform);
-            //fakeDices[i] = Instantiate(go, dicePos[i], Quaternion.identity, fakeDiceContainer.transform);
-
-            signitureArr[i] = diceData.CignatureNo;
-
-            faceProbability[i, 0] = diceData.FaceProbability1;
-            faceProbability[i, 1] = faceProbability[i, 0] + diceData.FaceProbability2;
-            faceProbability[i, 2] = faceProbability[i, 1] + diceData.FaceProbability3;
-            faceProbability[i, 3] = faceProbability[i, 2] + diceData.FaceProbability4;
-            faceProbability[i, 4] = faceProbability[i, 3] + diceData.FaceProbability5;
-            faceProbability[i, 5] = faceProbability[i, 4] + diceData.FaceProbability6;
-        }
-    }
-
     public void RollDice()
     {
         SettingForRoll();
@@ -161,13 +135,13 @@ public class DiceManager : MonoBehaviour
     private void SettingForRoll()
     {
         signitureAmount = 0;
-        isSkipped = false;
+        //isSkipped = false;
 
         ground.SetActive(true);
         DiceBoard.SetActive(true);
         for (int i = 0; i < fakeDices.Length; i++)
         {
-            if (fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i)) continue;
+            if (fixedDiceList.Contains<int>(i)) continue;
             fakeDices[i].SetActive(false);
         }
         diceCamera.cullingMask |= 1 << LayerMask.NameToLayer("Dice");
@@ -177,12 +151,6 @@ public class DiceManager : MonoBehaviour
             Dice dice = diceGO.GetComponent<Dice>();
             dice.Locomotion.isEnd = false;
         }
-
-        foreach (int i in tempFixedDiceList)
-        {
-            fixedDiceList.Add(i);
-        }
-        tempFixedDiceList.Clear();
 
         isRolling = true;
     }
@@ -195,7 +163,7 @@ public class DiceManager : MonoBehaviour
 
         for (int i = 0; i < diceResult.Length; i++)
         {
-            if (tempFixedDiceList.Contains<int>(i) || fixedDiceList.Contains<int>(i))
+            if (fixedDiceList.Contains<int>(i))
             {
                 diceResultCount[diceResult[i] - 1]++;
                 continue;
@@ -234,6 +202,17 @@ public class DiceManager : MonoBehaviour
         }
         yield return null;
 
+        //Vector3 cameraPos = diceCamera.transform.position;
+        //float destTime = 1, passTime = 0;
+        //while(passTime <= destTime)
+        //{
+        //    cameraPos.z -= Time.deltaTime * 2;
+        //    diceCamera.transform.position = cameraPos;
+
+        //    passTime += Time.deltaTime;
+        //    yield return null;
+        //}
+
         while (true)
         {
             for (int i = 0; i < diceList.Count; i++) //모든 주사위가 멈췄는지 체크
@@ -254,15 +233,14 @@ public class DiceManager : MonoBehaviour
                     BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
                 }
 
-                Debug.Log($"남은 리롤 횟수 : {maxRollCount - rollCount}");
-                if (isSkipped == false)
-                {
+                //if (isSkipped == false)
+                //{
                     SortingFakeDice();
-                }
-                else
-                {
-                    GoDefaultPositionDice();
-                }
+                //}
+                //else
+                //{
+                //    GoDefaultPositionDice();
+                //}
                 break;
             }
             rollEndCount = 0;
@@ -288,13 +266,7 @@ public class DiceManager : MonoBehaviour
             roll.diceAndOutcomeArray[index].dice = dices[index].GetComponent<Dice>();
         }
 
-        foreach (int index in tempFixedDiceList)
-        {
-            roll.diceAndOutcomeArray[index].dice = dices[index].GetComponent<Dice>();
-        }
-
         fixedDiceList.Clear();
-        tempFixedDiceList.Clear();
 
         GoDefaultPositionDice();
         GoDefaultPositionFakeDice();
@@ -340,6 +312,7 @@ public class DiceManager : MonoBehaviour
         foreach (GameObject dice in fakeDices)
         {
             int iNum = diceResult[i] - 1;
+            //Debug.Log($"X : {rotationVectors[iNum].x}, Y : {rotationVectors[iNum].y}, Z : {rotationVectors[iNum].z}");            
             quaternion = Quaternion.Euler(rotationVectors[iNum].x, rotationVectors[iNum].y, rotationVectors[iNum].z);
             dice.transform.rotation = quaternion;
             i++;
@@ -353,7 +326,7 @@ public class DiceManager : MonoBehaviour
     {
         for (int i = 0; i < fakeDices.Length; i++)
         {
-            if (fixedDiceList.Contains<int>(i) || tempFixedDiceList.Contains<int>(i)) continue;
+            if (fixedDiceList.Contains<int>(i)) continue;
             fakeDices[i].transform.localPosition = dicePos[i];
         }
     }

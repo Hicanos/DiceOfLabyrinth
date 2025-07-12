@@ -28,31 +28,30 @@ public class BattleUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI cost;
     [SerializeField] TextMeshProUGUI monsterSkillName;
     [SerializeField] TextMeshProUGUI monsterSkillDescription;
-    [SerializeField] TextMeshProUGUI monsterHP;
     [SerializeField] TextMeshProUGUI rank;
     [SerializeField] TextMeshProUGUI reRoll;
 
     [NonSerialized] private TextMeshProUGUI[] texts;
 
-    [Header("HPs For Ratio Changer")]
-    [SerializeField] RectTransform hP_Char1;
-    [SerializeField] RectTransform hP_Char2;
-    [SerializeField] RectTransform hP_Char3;
-    [SerializeField] RectTransform hP_Char4;
-    [SerializeField] RectTransform hP_Char5;
-    [SerializeField] RectTransform hP_Enemy;
+    [NonSerialized] private RectTransform[]   characterHPs;
+    [NonSerialized] private TextMeshProUGUI[] characterHPTexts;
 
-    [NonSerialized] private RectTransform[] hps;
+    [NonSerialized] private RectTransform[]   enemyHPs;
+    [NonSerialized] private TextMeshProUGUI[] enemyHPTexts;
 
-    [Header("HP Bars")]
+    [Header("Character HP Bars")]
     [SerializeField] Image hPBar_Char1;
     [SerializeField] Image hPBar_Char2;
     [SerializeField] Image hPBar_Char3;
     [SerializeField] Image hPBar_Char4;
     [SerializeField] Image hPBar_Char5;
+
+    [NonSerialized] public Image[] CharacterHPBars = new Image[5];
+
+    [Header("Enemy HP Bars")]
     [SerializeField] Image hPBar_Enemy;
 
-    [NonSerialized] public Image[] Images = new Image[6];
+    [NonSerialized] public Image[] EnemyHPBars = new Image[1];
 
     public void Setting()
     {
@@ -66,28 +65,40 @@ public class BattleUI : MonoBehaviour
         Buttons[7] = char5;
         Buttons[8] = patternDisplayer;
 
-        texts = new TextMeshProUGUI[6];
+        texts = new TextMeshProUGUI[5];
         texts[0] = cost;
         texts[1] = monsterSkillName;
         texts[2] = monsterSkillDescription;
-        texts[3] = monsterHP;
-        texts[4] = rank;
-        texts[5] = reRoll;
+        texts[3] = rank;
+        texts[4] = reRoll;
 
-        hps = new RectTransform[6];
-        hps[0] = hP_Char1;
-        hps[1] = hP_Char2;
-        hps[2] = hP_Char3;
-        hps[3] = hP_Char4;
-        hps[4] = hP_Char5;
-        hps[5] = hP_Enemy;
+        characterHPTexts = new TextMeshProUGUI[5];
+        characterHPTexts[0] = hPBar_Char1.GetComponentInChildren<TextMeshProUGUI>();
+        characterHPTexts[1] = hPBar_Char2.GetComponentInChildren<TextMeshProUGUI>();
+        characterHPTexts[2] = hPBar_Char3.GetComponentInChildren<TextMeshProUGUI>();
+        characterHPTexts[3] = hPBar_Char4.GetComponentInChildren<TextMeshProUGUI>();
+        characterHPTexts[4] = hPBar_Char5.GetComponentInChildren<TextMeshProUGUI>();
 
-        Images[0] = hPBar_Char1;
-        Images[1] = hPBar_Char2;
-        Images[2] = hPBar_Char3;
-        Images[3] = hPBar_Char4;
-        Images[4] = hPBar_Char5;
-        Images[5] = hPBar_Enemy;
+        characterHPs = new RectTransform[5];
+        characterHPs[0] = hPBar_Char1.GetComponentsInChildren<RectTransform>()[1];
+        characterHPs[1] = hPBar_Char2.GetComponentsInChildren<RectTransform>()[1];
+        characterHPs[2] = hPBar_Char3.GetComponentsInChildren<RectTransform>()[1];
+        characterHPs[3] = hPBar_Char4.GetComponentsInChildren<RectTransform>()[1];
+        characterHPs[4] = hPBar_Char5.GetComponentsInChildren<RectTransform>()[1];
+
+        enemyHPs = new RectTransform[1];
+        enemyHPs[0] = hPBar_Enemy.GetComponentsInChildren<RectTransform>()[1];
+
+        enemyHPTexts = new TextMeshProUGUI[1];
+        enemyHPTexts[0] = hPBar_Enemy.GetComponentInChildren<TextMeshProUGUI>();
+
+        CharacterHPBars[0] = hPBar_Char1;
+        CharacterHPBars[1] = hPBar_Char2;
+        CharacterHPBars[2] = hPBar_Char3;
+        CharacterHPBars[3] = hPBar_Char4;
+        CharacterHPBars[4] = hPBar_Char5;
+
+        EnemyHPBars[0] = hPBar_Enemy;
     }
 
     /// <summary>
@@ -99,10 +110,34 @@ public class BattleUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 캐릭터와 에너미의 체력바 비율을 변경하는 메서드입니다.
+    /// 체력바 텍스트를 변경하는 메서드입니다.
     /// </summary>
-    public void ChangeEnemyHpRatio(HPEnum hpEnum, float value)
+    public void ChangeUIText(HPEnumCharacter uiEnum, string value)
     {
-        hps[(int)hpEnum].localScale = new Vector3(value, 1, 1);
+        characterHPTexts[(int)uiEnum].text = value;
+    }
+
+    /// <summary>
+    /// 체력바 텍스트를 변경하는 메서드입니다.
+    /// </summary>
+    public void ChangeUIText(HPEnumEnemy uiEnum, string value)
+    {
+        enemyHPTexts[(int)uiEnum].text = value;
+    }
+
+    /// <summary>
+    /// 캐릭터의 체력바 비율을 변경하는 메서드입니다.
+    /// </summary>
+    public void ChangeCharacterHpRatio(HPEnumCharacter hpEnum, float value)
+    {
+        characterHPs[(int)hpEnum].localScale = new Vector3(value, 1, 1);
+    }
+
+    /// <summary>
+    /// 에너미의 체력바 비율을 변경하는 메서드입니다.
+    /// </summary>
+    public void ChangeEnemyHpRatio(HPEnumEnemy hpEnum, float value)
+    {
+        enemyHPs[0].localScale = new Vector3(value, 1, 1);
     }
 }

@@ -5,14 +5,18 @@ public enum BattleTextUIEnum
     Cost,
     MonsterSkillName,
     MonsterSkillDescription,
-    MonsterHP,
     Rank,
     Reroll
 }
 
-public enum HPEnum
+public enum HPEnumCharacter
 {
-    Character1, Character2, Character3, Character4, Character5, enemy
+    Character1, Character2, Character3, Character4, Character5
+}
+
+public enum HPEnumEnemy
+{
+    enemy
 }
 
 public class BattleUIValueChanger : MonoBehaviour
@@ -26,10 +30,30 @@ public class BattleUIValueChanger : MonoBehaviour
     }
 
     /// <summary>
-    /// 캐릭터와 에너미의 체력바 비율을 변경하는 메서드입니다.
+    /// 캐릭터의 체력바 비율과 텍스트를 변경하는 메서드입니다.
     /// </summary>
-    public void ChangeEnemyHpRatio(HPEnum hpEnum, float value)
+    public void ChangeCharacterHpRatio(HPEnumCharacter hpEnum)
     {
-        UIManager.Instance.BattleUI.ChangeEnemyHpRatio(hpEnum, value);
+        int maxHP = BattleManager.Instance.battleCharacters[(int)hpEnum].RegularHP;
+        int curHP = BattleManager.Instance.battleCharacters[(int)hpEnum].CurrentHP;
+
+        float ratio = (float)curHP / maxHP;
+
+        UIManager.Instance.BattleUI.ChangeUIText(hpEnum, $"{curHP} / {maxHP}");
+        UIManager.Instance.BattleUI.ChangeCharacterHpRatio(hpEnum, ratio);
+    }
+
+    /// <summary>
+    /// 에너미의 체력바 비율과 텍스트를 변경하는 메서드입니다.
+    /// </summary>
+    public void ChangeEnemyHpRatio(HPEnumEnemy hpEnum)
+    {
+        int maxHP = BattleManager.Instance.Enemy.MaxHP;
+        int curHP = BattleManager.Instance.Enemy.CurrentHP;
+
+        float ratio = (float)curHP / maxHP;
+
+        UIManager.Instance.BattleUI.ChangeUIText(hpEnum, $"{curHP} / {maxHP}");
+        UIManager.Instance.BattleUI.ChangeEnemyHpRatio(hpEnum, ratio);
     }
 }
