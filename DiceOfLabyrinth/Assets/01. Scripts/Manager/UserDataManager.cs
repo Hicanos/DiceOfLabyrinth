@@ -5,8 +5,6 @@ public class UserDataManager : MonoBehaviour
 {
     public static UserDataManager Instance { get; private set; }
 
-    [SerializeField] private List<LobbyCharacter> ownedCharactersForDebug;
-
     [field: SerializeField] public UserData userdata { get; private set; }
 
     private void Awake()
@@ -20,11 +18,6 @@ public class UserDataManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    private void Update()
-    {
-        ownedCharactersForDebug = new List<LobbyCharacter>(CharacterManager.Instance.OwnedCharacters);
     }
 
     // 경험치
