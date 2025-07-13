@@ -23,8 +23,6 @@ public class MessagePopup : MonoBehaviour
         {
             cgFade = GetComponent<CanvasGroup>();
         }
-
-        gameObject.SetActive(false);
     }
 
     public void Open(string msg = null, Action onYes = null, Action onNo = null)

@@ -186,6 +186,8 @@ public class DataSaver
             else
             {
                 SaveData = new GameSaveData();
+                CharacterManager.Instance.LoadAllCharactersAsync();
+                Save(); // 초기화 후 새로 저장
 #if UNITY_EDITOR
                 Debug.Log("저장 파일이 없어 새 데이터로 초기화");
 #endif
@@ -195,6 +197,8 @@ public class DataSaver
         {
             Debug.LogError($"게임 데이터 불러오기 실패: {ex.Message}");
             SaveData = new GameSaveData();
+            CharacterManager.Instance.LoadAllCharactersAsync();
+            Save(); // 초기화 후 새로 저장
         }
     }
 }
