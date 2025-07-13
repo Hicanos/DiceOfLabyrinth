@@ -115,7 +115,7 @@ public class TempEnemyAttack : MonoBehaviour
             int skillValue = enemySkillData.SkillValue;
 
             targetIndexTest = targetGetterDictionary[skill.Method](targetCount, provability);
-
+            BattleManager.Instance.Enemy.currentTargetIndex = targetIndexTest;
             for (int j = 0; j < targetIndexTest.Count; j++)
             {                
                 int damage = skillValue * BattleManager.Instance.Enemy.CurrentAtk - BattleManager.Instance.battleCharacters[targetIndexTest[i]].CurrentDEF;

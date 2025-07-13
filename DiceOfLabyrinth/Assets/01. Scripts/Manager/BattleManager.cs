@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
-using System;
 
 
 public class BattleManager : MonoBehaviour
@@ -37,10 +35,12 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] private BattleEnemy enemy;
     public BattleEnemy Enemy => enemy;
+    public IEnemy iEnemy;
     GameObject enemyPrefab;
+    public TempEnemyAttack EnemyAttack;
 
     public List<ArtifactData> artifacts;
-    public List<StagmaData> stagmas;    
+    public List<StagmaData> stagmas;
 
     public InputAction inputAction;
 
@@ -53,18 +53,7 @@ public class BattleManager : MonoBehaviour
     public PlayerTurnState currentPlayerState;
     public IBattleTurnState playerTurnState;
     public IBattleTurnState enemyTurnState;
-    public BattlePlayerTurnState battlePlayerTurnState;
-
-    [Header("UIs")]
-    public List<AbstractBattleButton> BattleButtons = new List<AbstractBattleButton>();
-    public Image[] CharacterHPBars;
-    public Image[] EnemyHPBars;
-
-    //[SerializeField] Image turnDisplay;
-    //public GameObject Stages;    
-    [NonSerialized] public GameObject fixedDiceArea;
-    [NonSerialized] public GameObject stagmaDisplayer;
-    [NonSerialized] public Canvas     battleCanvas;
+    public BattlePlayerTurnState battlePlayerTurnState;  
 
     [Header("Values")]
     public  readonly int MaxCost = 12;
@@ -83,32 +72,13 @@ public class BattleManager : MonoBehaviour
 
         stateMachine = new BattleStateMachine(playerTurnState);
 
-        GetUIs();
+        UIManager.Instance.BattleUI.Setting();
         DiceManager.Instance.DiceHolding.SettingForHolding();
     }
     
     void Update()
     {
         stateMachine.BattleUpdate();
-    }
-
-    private void GetUIs()
-    {
-        CharacterHPBars = new Image[5];
-        EnemyHPBars = new Image[1];
-        BattleUI battleUI = UIManager.Instance.BattleUI;
-        battleUI.Setting();
-
-        fixedDiceArea = battleUI.fixedDiceArea;
-        battleCanvas = battleUI.battleCanvas;
-        stagmaDisplayer = battleUI.stagmaDisplayer;
-        for(int i = 0; i < battleUI.Buttons.Length; i++)
-        {
-            BattleButtons.Add(battleUI.Buttons[i]);
-        }
-
-        CharacterHPBars = battleUI.CharacterHPBars;
-        EnemyHPBars = battleUI.EnemyHPBars;
     }
 
     public void BattleStartCoroutine(BattleStartData data) //전투 시작시 호출해야할 메서드
@@ -133,18 +103,18 @@ public class BattleManager : MonoBehaviour
         battleCharacters = data.battleCharacters;
         artifacts = data.artifacts;
         stagmas = data.stagmas;
-        //currentFormationType = data.
+        //currentFormationType = data.        
     }
 
     public void BattleStart()
     {
         if (StageManager.Instance.stageSaveData.currentPhaseIndex == 1)
         {
-            battleCanvas.worldCamera = DiceManager.Instance.diceCamera;
+            UIManager.Instance.BattleUI.battleCanvas.worldCamera = DiceManager.Instance.diceCamera;
             DiceManager.Instance.LoadDiceData();
         }
         BattleTurn = 0;
-        EnemyHPBars[(int)HPEnumEnemy.enemy].gameObject.SetActive(true);
+        UIManager.Instance.BattleUI.HPBarsSetActive(true);
         UIValueChanger.ChangeEnemyHpRatio(HPEnumEnemy.enemy);
 
         //turnDisplay.gameObject.SetActive(true);
@@ -158,7 +128,7 @@ public class BattleManager : MonoBehaviour
     {
         BattleResultData data;
         isBattle = false;
-        EnemyHPBars[(int)HPEnumEnemy.enemy].gameObject.SetActive(false);
+        UIManager.Instance.BattleUI.HPBarsSetActive(false);
         //turnDisplay.gameObject.SetActive(false);
         DiceManager.Instance.ResetSetting();
         //for (int i = 0; i < battleCharacters.Count; i++)
@@ -190,9 +160,8 @@ public class BattleManager : MonoBehaviour
     {
         GameObject enemyGO = enemy.Data.EnemyPrefab;
 
-        enemyPrefab = Instantiate(enemyGO, new Vector3(5.85f, -0.02f, -1.06f), Quaternion.identity, enemyContainer);
-        // 나중에 바꿀 내용 new Vector3 (4,-1,4)에 소환, 회전값은 enemy.Data.EnemySpawnRotation
-        // 배틀 매니저 필드에 public IEnemy iEnemy;를 선언하고, iEnemy = enemyGO.GetComponent<IEnemy>();로 설정
+        enemyPrefab = Instantiate(enemyGO, new Vector3(4, -1, 4), enemy.Data.EnemySpawnRotation, enemyContainer);
+        iEnemy = enemyGO.GetComponent<IEnemy>();
     }
 
     /// <summary>
@@ -226,6 +195,8 @@ public class BattleEnemy : IDamagable
     public bool IsDead => isDead;
 
     public SOEnemySkill currentSkill;
+    public int currentSkill_Index;
+    public List<int> currentTargetIndex;
 
     public BattleEnemy(EnemyData data)
     {
