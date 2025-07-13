@@ -253,10 +253,10 @@ public class DiceManager : MonoBehaviour
     /// </summary>
     public void ResetSetting()
     {
-        int childCount = BattleManager.Instance.fixedDiceArea.transform.childCount;
+        int childCount = DiceHolding.areas.Length;
         for (int i = 0; i < childCount; i++)
         {
-            BattleManager.Instance.fixedDiceArea.transform.GetChild(i).gameObject.SetActive(false);
+            DiceHolding.areas[i].gameObject.SetActive(false);
         }
 
         rollCount = 0;
