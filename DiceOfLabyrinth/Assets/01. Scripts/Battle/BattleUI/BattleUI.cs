@@ -140,4 +140,17 @@ public class BattleUI : MonoBehaviour
     {
         enemyHPs[0].localScale = new Vector3(value, 1, 1);
     }
+
+    public void HPBarsSetActive(bool isActive)
+    {
+        EnemyHPBars[(int)HPEnumEnemy.enemy].gameObject.SetActive(isActive);
+    }
+
+    public void SettingForHolding()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            DiceManager.Instance.DiceHolding.areas[i] = fixedDiceArea.transform.GetChild(i).gameObject;
+        }
+    }
 }

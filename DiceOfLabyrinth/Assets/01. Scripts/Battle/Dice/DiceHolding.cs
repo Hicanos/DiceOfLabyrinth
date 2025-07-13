@@ -17,7 +17,7 @@ public class DiceHolding : MonoBehaviour
     [SerializeField] Button DiceRollButton;
     private List<int> fixedDiceList;
 
-    private GameObject[] areas = new GameObject[5];
+    public GameObject[] areas = new GameObject[5];
     private IEnumerator enumerator;
 
     private int index2 = 0;
@@ -30,10 +30,7 @@ public class DiceHolding : MonoBehaviour
     }
     public void SettingForHolding()
     {
-        for (int i = 0; i < areas.Length; i++)
-        {
-            areas[i] = battleManager.fixedDiceArea.transform.GetChild(i).gameObject;
-        }
+        UIManager.Instance.BattleUI.SettingForHolding();
     }
 
     public void GetFixedList()
@@ -116,8 +113,8 @@ public class DiceHolding : MonoBehaviour
         List<RectTransform> targetRects = new List<RectTransform>();
         List<Vector3> results = new List<Vector3>();
         Vector3 result;
-        Canvas canvas = battleManager.battleCanvas;
-        DiceRollButton = battleManager.BattleButtons[(int)PlayerTurnState.Roll].GetComponent<Button>();
+        Canvas canvas = GetBattleCanvas();
+        DiceRollButton = UIManager.Instance.BattleUI.Buttons[(int)PlayerTurnState.Roll].GetComponent<Button>();
 
 
         if (isAdd)
@@ -203,7 +200,7 @@ public class DiceHolding : MonoBehaviour
         Vector3 result;
         Vector3[] results = new Vector3[5];
         RectTransform targetRects;
-        Canvas canvas = battleManager.battleCanvas;
+        Canvas canvas = GetBattleCanvas();
         int fixedCount = fixedDiceList.Count;
 
         List<int> noFixed = new List<int>() { 0, 1, 2, 3, 4 };
@@ -255,7 +252,7 @@ public class DiceHolding : MonoBehaviour
         Vector3 result;
         Vector3[] results;
         RectTransform targetRects;
-        Canvas canvas = battleManager.battleCanvas;
+        Canvas canvas = GetBattleCanvas();
         int fixedCount = fixedDiceList.Count;
 
         for (int i = 4; i > fixedCount - 1; i--)
@@ -289,5 +286,10 @@ public class DiceHolding : MonoBehaviour
                 diceManager.fakeDices[i].transform.localPosition = diceManager.DicePos[i];
             }
         }
+    }
+
+    private Canvas GetBattleCanvas()
+    {
+        return UIManager.Instance.BattleUI.battleCanvas;
     }
 }

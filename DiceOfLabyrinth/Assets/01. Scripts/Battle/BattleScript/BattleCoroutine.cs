@@ -83,8 +83,7 @@ public class BattleCoroutine : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             Vector3 vec2 = cam.WorldToScreenPoint(characterPrefabs[i].transform.position);
-            battleManager.CharacterHPBars[i].gameObject.SetActive(true);
-            battleManager.CharacterHPBars[i].transform.localPosition = vec2;
+            PositionCharacterHPBars(i, vec2);
             battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
         }
 
@@ -106,12 +105,17 @@ public class BattleCoroutine : MonoBehaviour
             characterPrefabs[i].transform.localPosition = characterDestPos[i];
 
             Vector3 vec2 = cam.WorldToScreenPoint(characterPrefabs[i].transform.position);
-            battleManager.CharacterHPBars[i].gameObject.SetActive(true);
-            battleManager.CharacterHPBars[i].transform.localPosition = vec2;
+            PositionCharacterHPBars(i, vec2);
             battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
         }
 
         battleManager.BattleStart();
+    }
+
+    public void PositionCharacterHPBars(int i, Vector3 vec)
+    {
+        UIManager.Instance.BattleUI.CharacterHPBars[i].gameObject.SetActive(true);
+        UIManager.Instance.BattleUI.transform.localPosition = vec;
     }
 
     /// <summary>
