@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PredictedDice;
 using PredictedDice.Demo;
+using Unity.VisualScripting;
 
 public class DiceManager : MonoBehaviour
 {
@@ -304,8 +305,8 @@ public class DiceManager : MonoBehaviour
         foreach (GameObject dice in fakeDices)
         {
             int iNum = diceResult[i] - 1;
-            //Debug.Log($"X : {rotationVectors[iNum].x}, Y : {rotationVectors[iNum].y}, Z : {rotationVectors[iNum].z}");            
-            quaternion = Quaternion.Euler(rotationVectors[iNum].x, rotationVectors[iNum].y, rotationVectors[iNum].z);
+         
+            quaternion = Quaternion.Euler(rotationVectors[iNum].x, rotationVectors[iNum].y + 90, rotationVectors[iNum].z);
             dice.transform.rotation = quaternion;
             i++;
         }
