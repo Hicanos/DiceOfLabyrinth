@@ -1,6 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.InputSystem;
+﻿using System;
 using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 
 public class BattleManager : MonoBehaviour
@@ -44,6 +47,11 @@ public class BattleManager : MonoBehaviour
 
     public InputAction inputAction;
 
+    public GameObject CharacterHPPrefab;
+    [NonSerialized] public GameObject[] CharacterHPBars = new GameObject[5];
+    [NonSerialized] public RectTransform[] characterHPs = new RectTransform[5];
+    [NonSerialized] public TextMeshProUGUI[] characterHPTexts = new TextMeshProUGUI[5];
+
     [SerializeField] Transform enemyContainer;
     public BattleUIValueChanger UIValueChanger;
     public BattleCoroutine battleCoroutine;
@@ -61,6 +69,15 @@ public class BattleManager : MonoBehaviour
     private int     currnetCost = 0;
     public  bool    isBattle;
     public  bool    isWon;
+
+    public void GetUIs()
+    {
+        for(int i = 0; i < 5; i++)
+        {
+            characterHPs[i] = CharacterHPBars[i].GetComponentsInChildren<RectTransform>()[1];
+            characterHPTexts[i] = CharacterHPBars[i].GetComponentInChildren<TextMeshProUGUI>();
+        }
+    }
 
     void Start()
     {
@@ -116,7 +133,10 @@ public class BattleManager : MonoBehaviour
         BattleTurn = 0;
         UIManager.Instance.BattleUI.HPBarsSetActive(true);
         UIValueChanger.ChangeEnemyHpRatio(HPEnumEnemy.enemy);
-
+        for(int i = 0; i < 5; i++)
+        {
+            UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+        }
         //turnDisplay.gameObject.SetActive(true);
         isBattle = true;
         isWon = false;

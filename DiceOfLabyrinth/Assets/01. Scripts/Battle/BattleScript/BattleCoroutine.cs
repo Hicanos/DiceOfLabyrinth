@@ -78,14 +78,17 @@ public class BattleCoroutine : MonoBehaviour
             pastTime += Time.deltaTime;
             yield return null;
         }
-
-        Camera cam = DiceManager.Instance.diceCamera;
+        GameObject go;
+        //Camera cam = DiceManager.Instance.diceCamera;
         for (int i = 0; i < 5; i++)
         {
-            Vector3 vec2 = cam.WorldToScreenPoint(characterPrefabs[i].transform.position);
-            PositionCharacterHPBars(i, vec2);
-            battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+            //Vector3 vec2 = cam.WorldToScreenPoint(characterPrefabs[i].transform.position);
+            //PositionCharacterHPBars(i, vec2);
+            //battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+            go = battleManager.CharacterHPPrefab;
+            battleManager.CharacterHPBars[i] = Instantiate(go, characterPrefabs[i].transform);            
         }
+        battleManager.GetUIs();
 
         isPreparing = false;
         battleManager.BattleStart();
@@ -95,27 +98,24 @@ public class BattleCoroutine : MonoBehaviour
     {
         if (!context.started) return;
         if (isPreparing == false) return;
-        Debug.Log("스킵 캐릭터 스폰");
         isPreparing = false;
         StopCoroutine(enumeratorSpawn);
 
+        GameObject go;
         Camera cam = DiceManager.Instance.diceCamera;
         for (int i = 0; i < 5; i++)
         {
             characterPrefabs[i].transform.localPosition = characterDestPos[i];
 
-            Vector3 vec2 = cam.WorldToScreenPoint(characterPrefabs[i].transform.position);
-            PositionCharacterHPBars(i, vec2);
-            battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+            //Vector3 vec2 = cam.WorldToScreenPoint(characterPrefabs[i].transform.position);
+            //PositionCharacterHPBars(i, vec2);
+            //battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+            go = battleManager.CharacterHPPrefab;
+            battleManager.CharacterHPBars[i] = Instantiate(go, characterPrefabs[i].transform);
         }
-
+        battleManager.GetUIs();
+    
         battleManager.BattleStart();
-    }
-
-    public void PositionCharacterHPBars(int i, Vector3 vec)
-    {
-        UIManager.Instance.BattleUI.CharacterHPBars[i].gameObject.SetActive(true);
-        UIManager.Instance.BattleUI.transform.localPosition = vec;
     }
 
     /// <summary>
