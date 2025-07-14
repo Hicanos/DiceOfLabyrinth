@@ -88,8 +88,9 @@ public class BattleManager : MonoBehaviour
         GameObject go = Instantiate(EnemyHPPrefab, enemyPrefab.transform);
         RectTransform rect = go.GetComponent<RectTransform>();
         Quaternion quaternion = enemy.Data.EnemySpawnRotation;
-        quaternion.y = -quaternion.y;
+        quaternion = Quaternion.Euler(0, -enemy.Data.EnemySpawnRotation.y, 0);        
         rect.rotation = quaternion;
+
         EnemyHP = go.GetComponentsInChildren<RectTransform>()[2];
         EnemyHPText = go.GetComponentInChildren<TextMeshProUGUI>();
     }
