@@ -86,7 +86,7 @@ public class BattleCoroutine : MonoBehaviour
             //PositionCharacterHPBars(i, vec2);
             //battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
             go = battleManager.CharacterHPPrefab;
-            battleManager.CharacterHPBars[i] = Instantiate(go, characterPrefabs[i].transform);            
+            battleManager.CharacterHPBars[i] = Instantiate(go, characterPrefabs[i].transform);
         }
         battleManager.GetUIs();
 
@@ -187,7 +187,7 @@ public class BattleCoroutine : MonoBehaviour
         BattleEnemy enemy = (BattleEnemy)target;
         float ratio = (float)enemy.CurrentHP / enemy.MaxHP;
 
-        battleManager.UIValueChanger.ChangeEnemyHpRatio(HPEnumEnemy.enemy);
+        battleManager.UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
     }
 
     //public void SpawnInDungeonSelect()
