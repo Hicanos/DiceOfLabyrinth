@@ -52,6 +52,10 @@ public class BattleManager : MonoBehaviour
     [NonSerialized] public RectTransform[] characterHPs = new RectTransform[5];
     [NonSerialized] public TextMeshProUGUI[] characterHPTexts = new TextMeshProUGUI[5];
 
+    public GameObject EnemyHPPrefab;
+    [NonSerialized] public RectTransform EnemyHP;
+    [NonSerialized] public TextMeshProUGUI EnemyHPText;
+
     [SerializeField] Transform enemyContainer;
     public BattleUIValueChanger UIValueChanger;
     public BattleCoroutine battleCoroutine;
@@ -74,9 +78,20 @@ public class BattleManager : MonoBehaviour
     {
         for(int i = 0; i < 5; i++)
         {
-            characterHPs[i] = CharacterHPBars[i].GetComponentsInChildren<RectTransform>()[1];
+            characterHPs[i] = CharacterHPBars[i].GetComponentsInChildren<RectTransform>()[2];
             characterHPTexts[i] = CharacterHPBars[i].GetComponentInChildren<TextMeshProUGUI>();
         }
+    }
+
+    public void GetEnemyUI()
+    {
+        GameObject go = Instantiate(EnemyHPPrefab, enemyPrefab.transform);
+        RectTransform rect = go.GetComponent<RectTransform>();
+        Quaternion quaternion = enemy.Data.EnemySpawnRotation;
+        quaternion.y = -quaternion.y;
+        rect.rotation = quaternion;
+        EnemyHP = go.GetComponentsInChildren<RectTransform>()[2];
+        EnemyHPText = go.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     void Start()
@@ -131,8 +146,8 @@ public class BattleManager : MonoBehaviour
             DiceManager.Instance.LoadDiceData();
         }
         BattleTurn = 0;
-        UIManager.Instance.BattleUI.HPBarsSetActive(true);
-        UIValueChanger.ChangeEnemyHpRatio(HPEnumEnemy.enemy);
+        //UIManager.Instance.BattleUI.HPBarsSetActive(true);
+        UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
         for(int i = 0; i < 5; i++)
         {
             UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
@@ -148,7 +163,7 @@ public class BattleManager : MonoBehaviour
     {
         BattleResultData data;
         isBattle = false;
-        UIManager.Instance.BattleUI.HPBarsSetActive(false);
+        //UIManager.Instance.BattleUI.HPBarsSetActive(false);
         //turnDisplay.gameObject.SetActive(false);
         DiceManager.Instance.ResetSetting();
         //for (int i = 0; i < battleCharacters.Count; i++)
@@ -183,6 +198,10 @@ public class BattleManager : MonoBehaviour
         enemyPrefab = Instantiate(enemyGO, new Vector3(3, -1, -4), enemy.Data.EnemySpawnRotation, enemyContainer);
         iEnemy = enemyPrefab.GetComponent<IEnemy>();
         iEnemy.Init();
+
+        
+        GetEnemyUI();
+        UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
     }
 
     /// <summary>
