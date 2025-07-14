@@ -23,9 +23,11 @@ public class BattleButtonConfirm : AbstractBattleButton
                 break;
             case PlayerTurnState.Roll:
                 gameObject.SetActive(true);
+                confirmButton.interactable = false;
                 break;
             case PlayerTurnState.RollEnd:
                 gameObject.SetActive(true);
+                confirmButton.interactable = true;
                 break;
             case PlayerTurnState.Confirm:
                 gameObject.SetActive(false);
