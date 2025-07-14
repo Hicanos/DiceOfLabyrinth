@@ -161,7 +161,8 @@ public class BattleManager : MonoBehaviour
         GameObject enemyGO = enemy.Data.EnemyPrefab;
 
         enemyPrefab = Instantiate(enemyGO, new Vector3(4, -1, 4), enemy.Data.EnemySpawnRotation, enemyContainer);
-        iEnemy = enemyGO.GetComponent<IEnemy>();
+        iEnemy = enemyPrefab.GetComponent<IEnemy>();
+        iEnemy.Init();
     }
 
     /// <summary>

@@ -158,6 +158,7 @@ public class BattleCoroutine : MonoBehaviour
                 yield return null;
             }
             DealDamage(battleManager.Enemy, damage);
+            battleManager.iEnemy.TakeDamage();
             pastTime = 0;
             while (pastTime < destTime)
             {
