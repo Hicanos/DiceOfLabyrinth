@@ -12,11 +12,12 @@ public class EnemyPatternContainer : MonoBehaviour
         List<int> pattern = battleManager.Enemy.Data.ActiveSkills;
         int patternLength = battleManager.Enemy.Data.ActiveSkills.Count;
         int Skill_Index = (battleManager.BattleTurn - 1) % patternLength;
-        Debug.Log($"PrepareSkill\nIndex : {Skill_Index}\nLength : {patternLength}");
+        
         int skill_Index = pattern[Skill_Index];
 
         SOEnemySkill skill = enemySkillDatas[skill_Index];
         battleManager.Enemy.currentSkill = skill;
+        battleManager.Enemy.currentSkill_Index = skill_Index;
 
         battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillName, $"{skill.SkillName} 준비중");
         battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillDescription, skill.SkillDescription);

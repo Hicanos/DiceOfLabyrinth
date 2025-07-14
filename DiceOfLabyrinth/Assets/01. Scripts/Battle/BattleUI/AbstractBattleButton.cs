@@ -4,10 +4,10 @@ public enum PlayerTurnState
 {
     BattleStart,
     Enter,
-    Roll,
+    Roll,           //주사위가 굴러가고 있는 상태
     RollEnd,
     Confirm,
-    ConfirmEnd,
+    ConfirmEnd,     //플레이어 공격 모션이 끝나면
     EndTurn,
     BattleEnd
 }
