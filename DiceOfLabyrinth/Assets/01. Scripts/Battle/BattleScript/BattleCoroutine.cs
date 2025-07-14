@@ -95,7 +95,7 @@ public class BattleCoroutine : MonoBehaviour
     {
         if (!context.started) return;
         if (isPreparing == false) return;
-
+        Debug.Log("스킵 캐릭터 스폰");
         isPreparing = false;
         StopCoroutine(enumeratorSpawn);
 

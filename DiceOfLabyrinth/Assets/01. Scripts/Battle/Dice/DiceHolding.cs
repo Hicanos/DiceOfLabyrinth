@@ -41,7 +41,7 @@ public class DiceHolding : MonoBehaviour
     public void OnInput(InputAction.CallbackContext context)
     {
         if (!context.started) return;
-
+        Debug.Log("인풋");
         Vector2 screenPos = context.ReadValue<Vector2>();
 
         SelectDice(screenPos);
@@ -51,8 +51,7 @@ public class DiceHolding : MonoBehaviour
     private void SelectDice(Vector2 vec)
     {
         if(isCantFix) return;
-        if (battleManager.isBattle == false) return;
-
+        if (battleManager.isBattle == false) return;        
         DiceMy dice;
 
         Ray ray = diceCamera.ScreenPointToRay(vec);
@@ -63,7 +62,7 @@ public class DiceHolding : MonoBehaviour
             {
                 dice = hit.collider.gameObject.GetComponent<DiceMy>();
                 dice.SetIndex();
-
+                Debug.Log("실릭트");
                 DiceFixed(dice);
             }
         }
@@ -168,8 +167,7 @@ public class DiceHolding : MonoBehaviour
     private void SkipRolling(Vector2 vec)
     {
         if (battleManager.isBattle == false || diceManager.isRolling == false) return;
-        StopCoroutine(diceManager.diceRollCoroutine);
-
+        StopCoroutine(diceManager.diceRollCoroutine);        
         Ray ray = diceCamera.ScreenPointToRay(vec);
 
         if (Physics.Raycast(ray, out var hit, 100f))
@@ -177,6 +175,7 @@ public class DiceHolding : MonoBehaviour
             if (hit.collider.gameObject.tag == "DiceBoard")
             {
                 diceManager.StopSimulation();
+                Debug.Log("스킵 다이스");
                 //diceManager.isSkipped = true;
                 diceManager.SortingFakeDice();
             }
