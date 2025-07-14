@@ -13,7 +13,6 @@ public class BattleUI : MonoBehaviour
 
     [Header("AbstractButtons")]
     [SerializeField] AbstractBattleButton diceBackboard;
-    [SerializeField] AbstractBattleButton endTurn;
     [SerializeField] AbstractBattleButton roll;
     [SerializeField] AbstractBattleButton char1;
     [SerializeField] AbstractBattleButton char2;
@@ -22,7 +21,7 @@ public class BattleUI : MonoBehaviour
     [SerializeField] AbstractBattleButton char5;
     [SerializeField] AbstractBattleButton patternDisplayer;
 
-    [NonSerialized] public AbstractBattleButton[] Buttons = new AbstractBattleButton[9];
+    [NonSerialized] public AbstractBattleButton[] Buttons = new AbstractBattleButton[8];
 
     [Header("Texts For Value Changer")]
     [SerializeField] TextMeshProUGUI cost;
@@ -56,14 +55,13 @@ public class BattleUI : MonoBehaviour
     public void Setting()
     {
         Buttons[0] = diceBackboard;
-        Buttons[1] = endTurn;
-        Buttons[2] = roll;
-        Buttons[3] = char1;
-        Buttons[4] = char2;
-        Buttons[5] = char3;
-        Buttons[6] = char4;
-        Buttons[7] = char5;
-        Buttons[8] = patternDisplayer;
+        Buttons[1] = roll;
+        Buttons[2] = char1;
+        Buttons[3] = char2;
+        Buttons[4] = char3;
+        Buttons[5] = char4;
+        Buttons[6] = char5;
+        Buttons[7] = patternDisplayer;
 
         texts = new TextMeshProUGUI[5];
         texts[0] = cost;
