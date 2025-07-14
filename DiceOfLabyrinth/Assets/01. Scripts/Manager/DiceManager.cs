@@ -228,19 +228,10 @@ public class DiceManager : MonoBehaviour
                 BattleManager.Instance.GetCost(signitureAmount);
                 isRolling = false;
 
-                if (BattleManager.Instance.currentPlayerState == PlayerTurnState.Roll || BattleManager.Instance.currentPlayerState == PlayerTurnState.Enter)
-                {
-                    BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
-                }
-
-                //if (isSkipped == false)
-                //{
-                    SortingFakeDice();
-                //}
-                //else
-                //{
-                //    GoDefaultPositionDice();
-                //}
+                
+                BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
+                SortingFakeDice();
+                
                 break;
             }
             rollEndCount = 0;
@@ -253,10 +244,10 @@ public class DiceManager : MonoBehaviour
     /// </summary>
     public void ResetSetting()
     {
-        int childCount = BattleManager.Instance.fixedDiceArea.transform.childCount;
+        int childCount = DiceHolding.areas.Length;
         for (int i = 0; i < childCount; i++)
         {
-            BattleManager.Instance.fixedDiceArea.transform.GetChild(i).gameObject.SetActive(false);
+            DiceHolding.areas[i].gameObject.SetActive(false);
         }
 
         rollCount = 0;
@@ -293,6 +284,7 @@ public class DiceManager : MonoBehaviour
     /// </summary>
     public void SortingFakeDice()
     {
+        DiceHolding.isCantFix = false;
         GoDefaultPositionDice();
         for (int i = 0; i < fakeDices.Length; i++)
         {

@@ -1,13 +1,8 @@
-﻿using UnityEngine;
-
-public class BattleEnemyTurnState : IBattleTurnState
+﻿public class BattleEnemyTurnState : IBattleTurnState
 {
-    TempEnemyAttack enemyAtack;
     public void Enter()
     {
-        Debug.Log("Enemy's turn");
-        enemyAtack = GameObject.FindAnyObjectByType<TempEnemyAttack>().GetComponent<TempEnemyAttack>();
-        enemyAtack.EnemyAttack();
+        Attack();        
     }
 
     public void BattleUpdate()
@@ -17,7 +12,14 @@ public class BattleEnemyTurnState : IBattleTurnState
 
     public void Exit()
     {
-        enemyAtack.EnemyAttackEnd();
+        BattleManager.Instance.EnemyAttack.EnemyAttackEnd();
         DiceManager.Instance.ResetSetting();
+    }
+
+    private void Attack()
+    {
+        BattleManager battleManager = BattleManager.Instance;
+
+        battleManager.EnemyAttack.EnemyAttack();
     }
 }

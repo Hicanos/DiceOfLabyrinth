@@ -78,15 +78,17 @@ public class BattleCoroutine : MonoBehaviour
             pastTime += Time.deltaTime;
             yield return null;
         }
-
-        Camera cam = DiceManager.Instance.diceCamera;
+        GameObject go;
+        //Camera cam = DiceManager.Instance.diceCamera;
         for (int i = 0; i < 5; i++)
         {
-            Vector3 vec2 = cam.WorldToScreenPoint(characterPrefabs[i].transform.position);
-            battleManager.CharacterHPBars[i].gameObject.SetActive(true);
-            battleManager.CharacterHPBars[i].transform.localPosition = vec2;
-            battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+            //Vector3 vec2 = cam.WorldToScreenPoint(characterPrefabs[i].transform.position);
+            //PositionCharacterHPBars(i, vec2);
+            //battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+            go = battleManager.CharacterHPPrefab;
+            battleManager.CharacterHPBars[i] = Instantiate(go, characterPrefabs[i].transform);            
         }
+        battleManager.GetUIs();
 
         isPreparing = false;
         battleManager.BattleStart();
@@ -96,21 +98,23 @@ public class BattleCoroutine : MonoBehaviour
     {
         if (!context.started) return;
         if (isPreparing == false) return;
-
         isPreparing = false;
         StopCoroutine(enumeratorSpawn);
 
+        GameObject go;
         Camera cam = DiceManager.Instance.diceCamera;
         for (int i = 0; i < 5; i++)
         {
             characterPrefabs[i].transform.localPosition = characterDestPos[i];
 
-            Vector3 vec2 = cam.WorldToScreenPoint(characterPrefabs[i].transform.position);
-            battleManager.CharacterHPBars[i].gameObject.SetActive(true);
-            battleManager.CharacterHPBars[i].transform.localPosition = vec2;
-            battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+            //Vector3 vec2 = cam.WorldToScreenPoint(characterPrefabs[i].transform.position);
+            //PositionCharacterHPBars(i, vec2);
+            //battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+            go = battleManager.CharacterHPPrefab;
+            battleManager.CharacterHPBars[i] = Instantiate(go, characterPrefabs[i].transform);
         }
-
+        battleManager.GetUIs();
+    
         battleManager.BattleStart();
     }
 
@@ -154,6 +158,7 @@ public class BattleCoroutine : MonoBehaviour
                 yield return null;
             }
             DealDamage(battleManager.Enemy, damage);
+            battleManager.iEnemy.TakeDamage();
             pastTime = 0;
             while (pastTime < destTime)
             {

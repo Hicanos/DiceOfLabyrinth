@@ -1,13 +1,17 @@
-﻿using UnityEngine.UI;
+﻿using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleButtonRollDice : AbstractBattleButton
 {
     Button button;
     bool isRollOver = false;
+    TextMeshProUGUI text;
 
     public override void Setting()
     {
         button = GetComponent<Button>();
+        text = GetComponentInChildren<TextMeshProUGUI>();
     }
 
     public override void OnOffButton(PlayerTurnState state)
@@ -18,7 +22,7 @@ public class BattleButtonRollDice : AbstractBattleButton
                 gameObject.SetActive(true);
                 break;
             case PlayerTurnState.Enter:
-                isRollOver = false;
+                ChangeEndTurnToRoll();
                 button.interactable = true;
                 break;
             case PlayerTurnState.Roll:
@@ -50,7 +54,8 @@ public class BattleButtonRollDice : AbstractBattleButton
 
     public override void OnPush()
     {
-        if(isRollOver == false)
+        DiceManager.Instance.DiceHolding.isCantFix = true;
+        if (isRollOver == false)
         {
             DiceManager.Instance.RollDice();
 
@@ -69,5 +74,12 @@ public class BattleButtonRollDice : AbstractBattleButton
     private void ChangeRollToEndTurn()
     {
         isRollOver = true;
+        text.text = "End Turn";
+    }
+
+    private void ChangeEndTurnToRoll()
+    {
+        isRollOver = false;
+        text.text = "Roll";
     }
 }

@@ -13,7 +13,6 @@ public class BattleUI : MonoBehaviour
 
     [Header("AbstractButtons")]
     [SerializeField] AbstractBattleButton diceBackboard;
-    [SerializeField] AbstractBattleButton endTurn;
     [SerializeField] AbstractBattleButton roll;
     [SerializeField] AbstractBattleButton char1;
     [SerializeField] AbstractBattleButton char2;
@@ -22,7 +21,7 @@ public class BattleUI : MonoBehaviour
     [SerializeField] AbstractBattleButton char5;
     [SerializeField] AbstractBattleButton patternDisplayer;
 
-    [NonSerialized] public AbstractBattleButton[] Buttons = new AbstractBattleButton[9];
+    [NonSerialized] public AbstractBattleButton[] Buttons = new AbstractBattleButton[8];
 
     [Header("Texts For Value Changer")]
     [SerializeField] TextMeshProUGUI cost;
@@ -39,15 +38,6 @@ public class BattleUI : MonoBehaviour
     [NonSerialized] private RectTransform[]   enemyHPs;
     [NonSerialized] private TextMeshProUGUI[] enemyHPTexts;
 
-    [Header("Character HP Bars")]
-    [SerializeField] Image hPBar_Char1;
-    [SerializeField] Image hPBar_Char2;
-    [SerializeField] Image hPBar_Char3;
-    [SerializeField] Image hPBar_Char4;
-    [SerializeField] Image hPBar_Char5;
-
-    [NonSerialized] public Image[] CharacterHPBars = new Image[5];
-
     [Header("Enemy HP Bars")]
     [SerializeField] Image hPBar_Enemy;
 
@@ -56,14 +46,13 @@ public class BattleUI : MonoBehaviour
     public void Setting()
     {
         Buttons[0] = diceBackboard;
-        Buttons[1] = endTurn;
-        Buttons[2] = roll;
-        Buttons[3] = char1;
-        Buttons[4] = char2;
-        Buttons[5] = char3;
-        Buttons[6] = char4;
-        Buttons[7] = char5;
-        Buttons[8] = patternDisplayer;
+        Buttons[1] = roll;
+        Buttons[2] = char1;
+        Buttons[3] = char2;
+        Buttons[4] = char3;
+        Buttons[5] = char4;
+        Buttons[6] = char5;
+        Buttons[7] = patternDisplayer;
 
         texts = new TextMeshProUGUI[5];
         texts[0] = cost;
@@ -72,31 +61,25 @@ public class BattleUI : MonoBehaviour
         texts[3] = rank;
         texts[4] = reRoll;
 
-        characterHPTexts = new TextMeshProUGUI[5];
-        characterHPTexts[0] = hPBar_Char1.GetComponentInChildren<TextMeshProUGUI>();
-        characterHPTexts[1] = hPBar_Char2.GetComponentInChildren<TextMeshProUGUI>();
-        characterHPTexts[2] = hPBar_Char3.GetComponentInChildren<TextMeshProUGUI>();
-        characterHPTexts[3] = hPBar_Char4.GetComponentInChildren<TextMeshProUGUI>();
-        characterHPTexts[4] = hPBar_Char5.GetComponentInChildren<TextMeshProUGUI>();
+        //characterHPTexts = new TextMeshProUGUI[5];
+        //characterHPTexts[0] = hPBar_Char1.GetComponentInChildren<TextMeshProUGUI>();
+        //characterHPTexts[1] = hPBar_Char2.GetComponentInChildren<TextMeshProUGUI>();
+        //characterHPTexts[2] = hPBar_Char3.GetComponentInChildren<TextMeshProUGUI>();
+        //characterHPTexts[3] = hPBar_Char4.GetComponentInChildren<TextMeshProUGUI>();
+        //characterHPTexts[4] = hPBar_Char5.GetComponentInChildren<TextMeshProUGUI>();
 
-        characterHPs = new RectTransform[5];
-        characterHPs[0] = hPBar_Char1.GetComponentsInChildren<RectTransform>()[1];
-        characterHPs[1] = hPBar_Char2.GetComponentsInChildren<RectTransform>()[1];
-        characterHPs[2] = hPBar_Char3.GetComponentsInChildren<RectTransform>()[1];
-        characterHPs[3] = hPBar_Char4.GetComponentsInChildren<RectTransform>()[1];
-        characterHPs[4] = hPBar_Char5.GetComponentsInChildren<RectTransform>()[1];
+        //characterHPs = new RectTransform[5];
+        //characterHPs[0] = hPBar_Char1.GetComponentsInChildren<RectTransform>()[1];
+        //characterHPs[1] = hPBar_Char2.GetComponentsInChildren<RectTransform>()[1];
+        //characterHPs[2] = hPBar_Char3.GetComponentsInChildren<RectTransform>()[1];
+        //characterHPs[3] = hPBar_Char4.GetComponentsInChildren<RectTransform>()[1];
+        //characterHPs[4] = hPBar_Char5.GetComponentsInChildren<RectTransform>()[1];
 
         enemyHPs = new RectTransform[1];
         enemyHPs[0] = hPBar_Enemy.GetComponentsInChildren<RectTransform>()[1];
 
         enemyHPTexts = new TextMeshProUGUI[1];
         enemyHPTexts[0] = hPBar_Enemy.GetComponentInChildren<TextMeshProUGUI>();
-
-        CharacterHPBars[0] = hPBar_Char1;
-        CharacterHPBars[1] = hPBar_Char2;
-        CharacterHPBars[2] = hPBar_Char3;
-        CharacterHPBars[3] = hPBar_Char4;
-        CharacterHPBars[4] = hPBar_Char5;
 
         EnemyHPBars[0] = hPBar_Enemy;
     }
@@ -109,12 +92,14 @@ public class BattleUI : MonoBehaviour
         texts[(int)uiEnum].text = value;
     }
 
+    
+
     /// <summary>
-    /// 체력바 텍스트를 변경하는 메서드입니다.
+    /// 에너미의 체력바 비율을 변경하는 메서드입니다.
     /// </summary>
-    public void ChangeUIText(HPEnumCharacter uiEnum, string value)
+    public void ChangeEnemyHpRatio(HPEnumEnemy hpEnum, float value)
     {
-        characterHPTexts[(int)uiEnum].text = value;
+        enemyHPs[0].localScale = new Vector3(value, 1, 1);
     }
 
     /// <summary>
@@ -125,19 +110,16 @@ public class BattleUI : MonoBehaviour
         enemyHPTexts[(int)uiEnum].text = value;
     }
 
-    /// <summary>
-    /// 캐릭터의 체력바 비율을 변경하는 메서드입니다.
-    /// </summary>
-    public void ChangeCharacterHpRatio(HPEnumCharacter hpEnum, float value)
+    public void HPBarsSetActive(bool isActive)
     {
-        characterHPs[(int)hpEnum].localScale = new Vector3(value, 1, 1);
+        EnemyHPBars[(int)HPEnumEnemy.enemy].gameObject.SetActive(isActive);
     }
 
-    /// <summary>
-    /// 에너미의 체력바 비율을 변경하는 메서드입니다.
-    /// </summary>
-    public void ChangeEnemyHpRatio(HPEnumEnemy hpEnum, float value)
+    public void SettingForHolding()
     {
-        enemyHPs[0].localScale = new Vector3(value, 1, 1);
+        for (int i = 0; i < 5; i++)
+        {
+            DiceManager.Instance.DiceHolding.areas[i] = fixedDiceArea.transform.GetChild(i).gameObject;
+        }
     }
 }

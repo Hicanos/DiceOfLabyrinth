@@ -116,12 +116,14 @@ public class TempEnemyAttack : MonoBehaviour
 
             targetIndexTest = targetGetterDictionary[skill.Method](targetCount, provability);
 
+            BattleManager.Instance.Enemy.currentTargetIndex = targetIndexTest;
             for (int j = 0; j < targetIndexTest.Count; j++)
             {                
                 int damage = skillValue * BattleManager.Instance.Enemy.CurrentAtk - BattleManager.Instance.battleCharacters[targetIndexTest[i]].CurrentDEF;
                 if (damage < 0) damage = 0;                
                 BattleManager.Instance.battleCharacters[targetIndexTest[j]].TakeDamage(damage);
                 BattleManager.Instance.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)targetIndexTest[j]);
+                Debug.Log($"skillValue({skillValue})*Atk({BattleManager.Instance.Enemy.CurrentAtk})-Def({BattleManager.Instance.battleCharacters[targetIndexTest[i]].CurrentDEF})");
                 Debug.Log($"캐릭터{targetIndexTest[j]+1}에게 {damage}데미지");
 
                 if(skill.Debuff == EnemyDebuff.None) continue;
@@ -134,5 +136,8 @@ public class TempEnemyAttack : MonoBehaviour
                 }
             }
         }
+        List<int> targetList = BattleManager.Instance.Enemy.currentTargetIndex;
+
+        BattleManager.Instance.iEnemy.UseActiveSkill(BattleManager.Instance.Enemy.currentSkill_Index, targetList[0]);
     }
 }

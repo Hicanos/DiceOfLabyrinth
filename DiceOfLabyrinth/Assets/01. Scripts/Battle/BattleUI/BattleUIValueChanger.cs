@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.UI;
 
 public enum BattleTextUIEnum
 { 
@@ -39,8 +41,8 @@ public class BattleUIValueChanger : MonoBehaviour
 
         float ratio = (float)curHP / maxHP;
 
-        UIManager.Instance.BattleUI.ChangeUIText(hpEnum, $"{curHP} / {maxHP}");
-        UIManager.Instance.BattleUI.ChangeCharacterHpRatio(hpEnum, ratio);
+        ChangeUIText(hpEnum, $"{curHP} / {maxHP}");
+        ChangeCharacterHpRatio(hpEnum, ratio);
     }
 
     /// <summary>
@@ -56,4 +58,24 @@ public class BattleUIValueChanger : MonoBehaviour
         UIManager.Instance.BattleUI.ChangeUIText(hpEnum, $"{curHP} / {maxHP}");
         UIManager.Instance.BattleUI.ChangeEnemyHpRatio(hpEnum, ratio);
     }
+
+    /// <summary>
+    /// 체력바 텍스트를 변경하는 메서드입니다.
+    /// </summary>
+    public void ChangeUIText(HPEnumCharacter uiEnum, string value)
+    {
+        BattleManager.Instance.characterHPTexts[(int)uiEnum].text = value;
+    }
+
+
+
+    /// <summary>
+    /// 캐릭터의 체력바 비율을 변경하는 메서드입니다.
+    /// </summary>
+    public void ChangeCharacterHpRatio(HPEnumCharacter hpEnum, float value)
+    {
+        BattleManager.Instance.characterHPs[(int)hpEnum].localScale = new Vector3(value, 1, 1);
+    }
+
+    
 }

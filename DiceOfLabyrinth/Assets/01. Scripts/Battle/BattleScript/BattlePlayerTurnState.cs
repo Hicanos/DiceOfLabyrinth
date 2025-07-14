@@ -41,7 +41,7 @@
 
     private void OnOffButton()
     {
-        foreach (AbstractBattleButton button in battleManager.BattleButtons)
+        foreach (AbstractBattleButton button in UIManager.Instance.BattleUI.Buttons)
         {
             button.OnOffButton(battleManager.currentPlayerState);
         }
@@ -49,7 +49,7 @@
 
     public void AbstractButtonSetting()
     {
-        foreach (AbstractBattleButton button in battleManager.BattleButtons)
+        foreach (AbstractBattleButton button in UIManager.Instance.BattleUI.Buttons)
         {
             button.Setting();
         }

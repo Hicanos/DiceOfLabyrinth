@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Newtonsoft.Json;
 using System.IO;
 using Newtonsoft.Json.Linq;
@@ -11,13 +11,13 @@ public class LoadDiceDataScript
 
     public void LoadDiceJson()
     {
-        if(File.Exists(jsonPath) == false)
+        TextAsset textAsset = Resources.Load<TextAsset>("Json/DiceData");
+        if (textAsset == null)
         {
-            Debug.LogWarning("DiceData.json ����");
+            Debug.LogWarning("DiceData.json을 찾을 수 없습니다.");
             return;
         }
-
-        string jsonData = File.ReadAllText(jsonPath);
+        string jsonData = textAsset.text;
         root = JObject.Parse(jsonData);
     }
 
