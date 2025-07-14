@@ -2141,6 +2141,12 @@ MonoBehaviour:
   diceCamera: {fileID: 872327847}
   rollMultipleDice: {fileID: 630142358}
   DiceRollButton: {fileID: 0}
+  areas:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   isCantFix: 0
 --- !u!114 &1531840404
 MonoBehaviour:
@@ -3405,6 +3411,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   battleCharacters: []
   currentFormationType: 0
+  EnemyAttack: {fileID: 1415162112}
   artifacts: []
   stagmas: []
   inputAction:
@@ -3421,9 +3428,6 @@ MonoBehaviour:
   battleCoroutine: {fileID: 1419423440417571392}
   EnemyPatternContainer: {fileID: 1415162114}
   currentPlayerState: 0
-  BattleButtons: []
-  CharacterHPBars: []
-  EnemyHPBars: []
   BattleTurn: 0
   isBattle: 0
   isWon: 0
