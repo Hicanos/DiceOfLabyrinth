@@ -78,11 +78,10 @@ public class BattleManager : MonoBehaviour
     {
         stateMachine.BattleUpdate();
     }
-
-    public void EnterStageSelect(BattleStartData data)
+    public void StartBattle(BattleStartData data) //전투 시작시
     {
         GetStartData(data);
-        StartBattle();
+        enterBattle.BattleStart();
     }
 
     private void GetStartData(BattleStartData data) //start시 호출되도록
@@ -91,22 +90,13 @@ public class BattleManager : MonoBehaviour
         BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.stagmas);
     }
 
-    public void StartBattle() //전투 시작시
-    {
-        enterBattle.BattleStart();
-    }
-
     public void EndBattle()
     {
         BattleResultData data;
         isBattle = false;
-        //UIManager.Instance.BattleUI.HPBarsSetActive(false);
-        //turnDisplay.gameObject.SetActive(false);
+
         DiceManager.Instance.ResetSetting();
-        //for (int i = 0; i < battleCharacters.Count; i++)
-        //{
-        //    HPBar[i].gameObject.SetActive(false);
-        //}
+
         battleSpawner.CharacterDeActive();
         Destroy(Enemy.EnemyPrefab);
         //결과창 실행

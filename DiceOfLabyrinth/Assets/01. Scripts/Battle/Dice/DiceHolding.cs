@@ -110,7 +110,6 @@ public class DiceHolding : MonoBehaviour
         Canvas canvas = GetBattleCanvas();
         DiceRollButton = UIManager.Instance.BattleUI.Buttons[(int)PlayerTurnState.Roll].GetComponent<Button>();
 
-
         if (isAdd)
         {
             if (index2 < 5)

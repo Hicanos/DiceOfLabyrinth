@@ -5,13 +5,8 @@ using System.Collections.Generic;
 public class BattleCharacterAttack : MonoBehaviour
 {
     BattleManager battleManager;
-
-    bool isPreparing = false;
     
-    IEnumerator enumeratorAttack;
-    
-    //[SerializeField] Transform ContainerForSelect;
-    private GameObject[] characterPrefabs = new GameObject[5];
+    IEnumerator enumeratorAttack;    
 
     /// <summary>
     /// 캐릭터가 공격할 때 실행하는 코루틴을 실행하는 메서드입니다.
@@ -67,7 +62,6 @@ public class BattleCharacterAttack : MonoBehaviour
 
             if (battleManager.Enemy.IsDead)
             {
-                //쓰러지는 애니메이션 있으면 좋을듯
                 battleManager.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
                 battleManager.isWon = true;
                 battleManager.EndBattle();

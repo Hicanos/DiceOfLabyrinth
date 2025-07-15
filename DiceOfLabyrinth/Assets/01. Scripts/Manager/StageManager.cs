@@ -575,7 +575,7 @@ public class StageManager : MonoBehaviour
         stageSaveData.selectedEnemy = normalEnemies[randomIndex];
         var battleStartData = new BattleStartData(stageSaveData);
         battleUIController.OpenBattlePanel();
-        BattleManager.Instance.EnterStageSelect(battleStartData);
+        BattleManager.Instance.StartBattle(battleStartData);
     }
 
     public void selectEliteEnemy()
@@ -607,7 +607,7 @@ public class StageManager : MonoBehaviour
         stageSaveData.selectedEnemy = eliteEnemies[randomIndex];
         var battleStartData = new BattleStartData(stageSaveData);
         battleUIController.OpenBattlePanel();
-        BattleManager.Instance.EnterStageSelect(battleStartData);
+        BattleManager.Instance.StartBattle(battleStartData);
     }
 
     public void selectBossEnemy()
@@ -662,6 +662,6 @@ public class StageManager : MonoBehaviour
         stageSaveData.selectedEnemy = selectedBoss;
         var battleStartData = new BattleStartData(stageSaveData);
         battleUIController.OpenBattlePanel();
-        BattleManager.Instance.EnterStageSelect(battleStartData);
+        BattleManager.Instance.StartBattle(battleStartData);
     }
 }
