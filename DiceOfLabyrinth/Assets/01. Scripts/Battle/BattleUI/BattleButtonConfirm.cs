@@ -3,15 +3,13 @@ using UnityEngine.UI;
 
 public class BattleButtonConfirm : AbstractBattleButton
 {
-    GameObject rankDisplayer;
+    [SerializeField] GameObject rankDisplayer;
+    [SerializeField] Button confirmButton;
     DiceManager diceManager;
-    Button confirmButton;
 
     public override void Setting()
     {
-        rankDisplayer = gameObject.transform.GetChild(2).gameObject;
         diceManager = DiceManager.Instance;
-        confirmButton = gameObject.GetComponentInChildren<Button>();
     }
 
     public override void OnOffButton(PlayerTurnState state)
@@ -59,7 +57,7 @@ public class BattleButtonConfirm : AbstractBattleButton
         float diceWeighting = DiceManager.Instance.DiceBattle.GetDamageWeighting(); //족보별 계수
         BattleManager battleManager = BattleManager.Instance;
         //공격 애니메이션실행
-        battleManager.battleCoroutine.CharacterAttack(diceWeighting);
+        battleManager.CharacterAttack.CharacterAttack(diceWeighting);
     }
 
     public void OnPushCancel()
@@ -73,5 +71,5 @@ public class BattleButtonConfirm : AbstractBattleButton
     public void OnPushShowArtifact()
     {
         UIManager.Instance.BattleUI.stagmaDisplayer.SetActive(true);
-    }   
+    }
 }

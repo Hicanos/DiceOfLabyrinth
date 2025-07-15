@@ -4,14 +4,13 @@ using UnityEngine.UI;
 
 public class BattleButtonRollDice : AbstractBattleButton
 {
-    Button button;
+    [SerializeField] Button rollButton;
+    [SerializeField] TextMeshProUGUI text;
     bool isRollOver = false;
-    TextMeshProUGUI text;
 
     public override void Setting()
     {
-        button = GetComponent<Button>();
-        text = GetComponentInChildren<TextMeshProUGUI>();
+
     }
 
     public override void OnOffButton(PlayerTurnState state)
@@ -23,27 +22,27 @@ public class BattleButtonRollDice : AbstractBattleButton
                 break;
             case PlayerTurnState.Enter:
                 ChangeEndTurnToRoll();
-                button.interactable = true;
+                rollButton.interactable = true;
                 break;
             case PlayerTurnState.Roll:
-                button.interactable = false;
+                rollButton.interactable = false;
                 break;
             case PlayerTurnState.RollEnd:
                 if (DiceManager.Instance.RollRemain == 0)
                 {
-                    button.interactable = false;
+                    rollButton.interactable = false;
                 }
                 else
                 {
-                    button.interactable = true;
+                    rollButton.interactable = true;
                 }
                 break;
             case PlayerTurnState.Confirm:
-                button.interactable = false;
+                rollButton.interactable = false;
                 break;
             case PlayerTurnState.ConfirmEnd:
                 ChangeRollToEndTurn();
-                button.interactable = true;
+                rollButton.interactable = true;
                 //버튼 외형 바꾸기
                 break;
             case PlayerTurnState.BattleEnd:
@@ -65,7 +64,7 @@ public class BattleButtonRollDice : AbstractBattleButton
         }
         else
         {
-            button.interactable = false;
+            rollButton.interactable = false;
 
             BattleManager.Instance.battlePlayerTurnState.EndPlayerTurn();
         }

@@ -34,8 +34,8 @@ public class BattleUIValueChanger : MonoBehaviour
     /// </summary>
     public void ChangeCharacterHpRatio(HPEnumCharacter hpEnum)
     {
-        int maxHP = BattleManager.Instance.battleCharacters[(int)hpEnum].RegularHP;
-        int curHP = BattleManager.Instance.battleCharacters[(int)hpEnum].CurrentHP;
+        int maxHP = BattleManager.Instance.BattleGroup.BattleCharacters[(int)hpEnum].RegularHP;
+        int curHP = BattleManager.Instance.BattleGroup.BattleCharacters[(int)hpEnum].CurrentHP;
 
         float ratio = (float)curHP / maxHP;
 
@@ -62,17 +62,15 @@ public class BattleUIValueChanger : MonoBehaviour
     /// </summary>
     public void ChangeUIText(HPEnumCharacter uiEnum, string value)
     {
-        BattleManager.Instance.characterHPTexts[(int)uiEnum].text = value;
+        BattleManager.Instance.BattleGroup.CharacterHPTexts[(int)uiEnum].text = value;
     }
-
-
 
     /// <summary>
     /// 캐릭터의 체력바 비율을 변경하는 메서드입니다.
     /// </summary>
     public void ChangeCharacterHpRatio(HPEnumCharacter hpEnum, float value)
     {
-        BattleManager.Instance.characterHPs[(int)hpEnum].localScale = new Vector3(value, 1, 1);
+        BattleManager.Instance.BattleGroup.CharacterHPs[(int)hpEnum].localScale = new Vector3(value, 1, 1);
     }
 
     /// <summary>
@@ -80,7 +78,7 @@ public class BattleUIValueChanger : MonoBehaviour
     /// </summary>
     public void ChangeEnemyHpRatio(HPEnumEnemy hpEnum, float value)
     {
-        BattleManager.Instance.EnemyHP.localScale = new Vector3(value, 1, 1);
+        BattleManager.Instance.Enemy.EnemyHP.localScale = new Vector3(value, 1, 1);
     }
 
     /// <summary>
@@ -88,6 +86,6 @@ public class BattleUIValueChanger : MonoBehaviour
     /// </summary>
     public void ChangeUIText(HPEnumEnemy uiEnum, string value)
     {
-        BattleManager.Instance.EnemyHPText.text = value;
+        BattleManager.Instance.Enemy.EnemyHPText.text = value;
     }
 }
