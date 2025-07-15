@@ -3,14 +3,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class TempEnemyAttack : MonoBehaviour
+public class BattleEnemyAttack : MonoBehaviour
 {
     SOEnemySkill enemySkillData;
     const int characterCount = 5;
     Dictionary<TargetDeterminationMehtod, Func<int, int, List<int>>> targetGetterDictionary = new Dictionary<TargetDeterminationMehtod, Func<int, int, List<int>>>();
 
     public void Start()
-    {        
+    {
         targetGetterDictionary.Add(TargetDeterminationMehtod.FrontBackProbability, GetTargetFrontBackProbability);
         targetGetterDictionary.Add(TargetDeterminationMehtod.All, GetTargetAll);
         targetGetterDictionary.Add(TargetDeterminationMehtod.HpLow, GetTargetLowHp);
@@ -40,7 +40,7 @@ public class TempEnemyAttack : MonoBehaviour
 
     private List<int> GetTargetFrontBackProbability(int targetCount = 1, int front = 80)
     {
-        int frontBack = (int)BattleManager.Instance.currentFormationType + 1;
+        int frontBack = (int)BattleManager.Instance.BattleGroup.CurrentFormationType + 1;
         List<int> frontIndex = new List<int>();
         List<int> BackIndex = new List<int>();
         List<int> targetIndex = new List<int>();
@@ -84,7 +84,7 @@ public class TempEnemyAttack : MonoBehaviour
 
     private List<int> GetTargetLowHp(int targetCount, int value = 0)
     {
-        List<BattleCharacter> characters = BattleManager.Instance.battleCharacters;
+        List<BattleCharacter> characters = BattleManager.Instance.BattleGroup.BattleCharacters;
         List<int> targetIndex = new List<int>();
         
         for (int i = 0; i < characterCount; i++)
@@ -119,11 +119,11 @@ public class TempEnemyAttack : MonoBehaviour
             BattleManager.Instance.Enemy.currentTargetIndex = targetIndexTest;
             for (int j = 0; j < targetIndexTest.Count; j++)
             {                
-                int damage = skillValue * BattleManager.Instance.Enemy.CurrentAtk - BattleManager.Instance.battleCharacters[targetIndexTest[i]].CurrentDEF;
+                int damage = skillValue * BattleManager.Instance.Enemy.CurrentAtk - BattleManager.Instance.BattleGroup.BattleCharacters[targetIndexTest[i]].CurrentDEF;
                 if (damage < 0) damage = 0;                
-                BattleManager.Instance.battleCharacters[targetIndexTest[j]].TakeDamage(damage);
+                BattleManager.Instance.BattleGroup.BattleCharacters[targetIndexTest[j]].TakeDamage(damage);
                 BattleManager.Instance.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)targetIndexTest[j]);
-                Debug.Log($"skillValue({skillValue})*Atk({BattleManager.Instance.Enemy.CurrentAtk})-Def({BattleManager.Instance.battleCharacters[targetIndexTest[i]].CurrentDEF})");
+                Debug.Log($"skillValue({skillValue})*Atk({BattleManager.Instance.Enemy.CurrentAtk})-Def({BattleManager.Instance.BattleGroup.BattleCharacters[targetIndexTest[i]].CurrentDEF})");
                 Debug.Log($"캐릭터{targetIndexTest[j]+1}에게 {damage}데미지");
 
                 if(skill.Debuff == EnemyDebuff.None) continue;
@@ -138,6 +138,6 @@ public class TempEnemyAttack : MonoBehaviour
         }
         List<int> targetList = BattleManager.Instance.Enemy.currentTargetIndex;
 
-        BattleManager.Instance.iEnemy.UseActiveSkill(BattleManager.Instance.Enemy.currentSkill_Index, targetList[0]);
+        BattleManager.Instance.Enemy.iEnemy.UseActiveSkill(BattleManager.Instance.Enemy.currentSkill_Index, targetList[0]);
     }
 }

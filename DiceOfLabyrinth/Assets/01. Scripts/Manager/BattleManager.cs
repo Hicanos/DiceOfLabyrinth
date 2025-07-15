@@ -31,67 +31,34 @@ public class BattleManager : MonoBehaviour
     }
     #endregion
 
-    public List<BattleCharacter> battleCharacters;
-    public StageSaveData.CurrentFormationType currentFormationType;
+    EnterBattle enterBattle = new EnterBattle();
+    public BattleSpawner battleSpawner;
+    public BattleUIValueChanger UIValueChanger;
 
-    [SerializeField] private BattleEnemy enemy;
-    public BattleEnemy Enemy => enemy;
-    public IEnemy iEnemy;
-    GameObject enemyPrefab;
-    public TempEnemyAttack EnemyAttack;
+    public BattleEnemy Enemy;
+    public BattleCharGroup BattleGroup;
 
-    public List<ArtifactData> artifacts;
-    public List<StagmaData> stagmas;
-
-    public InputAction inputAction;
+    public BattleCharacterAttack CharacterAttack;
+    public BattleEnemyAttack EnemyAttack;
+    public EnemyPatternContainer EnemyPatternContainer;
 
     public GameObject CharacterHPPrefab;
-    [NonSerialized] public GameObject[] CharacterHPBars = new GameObject[5];
-    [NonSerialized] public RectTransform[] characterHPs = new RectTransform[5];
-    [NonSerialized] public TextMeshProUGUI[] characterHPTexts = new TextMeshProUGUI[5];
-
     public GameObject EnemyHPPrefab;
-    [NonSerialized] public RectTransform EnemyHP;
-    [NonSerialized] public TextMeshProUGUI EnemyHPText;
 
-    [SerializeField] Transform enemyContainer;
-    public BattleUIValueChanger UIValueChanger;
-    public BattleCoroutine battleCoroutine;
-
-    public EnemyPatternContainer EnemyPatternContainer;
+    public InputAction inputAction;
+    
     public BattleStateMachine stateMachine;
     public PlayerTurnState currentPlayerState;
     public IBattleTurnState playerTurnState;
     public IBattleTurnState enemyTurnState;
-    public BattlePlayerTurnState battlePlayerTurnState;  
+    public BattlePlayerTurnState battlePlayerTurnState;
 
     [Header("Values")]
     public  readonly int MaxCost = 12;
-    public  int     BattleTurn = 0;
-    private int     currnetCost = 0;
+    public  int     BattleTurn   = 0;
+    private int     currnetCost  = 0;
     public  bool    isBattle;
     public  bool    isWon;
-
-    public void GetUIs()
-    {
-        for(int i = 0; i < 5; i++)
-        {
-            characterHPs[i] = CharacterHPBars[i].GetComponentsInChildren<RectTransform>()[2];
-            characterHPTexts[i] = CharacterHPBars[i].GetComponentInChildren<TextMeshProUGUI>();
-        }
-    }
-
-    public void GetEnemyUI()
-    {
-        GameObject go = Instantiate(EnemyHPPrefab, enemyPrefab.transform);
-        RectTransform rect = go.GetComponent<RectTransform>();
-        Quaternion quaternion = enemy.Data.EnemySpawnRotation;
-        quaternion = Quaternion.Euler(0, -enemy.Data.EnemySpawnRotation.y, 0);        
-        rect.rotation = quaternion;
-
-        EnemyHP = go.GetComponentsInChildren<RectTransform>()[2];
-        EnemyHPText = go.GetComponentInChildren<TextMeshProUGUI>();
-    }
 
     void Start()
     {
@@ -112,53 +79,23 @@ public class BattleManager : MonoBehaviour
         stateMachine.BattleUpdate();
     }
 
-    public void BattleStartCoroutine(BattleStartData data) //전투 시작시 호출해야할 메서드
+    public void EnterStageSelect(BattleStartData data)
     {
         GetStartData(data);
-        SpawnEnemy();
-        DiceManager.Instance.DiceSettingForBattle();
-
-        if(StageManager.Instance.stageSaveData.currentPhaseIndex == 1)
-        {
-            battleCoroutine.CharacterSpawn();
-        }
-        else
-        {
-            battleCoroutine.CharacterActive();
-        }        
     }
 
-    private void GetStartData(BattleStartData data)
+    private void GetStartData(BattleStartData data) //start시 호출되도록
     {
-        enemy = new BattleEnemy(data.selectedEnemy);
-        battleCharacters = data.battleCharacters;
-        artifacts = data.artifacts;
-        stagmas = data.stagmas;
-        //currentFormationType = data.        
+        Enemy = new BattleEnemy(data.selectedEnemy);
+        BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.stagmas);
     }
 
-    public void BattleStart()
+    public void StartBattle() //전투 시작시
     {
-        if (StageManager.Instance.stageSaveData.currentPhaseIndex == 1)
-        {
-            UIManager.Instance.BattleUI.battleCanvas.worldCamera = DiceManager.Instance.diceCamera;
-            DiceManager.Instance.LoadDiceData();
-        }
-        BattleTurn = 0;
-        //UIManager.Instance.BattleUI.HPBarsSetActive(true);
-        UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
-        for(int i = 0; i < 5; i++)
-        {
-            UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
-        }
-        //turnDisplay.gameObject.SetActive(true);
-        isBattle = true;
-        isWon = false;
-
-        playerTurnState.Enter();        
+        enterBattle.BattleStart();
     }
 
-    public void BattleEnd()
+    public void EndBattle()
     {
         BattleResultData data;
         isBattle = false;
@@ -169,38 +106,24 @@ public class BattleManager : MonoBehaviour
         //{
         //    HPBar[i].gameObject.SetActive(false);
         //}
-        //turnDisplay.gameObject.SetActive(false);
-        battleCoroutine.CharacterDeActive();
-        Destroy(enemyPrefab);
+        battleSpawner.CharacterDeActive();
+        Destroy(Enemy.EnemyPrefab);
         //결과창 실행
         if (isWon)
         {
-            data = new BattleResultData(true, battleCharacters);
+            data = new BattleResultData(true, BattleGroup.BattleCharacters);
             if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
             {
                 StageManager.Instance.battleUIController.OpenVictoryPanel();                
             StageManager.Instance.OnBattleResult(data);
             }
-            StageManager.Instance.RoomClear(enemy.Data);
+            StageManager.Instance.RoomClear(Enemy.Data);
         }
         else
         {
-            data = new BattleResultData(false, battleCharacters);
+            data = new BattleResultData(false, BattleGroup.BattleCharacters);
             StageManager.Instance.battleUIController.OpenDefeatPanel();
         }
-    }
-
-    private void SpawnEnemy()
-    {
-        GameObject enemyGO = enemy.Data.EnemyPrefab;
-
-        enemyPrefab = Instantiate(enemyGO, new Vector3(3, -1, -4), enemy.Data.EnemySpawnRotation, enemyContainer);
-        iEnemy = enemyPrefab.GetComponent<IEnemy>();
-        iEnemy.Init();
-
-        
-        GetEnemyUI();
-        UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
     }
 
     /// <summary>
@@ -215,6 +138,36 @@ public class BattleManager : MonoBehaviour
 
         currnetCost = cost;
         UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, cost.ToString());        
+    }
+
+    public void BattleStartValueSetting()
+    {
+        BattleTurn = 0;
+        isBattle = true;
+        isWon = false;
+    }
+}
+
+public class BattleCharGroup
+{
+    private List<BattleCharacter>  battleCharacters;
+    private List<ArtifactData>     artifacts;
+    private List<StagmaData>       stagmas;
+
+    public List<BattleCharacter> BattleCharacters => battleCharacters;
+    public List<ArtifactData>    Artifacts => artifacts;
+    public List<StagmaData>      Stagmas => stagmas;
+
+    public GameObject[] CharacterPrefabs = new GameObject[5];
+    public StageSaveData.CurrentFormationType CurrentFormationType;
+
+    [NonSerialized] public GameObject[]      CharacterHPBars  = new GameObject[5];
+    [NonSerialized] public RectTransform[]   CharacterHPs     = new RectTransform[5];
+    [NonSerialized] public TextMeshProUGUI[] CharacterHPTexts = new TextMeshProUGUI[5];
+
+    public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<StagmaData> stagmas)
+    {
+        battleCharacters = characters; this.artifacts = artifacts; this.stagmas = stagmas;
     }
 }
 
@@ -232,6 +185,13 @@ public class BattleEnemy : IDamagable
     public int CurrentDef => currentDef;
     public int MaxHP => currentMaxHP;
     public bool IsDead => isDead;
+
+    public GameObject EnemyPrefab;
+    public IEnemy iEnemy;
+
+    public GameObject EnemyHPBar;
+    public RectTransform EnemyHP;
+    public TextMeshProUGUI EnemyHPText;
 
     public SOEnemySkill currentSkill;
     public int currentSkill_Index;
