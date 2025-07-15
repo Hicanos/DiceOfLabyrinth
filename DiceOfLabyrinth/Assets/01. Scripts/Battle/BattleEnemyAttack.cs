@@ -3,14 +3,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class TempEnemyAttack : MonoBehaviour
+public class BattleEnemyAttack : MonoBehaviour
 {
     SOEnemySkill enemySkillData;
     const int characterCount = 5;
     Dictionary<TargetDeterminationMehtod, Func<int, int, List<int>>> targetGetterDictionary = new Dictionary<TargetDeterminationMehtod, Func<int, int, List<int>>>();
 
     public void Start()
-    {        
+    {
         targetGetterDictionary.Add(TargetDeterminationMehtod.FrontBackProbability, GetTargetFrontBackProbability);
         targetGetterDictionary.Add(TargetDeterminationMehtod.All, GetTargetAll);
         targetGetterDictionary.Add(TargetDeterminationMehtod.HpLow, GetTargetLowHp);
@@ -28,19 +28,58 @@ public class TempEnemyAttack : MonoBehaviour
 
     IEnumerator enemyAttack()
     {
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(1);
 
         enemySkillData = BattleManager.Instance.Enemy.currentSkill;
         EnemyAttackTest();
 
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(1);
 
         BattleManager.Instance.stateMachine.ChangeState(BattleManager.Instance.playerTurnState);
     }
 
+    public void EnemyAttackTest()
+    {
+        int skillLength = BattleManager.Instance.Enemy.currentSkill.Skills.Length;
+        List<int> targetIndexTest = new List<int>();
+
+        for (int i = 0; i < skillLength; i++)
+        {
+            EnemySkill skill = enemySkillData.Skills[i];
+            int targetCount = skill.TragetCount;
+            int provability = skill.FrontLineProbability;
+            int skillValue = enemySkillData.SkillValue;
+
+            targetIndexTest = targetGetterDictionary[skill.Method](targetCount, provability);
+
+            BattleManager.Instance.Enemy.currentTargetIndex = targetIndexTest;
+            for (int j = 0; j < targetIndexTest.Count; j++)
+            {
+                int damage = skillValue * BattleManager.Instance.Enemy.CurrentAtk - BattleManager.Instance.BattleGroup.BattleCharacters[targetIndexTest[i]].CurrentDEF;
+                if (damage < 0) damage = 0;
+                BattleManager.Instance.BattleGroup.BattleCharacters[targetIndexTest[j]].TakeDamage(damage);
+                BattleManager.Instance.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)targetIndexTest[j]);
+                Debug.Log($"skillValue({skillValue})*Atk({BattleManager.Instance.Enemy.CurrentAtk})-Def({BattleManager.Instance.BattleGroup.BattleCharacters[targetIndexTest[i]].CurrentDEF})");
+                Debug.Log($"캐릭터{targetIndexTest[j] + 1}에게 {damage}데미지");
+
+                if (skill.Debuff == EnemyDebuff.None) continue;
+                else
+                {
+                    if (UnityEngine.Random.Range(1, 101) <= 20)
+                    {
+                        Debug.Log($"캐릭터{targetIndexTest[j] + 1} {skill.Debuff}걸림");
+                    }
+                }
+            }
+        }
+        List<int> targetList = BattleManager.Instance.Enemy.currentTargetIndex;
+
+        BattleManager.Instance.Enemy.iEnemy.UseActiveSkill(BattleManager.Instance.Enemy.currentSkill_Index, targetList[0]);
+    }
+
     private List<int> GetTargetFrontBackProbability(int targetCount = 1, int front = 80)
     {
-        int frontBack = (int)BattleManager.Instance.currentFormationType + 1;
+        int frontBack = (int)BattleManager.Instance.BattleGroup.CurrentFormationType + 1;
         List<int> frontIndex = new List<int>();
         List<int> BackIndex = new List<int>();
         List<int> targetIndex = new List<int>();
@@ -84,7 +123,7 @@ public class TempEnemyAttack : MonoBehaviour
 
     private List<int> GetTargetLowHp(int targetCount, int value = 0)
     {
-        List<BattleCharacter> characters = BattleManager.Instance.battleCharacters;
+        List<BattleCharacter> characters = BattleManager.Instance.BattleGroup.BattleCharacters;
         List<int> targetIndex = new List<int>();
         
         for (int i = 0; i < characterCount; i++)
@@ -101,43 +140,5 @@ public class TempEnemyAttack : MonoBehaviour
 
         return targetIndex;
     }
-
-    public void EnemyAttackTest()
-    {
-        int skillLength = BattleManager.Instance.Enemy.currentSkill.Skills.Length;
-        List<int> targetIndexTest = new List<int>();
-
-        for (int i = 0; i < skillLength; i++)
-        {
-            EnemySkill skill = enemySkillData.Skills[i];
-            int targetCount = skill.TragetCount;
-            int provability = skill.FrontLineProbability;
-            int skillValue = enemySkillData.SkillValue;
-
-            targetIndexTest = targetGetterDictionary[skill.Method](targetCount, provability);
-
-            BattleManager.Instance.Enemy.currentTargetIndex = targetIndexTest;
-            for (int j = 0; j < targetIndexTest.Count; j++)
-            {                
-                int damage = skillValue * BattleManager.Instance.Enemy.CurrentAtk - BattleManager.Instance.battleCharacters[targetIndexTest[i]].CurrentDEF;
-                if (damage < 0) damage = 0;                
-                BattleManager.Instance.battleCharacters[targetIndexTest[j]].TakeDamage(damage);
-                BattleManager.Instance.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)targetIndexTest[j]);
-                Debug.Log($"skillValue({skillValue})*Atk({BattleManager.Instance.Enemy.CurrentAtk})-Def({BattleManager.Instance.battleCharacters[targetIndexTest[i]].CurrentDEF})");
-                Debug.Log($"캐릭터{targetIndexTest[j]+1}에게 {damage}데미지");
-
-                if(skill.Debuff == EnemyDebuff.None) continue;
-                else
-                {
-                    if(UnityEngine.Random.Range(1, 101) <= 20)
-                    {
-                        Debug.Log($"캐릭터{targetIndexTest[j] + 1} {skill.Debuff}걸림");
-                    }
-                }
-            }
-        }
-        List<int> targetList = BattleManager.Instance.Enemy.currentTargetIndex;
-
-        BattleManager.Instance.iEnemy.UseActiveSkill(BattleManager.Instance.Enemy.currentSkill_Index, targetList[0]);
-    }
+    
 }

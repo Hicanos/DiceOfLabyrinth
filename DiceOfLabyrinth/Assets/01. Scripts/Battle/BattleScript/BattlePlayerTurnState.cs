@@ -59,7 +59,7 @@
     {
         int num = 0;
 
-        foreach (BattleCharacter character in battleManager.battleCharacters)
+        foreach (BattleCharacter character in battleManager.BattleGroup.BattleCharacters)
         {
             if (character.IsDied == false)
             {

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,12 +37,8 @@ public class DiceHolding : MonoBehaviour
         fixedDiceList = DiceManager.Instance.FixedDiceList;
     }
 
-    public void OnInput(InputAction.CallbackContext context)
+    public void DiceInput(Vector2 screenPos)
     {
-        if (!context.started) return;
-        Debug.Log("인풋");
-        Vector2 screenPos = context.ReadValue<Vector2>();
-
         SelectDice(screenPos);
         SkipRolling(screenPos);
     }
@@ -51,7 +46,7 @@ public class DiceHolding : MonoBehaviour
     private void SelectDice(Vector2 vec)
     {
         if(isCantFix) return;
-        if (battleManager.isBattle == false) return;        
+        if (battleManager.isBattle == false) return;
         DiceMy dice;
 
         Ray ray = diceCamera.ScreenPointToRay(vec);
@@ -114,7 +109,6 @@ public class DiceHolding : MonoBehaviour
         Vector3 result;
         Canvas canvas = GetBattleCanvas();
         DiceRollButton = UIManager.Instance.BattleUI.Buttons[(int)PlayerTurnState.Roll].GetComponent<Button>();
-
 
         if (isAdd)
         {
