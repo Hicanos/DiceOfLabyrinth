@@ -47,6 +47,7 @@ public class DiceHolding : MonoBehaviour
     {
         if(isCantFix) return;
         if (battleManager.isBattle == false) return;
+        isCantFix = true;
         DiceMy dice;
 
         Ray ray = diceCamera.ScreenPointToRay(vec);
@@ -156,6 +157,7 @@ public class DiceHolding : MonoBehaviour
             DiceRollButton.interactable = true;
         }
         this.index2 = index2;
+        isCantFix = false;
     }
 
     private void SkipRolling(Vector2 vec)
