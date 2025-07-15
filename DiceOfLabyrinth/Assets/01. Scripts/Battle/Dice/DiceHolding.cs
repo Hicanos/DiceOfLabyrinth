@@ -46,7 +46,7 @@ public class DiceHolding : MonoBehaviour
     private void SelectDice(Vector2 vec)
     {
         if(isCantFix) return;
-        if (battleManager.isBattle == false) return;        
+        if (battleManager.isBattle == false) return;
         DiceMy dice;
 
         Ray ray = diceCamera.ScreenPointToRay(vec);
