@@ -32,16 +32,16 @@ public class BattleUI : MonoBehaviour
 
     [NonSerialized] private TextMeshProUGUI[] texts;
 
-    [NonSerialized] private RectTransform[]   characterHPs;
-    [NonSerialized] private TextMeshProUGUI[] characterHPTexts;
+    //[NonSerialized] private RectTransform[]   characterHPs;
+    //[NonSerialized] private TextMeshProUGUI[] characterHPTexts;
 
-    [NonSerialized] private RectTransform[]   enemyHPs;
-    [NonSerialized] private TextMeshProUGUI[] enemyHPTexts;
+    //[NonSerialized] private RectTransform[]   enemyHPs;
+    //[NonSerialized] private TextMeshProUGUI[] enemyHPTexts;
 
-    [Header("Enemy HP Bars")]
-    [SerializeField] Image hPBar_Enemy;
+    //[Header("Enemy HP Bars")]
+    //[SerializeField] Image hPBar_Enemy;
 
-    [NonSerialized] public Image[] EnemyHPBars = new Image[1];
+    //[NonSerialized] public Image[] EnemyHPBars = new Image[1];
 
     public void Setting()
     {
@@ -75,13 +75,13 @@ public class BattleUI : MonoBehaviour
         //characterHPs[3] = hPBar_Char4.GetComponentsInChildren<RectTransform>()[1];
         //characterHPs[4] = hPBar_Char5.GetComponentsInChildren<RectTransform>()[1];
 
-        enemyHPs = new RectTransform[1];
-        enemyHPs[0] = hPBar_Enemy.GetComponentsInChildren<RectTransform>()[1];
+        //enemyHPs = new RectTransform[1];
+        //enemyHPs[0] = hPBar_Enemy.GetComponentsInChildren<RectTransform>()[1];
 
-        enemyHPTexts = new TextMeshProUGUI[1];
-        enemyHPTexts[0] = hPBar_Enemy.GetComponentInChildren<TextMeshProUGUI>();
+        //enemyHPTexts = new TextMeshProUGUI[1];
+        //enemyHPTexts[0] = hPBar_Enemy.GetComponentInChildren<TextMeshProUGUI>();
 
-        EnemyHPBars[0] = hPBar_Enemy;
+        //EnemyHPBars[0] = hPBar_Enemy;
     }
 
     /// <summary>
@@ -90,29 +90,6 @@ public class BattleUI : MonoBehaviour
     public void ChangeUIText(BattleTextUIEnum uiEnum, string value)
     {
         texts[(int)uiEnum].text = value;
-    }
-
-    
-
-    /// <summary>
-    /// 에너미의 체력바 비율을 변경하는 메서드입니다.
-    /// </summary>
-    public void ChangeEnemyHpRatio(HPEnumEnemy hpEnum, float value)
-    {
-        enemyHPs[0].localScale = new Vector3(value, 1, 1);
-    }
-
-    /// <summary>
-    /// 체력바 텍스트를 변경하는 메서드입니다.
-    /// </summary>
-    public void ChangeUIText(HPEnumEnemy uiEnum, string value)
-    {
-        enemyHPTexts[(int)uiEnum].text = value;
-    }
-
-    public void HPBarsSetActive(bool isActive)
-    {
-        EnemyHPBars[(int)HPEnumEnemy.enemy].gameObject.SetActive(isActive);
     }
 
     public void SettingForHolding()

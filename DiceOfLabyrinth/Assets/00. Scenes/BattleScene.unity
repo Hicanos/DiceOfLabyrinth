@@ -708,6 +708,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &562530835
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 562530838}
+  - component: {fileID: 562530837}
+  - component: {fileID: 562530836}
+  m_Layer: 0
+  m_Name: BattleAttackContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &562530836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 562530835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5f9f24373b39f0418a00dda0b6062e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &562530837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 562530835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d2e465dbd996e34fafe43213ff7342f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &562530838
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 562530835}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &609086922
 GameObject:
   m_ObjectHideFlags: 0
@@ -1707,7 +1764,7 @@ GameObject:
   - component: {fileID: 1415162112}
   - component: {fileID: 1415162114}
   m_Layer: 0
-  m_Name: TempEnemyContainer
+  m_Name: EnemyContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2187,10 +2244,10 @@ MonoBehaviour:
   DiceHolding: {fileID: 1531840403}
   dices: []
   fakeDices: []
+  diceCamera: {fileID: 872327847}
+  rollDiceSynced: {fileID: 630142358}
   ground: {fileID: 1112101460}
   DiceBoard: {fileID: 1058215125}
-  roll: {fileID: 630142358}
-  diceCamera: {fileID: 872327847}
   isRolling: 0
   DiceRank: 0
 --- !u!4 &1531840405
@@ -2387,7 +2444,7 @@ Transform:
   m_GameObject: {fileID: 1665175561}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -9.390984, y: 55.60216, z: -12.550731}
+  m_LocalPosition: {x: -9.390984, y: 55.60216, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3072,7 +3129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1968470673}
   m_Layer: 0
-  m_Name: TempCharacterContainer
+  m_Name: CharacterContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3284,19 +3341,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1419423440417571392
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5666082356261757285}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d2e465dbd996e34fafe43213ff7342f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterContainer: {fileID: 1968470673}
 --- !u!114 &1966176972423714837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3360,9 +3404,9 @@ MonoBehaviour:
     m_ActionName: 'Player/Sprint[/Keyboard/leftShift]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1419423440417571392}
-        m_TargetAssemblyTypeName: BattleCoroutine, Assembly-CSharp
-        m_MethodName: SkipCharacterSpwan
+      - m_Target: {fileID: 5666082356261757286}
+        m_TargetAssemblyTypeName: BattleInput, Assembly-CSharp
+        m_MethodName: GetInput
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3431,11 +3475,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a3250463c1fb174b81619841f7289aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleCharacters: []
-  currentFormationType: 0
-  EnemyAttack: {fileID: 1415162112}
-  artifacts: []
-  stagmas: []
+  battleSpawner: {fileID: 5666082356261757287}
+  UIValueChanger: {fileID: 303490232559084238}
+  CharacterAttack: {fileID: 562530837}
+  EnemyAttack: {fileID: 562530836}
+  EnemyPatternContainer: {fileID: 1415162114}
+  CharacterHPPrefab: {fileID: 8686863719124662963, guid: 83f53905d4392be41becafab42e5a40f, type: 3}
+  EnemyHPPrefab: {fileID: 8686863719124662963, guid: 1d56b95780a60b042839dab99b38bde7, type: 3}
   inputAction:
     m_Name: Input
     m_Type: 0
@@ -3445,11 +3491,6 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
-  CharacterHPPrefab: {fileID: 8686863719124662963, guid: 83f53905d4392be41becafab42e5a40f, type: 3}
-  enemyContainer: {fileID: 1415162113}
-  UIValueChanger: {fileID: 303490232559084238}
-  battleCoroutine: {fileID: 1419423440417571392}
-  EnemyPatternContainer: {fileID: 1415162114}
   currentPlayerState: 0
   BattleTurn: 0
   isBattle: 0
@@ -3464,8 +3505,9 @@ GameObject:
   m_Component:
   - component: {fileID: 347123976421073912}
   - component: {fileID: 3797698706296736340}
-  - component: {fileID: 1419423440417571392}
   - component: {fileID: 303490232559084238}
+  - component: {fileID: 5666082356261757287}
+  - component: {fileID: 5666082356261757286}
   - component: {fileID: 1966176972423714837}
   m_Layer: 0
   m_Name: BattleManager
@@ -3474,6 +3516,32 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &5666082356261757286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5666082356261757285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ddc6cde1ee2d2e44a34a32ed37feb01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5666082356261757287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5666082356261757285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf97210c0d7ebfe4f9d22ee27adc7ca3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterContainer: {fileID: 1968470673}
+  enemyContainer: {fileID: 1415162113}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3487,5 +3555,6 @@ SceneRoots:
   - {fileID: 1651278569}
   - {fileID: 2062571651}
   - {fileID: 347123976421073912}
+  - {fileID: 562530838}
   - {fileID: 1531840405}
   - {fileID: 1738189590}

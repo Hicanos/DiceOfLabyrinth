@@ -71,7 +71,7 @@ public class SelectAdventureUIController : MonoBehaviour
             messagePopup.Open("선택한 챕터가 유효하지 않습니다. 다시 시도해 주세요.");
             return;
         }
-        if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isUnLocked == false) // 챕터가 잠겨있을 때
+        if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked == false) // 챕터가 잠겨있을 때
         {
             // 잠겨있는 챕터를 선택했을 때의 UI 처리를 합니다.
             return;
@@ -94,7 +94,7 @@ public class SelectAdventureUIController : MonoBehaviour
             messagePopup.Open("캐릭터를 5개 이상 보유해야 챕터를 선택할 수 있습니다.");
             return;
         }
-        else if (!StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isUnLocked)
+        else if (!StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked)
         {
             messagePopup.Open("이 챕터는 아직 잠겨 있습니다. 다른 챕터를 완료한 후 다시 시도해 주세요.");
 
@@ -102,7 +102,7 @@ public class SelectAdventureUIController : MonoBehaviour
         }
         else if (StageManager.Instance.stageSaveData.currentChapterIndex == -1) // -1은 진행중인 챕터가 없음을 의미합니다.
         {
-            if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted)
+            if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isCompleted)
             {
                 messagePopup.Open(
                 $"해당 챕터()는 이미 완료되었습니다. 다시 시작하시겠습니까?.",

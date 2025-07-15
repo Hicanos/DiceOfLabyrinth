@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public enum BattleTextUIEnum
 { 
@@ -36,8 +34,8 @@ public class BattleUIValueChanger : MonoBehaviour
     /// </summary>
     public void ChangeCharacterHpRatio(HPEnumCharacter hpEnum)
     {
-        int maxHP = BattleManager.Instance.battleCharacters[(int)hpEnum].RegularHP;
-        int curHP = BattleManager.Instance.battleCharacters[(int)hpEnum].CurrentHP;
+        int maxHP = BattleManager.Instance.BattleGroup.BattleCharacters[(int)hpEnum].RegularHP;
+        int curHP = BattleManager.Instance.BattleGroup.BattleCharacters[(int)hpEnum].CurrentHP;
 
         float ratio = (float)curHP / maxHP;
 
@@ -48,15 +46,15 @@ public class BattleUIValueChanger : MonoBehaviour
     /// <summary>
     /// 에너미의 체력바 비율과 텍스트를 변경하는 메서드입니다.
     /// </summary>
-    public void ChangeEnemyHpRatio(HPEnumEnemy hpEnum)
+    public void ChangeEnemyHpUI(HPEnumEnemy hpEnum)
     {
         int maxHP = BattleManager.Instance.Enemy.MaxHP;
         int curHP = BattleManager.Instance.Enemy.CurrentHP;
 
         float ratio = (float)curHP / maxHP;
 
-        UIManager.Instance.BattleUI.ChangeUIText(hpEnum, $"{curHP} / {maxHP}");
-        UIManager.Instance.BattleUI.ChangeEnemyHpRatio(hpEnum, ratio);
+        ChangeUIText(hpEnum, $"{curHP} / {maxHP}");
+        ChangeEnemyHpRatio(hpEnum, ratio);
     }
 
     /// <summary>
@@ -64,18 +62,30 @@ public class BattleUIValueChanger : MonoBehaviour
     /// </summary>
     public void ChangeUIText(HPEnumCharacter uiEnum, string value)
     {
-        BattleManager.Instance.characterHPTexts[(int)uiEnum].text = value;
+        BattleManager.Instance.BattleGroup.CharacterHPTexts[(int)uiEnum].text = value;
     }
-
-
 
     /// <summary>
     /// 캐릭터의 체력바 비율을 변경하는 메서드입니다.
     /// </summary>
     public void ChangeCharacterHpRatio(HPEnumCharacter hpEnum, float value)
     {
-        BattleManager.Instance.characterHPs[(int)hpEnum].localScale = new Vector3(value, 1, 1);
+        BattleManager.Instance.BattleGroup.CharacterHPs[(int)hpEnum].localScale = new Vector3(value, 1, 1);
     }
 
-    
+    /// <summary>
+    /// 에너미의 체력바 비율을 변경하는 메서드입니다.
+    /// </summary>
+    public void ChangeEnemyHpRatio(HPEnumEnemy hpEnum, float value)
+    {
+        BattleManager.Instance.Enemy.EnemyHP.localScale = new Vector3(value, 1, 1);
+    }
+
+    /// <summary>
+    /// 체력바 텍스트를 변경하는 메서드입니다.
+    /// </summary>
+    public void ChangeUIText(HPEnumEnemy uiEnum, string value)
+    {
+        BattleManager.Instance.Enemy.EnemyHPText.text = value;
+    }
 }

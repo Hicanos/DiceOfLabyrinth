@@ -155,11 +155,11 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickDungeonButton(int stageIndex) // 스테이지 선택 버튼 클릭 시 호출되는 함수
     {
-        if (StageManager.Instance.stageSaveData.chapterAndStageStates[StageManager.Instance.stageSaveData.currentChapterIndex].stageStates[stageIndex].isCompleted) // 스테이지가 이미 클리어되었을 때
+        if (stageIndex < StageManager.Instance.stageSaveData.currentStageIndex) // 스테이지가 이미 클리어되었을 때
         {
             messagePopup.Open("이 던전은 이미 클리어 했습니다. 다음 스테이지를 선택해 주세요.");
         }
-        else if (!StageManager.Instance.stageSaveData.chapterAndStageStates[StageManager.Instance.stageSaveData.currentChapterIndex].stageStates[stageIndex].isUnLocked) // 스테이지가 잠겨있을 때
+        else if (stageIndex > StageManager.Instance.stageSaveData.currentStageIndex) // 스테이지가 잠겨있을 때
         {
             messagePopup.Open("이 던전은 아직 잠겨 있습니다. 다른 스테이지를 완료한 후 다시 시도해 주세요."); // 스테이지가 잠겨있을 때 경고 메시지 표시
         }
