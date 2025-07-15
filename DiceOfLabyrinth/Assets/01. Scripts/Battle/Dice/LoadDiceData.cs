@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
-using Newtonsoft.Json;
-using System.IO;
-using Newtonsoft.Json.Linq;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 public class LoadDiceDataScript
 {
-    private const string jsonPath = "Assets/Resources/Json/DiceData.json";
     JObject root;
 
     public void LoadDiceJson()
