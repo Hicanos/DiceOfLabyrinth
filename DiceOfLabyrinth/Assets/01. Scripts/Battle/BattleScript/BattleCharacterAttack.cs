@@ -18,6 +18,7 @@ public class BattleCharacterAttack : MonoBehaviour
     /// </summary>    
     public void CharacterAttack(float diceWeighting)
     {
+        battleManager = BattleManager.Instance;
         enumeratorAttack = CharacterAttackCoroutine(diceWeighting);
         StartCoroutine(enumeratorAttack);
     }
@@ -32,6 +33,7 @@ public class BattleCharacterAttack : MonoBehaviour
         float pastTime, destTime = 0.5f;
 
         List<BattleCharacter> battleCharacters = battleManager.BattleGroup.BattleCharacters;
+        GameObject[] characterPrefabs = battleManager.BattleGroup.CharacterPrefabs;
 
         int monsterDef = battleManager.Enemy.Data.Def;
         Vector3 attackPosition = new Vector3(3.25f, 0, 0);

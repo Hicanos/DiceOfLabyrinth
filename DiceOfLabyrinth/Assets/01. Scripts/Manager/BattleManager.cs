@@ -82,6 +82,7 @@ public class BattleManager : MonoBehaviour
     public void EnterStageSelect(BattleStartData data)
     {
         GetStartData(data);
+        StartBattle();
     }
 
     private void GetStartData(BattleStartData data) //start시 호출되도록

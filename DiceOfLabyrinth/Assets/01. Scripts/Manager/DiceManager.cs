@@ -102,22 +102,20 @@ public class DiceManager : MonoBehaviour
 
     public void DiceSettingForBattle()
     {
-        int count;
         for (int i = 0; i < diceCount; i++)
         {
-            count = 0;
             CharDiceData diceData = BattleManager.Instance.BattleGroup.BattleCharacters[i].CharacterData.charDiceData;
 
             dices[i] = diceContainer.transform.GetChild(i).gameObject;
             dicesDatas[i] = dices[i].GetComponent<DiceMy>();
             signitureArr[i] = diceData.CignatureNo;
             
-            faceProbability[i, count++] = diceData.FaceProbability1;
-            faceProbability[i, count++] = faceProbability[i, count - 1] + diceData.FaceProbability2;
-            faceProbability[i, count++] = faceProbability[i, count - 1] + diceData.FaceProbability3;
-            faceProbability[i, count++] = faceProbability[i, count - 1] + diceData.FaceProbability4;
-            faceProbability[i, count++] = faceProbability[i, count - 1] + diceData.FaceProbability5;
-            faceProbability[i, count++] = faceProbability[i, count - 1] + diceData.FaceProbability6;
+            faceProbability[i, 0] = diceData.FaceProbability1;
+            faceProbability[i, 1] = faceProbability[i, 0] + diceData.FaceProbability2;
+            faceProbability[i, 2] = faceProbability[i, 1] + diceData.FaceProbability3;
+            faceProbability[i, 3] = faceProbability[i, 2] + diceData.FaceProbability4;
+            faceProbability[i, 4] = faceProbability[i, 3] + diceData.FaceProbability5;
+            faceProbability[i, 5] = faceProbability[i, 4] + diceData.FaceProbability6;
 
             fakeDices[i] = fakeDiceContainer.transform.GetChild(i).gameObject;
             fakeDices[i].SetActive(false);

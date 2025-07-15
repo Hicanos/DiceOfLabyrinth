@@ -94,14 +94,8 @@ public class BattleSpawner : MonoBehaviour
 
             pastTime += Time.deltaTime;
             yield return null;
-        }
-
-        GameObject go;
-        for (int i = 0; i < 5; i++)
-        {
-            go = battleManager.CharacterHPPrefab;
-            battleGroup.CharacterHPBars[i] = Instantiate(go, battleGroup.CharacterPrefabs[i].transform);
-        }
+        }        
+        
         LoadCharacterHP(battleGroup);
 
         isPreparing = false;
@@ -116,14 +110,9 @@ public class BattleSpawner : MonoBehaviour
         isPreparing = false;
         StopCoroutine(enumeratorSpawn);
 
-        GameObject go;
-        Camera cam = DiceManager.Instance.diceCamera;
         for (int i = 0; i < 5; i++)
         {
             battleGroup.CharacterPrefabs[i].transform.localPosition = characterDestPos[i];
-
-            go = battleManager.CharacterHPPrefab;
-            battleGroup.CharacterHPBars[i] = Instantiate(go, battleGroup.CharacterPrefabs[i].transform);
         }
         LoadCharacterHP(battleGroup);
 
@@ -162,7 +151,7 @@ public class BattleSpawner : MonoBehaviour
         GameObject enemyGO = enemy.Data.EnemyPrefab;
 
         enemy.EnemyPrefab = Instantiate(enemyGO, new Vector3(3, -1, -4), enemy.Data.EnemySpawnRotation, enemyContainer);
-        enemy.iEnemy = enemyGO.GetComponent<IEnemy>();
+        enemy.iEnemy = enemy.EnemyPrefab.GetComponent<IEnemy>();
         enemy.iEnemy.Init();
 
         LoadEnemyHP(enemy);
