@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NUnit.Framework.Constraints;
+using System;
 using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -8,6 +9,10 @@ namespace PredictedDice.Demo
 {
     public class RollMultipleDiceSynced : MonoBehaviour
     {
+        //[SerializeField] int x;
+        //[SerializeField] int y;
+        //[SerializeField] int z;
+
         [Serializable]
         public struct DiceAndOutcome
         {
@@ -58,12 +63,19 @@ namespace PredictedDice.Demo
             {
                 faceValue = outcome,
                 force = GetRandomForce(),
-                torque = GetRandomForce()
+                torque = GetRandomTorque()
             };
         }
         private Vector3 GetRandomForce()
         {
-            return new Vector3(Random.Range(1, 10), Random.Range(1, 10), Random.Range(1, 10));
+            return new Vector3(Random.Range(1, 3), Random.Range(4, 6), Random.Range(6, 9));
+            //return new Vector3(x, y, z);
+        }
+
+        private Vector3 GetRandomTorque()
+        {
+            return new Vector3(Random.Range(2, 7), Random.Range(2, 7), Random.Range(2, 7));
+            //return new Vector3(x, y, z);
         }
 
         //private void OnTapPerformed(InputAction.CallbackContext context)
