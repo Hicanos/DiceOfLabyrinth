@@ -37,6 +37,11 @@ public class SelectAdventureUIController : MonoBehaviour
     //[SerializeField] private List<TMP_Text> selectedChapterNameText = new List<TMP_Text>(); // 선택된 챕터 이름 텍스트, 여러 개의 챕터 이름을 표시할 수 있도록 리스트로 변경
     [SerializeField] private TMP_Text selectedChapterDescriptionText;
 
+    [Header("Selected Chapter Group")]
+    [SerializeField] private TMP_Text selectedChapterGroupNumberText; // 선택된 챕터 그룹 번호 텍스트
+    private int selectedChapterGroupNumber = 0; // 선택된 챕터 그룹 번호, 노말과 하드를 합쳐서 챕터 10개씩 그룹화합니다.
+    [SerializeField] private List<TMP_Text> chapterTexts = new List<TMP_Text>(5); // 챕터 텍스트 리스트, 각 그룹의 챕터 이름을 표시합니다.
+
     [Header("Direct Complete Multiplier")]
     [SerializeField] private TMP_Text directCompleteMultiplierText; // 직접 완료 배수 텍스트
     [SerializeField] private TMP_Text actualCostText; // 직접 완료 비용 텍스트
@@ -90,6 +95,58 @@ public class SelectAdventureUIController : MonoBehaviour
         Debug.Log($"Selected chapter index: {chapterIndex}, Hard: {isDifficulty})");
         UpdateSelectedChapterUI(chapterIndex); // 선택된 챕터 UI 업데이트
         selectedChapterIndex = chapterIndex; // 선택된 챕터 인덱스 설정
+    }
+
+    public void OnClickChapterGroupPreviousButton() // 챕터 그룹 버튼
+    {
+        if(selectedChapterGroupNumber > 0) // 현재 그룹 번호가 0보다 클 때
+        {
+            selectedChapterGroupNumber--;
+            selectedChapterGroupNumberText.text = $"{selectedChapterGroupNumber + 1}"; // 그룹 번호 텍스트 업데이트
+            RefreshChapterButton(); // 챕터 버튼 텍스트 업데이트
+        }
+        else if (selectedChapterGroupNumber == 0) // 현재 그룹 번호가 0일 때
+        {
+            messagePopup.Open("첫 번째 그룹입니다. 이전 그룹이 없습니다.");
+        }
+        else
+        {
+            messagePopup.Open("챕터 그룹 번호가 잘못되었습니다.");
+        }
+    }
+    public void OnClickChapterGroupNextButton() // 챕터 그룹 버튼
+    {
+        if (selectedChapterGroupNumber < chapterData.chapterIndex.Count / 10 - 1) // 10개씩 그룹화했으므로, 최대 그룹 번호는 총 챕터 수 / 10 - 1입니다.
+        {
+            selectedChapterGroupNumber++;
+            selectedChapterGroupNumberText.text = $"{selectedChapterGroupNumber + 1}"; // 그룹 번호 텍스트 업데이트
+            RefreshChapterButton(); // 챕터 버튼 텍스트 업데이트
+        }
+        else if (selectedChapterGroupNumber == chapterData.chapterIndex.Count / 10 - 1) // 현재 그룹 번호가 최대 그룹 번호일 때
+        {
+            messagePopup.Open("마지막 그룹입니다. 다음 그룹이 없습니다.");
+        }
+        else
+        {
+            messagePopup.Open("챕터 그룹 번호가 잘못되었습니다.");
+        }
+    }
+    private void RefreshChapterButton()
+    {
+
+        for(int i = 0; i < chapterTexts.Count; i++) // 챕터 버튼 텍스트 업데이트
+        {
+            
+            int chapterIndex = i * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0); // 현재 그룹 번호와 난이도에 따라 챕터 인덱스 계산
+            if (chapterIndex < chapterData.chapterIndex.Count) // 유효한 챕터 인덱스일 때
+            {
+                chapterTexts[i].text = $"{chapterData.chapterIndex[chapterIndex].ChapterName}"; // 챕터 이름 업데이트
+            }
+            else // 유효하지 않은 챕터 인덱스일 때
+            {
+                chapterTexts[i].text = "N/A"; // N/A로 표시
+            }
+        }
     }
 
     public void OnClickStartButton() // 코스트 지불 UI의 시작 버튼
@@ -325,6 +382,7 @@ public class SelectAdventureUIController : MonoBehaviour
             HardDifficultyUnselect.SetActive(true);
             HardDifficultySelect.SetActive(false);
         }
+        RefreshChapterButton(); // 챕터 버튼 텍스트 업데이트
     }
 
     private void UpdateSelectedChapterUI(int chapterIndex)
