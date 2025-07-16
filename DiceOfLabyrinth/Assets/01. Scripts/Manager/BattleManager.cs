@@ -152,6 +152,8 @@ public class BattleManager : MonoBehaviour
 
 public class BattleCharGroup
 {
+    const int numFive = 5;
+
     private List<BattleCharacter>  battleCharacters;
     private List<ArtifactData>     artifacts;
     private List<StagmaData>       stagmas;
@@ -160,12 +162,12 @@ public class BattleCharGroup
     public List<ArtifactData>    Artifacts => artifacts;
     public List<StagmaData>      Stagmas => stagmas;
 
-    public GameObject[] CharacterPrefabs = new GameObject[5];
+    public GameObject[] CharacterPrefabs = new GameObject[numFive];
     public StageSaveData.CurrentFormationType CurrentFormationType;
 
-    [NonSerialized] public GameObject[]      CharacterHPBars  = new GameObject[5];
-    [NonSerialized] public RectTransform[]   CharacterHPs     = new RectTransform[5];
-    [NonSerialized] public TextMeshProUGUI[] CharacterHPTexts = new TextMeshProUGUI[5];
+    [NonSerialized] public GameObject[]      CharacterHPBars  = new GameObject[numFive];
+    [NonSerialized] public RectTransform[]   CharacterHPs     = new RectTransform[numFive];
+    [NonSerialized] public TextMeshProUGUI[] CharacterHPTexts = new TextMeshProUGUI[numFive];
 
     public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<StagmaData> stagmas)
     {

@@ -7,6 +7,8 @@ public class BattleEnemyAttack : MonoBehaviour
 {
     SOEnemySkill enemySkillData;
     const int characterCount = 5;
+    [SerializeField] float waitSecondEnemyAttack;
+
     Dictionary<TargetDeterminationMehtod, Func<int, int, List<int>>> targetGetterDictionary = new Dictionary<TargetDeterminationMehtod, Func<int, int, List<int>>>();
 
     public void Start()
@@ -28,15 +30,15 @@ public class BattleEnemyAttack : MonoBehaviour
 
     IEnumerator enemyAttack()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(waitSecondEnemyAttack);
 
         enemySkillData = BattleManager.Instance.Enemy.currentSkill;
         EnemyAttackTest();
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(waitSecondEnemyAttack);
 
         BattleManager.Instance.stateMachine.ChangeState(BattleManager.Instance.playerTurnState);
-    }
+    }    
 
     public void EnemyAttackTest()
     {
@@ -65,7 +67,7 @@ public class BattleEnemyAttack : MonoBehaviour
                 if (skill.Debuff == EnemyDebuff.None) continue;
                 else
                 {
-                    if (UnityEngine.Random.Range(1, 101) <= 20)
+                    if (GetRandomRange(1,100) <= skill.DebuffChance)
                     {
                         Debug.Log($"캐릭터{targetIndexTest[j] + 1} {skill.Debuff}걸림");
                     }
@@ -96,18 +98,18 @@ public class BattleEnemyAttack : MonoBehaviour
 
         for(int i = 0; i < targetCount; i++)
         {
-            int randNum = UnityEngine.Random.Range(1, 101);
+            int randNum = GetRandomRange(1, 100);
 
             if(randNum <= front)
             {
-                int index = UnityEngine.Random.Range(0, frontIndex.Count);
-
+                int index = GetRandomRange(0, frontIndex.Count - 1);
+                
                 targetIndex.Add(frontIndex[index]);
                 frontIndex.Remove(frontIndex[index]);
             }
             else
             {
-                int index = UnityEngine.Random.Range(0, BackIndex.Count);
+                int index = GetRandomRange(0, BackIndex.Count - 1);
 
                 targetIndex.Add(BackIndex[index]);
                 BackIndex.Remove(BackIndex[index]);
@@ -140,5 +142,5 @@ public class BattleEnemyAttack : MonoBehaviour
 
         return targetIndex;
     }
-    
+    private int GetRandomRange(int min, int max) => UnityEngine.Random.Range(min, max + 1);
 }

@@ -22,6 +22,9 @@ public class DiceHolding : MonoBehaviour
     private int index2 = 0;
     public  bool isCantFix = false;
 
+    const int fakeDicePositionY = 10;
+    const int diceCount = 5;
+
     private void Start()
     {
         battleManager = BattleManager.Instance;
@@ -114,7 +117,7 @@ public class DiceHolding : MonoBehaviour
 
         if (isAdd)
         {
-            if (index2 < 5)
+            if (index2 < diceCount)
             {
                 areas[index2].SetActive(true);
                 index2++;
@@ -139,7 +142,7 @@ public class DiceHolding : MonoBehaviour
         {
             Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, targetRects[i].position);
             RectTransformUtility.ScreenPointToWorldPointInRectangle(targetRects[i], screenPos, canvas.worldCamera, out result);
-            result.y = 10;
+            result.y = fakeDicePositionY;
             results.Add(result);
         }
 
@@ -194,14 +197,14 @@ public class DiceHolding : MonoBehaviour
     {
         int count = 0;
         Vector3 result;
-        Vector3[] results = new Vector3[5];
+        Vector3[] results = new Vector3[diceCount];
         RectTransform targetRects;
         Canvas canvas = GetBattleCanvas();
         int fixedCount = fixedDiceList.Count;
 
         List<int> noFixed = new List<int>() { 0, 1, 2, 3, 4 };
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < diceCount; i++)
         {
             if (fixedDiceList.Contains<int>(i))
             {
@@ -210,14 +213,14 @@ public class DiceHolding : MonoBehaviour
             }
         }
 
-        for (int i = count; i < 5; i++)
+        for (int i = count; i < diceCount; i++)
         {
             areas[i].SetActive(true);
         }
 
         yield return new WaitForEndOfFrame();
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < diceCount; i++)
         {
             targetRects = areas[i].GetComponent<RectTransform>();
             Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, targetRects.position);
