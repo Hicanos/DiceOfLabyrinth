@@ -6,7 +6,7 @@ public class BattleInput : MonoBehaviour
     public void GetInput(InputAction.CallbackContext context)
     {
         //if (!context.started) return;
-        Debug.Log("인풋");
+        //Debug.Log("인풋");
         BattleManager.Instance.battleSpawner.SkipCharacterSpwan();
 
         Vector2 screenPos = context.ReadValue<Vector2>();
@@ -16,7 +16,7 @@ public class BattleInput : MonoBehaviour
     public void DebugBattleDefeat(InputAction.CallbackContext context)
     {
         if (!context.started) return;
-        Debug.Log("디버그");
+        //Debug.Log("디버그");
 
         DiceManager.Instance.diceRollCoroutine = DiceManager.Instance.SortingAfterRoll();
         BattleManager battleManager = BattleManager.Instance;

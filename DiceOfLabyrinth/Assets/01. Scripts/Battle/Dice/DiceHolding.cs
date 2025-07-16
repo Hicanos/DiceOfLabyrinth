@@ -48,21 +48,21 @@ public class DiceHolding : MonoBehaviour
 
     private void SelectDice(Vector2 vec)
     {
-        Debug.Log("1");
+        //Debug.Log("1");
         if(isCantFix) return;
-        Debug.Log("2");
+        //Debug.Log("2");
         if (battleManager.isBattle == false) return;
-        Debug.Log("3");
+        //Debug.Log("3");
         DiceMy dice;
 
         Ray ray = diceCamera.ScreenPointToRay(vec);
-        Debug.Log("4");
+        //Debug.Log("4");
         if (Physics.Raycast(ray, out var hit, 100f))
         {
-            Debug.Log("5");
+            //Debug.Log("5");
             if (hit.collider.TryGetComponent(out dice))
             {
-                Debug.Log("6");
+                //Debug.Log("6");
                 dice = hit.collider.gameObject.GetComponent<DiceMy>();
                 dice.SetIndex();
                 Debug.Log("실릭트");
