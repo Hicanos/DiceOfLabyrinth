@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.InputSystem;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class BattleManager : MonoBehaviour
 {
@@ -44,6 +45,7 @@ public class BattleManager : MonoBehaviour
 
     public GameObject CharacterHPPrefab;
     public GameObject EnemyHPPrefab;
+    public BattleUIHP BattleUIHP;
 
     public InputAction inputAction;
     
@@ -90,7 +92,7 @@ public class BattleManager : MonoBehaviour
         if (BattleGroup == null)
         {
             BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.stagmas);
-        }
+        }        
     }
 
     public void EndBattle(bool isWon = true)
@@ -173,24 +175,58 @@ public class BattleCharGroup
     [NonSerialized] public RectTransform[]   CharacterHPs     = new RectTransform[numFive];
     [NonSerialized] public TextMeshProUGUI[] CharacterHPTexts = new TextMeshProUGUI[numFive];
 
+    public List<int> FrontLine = new List<int>();
+    public List<int> BackLine = new List<int>();
+    private int frontLineNum;
+
     public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<StagmaData> stagmas)
     {
         battleCharacters = characters; this.artifacts = artifacts; this.stagmas = stagmas;
+
+        CurrentFormationType = StageManager.Instance.stageSaveData.currentFormationType;
+        frontLineNum = (int)CurrentFormationType;
+
+        for (int i = 0; i < frontLineNum + 1; i++)
+        {
+            FrontLine.Add(i);
+        }
+        for (int i = frontLineNum + 1; i < 5; i++)
+        {
+            BackLine.Add(i);
+        }        
     }
 
-    public void CharacterDead()
+    public void CharacterDead(int index)
     {
         DeadCount++;
 
-        if(isAllDead)
+        if(FrontLine.Contains<int>(index))
+        {
+            FrontLine.Remove(index);
+        }
+        else if(BackLine.Contains<int>(index))
+        {
+            BackLine.Remove(index);
+        }
+
+        if (isAllDead)
         {
             BattleManager.Instance.EndBattle(false);
         }
     }
 
-    public void CharacterRevive()
+    public void CharacterRevive(int index)
     {
         DeadCount--;
+
+        if (index <= frontLineNum)
+        {
+            FrontLine.Add(index);
+        }
+        else if (index > frontLineNum)
+        {
+            BackLine.Add(index);
+        }
     }
 }
 
