@@ -59,7 +59,6 @@ public class BattleManager : MonoBehaviour
     private int     currnetCost  = 0;
     public  bool    isBattle;
     public  bool    isWon;
-
     void Start()
     {
         playerTurnState = new BattlePlayerTurnState();
@@ -81,13 +80,18 @@ public class BattleManager : MonoBehaviour
     public void StartBattle(BattleStartData data) //전투 시작시
     {
         GetStartData(data);
+        BattleStartValueSetting();
         enterBattle.BattleStart();
     }
 
     private void GetStartData(BattleStartData data) //start시 호출되도록
     {
         Enemy = new BattleEnemy(data.selectedEnemy);
-        BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.stagmas);
+
+        if (BattleGroup == null)
+        {
+            BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.stagmas);
+        }
     }
 
     public void EndBattle()
@@ -105,8 +109,9 @@ public class BattleManager : MonoBehaviour
             data = new BattleResultData(true, BattleGroup.BattleCharacters);
             if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
             {
-                StageManager.Instance.battleUIController.OpenVictoryPanel();                
-            StageManager.Instance.OnBattleResult(data);
+                StageManager.Instance.battleUIController.OpenVictoryPanel();
+                StageManager.Instance.OnBattleResult(data);
+                ExitBattleSetting();
             }
             StageManager.Instance.RoomClear(Enemy.Data);
         }
@@ -114,6 +119,7 @@ public class BattleManager : MonoBehaviour
         {
             data = new BattleResultData(false, BattleGroup.BattleCharacters);
             StageManager.Instance.battleUIController.OpenDefeatPanel();
+            ExitBattleSetting();
         }
     }
 
@@ -131,11 +137,16 @@ public class BattleManager : MonoBehaviour
         UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, cost.ToString());        
     }
 
-    public void BattleStartValueSetting()
+    private void BattleStartValueSetting()
     {
         BattleTurn = 0;
         isBattle = true;
         isWon = false;
+    }
+
+    private void ExitBattleSetting()
+    {
+        BattleGroup = null;
     }
 }
 
