@@ -21,7 +21,6 @@ public class DiceManager : MonoBehaviour
         //{
         //    Destroy(this.gameObject);
         //}
-        _inputActions = new InputSystem_Actions();
     }
 
     public static DiceManager Instance
@@ -84,7 +83,6 @@ public class DiceManager : MonoBehaviour
     Vector3[] rotationVectors; //굴린 후 정렬시 적용할 회전값
     Vector3[] defaultPos; //주사위 굴리는 기본 위치 화면 오른쪽
     public DiceRankingEnum DiceRank;
-    public InputSystem_Actions _inputActions;    
 
     void Start()
     {
