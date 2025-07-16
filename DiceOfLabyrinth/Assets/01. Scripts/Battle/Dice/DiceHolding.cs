@@ -47,7 +47,7 @@ public class DiceHolding : MonoBehaviour
     {
         if(isCantFix) return;
         if (battleManager.isBattle == false) return;
-        isCantFix = true;
+        
         DiceMy dice;
 
         Ray ray = diceCamera.ScreenPointToRay(vec);
@@ -66,6 +66,7 @@ public class DiceHolding : MonoBehaviour
 
     private void DiceFixed(DiceMy dice)
     {
+        isCantFix = true;
         int index = dice.MyIndex;
         List<Vector3> fixedPos = new List<Vector3>();
         bool isAdd;
