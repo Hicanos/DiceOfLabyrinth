@@ -236,6 +236,8 @@ public class DiceManager : MonoBehaviour
     /// </summary>
     public void ResetSetting()
     {
+        StopCoroutine(diceRollCoroutine);
+
         int childCount = DiceHolding.areas.Length;
         for (int i = 0; i < childCount; i++)
         {

@@ -6,7 +6,13 @@ public class BattleCharacterAttack : MonoBehaviour
 {
     BattleManager battleManager;
     
-    IEnumerator enumeratorAttack;    
+    IEnumerator enumeratorAttack;
+    IEnumerator enumeratorDamage;
+
+    [SerializeField] Vector3 attackPosition;
+    [SerializeField] float charAttackMoveTime;
+    [SerializeField] float waitSecondEnemyDie;
+    [SerializeField] float waitSecondCharAttack;
 
     /// <summary>
     /// 캐릭터가 공격할 때 실행하는 코루틴을 실행하는 메서드입니다.
@@ -18,20 +24,24 @@ public class BattleCharacterAttack : MonoBehaviour
         StartCoroutine(enumeratorAttack);
     }
 
-    public void StopCharacterAttack()
+    private void StopAttackCoroutine()
     {
         StopCoroutine(enumeratorAttack);
     }
 
+    private void StopDamageCoroutine()
+    {
+        StopCoroutine(enumeratorDamage);
+    }
+
     public IEnumerator CharacterAttackCoroutine(float diceWeighting)
     {
-        float pastTime, destTime = 0.5f;
+        float pastTime, destTime = charAttackMoveTime;
 
         List<BattleCharacter> battleCharacters = battleManager.BattleGroup.BattleCharacters;
         GameObject[] characterPrefabs = battleManager.BattleGroup.CharacterPrefabs;
 
         int monsterDef = battleManager.Enemy.Data.Def;
-        Vector3 attackPosition = new Vector3(3.25f, 0, 0);
 
         for (int i = 0; i < battleCharacters.Count; i++)
         {
@@ -49,35 +59,40 @@ public class BattleCharacterAttack : MonoBehaviour
                 pastTime += Time.deltaTime;
                 yield return null;
             }
-            DealDamage(battleManager.Enemy, damage);
-            battleManager.Enemy.iEnemy.TakeDamage();
+            enumeratorDamage = DealDamage(battleManager.Enemy, damage);
+            StartCoroutine(enumeratorDamage);
+            battleManager.Enemy.iEnemy.TakeDamage();            
+
             pastTime = 0;
             while (pastTime < destTime)
             {
                 characterPrefabs[i].transform.position = Vector3.Lerp(attackPosition, firstPosition, pastTime / destTime);
 
                 pastTime += Time.deltaTime;
+
                 yield return null;
             }
+            if (battleManager.Enemy.IsDead) StopAttackCoroutine();
 
-            if (battleManager.Enemy.IsDead)
-            {
-                battleManager.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
-                battleManager.isWon = true;
-                battleManager.EndBattle();
-                StopCharacterAttack();
-            }
-            yield return null;
+            yield return new WaitForSeconds(waitSecondCharAttack);
         }
         BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.ConfirmEnd);
     }
 
-    public void DealDamage(IDamagable target, int damage)
+    IEnumerator DealDamage(IDamagable target, int damage)
     {
         target.TakeDamage(damage);
         BattleEnemy enemy = (BattleEnemy)target;
         float ratio = (float)enemy.CurrentHP / enemy.MaxHP;
 
         battleManager.UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
+
+        if (battleManager.Enemy.IsDead)
+        {
+            battleManager.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
+            yield return new WaitForSeconds(waitSecondEnemyDie);
+            battleManager.isWon = true;
+            battleManager.EndBattle();
+        }
     }
 }
