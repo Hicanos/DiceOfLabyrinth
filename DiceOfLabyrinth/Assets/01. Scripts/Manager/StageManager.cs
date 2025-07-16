@@ -385,7 +385,7 @@ public class StageManager : MonoBehaviour
 
         if (result.isVictory)
         {
-            StageComplete(stageSaveData.currentStageIndex);
+            RoomClear(stageSaveData.selectedEnemy); // 룸 클리어 로직 호출
         }
         else
         {

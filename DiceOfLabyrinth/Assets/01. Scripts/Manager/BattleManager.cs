@@ -103,12 +103,12 @@ public class BattleManager : MonoBehaviour
         if (isWon)
         {
             data = new BattleResultData(true, BattleGroup.BattleCharacters);
-            if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
-            {
-                StageManager.Instance.battleUIController.OpenVictoryPanel();                
+            //if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
+            //{
+            //    StageManager.Instance.battleUIController.OpenVictoryPanel();                
             StageManager.Instance.OnBattleResult(data);
-            }
-            StageManager.Instance.RoomClear(Enemy.Data);
+            //}
+            //StageManager.Instance.RoomClear(Enemy.Data);
         }
         else
         {

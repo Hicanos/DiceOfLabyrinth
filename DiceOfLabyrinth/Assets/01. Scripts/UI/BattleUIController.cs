@@ -107,12 +107,14 @@ public class BattleUIController : MonoBehaviour
             if (Keyboard.current.f9Key.wasPressedThisFrame)
             {
                 messagePopup.Open("디버그: 즉시 배틀 승리 처리");
-                StageManager.Instance.RoomClear(StageManager.Instance.stageSaveData.selectedEnemy);
+                BattleManager.Instance.isWon = true;
+                BattleManager.Instance.EndBattle();
             }
             if (Keyboard.current.f10Key.wasPressedThisFrame)
             {
                 messagePopup.Open("디버그: 즉시 패배 처리");
-                StageManager.Instance.StageDefeat(StageManager.Instance.stageSaveData.currentChapterIndex);
+                BattleManager.Instance.isWon = false;
+                BattleManager.Instance.EndBattle();
             }
         }
         if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
