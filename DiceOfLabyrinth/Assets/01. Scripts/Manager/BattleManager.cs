@@ -190,7 +190,7 @@ public class BattleCharGroup
         {
             FrontLine.Add(i);
         }
-        for (int i = frontLineNum + 1; i < 5; i++)
+        for (int i = frontLineNum + 1; i < numFive; i++)
         {
             BackLine.Add(i);
         }        

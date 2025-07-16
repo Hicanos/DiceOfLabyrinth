@@ -26,10 +26,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
                 panel.gameObject.SetActive(false);
                 break;
             case PlayerTurnState.Enter:
-                if(BattleManager.Instance.isWon == false)
-                {
-                    StartCoroutine(BlinkUI());
-                }
+                StartCoroutine(BlinkUI());
                 break;
             case PlayerTurnState.Roll:
                 Button.interactable = false;
