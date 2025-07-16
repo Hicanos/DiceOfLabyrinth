@@ -48,17 +48,21 @@ public class DiceHolding : MonoBehaviour
 
     private void SelectDice(Vector2 vec)
     {
+        Debug.Log("1");
         if(isCantFix) return;
+        Debug.Log("2");
         if (battleManager.isBattle == false) return;
-        
+        Debug.Log("3");
         DiceMy dice;
 
         Ray ray = diceCamera.ScreenPointToRay(vec);
-
+        Debug.Log("4");
         if (Physics.Raycast(ray, out var hit, 100f))
         {
+            Debug.Log("5");
             if (hit.collider.TryGetComponent(out dice))
             {
+                Debug.Log("6");
                 dice = hit.collider.gameObject.GetComponent<DiceMy>();
                 dice.SetIndex();
                 Debug.Log("실릭트");
@@ -113,7 +117,7 @@ public class DiceHolding : MonoBehaviour
         List<Vector3> results = new List<Vector3>();
         Vector3 result;
         Canvas canvas = GetBattleCanvas();
-        DiceRollButton = UIManager.Instance.BattleUI.Buttons[(int)PlayerTurnState.Roll].GetComponent<Button>();
+        DiceRollButton = UIManager.Instance.BattleUI.Buttons[2].GetComponent<Button>(); //수정필요
 
         if (isAdd)
         {

@@ -6,7 +6,7 @@ public class BattleInput : MonoBehaviour
     public void GetInput(InputAction.CallbackContext context)
     {
         //if (!context.started) return;
-
+        Debug.Log("인풋");
         BattleManager.Instance.battleSpawner.SkipCharacterSpwan();
 
         Vector2 screenPos = context.ReadValue<Vector2>();
