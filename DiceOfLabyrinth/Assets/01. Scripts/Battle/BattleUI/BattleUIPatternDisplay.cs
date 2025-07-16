@@ -5,16 +5,14 @@ using TMPro;
 
 public class BattleUIPatternDisplay : AbstractBattleButton
 {
-    [SerializeField] GameObject panel;
-    Image image;
-    TextMeshProUGUI text;   
-    Button Button;
+    [SerializeField] GameObject descriptionPanel;
+    [SerializeField] Image image_DescriptionPanel;
+    [SerializeField] TextMeshProUGUI text_SkillDescription;
+    [SerializeField] Button button;
 
     public override void Setting()
     {
-        image = GetComponent<Image>();
-        text = GetComponentInChildren<TextMeshProUGUI>();        
-        Button = GetComponentInChildren<Button>();
+
     }
 
     public override void OnOffButton(PlayerTurnState state)
@@ -23,19 +21,19 @@ public class BattleUIPatternDisplay : AbstractBattleButton
         {
             case PlayerTurnState.BattleStart:
                 gameObject.SetActive(true);
-                panel.gameObject.SetActive(false);
+                descriptionPanel.gameObject.SetActive(false);
                 break;
             case PlayerTurnState.Enter:
                 StartCoroutine(BlinkUI());
                 break;
             case PlayerTurnState.Roll:
-                Button.interactable = false;
+                button.interactable = false;
                 break;
             case PlayerTurnState.Confirm:
-                Button.interactable = true;
+                button.interactable = true;
                 break;
             case PlayerTurnState.BattleEnd:
-                panel.gameObject.SetActive(true);
+                descriptionPanel.gameObject.SetActive(true);
                 gameObject.SetActive(false);
                 break;
         }
@@ -43,39 +41,40 @@ public class BattleUIPatternDisplay : AbstractBattleButton
 
     public override void OnPush()
     {
-        panel.gameObject.SetActive(true);
+        descriptionPanel.gameObject.SetActive(true);
     }
 
     IEnumerator BlinkUI()
     {
-        Color color = image.color;
-        Color textColor = text.color;
+        Color color = image_DescriptionPanel.color;
+        Color textColor = text_SkillDescription.color;
 
         for (float f = 1; f > 0.25f; f -= Time.deltaTime)
         {
             color.a = f;
             textColor.a = f;
-            image.color = color;
-            text.color = textColor;
+            image_DescriptionPanel.color = color;
+            text_SkillDescription.color = textColor;
             yield return null;
         }
 
         yield return new WaitForSeconds(0.15f);
         BattleManager.Instance.EnemyPatternContainer.PrepareSkill();
+        text_SkillDescription.text = BattleManager.Instance.Enemy.currentSkill.SkillDescription;
         yield return new WaitForSeconds(0.15f);
 
         for (float f = 0.25f; f <= 1; f += Time.deltaTime)
         {
             color.a = f;
             textColor.a = f;
-            image.color = color;
-            text.color = textColor;
+            image_DescriptionPanel.color = color;
+            text_SkillDescription.color = textColor;
             yield return null;
         }
     }
 
     public void OnClickCloseDisplayer()
     {
-        panel.SetActive(false);
+        descriptionPanel.SetActive(false);
     }
 }
