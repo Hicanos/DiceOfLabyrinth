@@ -14,11 +14,13 @@ public class BattleCharacterAttack : MonoBehaviour
     [SerializeField] float waitSecondEnemyDie;
     [SerializeField] float waitSecondCharAttack;
 
+    public bool isCharacterAttacking = false;
     /// <summary>
     /// 캐릭터가 공격할 때 실행하는 코루틴을 실행하는 메서드입니다.
     /// </summary>    
     public void CharacterAttack(float diceWeighting)
     {
+        isCharacterAttacking = true;
         battleManager = BattleManager.Instance;
         enumeratorAttack = CharacterAttackCoroutine(diceWeighting);
         StartCoroutine(enumeratorAttack);
@@ -76,6 +78,7 @@ public class BattleCharacterAttack : MonoBehaviour
 
             yield return new WaitForSeconds(waitSecondCharAttack);
         }
+        isCharacterAttacking = false;
         BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.ConfirmEnd);
     }
 
@@ -89,9 +92,9 @@ public class BattleCharacterAttack : MonoBehaviour
 
         if (battleManager.Enemy.IsDead)
         {
+            isCharacterAttacking = false;
             battleManager.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
             yield return new WaitForSeconds(waitSecondEnemyDie);
-            battleManager.isWon = true;
             battleManager.EndBattle();
         }
     }
