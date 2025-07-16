@@ -58,7 +58,6 @@ public class BattleManager : MonoBehaviour
     public  int     BattleTurn   = 0;
     private int     currnetCost  = 0;
     public  bool    isBattle;
-    public  bool    isWon;
     void Start()
     {
         playerTurnState = new BattlePlayerTurnState();
@@ -94,7 +93,7 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    public void EndBattle()
+    public void EndBattle(bool isWon = true)
     {
         BattleResultData data;
         isBattle = false;
@@ -117,7 +116,9 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
+            battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
             data = new BattleResultData(false, BattleGroup.BattleCharacters);
+            StageManager.Instance.OnBattleResult(data);
             StageManager.Instance.battleUIController.OpenDefeatPanel();
             ExitBattleSetting();
         }
@@ -141,12 +142,12 @@ public class BattleManager : MonoBehaviour
     {
         BattleTurn = 0;
         isBattle = true;
-        isWon = false;
     }
 
     private void ExitBattleSetting()
     {
         BattleGroup = null;
+        isBattle = false;
     }
 }
 
@@ -162,6 +163,9 @@ public class BattleCharGroup
     public List<ArtifactData>    Artifacts => artifacts;
     public List<StagmaData>      Stagmas => stagmas;
 
+    public int DeadCount;
+    private bool isAllDead => DeadCount == numFive ? true : false;
+
     public GameObject[] CharacterPrefabs = new GameObject[numFive];
     public StageSaveData.CurrentFormationType CurrentFormationType;
 
@@ -172,6 +176,21 @@ public class BattleCharGroup
     public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<StagmaData> stagmas)
     {
         battleCharacters = characters; this.artifacts = artifacts; this.stagmas = stagmas;
+    }
+
+    public void CharacterDead()
+    {
+        DeadCount++;
+
+        if(isAllDead)
+        {
+            BattleManager.Instance.EndBattle(false);
+        }
+    }
+
+    public void CharacterRevive()
+    {
+        DeadCount--;
     }
 }
 

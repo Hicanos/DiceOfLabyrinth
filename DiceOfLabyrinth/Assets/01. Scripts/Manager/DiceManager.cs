@@ -191,7 +191,7 @@ public class DiceManager : MonoBehaviour
         }
     }
 
-    IEnumerator SortingAfterRoll()
+    public IEnumerator SortingAfterRoll() //디버그를 위한 임시 public
     {
         rollCount++;
         List<Dice> diceList = new List<Dice>();
