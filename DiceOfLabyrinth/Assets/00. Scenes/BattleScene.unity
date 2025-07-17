@@ -228,93 +228,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 425322f1bb9a3a842a975ff4c0a74209, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &216669362
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 216669363}
-  - component: {fileID: 216669364}
-  m_Layer: 0
-  m_Name: Circle
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &216669363
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 216669362}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -4.14, y: 54.5, z: -19.8}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1934340096}
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!212 &216669364
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 216669362}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
 --- !u!1001 &333464090
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -665,6 +578,7 @@ GameObject:
   - component: {fileID: 562530838}
   - component: {fileID: 562530837}
   - component: {fileID: 562530836}
+  - component: {fileID: 562530839}
   m_Layer: 0
   m_Name: BattleAttackContainer
   m_TagString: Untagged
@@ -684,7 +598,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f9f24373b39f0418a00dda0b6062e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waitSecondEnemyAttack: 0.5
+  waitSecondEnemyAttack: 0.3
+  tempWaitAttackAnimEnd: 4.5
   isEnemyAttacking: 0
 --- !u!114 &562530837
 MonoBehaviour:
@@ -698,10 +613,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d2e465dbd996e34fafe43213ff7342f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackPosition: {x: 3.25, y: 0, z: 0}
-  charAttackMoveTime: 0.5
+  attackPosition: {x: 1.25, y: -0.97, z: -4}
+  charAttackMoveTime: 0.4
   waitSecondEnemyDie: 4
-  waitSecondCharAttack: 0.5
+  waitSecondCharAttack: 0.3
   isCharacterAttacking: 0
 --- !u!4 &562530838
 Transform:
@@ -718,6 +633,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &562530839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 562530835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4df4d8630dc40541afefcd20e6dce36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemySkillDatas:
+  - {fileID: 11400000, guid: 378234ccc3196d2468f8d88282fa848c, type: 2}
+  - {fileID: 11400000, guid: 7305f969bbd18754d843d6eca5df2800, type: 2}
+  - {fileID: 11400000, guid: 22bf5600ba16c9f418a6b22d0b8594fa, type: 2}
+  - {fileID: 11400000, guid: 8a62b66a7597e9b4aa38a0d2b4aab5b0, type: 2}
+  - {fileID: 11400000, guid: 5d8b9c3bde5491349b32e25d95d80900, type: 2}
+  - {fileID: 11400000, guid: 9cfc613095bf1934b8088b80a92324b7, type: 2}
+  - {fileID: 11400000, guid: b4bf741f02b68dd4cbdef48af6b50a96, type: 2}
+  - {fileID: 11400000, guid: e6b21ad73ba3fb34390ad96f102054d6, type: 2}
+  - {fileID: 11400000, guid: 45263a76fd9616f419eaa082bb24303a, type: 2}
+  - {fileID: 11400000, guid: 9f2dbac585161514a95eb02f660a215f, type: 2}
+  - {fileID: 11400000, guid: 9c27f0fe8d17d3741a13d163df8ffbe1, type: 2}
+  - {fileID: 11400000, guid: 70693bd5eed975448b51e6b882584e84, type: 2}
+  - {fileID: 11400000, guid: bf3a641c5558e1a458200451051cf85f, type: 2}
+  - {fileID: 11400000, guid: df9b58ebb91ace94e881a465fbbd9299, type: 2}
+  - {fileID: 11400000, guid: 5b3bf196e6dbeac4e886670ef914d287, type: 2}
 --- !u!1 &609086922
 GameObject:
   m_ObjectHideFlags: 0
@@ -1822,8 +1765,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1415162113}
-  - component: {fileID: 1415162112}
-  - component: {fileID: 1415162114}
   m_Layer: 0
   m_Name: EnemyContainer
   m_TagString: Untagged
@@ -1831,20 +1772,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1415162112
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1415162111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5f9f24373b39f0418a00dda0b6062e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waitSecondEnemyAttack: 0
-  isEnemyAttacking: 0
 --- !u!4 &1415162113
 Transform:
   m_ObjectHideFlags: 0
@@ -1860,34 +1787,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1415162114
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1415162111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4df4d8630dc40541afefcd20e6dce36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemySkillDatas:
-  - {fileID: 11400000, guid: 378234ccc3196d2468f8d88282fa848c, type: 2}
-  - {fileID: 11400000, guid: 7305f969bbd18754d843d6eca5df2800, type: 2}
-  - {fileID: 11400000, guid: 22bf5600ba16c9f418a6b22d0b8594fa, type: 2}
-  - {fileID: 11400000, guid: 8a62b66a7597e9b4aa38a0d2b4aab5b0, type: 2}
-  - {fileID: 11400000, guid: 5d8b9c3bde5491349b32e25d95d80900, type: 2}
-  - {fileID: 11400000, guid: 9cfc613095bf1934b8088b80a92324b7, type: 2}
-  - {fileID: 11400000, guid: b4bf741f02b68dd4cbdef48af6b50a96, type: 2}
-  - {fileID: 11400000, guid: e6b21ad73ba3fb34390ad96f102054d6, type: 2}
-  - {fileID: 11400000, guid: 45263a76fd9616f419eaa082bb24303a, type: 2}
-  - {fileID: 11400000, guid: 9f2dbac585161514a95eb02f660a215f, type: 2}
-  - {fileID: 11400000, guid: 9c27f0fe8d17d3741a13d163df8ffbe1, type: 2}
-  - {fileID: 11400000, guid: 70693bd5eed975448b51e6b882584e84, type: 2}
-  - {fileID: 11400000, guid: bf3a641c5558e1a458200451051cf85f, type: 2}
-  - {fileID: 11400000, guid: df9b58ebb91ace94e881a465fbbd9299, type: 2}
-  - {fileID: 11400000, guid: 5b3bf196e6dbeac4e886670ef914d287, type: 2}
 --- !u!1 &1436074807
 GameObject:
   m_ObjectHideFlags: 0
@@ -2304,13 +2203,10 @@ MonoBehaviour:
   diceContainer: {fileID: 1069492832}
   fakeDiceContainer: {fileID: 1665175561}
   DiceHolding: {fileID: 1531840403}
-  dices: []
-  fakeDices: []
-  diceCamera: {fileID: 872327847}
+  DiceCamera: {fileID: 872327847}
   rollDiceSynced: {fileID: 630142358}
-  ground: {fileID: 1112101460}
   DiceBoard: {fileID: 1058215125}
-  isRolling: 0
+  IsRolling: 0
   DiceRank: 0
 --- !u!4 &1531840405
 Transform:
@@ -3055,7 +2951,6 @@ Transform:
   - {fileID: 1665175562}
   - {fileID: 1058215126}
   - {fileID: 630142357}
-  - {fileID: 216669363}
   m_Father: {fileID: 1651278569}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1968470672
@@ -3411,6 +3306,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5666082356261757286}
+        m_TargetAssemblyTypeName: BattleInput, Assembly-CSharp
+        m_MethodName: GetButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 76a67f69-6456-4c10-bd5b-1822b15f7190
+    m_ActionName: 'Player/InputButton[/Device Simulator Touchscreen/press,/Mouse/leftButton,/Mouse/press]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -3428,25 +3339,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a3250463c1fb174b81619841f7289aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleSpawner: {fileID: 5666082356261757287}
+  BattleSpawner: {fileID: 5666082356261757287}
   UIValueChanger: {fileID: 303490232559084238}
   battleInput: {fileID: 5666082356261757286}
   CharacterAttack: {fileID: 562530837}
   EnemyAttack: {fileID: 562530836}
-  EnemyPatternContainer: {fileID: 1415162114}
+  EnemyPatternContainer: {fileID: 562530839}
   CharacterHPPrefab: {fileID: 8686863719124662963, guid: 83f53905d4392be41becafab42e5a40f, type: 3}
   EnemyHPPrefab: {fileID: 8686863719124662963, guid: 1d56b95780a60b042839dab99b38bde7, type: 3}
   BattleUIHP: {fileID: 5666082356261757288}
-  inputAction:
+  InputAction:
     m_Name: Input
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 444bcc81-125a-4068-ad02-d511c29e5643
+    m_Id: ca42de24-9047-4cc7-9fef-d75ae5a21af1
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
-  currentPlayerState: 0
+  CurrentPlayerState: 0
   BattleTurn: 0
   isBattle: 0
 --- !u!1 &5666082356261757285
