@@ -41,13 +41,7 @@ public class DiceHolding : MonoBehaviour
         fixedDiceList = DiceManager.Instance.FixedDiceList;
     }
 
-    public void DiceInput(Vector2 screenPos)
-    {
-        SelectDice(screenPos);
-        SkipRolling(screenPos);
-    }
-
-    private void SelectDice(Vector2 vec)
+    public void SelectDice(Vector2 vec)
     {
         if(isCantFix) return;
         if (battleManager.isBattle == false) return;
@@ -190,7 +184,7 @@ public class DiceHolding : MonoBehaviour
         isCantFix = false;
     }
 
-    private void SkipRolling(Vector2 vec)
+    public void SkipRolling(Vector2 vec)
     {
         if (battleManager.isBattle == false || diceManager.IsRolling == false) return;
         StopCoroutine(diceManager.DiceRollCoroutine);        

@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class BattleInput : MonoBehaviour
 {
     bool isInputActive = false;
+    Vector2 posVec;
 
     public void InputStart()
     {
@@ -18,12 +19,32 @@ public class BattleInput : MonoBehaviour
     public void GetInput(InputAction.CallbackContext context)
     {
         if (isInputActive == false) return;
-        //if (!context.started) return;
-        //Debug.Log("인풋");
-        BattleManager.Instance.BattleSpawner.SkipCharacterSpwan();
+        Debug.Log("인풋");
+                  
+        WriteVec(context.ReadValue<Vector2>());
+    }
 
-        Vector2 screenPos = context.ReadValue<Vector2>();
-        DiceManager.Instance.DiceHolding.DiceInput(screenPos);
+    public void GetButton(InputAction.CallbackContext context)
+    {        
+        if(context.phase == InputActionPhase.Started)
+        {
+            Debug.Log("start");
+
+            BattleManager.Instance.BattleSpawner.SkipCharacterSpwan();
+            DiceManager.Instance.DiceHolding.SkipRolling(posVec);
+        }
+
+        if (context.phase == InputActionPhase.Canceled)
+        {
+            Debug.Log("Exit");
+            
+            DiceManager.Instance.DiceHolding.SelectDice(posVec);
+        }
+    }
+
+    public void WriteVec(Vector2 vec)
+    {
+        posVec = vec;
     }
 
     public void DebugBattleDefeat(InputAction.CallbackContext context)
