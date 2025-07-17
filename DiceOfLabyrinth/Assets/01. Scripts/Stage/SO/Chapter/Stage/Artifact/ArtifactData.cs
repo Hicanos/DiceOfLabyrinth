@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "ArtifactData", menuName = "ScriptableObjects/Stages/ArtifactData")]
 public class ArtifactData : ScriptableObject
@@ -17,4 +18,6 @@ public class ArtifactData : ScriptableObject
     public ArtifactType artifactType;
     public int additionalAtk;
     public int additionalDef;
+
+    public List<SetEffectData> setEffectData = new List<SetEffectData>();
 }
