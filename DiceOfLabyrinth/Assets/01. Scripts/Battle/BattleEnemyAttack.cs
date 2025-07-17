@@ -9,6 +9,7 @@ public class BattleEnemyAttack : MonoBehaviour
     SOEnemySkill enemySkillData;
     const int characterCount = 5;
     [SerializeField] float waitSecondEnemyAttack;
+    [SerializeField] float tempWaitAttackAnimEnd;
 
     Dictionary<TargetDeterminationMehtod, Func<int, int, List<int>>> targetGetterDictionary = new Dictionary<TargetDeterminationMehtod, Func<int, int, List<int>>>();
 
@@ -39,7 +40,7 @@ public class BattleEnemyAttack : MonoBehaviour
         enemySkillData = BattleManager.Instance.Enemy.currentSkill;
         EnemyAttackTest();
 
-        yield return new WaitForSeconds(waitSecondEnemyAttack);
+        yield return new WaitForSeconds(tempWaitAttackAnimEnd);
 
         //isEnemyAttacking = false;
         BattleManager.Instance.StateMachine.ChangeState(BattleManager.Instance.I_PlayerTurnState);
@@ -94,6 +95,7 @@ public class BattleEnemyAttack : MonoBehaviour
         battleManager.Enemy.iEnemy.UseActiveSkill(battleManager.Enemy.currentSkill_Index, targetList[0]);
     }
 
+    #region 타겟 결정 메서드들
     private List<int> GetTargetFrontBackProbability(int targetCount = 1, int front = 80)
     {
         int frontBack = (int)BattleManager.Instance.BattleGroup.CurrentFormationType + 1;
@@ -157,5 +159,7 @@ public class BattleEnemyAttack : MonoBehaviour
 
         return targetIndex;
     }
+    #endregion
+
     private int GetRandomRange(int min, int max) => UnityEngine.Random.Range(min, max + 1);
 }
