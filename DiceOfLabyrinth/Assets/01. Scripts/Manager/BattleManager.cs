@@ -113,7 +113,8 @@ public class BattleManager : MonoBehaviour
         else
         {
             data = new BattleResultData(false, BattleGroup.BattleCharacters);
-            StageManager.Instance.battleUIController.OpenDefeatPanel();
+            //StageManager.Instance.battleUIController.OpenDefeatPanel();
+            StageManager.Instance.OnBattleResult(data);
         }
     }
 
