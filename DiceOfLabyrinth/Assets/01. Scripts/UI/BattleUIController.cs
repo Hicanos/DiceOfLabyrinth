@@ -106,7 +106,6 @@ public class BattleUIController : MonoBehaviour
         {
             if (Keyboard.current.f9Key.wasPressedThisFrame)
             {
-                DiceManager.Instance.ResetSetting();
 
                 BattleManager.Instance.battleSpawner.CharacterDeActive();
                 Destroy(BattleManager.Instance.Enemy.EnemyPrefab);
@@ -116,7 +115,6 @@ public class BattleUIController : MonoBehaviour
             }
             if (Keyboard.current.f10Key.wasPressedThisFrame)
             {
-                DiceManager.Instance.ResetSetting();
 
                 BattleManager.Instance.battleSpawner.CharacterDeActive();
                 Destroy(BattleManager.Instance.Enemy.EnemyPrefab);
