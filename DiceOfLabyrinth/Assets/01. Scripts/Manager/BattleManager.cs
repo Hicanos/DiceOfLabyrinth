@@ -111,21 +111,19 @@ public class BattleManager : MonoBehaviour
         if (isWon)
         {
             data = new BattleResultData(true, BattleGroup.BattleCharacters);
-            if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
-            {
-                StageManager.Instance.battleUIController.OpenVictoryPanel();
-                StageManager.Instance.OnBattleResult(data);
-                ExitBattleSetting();
-            }
-            StageManager.Instance.RoomClear(Enemy.Data);
+            //if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
+            //{
+            //    StageManager.Instance.battleUIController.OpenVictoryPanel();                
+            StageManager.Instance.OnBattleResult(data);
+            //}
+            //StageManager.Instance.RoomClear(Enemy.Data);
         }
         else
         {
             battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
             data = new BattleResultData(false, BattleGroup.BattleCharacters);
+            //StageManager.Instance.battleUIController.OpenDefeatPanel();
             StageManager.Instance.OnBattleResult(data);
-            StageManager.Instance.battleUIController.OpenDefeatPanel();
-            ExitBattleSetting();
         }
     }
 
