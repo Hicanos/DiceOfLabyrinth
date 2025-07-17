@@ -20,6 +20,7 @@ public class BattleUI : MonoBehaviour
     [SerializeField] AbstractBattleButton char5;
     [SerializeField] AbstractBattleButton patternDisplayer;
 
+    public AbstractBattleButton Roll => roll;
     [NonSerialized] public AbstractBattleButton[] Buttons = new AbstractBattleButton[8];
 
     [Header("Texts For Value Changer")]

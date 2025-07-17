@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PredictedDice;
 using PredictedDice.Demo;
+using Unity.VisualScripting;
 
 public class DiceHolding : MonoBehaviour
 {
@@ -48,21 +49,15 @@ public class DiceHolding : MonoBehaviour
 
     private void SelectDice(Vector2 vec)
     {
-        //Debug.Log("1");
         if(isCantFix) return;
-        //Debug.Log("2");
         if (battleManager.isBattle == false) return;
-        //Debug.Log("3");
         DiceMy dice;
 
         Ray ray = diceCamera.ScreenPointToRay(vec);
-        //Debug.Log("4");
         if (Physics.Raycast(ray, out var hit, 100f))
         {
-            //Debug.Log("5");
             if (hit.collider.TryGetComponent(out dice))
             {
-                //Debug.Log("6");
                 dice = hit.collider.gameObject.GetComponent<DiceMy>();
                 dice.SetIndex();
                 Debug.Log("실릭트");
@@ -74,6 +69,7 @@ public class DiceHolding : MonoBehaviour
     private void DiceFixed(DiceMy dice)
     {
         isCantFix = true;
+
         int index = dice.MyIndex;
         List<Vector3> fixedPos = new List<Vector3>();
         bool isAdd;
@@ -92,22 +88,48 @@ public class DiceHolding : MonoBehaviour
             fixedDiceList.Add(index);
             rollMultipleDice.diceAndOutcomeArray[index].dice = null;
 
-            enumerator = WaitForPosition(isAdd);
-            StartCoroutine(enumerator);
+            DiceFix(index);
+            //enumerator = WaitForPosition(isAdd);
+            //StartCoroutine(enumerator);
         }
         else if (fixedDiceList.Contains<int>(index) == true)
         {
             isAdd = false;
 
             fixedDiceList.Remove(index);
-            rollMultipleDice.diceAndOutcomeArray[index].dice = diceManager.dices[index].GetComponent<Dice>();
-            diceManager.fakeDices[index].transform.localPosition = diceManager.DicePos[index];
+            rollMultipleDice.diceAndOutcomeArray[index].dice = diceManager.Dices[index].GetComponent<Dice>();
+            diceManager.FakeDices[index].transform.localPosition = diceManager.DicePos[index];
 
-            enumerator = WaitForPosition(isAdd);
-            StartCoroutine(enumerator);
+            if (diceManager.RollRemain != 0)
+            {
+                DiceRollButton.interactable = true;
+            }
+            //enumerator = WaitForPosition(isAdd);
+            //StartCoroutine(enumerator);
         }
+        isCantFix = false;
     }
+    public void DiceFix(int index)
+    {      
+        Canvas canvas = GetBattleCanvas();
+        RectTransform targetRect = areas[index].GetComponent<RectTransform>();
+        if(DiceRollButton == null)
+        {
+            DiceRollButton = UIManager.Instance.BattleUI.Roll.GetComponent<Button>();
+        }
+        Vector3 result;
 
+        Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, targetRect.position);
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(targetRect, screenPos, canvas.worldCamera, out result);
+        result.y = fakeDicePositionY;
+
+        if (fixedDiceList.Count == diceManager.Dices.Length)
+        {
+            DiceRollButton.interactable = false;
+        }        
+
+        diceManager.FakeDices[index].transform.position = result;        
+    }
     IEnumerator WaitForPosition(bool isAdd)
     {
         int count = 0;
@@ -117,7 +139,7 @@ public class DiceHolding : MonoBehaviour
         List<Vector3> results = new List<Vector3>();
         Vector3 result;
         Canvas canvas = GetBattleCanvas();
-        DiceRollButton = UIManager.Instance.BattleUI.Buttons[2].GetComponent<Button>(); //수정필요
+        DiceRollButton = UIManager.Instance.BattleUI.Buttons[1].GetComponent<Button>(); //수정필요
 
         if (isAdd)
         {
@@ -152,11 +174,11 @@ public class DiceHolding : MonoBehaviour
 
         foreach (int i in fixedDiceList)
         {
-            diceManager.fakeDices[i].transform.position = results[count];
+            diceManager.FakeDices[i].transform.position = results[count];
             count++;
         }
 
-        if (fixedDiceList.Count == diceManager.dices.Length)
+        if (fixedDiceList.Count == diceManager.Dices.Length)
         {
             DiceRollButton.interactable = false;
         }
@@ -170,8 +192,8 @@ public class DiceHolding : MonoBehaviour
 
     private void SkipRolling(Vector2 vec)
     {
-        if (battleManager.isBattle == false || diceManager.isRolling == false) return;
-        StopCoroutine(diceManager.diceRollCoroutine);        
+        if (battleManager.isBattle == false || diceManager.IsRolling == false) return;
+        StopCoroutine(diceManager.DiceRollCoroutine);        
         Ray ray = diceCamera.ScreenPointToRay(vec);
 
         if (Physics.Raycast(ray, out var hit, 100f))
@@ -179,12 +201,12 @@ public class DiceHolding : MonoBehaviour
             if (hit.collider.gameObject.tag == "DiceBoard")
             {
                 diceManager.StopSimulation();
+                diceManager.IsRolling = false;
                 Debug.Log("스킵 다이스");
                 //diceManager.isSkipped = true;
                 diceManager.SortingFakeDice();
             }
         }
-        diceManager.isRolling = false;
     }
 
     public void FixAllDIce()
@@ -239,13 +261,13 @@ public class DiceHolding : MonoBehaviour
         for (int i = 0; i < fixedCount; i++)
         {
             index = fixedDiceList[i];
-            diceManager.fakeDices[index].transform.position = results[count2];
+            diceManager.FakeDices[index].transform.position = results[count2];
             count2++;
         }
         for (int i = 0; i < noFixed.Count; i++)
         {
             index = noFixed[i];
-            diceManager.fakeDices[index].transform.position = results[count2];
+            diceManager.FakeDices[index].transform.position = results[count2];
             count2++;
         }
     }
@@ -281,12 +303,12 @@ public class DiceHolding : MonoBehaviour
         {
             if (fixedDiceList.Contains<int>(i))
             {
-                diceManager.fakeDices[i].transform.position = results[count];
+                diceManager.FakeDices[i].transform.position = results[count];
                 count++;
             }
             else
             {
-                diceManager.fakeDices[i].transform.localPosition = diceManager.DicePos[i];
+                diceManager.FakeDices[i].transform.localPosition = diceManager.DicePos[i];
             }
         }
     }
