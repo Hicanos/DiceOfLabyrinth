@@ -106,15 +106,23 @@ public class BattleUIController : MonoBehaviour
         {
             if (Keyboard.current.f9Key.wasPressedThisFrame)
             {
+                DiceManager.Instance.ResetSetting();
+
+                BattleManager.Instance.battleSpawner.CharacterDeActive();
+                Destroy(BattleManager.Instance.Enemy.EnemyPrefab);
+                var data = new BattleResultData(true, BattleManager.Instance.BattleGroup.BattleCharacters);
                 messagePopup.Open("디버그: 즉시 배틀 승리 처리");
-                BattleManager.Instance.isWon = true;
-                BattleManager.Instance.EndBattle();
+                StageManager.Instance.OnBattleResult(data);
             }
             if (Keyboard.current.f10Key.wasPressedThisFrame)
             {
+                DiceManager.Instance.ResetSetting();
+
+                BattleManager.Instance.battleSpawner.CharacterDeActive();
+                Destroy(BattleManager.Instance.Enemy.EnemyPrefab);
                 messagePopup.Open("디버그: 즉시 패배 처리");
-                BattleManager.Instance.isWon = false;
-                BattleManager.Instance.EndBattle();
+                var defeatData = new BattleResultData(false, BattleManager.Instance.BattleGroup.BattleCharacters);
+                StageManager.Instance.OnBattleResult(defeatData);
             }
         }
         if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
