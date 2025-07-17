@@ -33,7 +33,7 @@ public class BattleManager : MonoBehaviour
     #endregion
 
     EnterBattle enterBattle = new EnterBattle();
-    public BattleSpawner battleSpawner;
+    public BattleSpawner BattleSpawner;
     public BattleUIValueChanger UIValueChanger;
     [SerializeField] BattleInput battleInput;
 
@@ -48,13 +48,13 @@ public class BattleManager : MonoBehaviour
     public GameObject EnemyHPPrefab;
     public BattleUIHP BattleUIHP;
 
-    public InputAction inputAction;
+    public InputAction InputAction;
     
-    public BattleStateMachine stateMachine;
-    public PlayerTurnState currentPlayerState;
-    public IBattleTurnState playerTurnState;
-    public IBattleTurnState enemyTurnState;
-    public BattlePlayerTurnState battlePlayerTurnState;
+    public BattleStateMachine StateMachine;
+    public PlayerTurnState CurrentPlayerState;
+    public IBattleTurnState I_PlayerTurnState;
+    public IBattleTurnState I_EnemyTurnState;
+    public BattlePlayerTurnState BattlePlayerTurnState;
 
     [Header("Values")]
     public  readonly int MaxCost = 12;
@@ -63,13 +63,13 @@ public class BattleManager : MonoBehaviour
     public  bool    isBattle;
     void Start()
     {
-        playerTurnState = new BattlePlayerTurnState();
+        I_PlayerTurnState = new BattlePlayerTurnState();
 
-        battlePlayerTurnState = (BattlePlayerTurnState)playerTurnState;
+        BattlePlayerTurnState = (BattlePlayerTurnState)I_PlayerTurnState;
 
-        enemyTurnState = new BattleEnemyTurnState();
+        I_EnemyTurnState = new BattleEnemyTurnState();
 
-        stateMachine = new BattleStateMachine(playerTurnState);
+        StateMachine = new BattleStateMachine(I_PlayerTurnState);
 
         UIManager.Instance.BattleUI.Setting();
         DiceManager.Instance.DiceHolding.SettingForHolding();
@@ -79,7 +79,7 @@ public class BattleManager : MonoBehaviour
     
     void Update()
     {
-        stateMachine.BattleUpdate();
+        StateMachine.BattleUpdate();
     }
     public void StartBattle(BattleStartData data) //전투 시작시
     {
@@ -105,7 +105,7 @@ public class BattleManager : MonoBehaviour
 
         DiceManager.Instance.ResetSetting();
 
-        battleSpawner.CharacterDeActive();
+        BattleSpawner.CharacterDeActive();
         Destroy(Enemy.EnemyPrefab);
         //결과창 실행
         if (isWon)
@@ -120,7 +120,7 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
+            BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
             data = new BattleResultData(false, BattleGroup.BattleCharacters);
             //StageManager.Instance.battleUIController.OpenDefeatPanel();
             StageManager.Instance.OnBattleResult(data);
@@ -151,6 +151,7 @@ public class BattleManager : MonoBehaviour
     {
         BattleGroup = null;
         isBattle = false;
+        battleInput.InputEnd();
     }
 }
 

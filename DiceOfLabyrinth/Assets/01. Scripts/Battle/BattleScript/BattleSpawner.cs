@@ -128,7 +128,7 @@ public class BattleSpawner : MonoBehaviour
         }
         battleManager.Enemy.EnemyHPBar.SetActive(true);
 
-        battleManager.playerTurnState.Enter();
+        battleManager.I_PlayerTurnState.Enter();
     }
 
     private void LoadCharacterHP(BattleCharGroup battleGroup)

@@ -34,6 +34,6 @@ public class BattleButtonEndTurn : AbstractBattleButton
     {
         button.interactable = false;
         
-        BattleManager.Instance.battlePlayerTurnState.EndPlayerTurn();
+        BattleManager.Instance.BattlePlayerTurnState.EndPlayerTurn();
     }
 }

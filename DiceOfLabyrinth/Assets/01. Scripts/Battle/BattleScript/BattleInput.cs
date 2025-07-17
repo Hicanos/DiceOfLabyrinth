@@ -10,12 +10,17 @@ public class BattleInput : MonoBehaviour
         isInputActive = true;
     }
 
+    public void InputEnd()
+    {
+        isInputActive = false;
+    }
+
     public void GetInput(InputAction.CallbackContext context)
     {
         if (isInputActive == false) return;
         //if (!context.started) return;
         //Debug.Log("인풋");
-        BattleManager.Instance.battleSpawner.SkipCharacterSpwan();
+        BattleManager.Instance.BattleSpawner.SkipCharacterSpwan();
 
         Vector2 screenPos = context.ReadValue<Vector2>();
         DiceManager.Instance.DiceHolding.DiceInput(screenPos);
@@ -26,7 +31,7 @@ public class BattleInput : MonoBehaviour
         if (!context.started) return;
         //Debug.Log("디버그");
 
-        DiceManager.Instance.diceRollCoroutine = DiceManager.Instance.SortingAfterRoll();
+        DiceManager.Instance.DiceRollCoroutine = DiceManager.Instance.SortingAfterRoll();
         BattleManager battleManager = BattleManager.Instance;
         BattleCharacter battleCharacter;
 

@@ -47,12 +47,12 @@ public class BattleButtonConfirm : AbstractBattleButton
     {
         confirmButton.interactable = true;
         rankDisplayer.SetActive(false);
-        diceManager.ground.SetActive(false);
+        //diceManager.Ground.SetActive(false);
         diceManager.DiceBoard.SetActive(false);
         diceManager.HideFakeDice();
         diceManager.DiceHolding.isCantFix = false;
 
-        BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Confirm);
+        BattleManager.Instance.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Confirm);
 
         float diceWeighting = DiceManager.Instance.DiceBattle.GetDamageWeighting(); //족보별 계수
         BattleManager battleManager = BattleManager.Instance;

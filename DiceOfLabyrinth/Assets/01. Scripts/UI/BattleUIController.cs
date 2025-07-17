@@ -108,7 +108,7 @@ public class BattleUIController : MonoBehaviour
             {
                 DiceManager.Instance.ResetSetting();
 
-                BattleManager.Instance.battleSpawner.CharacterDeActive();
+                BattleManager.Instance.BattleSpawner.CharacterDeActive();
                 Destroy(BattleManager.Instance.Enemy.EnemyPrefab);
                 var data = new BattleResultData(true, BattleManager.Instance.BattleGroup.BattleCharacters);
                 messagePopup.Open("디버그: 즉시 배틀 승리 처리");
@@ -118,7 +118,7 @@ public class BattleUIController : MonoBehaviour
             {
                 DiceManager.Instance.ResetSetting();
 
-                BattleManager.Instance.battleSpawner.CharacterDeActive();
+                BattleManager.Instance.BattleSpawner.CharacterDeActive();
                 Destroy(BattleManager.Instance.Enemy.EnemyPrefab);
                 messagePopup.Open("디버그: 즉시 패배 처리");
                 var defeatData = new BattleResultData(false, BattleManager.Instance.BattleGroup.BattleCharacters);

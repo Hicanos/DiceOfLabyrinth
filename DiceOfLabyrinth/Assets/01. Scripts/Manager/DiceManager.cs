@@ -39,21 +39,23 @@ public class DiceManager : MonoBehaviour
     [SerializeField] GameObject diceContainer;
     [SerializeField] GameObject fakeDiceContainer;
     public DiceHolding DiceHolding;
-    public GameObject[] dices;
-    public GameObject[] fakeDices;
-    
-    public Camera diceCamera;
+    private GameObject[] dices;
+    public GameObject[] Dices => dices;
+    private GameObject[] fakeDices;
+    public GameObject[] FakeDices => fakeDices;
+
+    public Camera DiceCamera;
     public DiceBattle DiceBattle = new DiceBattle();
     DiceMy[] dicesDatas;
 
     [SerializeField] RollMultipleDiceSynced rollDiceSynced;
 
-    public GameObject ground;
+    //public GameObject Ground;
     public GameObject DiceBoard;
 
     int signitureAmount;
 
-    public IEnumerator diceRollCoroutine;
+    public IEnumerator DiceRollCoroutine;
 
     private int[] diceResult;
     public int[] DiceResult => diceResult;
@@ -75,7 +77,7 @@ public class DiceManager : MonoBehaviour
     private readonly int maxRollCount = 3;
     public int RollRemain => maxRollCount - rollCount;
     //public bool isSkipped = false;
-    public bool isRolling = false;
+    public bool IsRolling = false;
 
     private Vector3[] dicePos; //굴린 후 정렬 위치
     public Vector3[] DicePos => dicePos;
@@ -121,31 +123,32 @@ public class DiceManager : MonoBehaviour
     }
 
     public void RollDice()
-    {
+    {        
         SettingForRoll();
-        diceRollCoroutine = SortingAfterRoll();
+        DiceRollCoroutine = SortingAfterRoll();
 
-        StopCoroutine(diceRollCoroutine);
+        StopCoroutine(DiceRollCoroutine);
 
         GetRandomDiceNum();
         rollDiceSynced.SetDiceOutcome(diceResult);
         rollDiceSynced.RollAll();
 
-        StartCoroutine(diceRollCoroutine);
+        StartCoroutine(DiceRollCoroutine);
     }
 
     private void SettingForRoll()
     {
         signitureAmount = 0;
+        DiceHolding.isCantFix = true;
 
-        ground.SetActive(true);
+        //Ground.SetActive(true);
         DiceBoard.SetActive(true);
         for (int i = 0; i < fakeDices.Length; i++)
         {
             if (fixedDiceList.Contains<int>(i)) continue;
             fakeDices[i].SetActive(false);
         }
-        diceCamera.cullingMask |= 1 << LayerMask.NameToLayer("Dice");
+        DiceCamera.cullingMask |= 1 << LayerMask.NameToLayer("Dice");
 
         foreach (GameObject diceGO in dices)
         {
@@ -153,7 +156,7 @@ public class DiceManager : MonoBehaviour
             dice.Locomotion.isEnd = false;
         }
 
-        isRolling = true;
+        IsRolling = true;
     }
 
     private void GetRandomDiceNum()
@@ -216,10 +219,10 @@ public class DiceManager : MonoBehaviour
             if (rollEndCount == diceList.Count)
             {
                 BattleManager.Instance.GetCost(signitureAmount);
-                isRolling = false;
+                IsRolling = false;
 
 
-                BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
+                BattleManager.Instance.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
                 SortingFakeDice();
 
                 break;
@@ -234,7 +237,7 @@ public class DiceManager : MonoBehaviour
     /// </summary>
     public void ResetSetting()
     {
-        StopCoroutine(diceRollCoroutine);
+        StopCoroutine(DiceRollCoroutine);
 
         int childCount = DiceHolding.areas.Length;
         for (int i = 0; i < childCount; i++)
@@ -282,7 +285,7 @@ public class DiceManager : MonoBehaviour
         {
             fakeDices[i].SetActive(true);
         }
-        diceCamera.cullingMask = diceCamera.cullingMask & ~(1 << LayerMask.NameToLayer("Dice"));
+        DiceCamera.cullingMask = DiceCamera.cullingMask & ~(1 << LayerMask.NameToLayer("Dice"));
         ResetRotation();
     }
 
@@ -343,7 +346,7 @@ public class DiceManager : MonoBehaviour
             dice.StopSimulation();
             StopCoroutine(SortingAfterRoll());
 
-            BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
+            BattleManager.Instance.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
         }
         BattleManager.Instance.GetCost(signitureAmount);
     }

@@ -79,7 +79,7 @@ public class BattleCharacterAttack : MonoBehaviour
             yield return new WaitForSeconds(waitSecondCharAttack);
         }
         isCharacterAttacking = false;
-        BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.ConfirmEnd);
+        BattleManager.Instance.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.ConfirmEnd);
     }
 
     IEnumerator DealDamage(IDamagable target, int damage)
@@ -93,7 +93,7 @@ public class BattleCharacterAttack : MonoBehaviour
         if (battleManager.Enemy.IsDead)
         {
             isCharacterAttacking = false;
-            battleManager.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
+            battleManager.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
             yield return new WaitForSeconds(waitSecondEnemyDie);
             battleManager.EndBattle();
         }
