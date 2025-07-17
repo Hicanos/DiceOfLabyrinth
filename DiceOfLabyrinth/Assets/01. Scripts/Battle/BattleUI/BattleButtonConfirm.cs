@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class BattleButtonConfirm : AbstractBattleButton
 {
     [SerializeField] GameObject rankDisplayer;
+    [SerializeField] GameObject backBoard;
     [SerializeField] Button confirmButton;
     DiceManager diceManager;
 
@@ -17,10 +18,11 @@ public class BattleButtonConfirm : AbstractBattleButton
         switch (state)
         {            
             case PlayerTurnState.Enter:
-                gameObject.SetActive(false);
+                gameObject.SetActive(true);
+                confirmButton.interactable = false;
                 break;
             case PlayerTurnState.Roll:
-                gameObject.SetActive(true);
+                backBoard.SetActive(true);
                 confirmButton.interactable = false;
                 break;
             case PlayerTurnState.RollEnd:
@@ -28,7 +30,8 @@ public class BattleButtonConfirm : AbstractBattleButton
                 confirmButton.interactable = true;
                 break;
             case PlayerTurnState.Confirm:
-                gameObject.SetActive(false);
+                backBoard.SetActive(false);
+                confirmButton.interactable = false;
                 break;
         }
     }
@@ -47,12 +50,12 @@ public class BattleButtonConfirm : AbstractBattleButton
     {
         confirmButton.interactable = true;
         rankDisplayer.SetActive(false);
-        diceManager.ground.SetActive(false);
+        //diceManager.Ground.SetActive(false);
         diceManager.DiceBoard.SetActive(false);
         diceManager.HideFakeDice();
         diceManager.DiceHolding.isCantFix = false;
 
-        BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Confirm);
+        BattleManager.Instance.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Confirm);
 
         float diceWeighting = DiceManager.Instance.DiceBattle.GetDamageWeighting(); //족보별 계수
         BattleManager battleManager = BattleManager.Instance;

@@ -4,9 +4,8 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-#if UNITY_EDITOR
 using UnityEngine.InputSystem;
-#endif
+using UnityEngine.InputSystem.Interactions;
 
 public class BattleUIController : MonoBehaviour
 {
@@ -42,6 +41,9 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private GameObject shopPanel;
     [SerializeField] private GameObject selectArtifactPanel;
 
+    [Header("Popup")]
+    [SerializeField] private GameObject setEffectPopup;
+
     [Header("Item Choice Icons")]
     [SerializeField] private GameObject[] itemChoiceIcon = new GameObject[3]; // 아이템 선택 아이콘을 위한 배열
 
@@ -54,50 +56,22 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private SelectedTeamFormation selectedTeamFormation; // 선택된 팀 구성
     [SerializeField] private Image[] teamFormationIcons = new Image[4]; // 팀 구성 아이콘 배열
     [SerializeField] Image[] characterButtons = new Image[7];
-    
+    [SerializeField] private GameObject[] characterPlatforms = new GameObject[5]; // 캐릭터를 위한 플랫폼 배열, 5개로 고정
+
     [Header("Select Choice Panel")]
     [SerializeField] private TMP_Text[] selectChoiceText = new TMP_Text[2]; // 선택지 이벤트 패널 제목
     [SerializeField] private Image[] selectChoiceIcon = new Image[2]; // 선택지 이벤트 패널 아이콘
     [SerializeField] private ChoiceOptions[] ChoiceOptions = new ChoiceOptions[2]; // 선택지 이벤트 패널 선택지 옵션, 선택지는 2개까지만 뜸
 
+    [Header("Platforms")]
+    [SerializeField] private GameObject platformPrefab; // 플랫폼 프리팹
+    [SerializeField] private Color platformDefaultColor; // 플랫폼 기본 색상
+    [SerializeField] private Color platformSelectedColor; // 플랫폼 선택 시 색상
+    private int selectedPlatformIndex = -1; // 선택된 플랫폼 인덱스
 #if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
+
     private void Update()
     {
-        //// 배틀 상태일 때만 동작
-        //if (StageManager.Instance != null &&
-        //    StageManager.Instance.stageSaveData != null &&
-        //    StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
-        //{
-        //    // F9: 즉시 배틀 승리
-        //    if (Input.GetKeyDown(KeyCode.F9)&& StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
-        //    {
-        //        messagePopup.Open("디버그: 즉시 배틀 승리 처리"); // 메시지 팝업 표시
-        //        StageManager.Instance.RoomClear(StageManager.Instance.stageSaveData.selectedEnemy); // 배틀 승리 처리
-        //    }
-        //    // F10: 즉시 전투 패배
-        //    if (Input.GetKeyDown(KeyCode.F10) && StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
-        //    {
-        //        messagePopup.Open("디버그: 즉시 패배 처리"); // 메시지 팝업 표시
-        //        StageManager.Instance.StageDefeat(StageManager.Instance.stageSaveData.currentChapterIndex); // 배틀 패배 처리
-        //    }
-        //}
-        //if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
-        //{
-        //    // F11: 즉시 챕터 종료 처리 (컴플리트 아님)
-        //    if (Input.GetKeyDown(KeyCode.F11) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
-        //    {
-        //        Debug.Log("디버그: 즉시 챕터 종료 처리");
-        //        messagePopup.Open("디버그: 즉시 챕터 종료 처리");
-        //        StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex);
-        //    }
-        //    // F12: 즉시 챕터 완료 처리 (컴플리트 처리)
-        //    if (Input.GetKeyDown(KeyCode.F12) && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
-        //    {
-        //        Debug.Log("디버그: 즉시 챕터 완료 처리");
-        //        messagePopup.Open("디버그: 즉시 챕터 완료 처리");
-        //        StageManager.Instance.CompleteChapter(StageManager.Instance.stageSaveData.currentChapterIndex);
-        //    }
-        //}
         if (Keyboard.current == null) return; // Input System이 없으면 무시
 
         if (StageManager.Instance != null &&
@@ -106,13 +80,21 @@ public class BattleUIController : MonoBehaviour
         {
             if (Keyboard.current.f9Key.wasPressedThisFrame)
             {
+
+                BattleManager.Instance.BattleSpawner.CharacterDeActive();
+                Destroy(BattleManager.Instance.Enemy.EnemyPrefab);
+                var data = new BattleResultData(true, BattleManager.Instance.BattleGroup.BattleCharacters);
                 messagePopup.Open("디버그: 즉시 배틀 승리 처리");
-                StageManager.Instance.RoomClear(StageManager.Instance.stageSaveData.selectedEnemy);
+                StageManager.Instance.OnBattleResult(data);
             }
             if (Keyboard.current.f10Key.wasPressedThisFrame)
             {
+
+                BattleManager.Instance.BattleSpawner.CharacterDeActive();
+                Destroy(BattleManager.Instance.Enemy.EnemyPrefab);
                 messagePopup.Open("디버그: 즉시 패배 처리");
-                StageManager.Instance.StageDefeat(StageManager.Instance.stageSaveData.currentChapterIndex);
+                var defeatData = new BattleResultData(false, BattleManager.Instance.BattleGroup.BattleCharacters);
+                StageManager.Instance.OnBattleResult(defeatData);
             }
         }
         if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
@@ -132,6 +114,84 @@ public class BattleUIController : MonoBehaviour
         }
     }
 #endif
+    private void OnEnable()
+    {
+        // 기존에 생성된 플랫폼 오브젝트가 있다면 먼저 파괴
+        for (int i = 0; i < characterPlatforms.Length; i++)
+        {
+            if (characterPlatforms[i] != null)
+            {
+                Destroy(characterPlatforms[i]);
+                characterPlatforms[i] = null;
+            }
+        }
+
+        // 5개 생성 및 할당
+        for (int i = 0; i < characterPlatforms.Length; i++)
+        {
+            // 원하는 위치로 변경 가능
+            Vector3 spawnPos = Vector3.zero;
+            var platform = Instantiate(platformPrefab, spawnPos, Quaternion.identity);
+            platform.SetActive(false); // 생성 즉시 비활성화
+            characterPlatforms[i] = platform;
+            characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i; // 플랫폼 인덱스 설정
+        }
+    }
+    private void OnDisable()
+    {
+        for (int i = 0; i < characterPlatforms.Length; i++)
+        {
+            if (characterPlatforms[i] != null)
+            {
+                Destroy(characterPlatforms[i]);
+                characterPlatforms[i] = null;
+            }
+        }
+        selectedPlatformIndex = -1; // 초기 선택된 플랫폼 인덱스 설정
+    }
+    public void OnClickPerformed(InputAction.CallbackContext context)
+    {
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            var relay = hit.transform.GetComponent<PlatformClickRelay>();
+            if (relay != null)
+
+            {
+                if (context.interaction is TapInteraction)
+                {
+                    // characterPlatforms 배열에 포함된 오브젝트인지도 추가로 확인 가능
+                    for (int i = 0; i < characterPlatforms.Length; i++)
+                    {
+                        if (hit.transform.gameObject == characterPlatforms[i])
+                        {
+                            OnPlatformClicked(i);
+                            break;
+                        }
+                    }
+                }
+                else if (context.interaction is HoldInteraction)
+                {
+                    Debug.Log($"Platform {relay.platformIndex} is held.");
+                }
+                else
+                {
+                    Debug.LogWarning("Unknown interaction type detected.");
+                }
+            }
+        }
+    }
+    private void OnPlatformClicked(int platformIndex)
+    {
+        selectedPlatformIndex = platformIndex; // 선택된 플랫폼 인덱스 저장
+        RefreshPlatformColors(platformIndex);
+    }
+
+    private void Start()
+    {
+        setEffectPopup.SetActive(false);
+    }
 
     public void OpenSelectDungeonPanel() // 스테이지 선택 패널을 여는 함수
     {
@@ -145,8 +205,12 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         //shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
-
         selectEventPanel.SetActive(false);
+        foreach (var characterPlatform in characterPlatforms)
+        {
+            if (characterPlatform != null)
+                characterPlatform.SetActive(false);
+        }
         // 선택된 스테이지 정보 업데이트
         //selectedChapterText.text = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].ChapterName;
         //chapterIcon.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].Image;
@@ -184,6 +248,11 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
+        foreach (var characterPlatform in characterPlatforms)
+        {
+            if (characterPlatform != null)
+                characterPlatform.SetActive(true);
+        }
         // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
 
@@ -344,6 +413,21 @@ public class BattleUIController : MonoBehaviour
         }
     }
 
+
+    private void RefreshPlatformColors(int selectedIndex)
+    {
+        for (int i = 0; i < characterPlatforms.Length; i++)
+        {
+            if (characterPlatforms[i] != null)
+            {
+                var platformRenderer = characterPlatforms[i].GetComponent<Renderer>();
+                if (platformRenderer != null)
+                {
+                    platformRenderer.material.color = (i == selectedIndex) ? platformSelectedColor : platformDefaultColor; // 선택된 플랫폼은 선택 색상, 나머지는 기본 색상
+                }
+            }
+        }
+    }
     public void OnClickExploreButton()
     {
         // 배틀 캐릭터 크기를 5로 고정
@@ -388,13 +472,16 @@ public class BattleUIController : MonoBehaviour
         DeleteSpawnedCharacters(); // 기존에 스폰된 캐릭터 제거
         for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++)
         {
+            Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.PlayerFormations[formationIndex].PlayerPositions[i].Position;
             if (StageManager.Instance.stageSaveData.entryCharacters[i] != null)
             {
                 // 캐릭터를 월드에 스폰하는 로직, 스테이지 데이터에 스폰 포지션이 있으며 스폰 포지션과 같은 인덱스의 엔트리 캐릭터를 스폰
                 GameObject battleCharacterObject = StageManager.Instance.stageSaveData.entryCharacters[i].charBattlePrefab;
-                Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.PlayerFormations[formationIndex].PlayerPositions[i].Position;
                 GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity); // 스폰 포인트에 캐릭터 스폰
             }
+
+            GameObject characterPlatform = characterPlatforms[i]; // 캐릭터 플랫폼 가져오기
+            characterPlatform.transform.position = spawnPoint; // 플랫폼 위치 설정
         }
     }
     private void DeleteSpawnedCharacters() // 월드에 스폰된 캐릭터를 제거하는 함수
@@ -427,6 +514,11 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        foreach (var characterPlatform in characterPlatforms)
+        {
+            if (characterPlatform != null)
+                characterPlatform.SetActive(false);
+        }
     }
 
     public void OpenBattlePanel()
@@ -444,6 +536,11 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        foreach (var characterPlatform in characterPlatforms)
+        {
+            if (characterPlatform != null)
+                characterPlatform.SetActive(false);
+        }
     }
 
     public void OpenSelectStagmaPanel(StageSaveData.CurrentPhaseState phaseState) // "Standby", "NormalReward", "EliteArtifactReward", "EliteStagmaReward" 등과 연결
@@ -496,6 +593,11 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        foreach (var characterPlatform in characterPlatforms)
+        {
+            if (characterPlatform != null)
+                characterPlatform.SetActive(false);
+        }
         OnClickSelectItemNumber(0); // 첫 번째 아이템을 선택한 것으로 초기화
     }
 
@@ -579,6 +681,10 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        foreach (var characterPlatform in characterPlatforms)
+        {
+            characterPlatform.SetActive(false); // 캐릭터 플랫폼 비활성화
+        }
         OnClickSelectItemNumber(0); // 첫 번째 아이템을 선택한 것으로 초기화
     }
 
@@ -729,6 +835,11 @@ public class BattleUIController : MonoBehaviour
         // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         selectEventPanel.SetActive(true); // 선택지 이벤트 패널 활성화
+        foreach (var characterPlatform in characterPlatforms)
+        {
+            if (characterPlatform != null)
+                characterPlatform.SetActive(false);
+        }
     }
 
     public void OnClickSelectChoice(int selectIndex)
@@ -774,6 +885,11 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        foreach (var characterPlatform in characterPlatforms)
+        {
+            if (characterPlatform != null)
+                characterPlatform.SetActive(false);
+        }
     }
 
     public void OpenDefeatPanel() // 패배 패널을 여는 함수
@@ -789,6 +905,11 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        foreach (var characterPlatform in characterPlatforms)
+        {
+            if (characterPlatform != null)
+                characterPlatform.SetActive(false);
+        }
     }
 
     public void OnClickVictoryNextButton() // 승리 패널에서 다음 버튼 클릭 시 호출되는 함수
@@ -814,6 +935,11 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         // shopPanel.SetActive(true); // 상점 패널 활성화
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        foreach (var characterPlatform in characterPlatforms)
+        {
+            if (characterPlatform != null)
+                characterPlatform.SetActive(false);
+        }
         messagePopup.Open("상점은 아직 구현되지 않았으므로 바로 보스 스테이지로 넘어갑니다.",
         () => OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex),
         () => messagePopup.Close());
@@ -831,6 +957,11 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
         // selectEquipmedArtifactPanel.SetActive(true); // 아티팩트 선택 패널 활성화
+        foreach (var characterPlatform in characterPlatforms)
+        {
+            if (characterPlatform != null)
+                characterPlatform.SetActive(false);
+        }
         messagePopup.Open("장착할 아티팩트 선택은 아직 구현되지 않았으므로 바로 스테이지 클리어로 넘어갑니다.",
         () => StageManager.Instance.StageComplete(StageManager.Instance.stageSaveData.currentStageIndex), // 스테이지 클리어 처리
         () => messagePopup.Close());

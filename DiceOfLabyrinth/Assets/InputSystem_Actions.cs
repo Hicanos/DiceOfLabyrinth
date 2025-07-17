@@ -131,7 +131,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""Crouch"",
                     ""type"": ""Button"",
                     ""id"": ""27c5f898-bc57-4ee1-8800-db469aca5fe3"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -149,7 +149,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""Previous"",
                     ""type"": ""Button"",
                     ""id"": ""2776c80d-3c14-4091-8c56-d04ced07a2b0"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -167,7 +167,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""Sprint"",
                     ""type"": ""Button"",
                     ""id"": ""641cd816-40e6-41b4-8c3d-04687c349290"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -180,6 +180,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""InputButton"",
+                    ""type"": ""Button"",
+                    ""id"": ""76a67f69-6456-4c10-bd5b-1822b15f7190"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -609,6 +618,50 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""GamePlay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d1245ed3-da31-4fde-9e75-a6171a838567"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Touch;Joystick"",
+                    ""action"": ""InputButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Mouse Left Click"",
+                    ""id"": ""06dff650-d6c9-4182-9409-54c95ba3b1b7"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InputButton"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""f7a81388-dcf3-41b7-ad0f-887d211c9b6a"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""InputButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""9f4d9e19-ee72-4809-87e3-a53b8c1ed056"",
+                    ""path"": ""<Mouse>/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""InputButton"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -1206,6 +1259,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_GamePlay = m_Player.FindAction("GamePlay", throwIfNotFound: true);
+        m_Player_InputButton = m_Player.FindAction("InputButton", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1309,6 +1363,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Next;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_GamePlay;
+    private readonly InputAction m_Player_InputButton;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1360,6 +1415,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/GamePlay".
         /// </summary>
         public InputAction @GamePlay => m_Wrapper.m_Player_GamePlay;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/InputButton".
+        /// </summary>
+        public InputAction @InputButton => m_Wrapper.m_Player_InputButton;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1416,6 +1475,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @GamePlay.started += instance.OnGamePlay;
             @GamePlay.performed += instance.OnGamePlay;
             @GamePlay.canceled += instance.OnGamePlay;
+            @InputButton.started += instance.OnInputButton;
+            @InputButton.performed += instance.OnInputButton;
+            @InputButton.canceled += instance.OnInputButton;
         }
 
         /// <summary>
@@ -1457,6 +1519,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @GamePlay.started -= instance.OnGamePlay;
             @GamePlay.performed -= instance.OnGamePlay;
             @GamePlay.canceled -= instance.OnGamePlay;
+            @InputButton.started -= instance.OnInputButton;
+            @InputButton.performed -= instance.OnInputButton;
+            @InputButton.canceled -= instance.OnInputButton;
         }
 
         /// <summary>
@@ -1827,6 +1892,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnGamePlay(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "InputButton" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnInputButton(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

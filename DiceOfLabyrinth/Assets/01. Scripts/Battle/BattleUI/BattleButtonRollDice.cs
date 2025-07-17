@@ -1,6 +1,6 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class BattleButtonRollDice : AbstractBattleButton
 {
@@ -60,13 +60,13 @@ public class BattleButtonRollDice : AbstractBattleButton
 
             BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.Reroll, DiceManager.Instance.RollRemain.ToString());
             DiceManager.Instance.DiceHolding.GetFixedList();
-            BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Roll);
+            BattleManager.Instance.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Roll);
         }
         else
         {
             rollButton.interactable = false;
 
-            BattleManager.Instance.battlePlayerTurnState.EndPlayerTurn();
+            BattleManager.Instance.BattlePlayerTurnState.EndPlayerTurn();
         }
     }
 

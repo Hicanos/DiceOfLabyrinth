@@ -30,20 +30,20 @@
 
     public void ChangePlayerTurnState(PlayerTurnState state)
     {
-        battleManager.currentPlayerState = state;
+        battleManager.CurrentPlayerState = state;
         OnOffButton();
     }
 
     public void EndPlayerTurn()
     {
-        battleManager.stateMachine.ChangeState(battleManager.enemyTurnState);
+        battleManager.StateMachine.ChangeState(battleManager.I_EnemyTurnState);
     }
 
     private void OnOffButton()
     {
         foreach (AbstractBattleButton button in UIManager.Instance.BattleUI.Buttons)
         {
-            button.OnOffButton(battleManager.currentPlayerState);
+            button.OnOffButton(battleManager.CurrentPlayerState);
         }
     }
 

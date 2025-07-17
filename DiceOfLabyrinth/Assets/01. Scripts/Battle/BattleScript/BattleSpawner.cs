@@ -59,6 +59,7 @@ public class BattleSpawner : MonoBehaviour
     private void CharacterActive()
     {
         isPreparing = true;
+        
         for (int i = 0; i < 5; i++)
         {
             battleManager.BattleGroup.CharacterPrefabs[i].SetActive(true);
@@ -121,15 +122,13 @@ public class BattleSpawner : MonoBehaviour
 
     private void BattleStart()
     {
-        battleManager.BattleStartValueSetting();
-
         for (int i = 0; i < 5; i++)
         {
             battleManager.BattleGroup.CharacterHPBars[i].SetActive(true);
         }
         battleManager.Enemy.EnemyHPBar.SetActive(true);
 
-        battleManager.playerTurnState.Enter();
+        battleManager.I_PlayerTurnState.Enter();
     }
 
     private void LoadCharacterHP(BattleCharGroup battleGroup)
@@ -171,5 +170,6 @@ public class BattleSpawner : MonoBehaviour
         enemy.EnemyHP = go.GetComponentsInChildren<RectTransform>()[2];
         enemy.EnemyHPText = go.GetComponentInChildren<TextMeshProUGUI>();
         battleManager.UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
+        battleManager.BattleUIHP.GetEnmeyHPRotation(enemy);
     }
 }
