@@ -126,6 +126,11 @@ public class CharData
     /// </summary>
     public string StandingPath;
 
+    /// <summary>
+    /// DicePrefabPath
+    /// </summary>
+    public string DicePrefabPath;
+
 }
 public class CharDataLoader
 {
