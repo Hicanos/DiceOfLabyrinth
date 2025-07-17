@@ -94,6 +94,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "GamePlay_Interactions",
+                    "type": "Value",
+                    "id": "7bab097b-ae80-423c-b814-dd7b2b475836",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "Tap,Hold",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -523,6 +532,50 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "GamePlay",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "71e78dbb-3fc2-48b3-9c0d-dfafb7e45190",
+                    "path": "<Touchscreen>/primaryTouch/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Touch",
+                    "action": "GamePlay_Interactions",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Mouse Left Click",
+                    "id": "c5f33510-a003-4b27-baa5-9112bf81653c",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GamePlay_Interactions",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "14496cc5-f161-468d-ada0-f838296b00ee",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "GamePlay_Interactions",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "55062aed-e385-498e-80c7-3c2973140c2f",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "GamePlay_Interactions",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }

@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
 
 public class BattleUIController : MonoBehaviour
 {
@@ -153,15 +154,27 @@ public class BattleUIController : MonoBehaviour
         {
             var relay = hit.transform.GetComponent<PlatformClickRelay>();
             if (relay != null)
+
             {
-                // characterPlatforms 배열에 포함된 오브젝트인지도 추가로 확인 가능
-                for (int i = 0; i < characterPlatforms.Length; i++)
+                if (context.interaction is TapInteraction)
                 {
-                    if (hit.transform.gameObject == characterPlatforms[i])
+                    // characterPlatforms 배열에 포함된 오브젝트인지도 추가로 확인 가능
+                    for (int i = 0; i < characterPlatforms.Length; i++)
                     {
-                        OnPlatformClicked(i);
-                        break;
+                        if (hit.transform.gameObject == characterPlatforms[i])
+                        {
+                            OnPlatformClicked(i);
+                            break;
+                        }
                     }
+                }
+                else if (context.interaction is HoldInteraction)
+                {
+                    Debug.Log($"Platform {relay.platformIndex} is held.");
+                }
+                else
+                {
+                    Debug.LogWarning("Unknown interaction type detected.");
                 }
             }
         }

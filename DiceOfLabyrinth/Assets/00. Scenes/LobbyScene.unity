@@ -835,7 +835,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1853481440097537655, guid: 064f5db63eb5f0f42b3fea5f1756ca49, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2208149006491834782, guid: 064f5db63eb5f0f42b3fea5f1756ca49, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1335,7 +1335,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8089232116195020677, guid: 064f5db63eb5f0f42b3fea5f1756ca49, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8180151649097449581, guid: 064f5db63eb5f0f42b3fea5f1756ca49, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8246079412266587322, guid: 064f5db63eb5f0f42b3fea5f1756ca49, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2711,19 +2715,7 @@ MonoBehaviour:
     m_ActionId: 641cd816-40e6-41b4-8c3d-04687c349290
     m_ActionName: 'Player/Sprint[/Keyboard/leftShift]'
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 710117445}
-        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
-        m_MethodName: OnClickPerformed
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 5f9184b5-b10c-4b0f-9a5f-cbcb0bdae6c8
     m_ActionName: 'Player/GamePlay[/Mouse/leftButton,/Mouse/position]'
   - m_PersistentCalls:
@@ -2766,6 +2758,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 710117445}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickPerformed
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 7bab097b-ae80-423c-b814-dd7b2b475836
+    m_ActionName: 'Player/GamePlay1[/Mouse/leftButton,/Mouse/position]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
