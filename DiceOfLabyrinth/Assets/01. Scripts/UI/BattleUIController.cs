@@ -63,8 +63,9 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private GameObject platformPrefab; // 플랫폼 프리팹
     [SerializeField] private Color platformDefaultColor; // 플랫폼 기본 색상
     [SerializeField] private Color platformSelectedColor; // 플랫폼 선택 시 색상
+    private int selectedPlatformIndex = -1; // 선택된 플랫폼 인덱스
 #if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
-    
+
     private void Update()
     {
         if (Keyboard.current == null) return; // Input System이 없으면 무시
@@ -142,6 +143,7 @@ public class BattleUIController : MonoBehaviour
                 characterPlatforms[i] = null;
             }
         }
+        selectedPlatformIndex = -1; // 초기 선택된 플랫폼 인덱스 설정
     }
     public void OnClickPerformed(InputAction.CallbackContext context)
     {
@@ -164,8 +166,9 @@ public class BattleUIController : MonoBehaviour
             }
         }
     }
-    public void OnPlatformClicked(int platformIndex)
+    private void OnPlatformClicked(int platformIndex)
     {
+        selectedPlatformIndex = platformIndex; // 선택된 플랫폼 인덱스 저장
         RefreshPlatformColors(platformIndex);
     }
 
