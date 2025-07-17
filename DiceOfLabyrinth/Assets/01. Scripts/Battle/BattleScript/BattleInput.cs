@@ -3,8 +3,16 @@ using UnityEngine.InputSystem;
 
 public class BattleInput : MonoBehaviour
 {
+    bool isInputActive = false;
+
+    public void InputStart()
+    {
+        isInputActive = true;
+    }
+
     public void GetInput(InputAction.CallbackContext context)
     {
+        if (isInputActive == false) return;
         //if (!context.started) return;
         //Debug.Log("인풋");
         BattleManager.Instance.battleSpawner.SkipCharacterSpwan();

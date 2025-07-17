@@ -12,7 +12,7 @@ public class BattleUIHP : MonoBehaviour
     
     void Update()
     {
-        if(BattleManager.Instance.EnemyAttack.isEnemyAttacking)
+        if(BattleManager.Instance.isBattle && BattleManager.Instance.EnemyAttack.isEnemyAttacking)
         {
             enemyHPBar.transform.rotation = enemyHPQuaternion;
         }

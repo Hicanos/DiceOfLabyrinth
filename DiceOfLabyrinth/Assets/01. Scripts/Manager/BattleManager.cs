@@ -35,6 +35,7 @@ public class BattleManager : MonoBehaviour
     EnterBattle enterBattle = new EnterBattle();
     public BattleSpawner battleSpawner;
     public BattleUIValueChanger UIValueChanger;
+    [SerializeField] BattleInput battleInput;
 
     public BattleEnemy Enemy;
     public BattleCharGroup BattleGroup;
@@ -72,6 +73,8 @@ public class BattleManager : MonoBehaviour
 
         UIManager.Instance.BattleUI.Setting();
         DiceManager.Instance.DiceHolding.SettingForHolding();
+
+        battleInput.InputStart();
     }
     
     void Update()
