@@ -108,6 +108,18 @@ public class CharacterSOGenerator : EditorWindow
                 var BattlePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(data.BattlePrefabPath);
                 so.charBattlePrefab = BattlePrefab;
             }
+
+            // 캐릭터 전용 주사위 프리팹 경로가 비어있지 않으면 할당
+            if(!string.IsNullOrEmpty(data.DicePrefabPath))
+            {
+                var dicePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(data.DicePrefabPath);
+                so.charDicePrefab = dicePrefab;
+            }
+            else
+            {
+                Debug.LogWarning($"캐릭터 {data.CharID}의 주사위 프리팹 경로가 비어있습니다.");
+            }
+
             // 아이콘 및 스탠딩 이미지 할당
             if (!string.IsNullOrEmpty(data.iconPath))
             {
@@ -230,5 +242,6 @@ public class CharacterSOGenerator : EditorWindow
         public string iconPath; // 아이콘 경로 추가
         public string UpperPath; // 상체 이미지 경로 추가
         public string StandingPath; // 스탠딩 이미지 경로 추가
+        public string DicePrefabPath; // 캐릭터 전용 주사위 프리팹 경로 추가
     }
 }
