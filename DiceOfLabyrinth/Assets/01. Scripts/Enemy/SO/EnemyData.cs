@@ -50,7 +50,7 @@ public class EnemyData: ScriptableObject
     [SerializeField] private Quaternion enemySpawnRotation; // 적 스폰 회전값
 
     public string EnemyName => enemyName;
-    public int EnemyLevel => StageManager.Instance.stageSaveData.currentStageIndex + 1;
+    public int EnemyLevel => (StageManager.Instance.stageSaveData.currentStageIndex + 1) * 10;
     public EnemyType Type => enemyType;
     public EnemySpecies Species => enemySpecies;
     public EnemyAttribute Attribute => enemyAttribute;

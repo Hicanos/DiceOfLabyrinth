@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +22,9 @@ public class DiceHolding : MonoBehaviour
     private int index2 = 0;
     public  bool isCantFix = false;
 
+    const int fakeDicePositionY = 10;
+    const int diceCount = 5;
+
     private void Start()
     {
         battleManager = BattleManager.Instance;
@@ -38,28 +40,29 @@ public class DiceHolding : MonoBehaviour
         fixedDiceList = DiceManager.Instance.FixedDiceList;
     }
 
-    public void OnInput(InputAction.CallbackContext context)
+    public void DiceInput(Vector2 screenPos)
     {
-        if (!context.started) return;
-        Debug.Log("인풋");
-        Vector2 screenPos = context.ReadValue<Vector2>();
-
         SelectDice(screenPos);
         SkipRolling(screenPos);
     }
 
     private void SelectDice(Vector2 vec)
     {
+        //Debug.Log("1");
         if(isCantFix) return;
-        if (battleManager.isBattle == false) return;        
+        //Debug.Log("2");
+        if (battleManager.isBattle == false) return;
+        //Debug.Log("3");
         DiceMy dice;
 
         Ray ray = diceCamera.ScreenPointToRay(vec);
-
+        //Debug.Log("4");
         if (Physics.Raycast(ray, out var hit, 100f))
         {
+            //Debug.Log("5");
             if (hit.collider.TryGetComponent(out dice))
             {
+                //Debug.Log("6");
                 dice = hit.collider.gameObject.GetComponent<DiceMy>();
                 dice.SetIndex();
                 Debug.Log("실릭트");
@@ -70,6 +73,7 @@ public class DiceHolding : MonoBehaviour
 
     private void DiceFixed(DiceMy dice)
     {
+        isCantFix = true;
         int index = dice.MyIndex;
         List<Vector3> fixedPos = new List<Vector3>();
         bool isAdd;
@@ -113,12 +117,11 @@ public class DiceHolding : MonoBehaviour
         List<Vector3> results = new List<Vector3>();
         Vector3 result;
         Canvas canvas = GetBattleCanvas();
-        DiceRollButton = UIManager.Instance.BattleUI.Buttons[(int)PlayerTurnState.Roll].GetComponent<Button>();
-
+        DiceRollButton = UIManager.Instance.BattleUI.Buttons[2].GetComponent<Button>(); //수정필요
 
         if (isAdd)
         {
-            if (index2 < 5)
+            if (index2 < diceCount)
             {
                 areas[index2].SetActive(true);
                 index2++;
@@ -143,7 +146,7 @@ public class DiceHolding : MonoBehaviour
         {
             Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, targetRects[i].position);
             RectTransformUtility.ScreenPointToWorldPointInRectangle(targetRects[i], screenPos, canvas.worldCamera, out result);
-            result.y = 10;
+            result.y = fakeDicePositionY;
             results.Add(result);
         }
 
@@ -162,6 +165,7 @@ public class DiceHolding : MonoBehaviour
             DiceRollButton.interactable = true;
         }
         this.index2 = index2;
+        isCantFix = false;
     }
 
     private void SkipRolling(Vector2 vec)
@@ -197,14 +201,14 @@ public class DiceHolding : MonoBehaviour
     {
         int count = 0;
         Vector3 result;
-        Vector3[] results = new Vector3[5];
+        Vector3[] results = new Vector3[diceCount];
         RectTransform targetRects;
         Canvas canvas = GetBattleCanvas();
         int fixedCount = fixedDiceList.Count;
 
         List<int> noFixed = new List<int>() { 0, 1, 2, 3, 4 };
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < diceCount; i++)
         {
             if (fixedDiceList.Contains<int>(i))
             {
@@ -213,14 +217,14 @@ public class DiceHolding : MonoBehaviour
             }
         }
 
-        for (int i = count; i < 5; i++)
+        for (int i = count; i < diceCount; i++)
         {
             areas[i].SetActive(true);
         }
 
         yield return new WaitForEndOfFrame();
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < diceCount; i++)
         {
             targetRects = areas[i].GetComponent<RectTransform>();
             Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, targetRects.position);

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
-
 
 public class BattleManager : MonoBehaviour
 {
@@ -33,52 +32,35 @@ public class BattleManager : MonoBehaviour
     }
     #endregion
 
-    public List<BattleCharacter> battleCharacters;
-    public StageSaveData.CurrentFormationType currentFormationType;
+    EnterBattle enterBattle = new EnterBattle();
+    public BattleSpawner battleSpawner;
+    public BattleUIValueChanger UIValueChanger;
+    [SerializeField] BattleInput battleInput;
 
-    [SerializeField] private BattleEnemy enemy;
-    public BattleEnemy Enemy => enemy;
-    public IEnemy iEnemy;
-    GameObject enemyPrefab;
-    public TempEnemyAttack EnemyAttack;
+    public BattleEnemy Enemy;
+    public BattleCharGroup BattleGroup;
 
-    public List<ArtifactData> artifacts;
-    public List<StagmaData> stagmas;
-
-    public InputAction inputAction;
+    public BattleCharacterAttack CharacterAttack;
+    public BattleEnemyAttack EnemyAttack;
+    public EnemyPatternContainer EnemyPatternContainer;
 
     public GameObject CharacterHPPrefab;
-    [NonSerialized] public GameObject[] CharacterHPBars = new GameObject[5];
-    [NonSerialized] public RectTransform[] characterHPs = new RectTransform[5];
-    [NonSerialized] public TextMeshProUGUI[] characterHPTexts = new TextMeshProUGUI[5];
+    public GameObject EnemyHPPrefab;
+    public BattleUIHP BattleUIHP;
 
-    [SerializeField] Transform enemyContainer;
-    public BattleUIValueChanger UIValueChanger;
-    public BattleCoroutine battleCoroutine;
-
-    public EnemyPatternContainer EnemyPatternContainer;
+    public InputAction inputAction;
+    
     public BattleStateMachine stateMachine;
     public PlayerTurnState currentPlayerState;
     public IBattleTurnState playerTurnState;
     public IBattleTurnState enemyTurnState;
-    public BattlePlayerTurnState battlePlayerTurnState;  
+    public BattlePlayerTurnState battlePlayerTurnState;
 
     [Header("Values")]
     public  readonly int MaxCost = 12;
-    public  int     BattleTurn = 0;
-    private int     currnetCost = 0;
+    public  int     BattleTurn   = 0;
+    private int     currnetCost  = 0;
     public  bool    isBattle;
-    public  bool    isWon;
-
-    public void GetUIs()
-    {
-        for(int i = 0; i < 5; i++)
-        {
-            characterHPs[i] = CharacterHPBars[i].GetComponentsInChildren<RectTransform>()[1];
-            characterHPTexts[i] = CharacterHPBars[i].GetComponentInChildren<TextMeshProUGUI>();
-        }
-    }
-
     void Start()
     {
         playerTurnState = new BattlePlayerTurnState();
@@ -91,98 +73,58 @@ public class BattleManager : MonoBehaviour
 
         UIManager.Instance.BattleUI.Setting();
         DiceManager.Instance.DiceHolding.SettingForHolding();
+
+        battleInput.InputStart();
     }
     
     void Update()
     {
         stateMachine.BattleUpdate();
     }
-
-    public void BattleStartCoroutine(BattleStartData data) //전투 시작시 호출해야할 메서드
+    public void StartBattle(BattleStartData data) //전투 시작시
     {
         GetStartData(data);
-        SpawnEnemy();
-        DiceManager.Instance.DiceSettingForBattle();
+        BattleStartValueSetting();
+        enterBattle.BattleStart();
+    }
 
-        if(StageManager.Instance.stageSaveData.currentPhaseIndex == 1)
+    private void GetStartData(BattleStartData data) //start시 호출되도록
+    {
+        Enemy = new BattleEnemy(data.selectedEnemy);
+
+        if (BattleGroup == null)
         {
-            battleCoroutine.CharacterSpawn();
-        }
-        else
-        {
-            battleCoroutine.CharacterActive();
+            BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.stagmas);
         }        
     }
 
-    private void GetStartData(BattleStartData data)
-    {
-        enemy = new BattleEnemy(data.selectedEnemy);
-        battleCharacters = data.battleCharacters;
-        artifacts = data.artifacts;
-        stagmas = data.stagmas;
-        //currentFormationType = data.        
-    }
-
-    public void BattleStart()
-    {
-        if (StageManager.Instance.stageSaveData.currentPhaseIndex == 1)
-        {
-            UIManager.Instance.BattleUI.battleCanvas.worldCamera = DiceManager.Instance.diceCamera;
-            DiceManager.Instance.LoadDiceData();
-        }
-        BattleTurn = 0;
-        UIManager.Instance.BattleUI.HPBarsSetActive(true);
-        UIValueChanger.ChangeEnemyHpRatio(HPEnumEnemy.enemy);
-        for(int i = 0; i < 5; i++)
-        {
-            UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
-        }
-        //turnDisplay.gameObject.SetActive(true);
-        isBattle = true;
-        isWon = false;
-
-        playerTurnState.Enter();        
-    }
-
-    public void BattleEnd()
+    public void EndBattle(bool isWon = true)
     {
         BattleResultData data;
         isBattle = false;
-        UIManager.Instance.BattleUI.HPBarsSetActive(false);
-        //turnDisplay.gameObject.SetActive(false);
+
         DiceManager.Instance.ResetSetting();
-        //for (int i = 0; i < battleCharacters.Count; i++)
-        //{
-        //    HPBar[i].gameObject.SetActive(false);
-        //}
-        //turnDisplay.gameObject.SetActive(false);
-        battleCoroutine.CharacterDeActive();
-        Destroy(enemyPrefab);
+
+        battleSpawner.CharacterDeActive();
+        Destroy(Enemy.EnemyPrefab);
         //결과창 실행
         if (isWon)
         {
-            data = new BattleResultData(true, battleCharacters);
-            if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
-            {
-                StageManager.Instance.battleUIController.OpenVictoryPanel();                
+            data = new BattleResultData(true, BattleGroup.BattleCharacters);
+            //if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5)
+            //{
+            //    StageManager.Instance.battleUIController.OpenVictoryPanel();                
             StageManager.Instance.OnBattleResult(data);
-            }
-            StageManager.Instance.RoomClear(enemy.Data);
+            //}
+            //StageManager.Instance.RoomClear(Enemy.Data);
         }
         else
         {
-            data = new BattleResultData(false, battleCharacters);
-            StageManager.Instance.battleUIController.OpenDefeatPanel();
+            battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
+            data = new BattleResultData(false, BattleGroup.BattleCharacters);
+            //StageManager.Instance.battleUIController.OpenDefeatPanel();
+            StageManager.Instance.OnBattleResult(data);
         }
-    }
-
-    private void SpawnEnemy()
-    {
-        GameObject enemyGO = enemy.Data.EnemyPrefab;
-
-        enemyPrefab = Instantiate(enemyGO, new Vector3(3, -1, -4), enemy.Data.EnemySpawnRotation, enemyContainer);
-        iEnemy = enemyPrefab.GetComponent<IEnemy>();
-        iEnemy.Init();
     }
 
     /// <summary>
@@ -197,6 +139,95 @@ public class BattleManager : MonoBehaviour
 
         currnetCost = cost;
         UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, cost.ToString());        
+    }
+
+    private void BattleStartValueSetting()
+    {
+        BattleTurn = 0;
+        isBattle = true;
+    }
+
+    private void ExitBattleSetting()
+    {
+        BattleGroup = null;
+        isBattle = false;
+    }
+}
+
+public class BattleCharGroup
+{
+    const int numFive = 5;
+
+    private List<BattleCharacter>  battleCharacters;
+    private List<ArtifactData>     artifacts;
+    private List<StagmaData>       stagmas;
+
+    public List<BattleCharacter> BattleCharacters => battleCharacters;
+    public List<ArtifactData>    Artifacts => artifacts;
+    public List<StagmaData>      Stagmas => stagmas;
+
+    public int DeadCount;
+    private bool isAllDead => DeadCount == numFive ? true : false;
+
+    public GameObject[] CharacterPrefabs = new GameObject[numFive];
+    public StageSaveData.CurrentFormationType CurrentFormationType;
+
+    [NonSerialized] public GameObject[]      CharacterHPBars  = new GameObject[numFive];
+    [NonSerialized] public RectTransform[]   CharacterHPs     = new RectTransform[numFive];
+    [NonSerialized] public TextMeshProUGUI[] CharacterHPTexts = new TextMeshProUGUI[numFive];
+
+    public List<int> FrontLine = new List<int>();
+    public List<int> BackLine = new List<int>();
+    private int frontLineNum;
+
+    public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<StagmaData> stagmas)
+    {
+        battleCharacters = characters; this.artifacts = artifacts; this.stagmas = stagmas;
+
+        CurrentFormationType = StageManager.Instance.stageSaveData.currentFormationType;
+        frontLineNum = (int)CurrentFormationType;
+
+        for (int i = 0; i < frontLineNum + 1; i++)
+        {
+            FrontLine.Add(i);
+        }
+        for (int i = frontLineNum + 1; i < numFive; i++)
+        {
+            BackLine.Add(i);
+        }        
+    }
+
+    public void CharacterDead(int index)
+    {
+        DeadCount++;
+
+        if(FrontLine.Contains<int>(index))
+        {
+            FrontLine.Remove(index);
+        }
+        else if(BackLine.Contains<int>(index))
+        {
+            BackLine.Remove(index);
+        }
+
+        if (isAllDead)
+        {
+            BattleManager.Instance.EndBattle(false);
+        }
+    }
+
+    public void CharacterRevive(int index)
+    {
+        DeadCount--;
+
+        if (index <= frontLineNum)
+        {
+            FrontLine.Add(index);
+        }
+        else if (index > frontLineNum)
+        {
+            BackLine.Add(index);
+        }
     }
 }
 
@@ -214,6 +245,13 @@ public class BattleEnemy : IDamagable
     public int CurrentDef => currentDef;
     public int MaxHP => currentMaxHP;
     public bool IsDead => isDead;
+
+    public GameObject EnemyPrefab;
+    public IEnemy iEnemy;
+
+    public GameObject EnemyHPBar;
+    public RectTransform EnemyHP;
+    public TextMeshProUGUI EnemyHPText;
 
     public SOEnemySkill currentSkill;
     public int currentSkill_Index;

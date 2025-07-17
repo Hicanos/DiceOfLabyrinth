@@ -11,12 +11,12 @@ public class ChapterManager : MonoBehaviour
     //public List<ArtifactData> equipedArtifacts = new List<ArtifactData>(); // 현재 장착된 아티팩트 목록
 
     //public static ChapterManager Instance { get; private set; }
-    //public List<ChapterAndStageStates> ChapterAndStageStates
+    //public List<ChapterStates> ChapterStates
     //{
     //    get
     //    {
     //        return StageManager.Instance != null && StageManager.Instance.stageSaveData != null
-    //            ? StageManager.Instance.stageSaveData.chapterAndStageStates
+    //            ? StageManager.Instance.stageSaveData.chapterStates
     //            : null;
     //    }
     //}
@@ -54,7 +54,7 @@ public class ChapterManager : MonoBehaviour
     //    UserDataManager.Instance.AddGold(StageManager.Instance.stageSaveData.savedGoldReward);
     //    UserDataManager.Instance.AddJewel(StageManager.Instance.stageSaveData.savedJewelReward);
 
-    //    var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
+    //    var states = StageManager.Instance.stageSaveData.chapterStates;
     //    states[chapterIndex].isCompleted = true;
 
     //    int groupIndex = chapterIndex / 10;
@@ -97,7 +97,7 @@ public class ChapterManager : MonoBehaviour
     //        Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
     //        return;
     //    }
-    //    var states = StageManager.Instance.stageSaveData.chapterAndStageStates;
+    //    var states = StageManager.Instance.stageSaveData.chapterStates;
     //    states[chapterIndex].isCompleted = false; // 챕터 완료 상태를 해제
     //    states[chapterIndex].isUnLocked = true; // 챕터 잠금 해제 상태 유지
     //    StageManager.Instance.stageSaveData.ResetToDefault(-1); // 챕터 패배 후 스테이지 데이터 초기화, -1은 현재 챕터가 셀렉트되지 않았음을 의미합니다.

@@ -35,10 +35,16 @@ public class SelectAdventureUIController : MonoBehaviour
     [Header("Selected Chapter")]
     [SerializeField] private Image chapterIconSelected; // 선택된 챕터 아이콘
     //[SerializeField] private List<TMP_Text> selectedChapterNameText = new List<TMP_Text>(); // 선택된 챕터 이름 텍스트, 여러 개의 챕터 이름을 표시할 수 있도록 리스트로 변경
-    [SerializeField] private TMP_Text selectedChapterDescriptionText; // 선택된 챕터 설명 텍스트, 현재 기획에선 설명이 필요하지 않으므로 주석 처리
+    [SerializeField] private TMP_Text selectedChapterDescriptionText;
+
+    [Header("Selected Chapter Group")]
+    [SerializeField] private TMP_Text selectedChapterGroupNumberText; // 선택된 챕터 그룹 번호 텍스트
+    private int selectedChapterGroupNumber = 0; // 선택된 챕터 그룹 번호, 노말과 하드를 합쳐서 챕터 10개씩 그룹화합니다.
+    [SerializeField] private List<TMP_Text> chapterTexts = new List<TMP_Text>(5); // 챕터 텍스트 리스트, 각 그룹의 챕터 이름을 표시합니다.
 
     [Header("Direct Complete Multiplier")]
     [SerializeField] private TMP_Text directCompleteMultiplierText; // 직접 완료 배수 텍스트
+    [SerializeField] private TMP_Text actualCostText; // 직접 완료 비용 텍스트
     private int directCompleteMultiplier; // 직접 완료 배수 값
 
     [Header("스태미나 부족 패널")]
@@ -50,12 +56,13 @@ public class SelectAdventureUIController : MonoBehaviour
 
     public bool isDifficulty = false; // 챕터 난이도 선택 여부
 
-    private void Start()
+    private void OnEnable()
     {
         selectChapterPanel.SetActive(true);
         scarceStaminaPanel.SetActive(false);
         DifficultyToggleRefresh(); // 초기 난이도 토글 상태 설정
         OnClickChapterButton(0); // 초기 챕터 버튼 클릭 이벤트 호출, 첫 번째 챕터를 선택합니다.
+        OnClickMultipleMinButton(); // 직접 완료 배수 초기화
     }
 
     public void OnClickChapterButton(int normalChapterIndex) // 챕터 버튼
@@ -65,13 +72,22 @@ public class SelectAdventureUIController : MonoBehaviour
         {
             chapterIndex++; // 하드 챕터의 인덱스는 Normal 챕터 인덱스 + 1입니다.
         }
-
+        if (chapterData == null)
+        {
+            messagePopup.Open("chapterData is null");
+            return;
+        }
+        if (chapterData.chapterIndex == null)
+        {
+            messagePopup.Open("chapterData.chapterIndex is null");
+            return;
+        }
         if (chapterIndex < 0 || chapterIndex >= chapterData.chapterIndex.Count) // 유효하지 않은 챕터 인덱스일 때
         {
             messagePopup.Open("선택한 챕터가 유효하지 않습니다. 다시 시도해 주세요.");
             return;
         }
-        if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isUnLocked == false) // 챕터가 잠겨있을 때
+        if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked == false) // 챕터가 잠겨있을 때
         {
             // 잠겨있는 챕터를 선택했을 때의 UI 처리를 합니다.
             return;
@@ -79,6 +95,58 @@ public class SelectAdventureUIController : MonoBehaviour
         Debug.Log($"Selected chapter index: {chapterIndex}, Hard: {isDifficulty})");
         UpdateSelectedChapterUI(chapterIndex); // 선택된 챕터 UI 업데이트
         selectedChapterIndex = chapterIndex; // 선택된 챕터 인덱스 설정
+    }
+
+    public void OnClickChapterGroupPreviousButton() // 챕터 그룹 버튼
+    {
+        if(selectedChapterGroupNumber > 0) // 현재 그룹 번호가 0보다 클 때
+        {
+            selectedChapterGroupNumber--;
+            selectedChapterGroupNumberText.text = $"{selectedChapterGroupNumber + 1}"; // 그룹 번호 텍스트 업데이트
+            RefreshChapterButton(); // 챕터 버튼 텍스트 업데이트
+        }
+        else if (selectedChapterGroupNumber == 0) // 현재 그룹 번호가 0일 때
+        {
+            messagePopup.Open("첫 번째 그룹입니다. 이전 그룹이 없습니다.");
+        }
+        else
+        {
+            messagePopup.Open("챕터 그룹 번호가 잘못되었습니다.");
+        }
+    }
+    public void OnClickChapterGroupNextButton() // 챕터 그룹 버튼
+    {
+        if (selectedChapterGroupNumber < chapterData.chapterIndex.Count / 10 - 1) // 10개씩 그룹화했으므로, 최대 그룹 번호는 총 챕터 수 / 10 - 1입니다.
+        {
+            selectedChapterGroupNumber++;
+            selectedChapterGroupNumberText.text = $"{selectedChapterGroupNumber + 1}"; // 그룹 번호 텍스트 업데이트
+            RefreshChapterButton(); // 챕터 버튼 텍스트 업데이트
+        }
+        else if (selectedChapterGroupNumber == chapterData.chapterIndex.Count / 10 - 1) // 현재 그룹 번호가 최대 그룹 번호일 때
+        {
+            messagePopup.Open("마지막 그룹입니다. 다음 그룹이 없습니다.");
+        }
+        else
+        {
+            messagePopup.Open("챕터 그룹 번호가 잘못되었습니다.");
+        }
+    }
+    private void RefreshChapterButton()
+    {
+
+        for(int i = 0; i < chapterTexts.Count; i++) // 챕터 버튼 텍스트 업데이트
+        {
+            
+            int chapterIndex = i * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0); // 현재 그룹 번호와 난이도에 따라 챕터 인덱스 계산
+            if (chapterIndex < chapterData.chapterIndex.Count) // 유효한 챕터 인덱스일 때
+            {
+                chapterTexts[i].text = $"{chapterData.chapterIndex[chapterIndex].ChapterName}"; // 챕터 이름 업데이트
+            }
+            else // 유효하지 않은 챕터 인덱스일 때
+            {
+                chapterTexts[i].text = "N/A"; // N/A로 표시
+            }
+        }
     }
 
     public void OnClickStartButton() // 코스트 지불 UI의 시작 버튼
@@ -94,7 +162,7 @@ public class SelectAdventureUIController : MonoBehaviour
             messagePopup.Open("캐릭터를 5개 이상 보유해야 챕터를 선택할 수 있습니다.");
             return;
         }
-        else if (!StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isUnLocked)
+        else if (!StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked)
         {
             messagePopup.Open("이 챕터는 아직 잠겨 있습니다. 다른 챕터를 완료한 후 다시 시도해 주세요.");
 
@@ -102,7 +170,7 @@ public class SelectAdventureUIController : MonoBehaviour
         }
         else if (StageManager.Instance.stageSaveData.currentChapterIndex == -1) // -1은 진행중인 챕터가 없음을 의미합니다.
         {
-            if (StageManager.Instance.stageSaveData.chapterAndStageStates[chapterIndex].isCompleted)
+            if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isCompleted)
             {
                 messagePopup.Open(
                 $"해당 챕터()는 이미 완료되었습니다. 다시 시작하시겠습니까?.",
@@ -152,7 +220,7 @@ public class SelectAdventureUIController : MonoBehaviour
         }
         else
         {
-            selectedChapterIndex = -1; // 선택된 챕터 인덱스 초기화
+            selectedChapterIndex = 0; // 선택된 챕터 인덱스 초기화
             StageManager.Instance.stageSaveData.currentChapterIndex = chapterIndex; // 현재 챕터 인덱스 설정
             StageManager.Instance.stageSaveData.ResetToDefault(chapterIndex); // 스테이지 상태 초기화
             Debug.Log($"Starting battle for chapter: {selectedChapter.ChapterName} (Index: {chapterIndex})");
@@ -160,6 +228,96 @@ public class SelectAdventureUIController : MonoBehaviour
             //costCalculationPanel.SetActive(false);
             StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태 복원
         }
+    }
+
+    private void UpdateDirectCompleteMultiplierText() // 직접 완료 배수 텍스트 업데이트
+    {
+        directCompleteMultiplierText.text = $"{directCompleteMultiplier}";
+        int actualCost = chapterData.chapterIndex[selectedChapterIndex].DirectCompleteCost * directCompleteMultiplier; // 직접 완료 비용 계산
+        actualCostText.text = $"{actualCost}"; // 실제 비용 텍스트 업데이트
+    }
+
+    public void OnClickMultiplePlusButton() // 직접 완료 배수 증가 버튼
+    {
+        if (directCompleteMultiplier < 5) // 최대 배수는 5로 설정
+        {
+            directCompleteMultiplier++;
+            UpdateDirectCompleteMultiplierText();
+        }
+    }
+    public void OnClickMultipleMinusButton() // 직접 완료 배수 감소 버튼
+    {
+        if (directCompleteMultiplier > 1) // 최소 배수는 1로 설정
+        {
+            directCompleteMultiplier--;
+            UpdateDirectCompleteMultiplierText();
+        }
+    }
+    public void OnClickMultipleMaxButton()
+    {
+        directCompleteMultiplier = 5; // 최대 배수로 설정
+        UpdateDirectCompleteMultiplierText();
+    }
+    public void OnClickMultipleMinButton()
+    {
+        directCompleteMultiplier = 1; // 최소 배수로 설정
+        UpdateDirectCompleteMultiplierText();
+    }
+    public void OnClickDirectCompliteButton()
+    {
+        int actualCost = chapterData.chapterIndex[selectedChapterIndex].DirectCompleteCost * directCompleteMultiplier; // 직접 완료 비용 계산, 스태미나를 코스트로 사용합니다.
+        if (selectedChapterIndex < 0 || selectedChapterIndex >= chapterData.chapterIndex.Count) // 유효하지 않은 챕터 인덱스일 때
+        {
+            messagePopup.Open("선택한 챕터가 유효하지 않습니다. 다시 시도해 주세요.");
+            return;
+        }
+        else if (!StageManager.Instance.stageSaveData.chapterStates[selectedChapterIndex].isCompleted) // 완료되지 않은 챕터를 할 때
+        {
+            messagePopup.Open($"한 번 이상 완료된 챕터만 소탕할 수 있습니다.\n현재 챕터는 완료되지 않았습니다.");
+        }
+        else if (StageManager.Instance.stageSaveData.currentChapterIndex != -1) // 현재 진행 중인 챕터가 있을 때
+        {
+            messagePopup.Open($"진행 중인 챕터가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
+        }
+        else if (UserDataManager.Instance.userdata.stamina < actualCost) // 스태미나가 부족할 때
+        {
+            messagePopup.Open($"직접 완료를 하려면 {actualCost} 스태미나가 필요합니다. 충전하시겠습니까?",
+                () => OpenScaresStaminaPanel(), // 스태미나 부족 UI 열기
+                () => messagePopup.Close() // 취소 버튼 클릭 시
+            );
+        }
+        else
+        {
+            messagePopup.Open(
+                $"직접 완료를 하시겠습니까?\n{actualCost} 스태미나가 소모됩니다.",
+                () => 
+                {
+                    DirectComplite(actualCost); // 직접 완료 처리
+                },
+                () => messagePopup.Close() // 취소 버튼 클릭 시
+            );
+        }
+    }
+
+    private void DirectComplite(int actualCost)
+    {
+        int directCompleteExpReward = 0;
+        int directCompleteGoldReward = 0;
+        int directCompleteJewelReward = 0;
+        UserDataManager.Instance.UseStamina(actualCost); // 스태미나 사용
+        foreach (var stage in chapterData.chapterIndex[selectedChapterIndex].stageData.stageIndex)
+        {
+            directCompleteExpReward += stage.ExpReward; // 각 스테이지의 경험치 보상 합산
+            directCompleteGoldReward += stage.GoldReward; // 각 스테이지의 골드 보상 합산
+            directCompleteJewelReward += stage.JewelReward; // 각 스테이지의 쥬얼 보상 합산
+        }
+        UserDataManager.Instance.AddExp(directCompleteExpReward * directCompleteMultiplier); // 경험치 보상 추가
+        UserDataManager.Instance.AddGold(directCompleteGoldReward * directCompleteMultiplier); // 골드 보상 추가
+        UserDataManager.Instance.AddJewel(directCompleteJewelReward * directCompleteMultiplier); // 쥬얼 보상 추가
+
+        messagePopup.Open(
+        $"직접 완료가 완료되었습니다!\n경험치: {directCompleteExpReward * directCompleteMultiplier}\n골드: {directCompleteGoldReward * directCompleteMultiplier}\n쥬얼: {directCompleteJewelReward * directCompleteMultiplier}"
+        );
     }
 
     private void OpenScaresStaminaPanel() // 스태미나 부족 UI 열기
@@ -224,6 +382,7 @@ public class SelectAdventureUIController : MonoBehaviour
             HardDifficultyUnselect.SetActive(true);
             HardDifficultySelect.SetActive(false);
         }
+        RefreshChapterButton(); // 챕터 버튼 텍스트 업데이트
     }
 
     private void UpdateSelectedChapterUI(int chapterIndex)

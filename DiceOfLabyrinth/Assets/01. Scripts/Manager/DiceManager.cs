@@ -21,7 +21,6 @@ public class DiceManager : MonoBehaviour
         //{
         //    Destroy(this.gameObject);
         //}
-        _inputActions = new InputSystem_Actions();
     }
 
     public static DiceManager Instance
@@ -42,13 +41,19 @@ public class DiceManager : MonoBehaviour
     public DiceHolding DiceHolding;
     public GameObject[] dices;
     public GameObject[] fakeDices;
-    public GameObject ground;
-    public GameObject DiceBoard;
-
-    [SerializeField] RollMultipleDiceSynced roll;
+    
     public Camera diceCamera;
     public DiceBattle DiceBattle = new DiceBattle();
     DiceMy[] dicesDatas;
+
+    [SerializeField] RollMultipleDiceSynced rollDiceSynced;
+
+    public GameObject ground;
+    public GameObject DiceBoard;
+
+    int signitureAmount;
+
+    public IEnumerator diceRollCoroutine;
 
     private int[] diceResult;
     public int[] DiceResult => diceResult;
@@ -65,8 +70,7 @@ public class DiceManager : MonoBehaviour
     const int diceCount = 5;
 
     private int[,] faceProbability = new int[5, 6];
-    private int[] signitureArr = new int[5];
-    private int signitureAmount;
+    private int[] signitureArr = new int[5];    
     private int rollCount = 0;
     private readonly int maxRollCount = 3;
     public int RollRemain => maxRollCount - rollCount;
@@ -79,8 +83,6 @@ public class DiceManager : MonoBehaviour
     Vector3[] rotationVectors; //굴린 후 정렬시 적용할 회전값
     Vector3[] defaultPos; //주사위 굴리는 기본 위치 화면 오른쪽
     public DiceRankingEnum DiceRank;
-    public InputSystem_Actions _inputActions;
-    public IEnumerator diceRollCoroutine;
 
     void Start()
     {
@@ -100,12 +102,12 @@ public class DiceManager : MonoBehaviour
     {
         for (int i = 0; i < diceCount; i++)
         {
-            CharDiceData diceData = BattleManager.Instance.battleCharacters[i].CharacterData.charDiceData;
+            CharDiceData diceData = BattleManager.Instance.BattleGroup.BattleCharacters[i].CharacterData.charDiceData;
 
             dices[i] = diceContainer.transform.GetChild(i).gameObject;
             dicesDatas[i] = dices[i].GetComponent<DiceMy>();
             signitureArr[i] = diceData.CignatureNo;
-
+            
             faceProbability[i, 0] = diceData.FaceProbability1;
             faceProbability[i, 1] = faceProbability[i, 0] + diceData.FaceProbability2;
             faceProbability[i, 2] = faceProbability[i, 1] + diceData.FaceProbability3;
@@ -126,8 +128,8 @@ public class DiceManager : MonoBehaviour
         StopCoroutine(diceRollCoroutine);
 
         GetRandomDiceNum();
-        roll.SetDiceOutcome(diceResult);
-        roll.RollAll();
+        rollDiceSynced.SetDiceOutcome(diceResult);
+        rollDiceSynced.RollAll();
 
         StartCoroutine(diceRollCoroutine);
     }
@@ -135,7 +137,6 @@ public class DiceManager : MonoBehaviour
     private void SettingForRoll()
     {
         signitureAmount = 0;
-        //isSkipped = false;
 
         ground.SetActive(true);
         DiceBoard.SetActive(true);
@@ -171,12 +172,12 @@ public class DiceManager : MonoBehaviour
 
             randNum = Random.Range(1, 101);
 
-            if      (randNum <= faceProbability[i, 0]) resultNum = 1;
+            if (randNum <= faceProbability[i, 0]) resultNum = 1;
             else if (randNum <= faceProbability[i, 1]) resultNum = 2;
             else if (randNum <= faceProbability[i, 2]) resultNum = 3;
             else if (randNum <= faceProbability[i, 3]) resultNum = 4;
             else if (randNum <= faceProbability[i, 4]) resultNum = 5;
-            else                                       resultNum = 6;
+            else resultNum = 6;
 
             diceResult[i] = resultNum;
             diceResultCount[diceResult[i] - 1]++;
@@ -188,7 +189,7 @@ public class DiceManager : MonoBehaviour
         }
     }
 
-    IEnumerator SortingAfterRoll()
+    public IEnumerator SortingAfterRoll() //디버그를 위한 임시 public
     {
         rollCount++;
         List<Dice> diceList = new List<Dice>();
@@ -201,17 +202,6 @@ public class DiceManager : MonoBehaviour
             diceList.Add(dices[i].GetComponent<Dice>());
         }
         yield return null;
-
-        //Vector3 cameraPos = diceCamera.transform.position;
-        //float destTime = 1, passTime = 0;
-        //while(passTime <= destTime)
-        //{
-        //    cameraPos.z -= Time.deltaTime * 2;
-        //    diceCamera.transform.position = cameraPos;
-
-        //    passTime += Time.deltaTime;
-        //    yield return null;
-        //}
 
         while (true)
         {
@@ -228,10 +218,10 @@ public class DiceManager : MonoBehaviour
                 BattleManager.Instance.GetCost(signitureAmount);
                 isRolling = false;
 
-                
+
                 BattleManager.Instance.battlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
                 SortingFakeDice();
-                
+
                 break;
             }
             rollEndCount = 0;
@@ -244,6 +234,8 @@ public class DiceManager : MonoBehaviour
     /// </summary>
     public void ResetSetting()
     {
+        StopCoroutine(diceRollCoroutine);
+
         int childCount = DiceHolding.areas.Length;
         for (int i = 0; i < childCount; i++)
         {
@@ -254,7 +246,7 @@ public class DiceManager : MonoBehaviour
 
         foreach (int index in fixedDiceList)
         {
-            roll.diceAndOutcomeArray[index].dice = dices[index].GetComponent<Dice>();
+            rollDiceSynced.diceAndOutcomeArray[index].dice = dices[index].GetComponent<Dice>();
         }
 
         fixedDiceList.Clear();
@@ -304,8 +296,8 @@ public class DiceManager : MonoBehaviour
         foreach (GameObject dice in fakeDices)
         {
             int iNum = diceResult[i] - 1;
-            //Debug.Log($"X : {rotationVectors[iNum].x}, Y : {rotationVectors[iNum].y}, Z : {rotationVectors[iNum].z}");            
-            quaternion = Quaternion.Euler(rotationVectors[iNum].x, rotationVectors[iNum].y, rotationVectors[iNum].z);
+         
+            quaternion = Quaternion.Euler(rotationVectors[iNum].x, rotationVectors[iNum].y + 90, rotationVectors[iNum].z);
             dice.transform.rotation = quaternion;
             i++;
         }
