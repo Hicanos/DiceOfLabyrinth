@@ -18,4 +18,6 @@ public class ArtifactData : ScriptableObject
     public ArtifactType artifactType;
     public int additionalAtk;
     public int additionalDef;
+
+    public List<SetEffectData> setEffectData = new List<SetEffectData>();
 }
