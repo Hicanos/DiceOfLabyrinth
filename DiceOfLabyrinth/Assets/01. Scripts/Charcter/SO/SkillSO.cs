@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
+using static DesignEnums;
 
 /// <summary>
 /// 스킬을 만들기 위한 Scriptable Object
@@ -16,9 +17,9 @@ public class SkillSO : ScriptableObject
     public string SkillNameKr;
     public string SkillNameEn;
     // 스킬 타입, 스킬 대상, 스킬 규칙은 Enum으로 정의됨
-    // public SkillType SkillType;
-    // public SkillRule SkillRule; 
-    // public SkillTarget SkillTarget;
+    public SkillType SkillType;
+    public SkillRule SkillRule; 
+    public SkillTarget SkillTarget;
     public string SkillDescription;
     public Sprite SkillIcon;
     //레벨업 요구 사항

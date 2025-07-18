@@ -65,8 +65,8 @@ public class BuffData
     /// Buff_Maxtack
     /// </summary>
     public int Stack;
-
 }
+
 public class BuffDataLoader
 {
     public List<BuffData> ItemsList { get; private set; }
