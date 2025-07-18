@@ -39,10 +39,8 @@ public class DiceManager : MonoBehaviour
     [SerializeField] GameObject diceContainer;
     [SerializeField] GameObject fakeDiceContainer;
     public DiceHolding DiceHolding;
-    private GameObject[] dices;
-    public GameObject[] Dices => dices;
-    private GameObject[] fakeDices;
-    public GameObject[] FakeDices => fakeDices;
+    public GameObject[] Dices;
+    public GameObject[] FakeDices;
 
     public Camera DiceCamera;
     public DiceBattle DiceBattle = new DiceBattle();
@@ -94,8 +92,8 @@ public class DiceManager : MonoBehaviour
         diceResultCount = new int[6];
         defaultDiceResultCount = new int[6] { 0, 0, 0, 0, 0, 0 };
 
-        dices = new GameObject[diceCount];
-        fakeDices = new GameObject[diceCount];
+        Dices = new GameObject[diceCount];
+        FakeDices = new GameObject[diceCount];
         dicesDatas = new DiceMy[diceCount];
         fixedDiceList = new List<int>();
     }
@@ -106,8 +104,8 @@ public class DiceManager : MonoBehaviour
         {
             CharDiceData diceData = BattleManager.Instance.BattleGroup.BattleCharacters[i].CharacterData.charDiceData;
 
-            dices[i] = diceContainer.transform.GetChild(i).gameObject;
-            dicesDatas[i] = dices[i].GetComponent<DiceMy>();
+            Dices[i] = diceContainer.transform.GetChild(i).gameObject;
+            dicesDatas[i] = Dices[i].GetComponent<DiceMy>();
             signitureArr[i] = diceData.CignatureNo;
             
             faceProbability[i, 0] = diceData.FaceProbability1;
@@ -117,8 +115,8 @@ public class DiceManager : MonoBehaviour
             faceProbability[i, 4] = faceProbability[i, 3] + diceData.FaceProbability5;
             faceProbability[i, 5] = faceProbability[i, 4] + diceData.FaceProbability6;
 
-            fakeDices[i] = fakeDiceContainer.transform.GetChild(i).gameObject;
-            fakeDices[i].SetActive(false);
+            FakeDices[i] = fakeDiceContainer.transform.GetChild(i).gameObject;
+            FakeDices[i].SetActive(false);
         }
         GoDefaultPositionDice();
         GoDefaultPositionFakeDice();
@@ -145,14 +143,14 @@ public class DiceManager : MonoBehaviour
 
         //Ground.SetActive(true);
         DiceBoard.SetActive(true);
-        for (int i = 0; i < fakeDices.Length; i++)
+        for (int i = 0; i < FakeDices.Length; i++)
         {
             if (fixedDiceList.Contains<int>(i)) continue;
-            fakeDices[i].SetActive(false);
+            FakeDices[i].SetActive(false);
         }
         DiceCamera.cullingMask |= 1 << LayerMask.NameToLayer("Dice");
 
-        foreach (GameObject diceGO in dices)
+        foreach (GameObject diceGO in Dices)
         {
             Dice dice = diceGO.GetComponent<Dice>();
             dice.Locomotion.isEnd = false;
@@ -204,7 +202,7 @@ public class DiceManager : MonoBehaviour
         {
             if (fixedDiceList.Contains<int>(i)) continue;
 
-            diceList.Add(dices[i].GetComponent<Dice>());
+            diceList.Add(Dices[i].GetComponent<Dice>());
         }
         yield return null;
 
@@ -251,7 +249,7 @@ public class DiceManager : MonoBehaviour
 
         foreach (int index in fixedDiceList)
         {
-            RollDiceSynced.diceAndOutcomeArray[index].dice = dices[index].GetComponent<Dice>();
+            RollDiceSynced.diceAndOutcomeArray[index].dice = Dices[index].GetComponent<Dice>();
         }
 
         fixedDiceList.Clear();
@@ -261,7 +259,7 @@ public class DiceManager : MonoBehaviour
 
         for (int i = 0; i < diceCount; i++)
         {
-            fakeDices[i].SetActive(false);
+            FakeDices[i].SetActive(false);
         }
     }
 
@@ -270,9 +268,9 @@ public class DiceManager : MonoBehaviour
     /// </summary>
     private void GoDefaultPositionDice()
     {
-        for (int i = 0; i < dices.Length; i++)
+        for (int i = 0; i < Dices.Length; i++)
         {
-            dices[i].transform.localPosition = rolldiceDefaultPosition[i];
+            Dices[i].transform.localPosition = rolldiceDefaultPosition[i];
         }
     }
 
@@ -283,9 +281,9 @@ public class DiceManager : MonoBehaviour
     {
         DiceHolding.isCantFix = false;
         GoDefaultPositionDice();
-        for (int i = 0; i < fakeDices.Length; i++)
+        for (int i = 0; i < FakeDices.Length; i++)
         {
-            fakeDices[i].SetActive(true);
+            FakeDices[i].SetActive(true);
         }
         DiceCamera.cullingMask = DiceCamera.cullingMask & ~(1 << LayerMask.NameToLayer("Dice"));
         ResetRotation();
@@ -298,7 +296,7 @@ public class DiceManager : MonoBehaviour
     {
         int i = 0;
         Quaternion quaternion;
-        foreach (GameObject dice in fakeDices)
+        foreach (GameObject dice in FakeDices)
         {
             int iNum = diceResult[i] - 1;
          
@@ -313,18 +311,18 @@ public class DiceManager : MonoBehaviour
     /// </summary>
     private void GoDefaultPositionFakeDice()
     {
-        for (int i = 0; i < fakeDices.Length; i++)
+        for (int i = 0; i < FakeDices.Length; i++)
         {
             if (fixedDiceList.Contains<int>(i)) continue;
-            fakeDices[i].transform.localPosition = dicePos[i];
+            FakeDices[i].transform.localPosition = dicePos[i];
         }
     }
 
     public void HideFakeDice()
     {
-        for (int i = 0; i < fakeDices.Length; i++)
+        for (int i = 0; i < FakeDices.Length; i++)
         {
-            fakeDices[i].SetActive(false);
+            FakeDices[i].SetActive(false);
         }
     }
 
@@ -342,7 +340,7 @@ public class DiceManager : MonoBehaviour
 
     public void StopSimulation()
     {
-        foreach (GameObject diceGO in dices)
+        foreach (GameObject diceGO in Dices)
         {
             Dice dice = diceGO.GetComponent<Dice>();
 
