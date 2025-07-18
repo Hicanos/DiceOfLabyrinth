@@ -17,13 +17,14 @@ public class BattleUILog : MonoBehaviour
         size.y += padding * 2;
         content.sizeDelta = size;
 
-        StartCoroutine(MakeLogCoroutine());
+        //StartCoroutine(MakeLogCoroutine());
     }
 
     public void MakeBattleLog(string logString)
     {
         StartCoroutine(MakeLogCoroutine(logString));
     }
+
     IEnumerator MakeLogCoroutine(string logString = null)
     {
         float width;
@@ -48,11 +49,16 @@ public class BattleUILog : MonoBehaviour
 
         logText.text = logString;
         contentHeight = rectTransform.sizeDelta.y;
-        
+
         contentSize = content.sizeDelta;
         contentSize.y += (contentHeight + spacing);
         content.sizeDelta = contentSize;
 
         scrollbar.value = 0;
+    }
+
+    public void ResetLog()
+    {
+
     }
 }
