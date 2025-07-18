@@ -21110,6 +21110,8 @@ MonoBehaviour:
   CharacterInfo: {fileID: 8961507495701520510}
   battleCanvas: {fileID: 6273793157351372757}
   characterInfoUI: {fileID: 8963359112258116447}
+  BattleUILog: {fileID: 558724960256872446}
+  BattleLogPrefab: {fileID: 2471338843486174664, guid: 6c89d1575d083a242ba9693ec87c3c7c, type: 3}
   diceBackboard: {fileID: 3085415524554279416}
   roll: {fileID: 3758388191567780901}
   char1: {fileID: 3993411186092413271}
@@ -25199,6 +25201,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 381545164990435881}
     m_Modifications:
+    - target: {fileID: 713852106140048381, guid: 7361384692583a142b714b5eefa49269, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 713852106140048381, guid: 7361384692583a142b714b5eefa49269, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260561254648331018, guid: 7361384692583a142b714b5eefa49269, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260561254648331018, guid: 7361384692583a142b714b5eefa49269, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2278137643409121559, guid: 7361384692583a142b714b5eefa49269, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -25279,6 +25297,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2880745667088323538, guid: 7361384692583a142b714b5eefa49269, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2880745667088323538, guid: 7361384692583a142b714b5eefa49269, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2880745667088323538, guid: 7361384692583a142b714b5eefa49269, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2880745667088323538, guid: 7361384692583a142b714b5eefa49269, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3895365123237620027, guid: 7361384692583a142b714b5eefa49269, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3895365123237620027, guid: 7361384692583a142b714b5eefa49269, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5964911178489974292, guid: 7361384692583a142b714b5eefa49269, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5964911178489974292, guid: 7361384692583a142b714b5eefa49269, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8329331887627807141, guid: 7361384692583a142b714b5eefa49269, type: 3}
       propertyPath: m_Name
       value: BattlePanel
@@ -25297,6 +25347,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &558724960256872446 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 419673457037764150, guid: 7361384692583a142b714b5eefa49269, type: 3}
+  m_PrefabInstance: {fileID: 149190178326718920}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b10a71dede5bb74da29e0b6b684800b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1539443071354286575 stripped

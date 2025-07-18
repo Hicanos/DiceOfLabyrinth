@@ -12,6 +12,8 @@ public class BattleUI : MonoBehaviour
     public GameObject CharacterInfo;
     public Canvas     battleCanvas;
     [SerializeField] BattleUICharacterInfo characterInfoUI;
+    public BattleUILog BattleUILog;
+    public GameObject BattleLogPrefab;
 
     [Header("AbstractButtons")]
     [SerializeField] AbstractBattleButton diceBackboard;

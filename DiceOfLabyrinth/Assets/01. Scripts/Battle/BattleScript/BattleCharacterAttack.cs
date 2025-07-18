@@ -65,7 +65,9 @@ public class BattleCharacterAttack : MonoBehaviour
             }
             enumeratorDamage = DealDamage(battleManager.Enemy, damage);
             StartCoroutine(enumeratorDamage);
-            battleManager.Enemy.iEnemy.TakeDamage();            
+            battleManager.Enemy.iEnemy.TakeDamage();
+            string logString = $"{battleCharacters[i].CharNameKr}이/가 {battleManager.Enemy.Data.EnemyName}에게 데미지 {damage}!";
+            UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(logString);
 
             pastTime = 0;
             while (pastTime < destTime)
