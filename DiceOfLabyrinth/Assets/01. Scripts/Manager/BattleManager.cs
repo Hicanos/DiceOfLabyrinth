@@ -69,9 +69,7 @@ public class BattleManager : MonoBehaviour
         StateMachine = new BattleStateMachine(I_PlayerTurnState);
 
         UIManager.Instance.BattleUI.Setting();
-        DiceManager.Instance.DiceHolding.SettingForHolding();
-        
-        InputManager.Instance.BattleInputStart();
+        DiceManager.Instance.DiceHolding.SettingForHolding();               
     }
     
     void Update()
@@ -82,6 +80,7 @@ public class BattleManager : MonoBehaviour
     {
         GetStartData(data);
         BattleStartValueSetting();
+        InputManager.Instance.BattleInputStart();
         enterBattle.BattleStart();
     }
 
