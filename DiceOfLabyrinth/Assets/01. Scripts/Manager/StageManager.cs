@@ -284,7 +284,7 @@ public class StageManager : MonoBehaviour
         {
             if (stageSaveData.artifacts[i] == artifactName)
             {
-                messagePopup.Open($"아티팩트 {artifactName.artifactName}은(는) 이미 목록에 있습니다.");
+                messagePopup.Open($"아티팩트 {artifactName.ArtifactName}은(는) 이미 목록에 있습니다.");
                 return;
             }
         }
@@ -296,7 +296,7 @@ public class StageManager : MonoBehaviour
             {
                 stageSaveData.artifacts[i] = artifactName;
                 Debug.Log($"Artifact {artifactName} added.");
-                messagePopup.Open($"아티팩트 {artifactName.artifactName}이(가) 추가되었습니다.");
+                messagePopup.Open($"아티팩트 {artifactName.ArtifactName}이(가) 추가되었습니다.");
                 return;
             }
         }
@@ -318,7 +318,7 @@ public class StageManager : MonoBehaviour
         {
             if (stageSaveData.equipedArtifacts[i] == artifactName)
             {
-                messagePopup.Open($"아티팩트 {artifactName.artifactName}은(는) 이미 장착되어 있습니다.");
+                messagePopup.Open($"아티팩트 {artifactName.ArtifactName}은(는) 이미 장착되어 있습니다.");
                 return;
             }
         }
@@ -326,7 +326,7 @@ public class StageManager : MonoBehaviour
         // 소지품에 있는지 체크
         if (!stageSaveData.artifacts.Contains(artifactName))
         {
-            messagePopup.Open($"아티팩트 {artifactName.artifactName}이(가) 소지품에 없습니다.");
+            messagePopup.Open($"아티팩트 {artifactName.ArtifactName}이(가) 소지품에 없습니다.");
             return;
         }
 
