@@ -41,6 +41,9 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private GameObject shopPanel;
     [SerializeField] private GameObject selectArtifactPanel;
 
+    [Header("Popup")]
+    [SerializeField] private GameObject setEffectPopup;
+
     [Header("Item Choice Icons")]
     [SerializeField] private GameObject[] itemChoiceIcon = new GameObject[3]; // 아이템 선택 아이콘을 위한 배열
 
@@ -183,6 +186,11 @@ public class BattleUIController : MonoBehaviour
     {
         selectedPlatformIndex = platformIndex; // 선택된 플랫폼 인덱스 저장
         RefreshPlatformColors(platformIndex);
+    }
+
+    private void Start()
+    {
+        setEffectPopup.SetActive(false);
     }
 
     public void OpenSelectDungeonPanel() // 스테이지 선택 패널을 여는 함수
