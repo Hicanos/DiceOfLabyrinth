@@ -87,8 +87,8 @@ public class PublicUIController : MonoBehaviour
                 stamina.SetActive(false);
                 gold.SetActive(false);
                 jewel.SetActive(false);
-                settingButton.SetActive(true);
-                homeButton.SetActive(true);
+                settingButton.SetActive(false);
+                homeButton.SetActive(false);
                 sceneBackButton.SetActive(false);
                 break;
 
