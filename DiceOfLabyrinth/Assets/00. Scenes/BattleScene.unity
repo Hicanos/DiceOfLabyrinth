@@ -2204,7 +2204,7 @@ MonoBehaviour:
   fakeDiceContainer: {fileID: 1665175561}
   DiceHolding: {fileID: 1531840403}
   DiceCamera: {fileID: 872327847}
-  rollDiceSynced: {fileID: 630142358}
+  RollDiceSynced: {fileID: 630142358}
   DiceBoard: {fileID: 1058215125}
   IsRolling: 0
   DiceRank: 0
@@ -3345,22 +3345,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BattleSpawner: {fileID: 5666082356261757287}
   UIValueChanger: {fileID: 303490232559084238}
-  battleInput: {fileID: 5666082356261757286}
   CharacterAttack: {fileID: 562530837}
   EnemyAttack: {fileID: 562530836}
   EnemyPatternContainer: {fileID: 562530839}
   CharacterHPPrefab: {fileID: 8686863719124662963, guid: 83f53905d4392be41becafab42e5a40f, type: 3}
   EnemyHPPrefab: {fileID: 8686863719124662963, guid: 1d56b95780a60b042839dab99b38bde7, type: 3}
   BattleUIHP: {fileID: 5666082356261757288}
-  InputAction:
-    m_Name: Input
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: ca42de24-9047-4cc7-9fef-d75ae5a21af1
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
   CurrentPlayerState: 0
   BattleTurn: 0
   isBattle: 0
@@ -3412,6 +3402,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterContainer: {fileID: 1968470673}
   enemyContainer: {fileID: 1415162113}
+  diceContainer: {fileID: 1069492833}
+  fakeDiceContainer: {fileID: 1665175562}
+  diceLayer: 0
+  fakeDiceLayer: 0
 --- !u!114 &5666082356261757288
 MonoBehaviour:
   m_ObjectHideFlags: 0
