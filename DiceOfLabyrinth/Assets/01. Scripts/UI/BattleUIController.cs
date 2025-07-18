@@ -635,21 +635,21 @@ public class BattleUIController : MonoBehaviour
             case StageSaveData.CurrentPhaseState.NormalReward:
                 // 커먼, 언커먼만
                 availableArtifacts = available
-                    .Where(a => a.artifactType == ArtifactData.ArtifactType.Common || a.artifactType == ArtifactData.ArtifactType.Uncommon)
+                    .Where(a => a.Type == ArtifactData.ArtifactType.Common || a.Type == ArtifactData.ArtifactType.Uncommon)
                     .ToList();
                 break;
             case StageSaveData.CurrentPhaseState.EliteArtifactReward:
                 // 언커먼, 레어만
                 availableArtifacts = available
-                    .Where(a => a.artifactType == ArtifactData.ArtifactType.Uncommon || a.artifactType == ArtifactData.ArtifactType.Rare)
+                    .Where(a => a.Type == ArtifactData.ArtifactType.Uncommon || a.Type == ArtifactData.ArtifactType.Rare)
                     .ToList();
                 break;
             case StageSaveData.CurrentPhaseState.BossReward:
                 // 레어, 유니크, 레전더리만
                 availableArtifacts = available
-                    .Where(a => a.artifactType == ArtifactData.ArtifactType.Rare
-                             || a.artifactType == ArtifactData.ArtifactType.Unique
-                             || a.artifactType == ArtifactData.ArtifactType.Legendary)
+                    .Where(a => a.Type == ArtifactData.ArtifactType.Rare
+                             || a.Type == ArtifactData.ArtifactType.Unique
+                             || a.Type == ArtifactData.ArtifactType.Legendary)
                     .ToList();
                 break;
             default:
@@ -669,7 +669,7 @@ public class BattleUIController : MonoBehaviour
             picked.Add(candidate);
 
             var iconImage = itemChoiceIcon[i].GetComponent<Image>();
-            iconImage.sprite = candidate.icon;
+            iconImage.sprite = candidate.Icon;
         }
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
@@ -729,7 +729,7 @@ public class BattleUIController : MonoBehaviour
             case StageSaveData.CurrentPhaseState.BossReward:
                 selectedArtifact = artifactChoices[selectIndex];
                 itemTitleText.text = selectedArtifact.name; // 선택된 아티팩트 이름 설정
-                itemDescriptionText.text = selectedArtifact.description; // 선택된 아티팩트 설명 설정
+                itemDescriptionText.text = selectedArtifact.Description; // 선택된 아티팩트 설명 설정
                 break;
             default:
                 messagePopup.Open("잘못된 페이즈 상태입니다. 다시 시도해 주세요.");

@@ -12,12 +12,21 @@ public class ArtifactData : ScriptableObject
         Unique,
         Legendary
     }
-    public string artifactName;
-    public string description;
-    public Sprite icon;
-    public ArtifactType artifactType;
-    public int additionalAtk;
-    public int additionalDef;
+    private string artifactName;
+    private string description;
+    private Sprite icon;
+    private ArtifactType artifactType;
+    private int additionalAtk;
+    private int additionalDef;
 
-    public List<SetEffectData> setEffectData = new List<SetEffectData>();
+    private List<SetEffectData> setEffectData = new List<SetEffectData>();
+
+    public string ArtifactName => artifactName;
+    public string Description => description;
+    public Sprite Icon => icon;
+    public ArtifactType Type => artifactType;
+    public int AdditionalAtk => additionalAtk;
+    public int AdditionalDef => additionalDef;
+    public List<SetEffectData> SetEffectData => setEffectData;
+
 }
