@@ -39,7 +39,7 @@ public class StageSaveData
 
     [Header("Stage Resources")]
     public int manaStone; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
-    public List<ArtifactData> artifacts = new List<ArtifactData>(18);// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
+    public List<ArtifactData> artifacts = new List<ArtifactData>(12);// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<StagmaData> stagmas = new List<StagmaData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<ArtifactData> equipedArtifacts = new List<ArtifactData>(4); // 현재 장착된 아티팩트 목록
 
@@ -80,10 +80,10 @@ public class StageSaveData
         currentFormationType = CurrentFormationType.FormationA;
         currentPhaseState = CurrentPhaseState.None;
         manaStone = 0;
-        while (artifacts.Count < 18) // 아티팩트 목록 크기를 18로 고정
+        while (artifacts.Count < 12) // 아티팩트 목록 크기를 12로 고정
             artifacts.Add(null);
-        while (artifacts.Count > 18)
-            artifacts.RemoveAt(artifacts.Count - 1); // 아티팩트 목록 크기를 18로 고정
+        while (artifacts.Count > 12)
+            artifacts.RemoveAt(artifacts.Count - 1); // 아티팩트 목록 크기를 12로 고정
         while (stagmas.Count < 3) // 스태그마 목록 크기를 3으로 고정
             stagmas.Add(null);
         while (stagmas.Count > 3)
@@ -96,7 +96,7 @@ public class StageSaveData
             battleCharacters.Add(null);
         while (battleCharacters.Count > 5)
             battleCharacters.RemoveAt(battleCharacters.Count - 1); // 전투 캐릭터 목록 크기를 5로 고정
-        for (int i = 0; i < 18; i++)
+        for (int i = 0; i < 12; i++)
             artifacts[i] = null;
         for (int i = 0; i < 3; i++)
             stagmas[i] = null;
@@ -273,14 +273,14 @@ public class StageManager : MonoBehaviour
 
     public void AddArtifacts(ArtifactData artifactName)
     {
-        // 리스트 크기를 18로 고정
-        while (stageSaveData.artifacts.Count < 18)
+        // 리스트 크기를 12로 고정
+        while (stageSaveData.artifacts.Count < 12)
             stageSaveData.artifacts.Add(null);
-        while (stageSaveData.artifacts.Count > 18)
+        while (stageSaveData.artifacts.Count > 12)
             stageSaveData.artifacts.RemoveAt(stageSaveData.artifacts.Count - 1);
 
         // 이미 보유 중인지 체크
-        for (int i = 0; i < 18; i++)
+        for (int i = 0; i < 12; i++)
         {
             if (stageSaveData.artifacts[i] == artifactName)
             {
@@ -290,7 +290,7 @@ public class StageManager : MonoBehaviour
         }
 
         // 빈 슬롯(null) 찾아서 추가
-        for (int i = 0; i < 18; i++)
+        for (int i = 0; i < 12; i++)
         {
             if (stageSaveData.artifacts[i] == null)
             {
@@ -302,7 +302,7 @@ public class StageManager : MonoBehaviour
         }
 
         // 모두 차 있으면 안내
-        messagePopup.Open("최대 18개의 아티팩트를 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
+        messagePopup.Open("최대 12개의 아티팩트를 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
     }
 
     public void EquipArtifacts(ArtifactData artifactName)
