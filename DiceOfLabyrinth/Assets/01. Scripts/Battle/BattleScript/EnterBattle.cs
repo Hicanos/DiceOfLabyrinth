@@ -6,11 +6,12 @@
         if (UIManager.Instance.BattleUI.battleCanvas.worldCamera == null)
         {
             UIManager.Instance.BattleUI.battleCanvas.worldCamera = DiceManager.Instance.DiceCamera;
-        }
-        DiceManager.Instance.DiceSettingForBattle();
+        }        
         DiceManager.Instance.LoadDiceData();
 
         battleManager.BattleSpawner.SpawnCharacters();
         battleManager.BattleSpawner.SpawnEnemy();
+
+        DiceManager.Instance.DiceSettingForBattle();
     }
 }
