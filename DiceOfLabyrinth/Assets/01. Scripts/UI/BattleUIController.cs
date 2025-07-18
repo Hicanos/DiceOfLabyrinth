@@ -906,7 +906,7 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickVictoryNextButton() // 승리 패널에서 다음 버튼 클릭 시 호출되는 함수
     {
-        OpenSelectDungeonPanel();
+        StageManager.Instance.RoomClear(StageManager.Instance.stageSaveData.selectedEnemy); // 현재 스테이지 클리어 처리
     }
 
     public void OnClickDefeatNextButton() // 패배 패널에서 다음 버튼 클릭 시 호출되는 함수

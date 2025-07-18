@@ -385,7 +385,7 @@ public class StageManager : MonoBehaviour
 
         if (result.isVictory)
         {
-            RoomClear(stageSaveData.selectedEnemy); // 룸 클리어 로직 호출
+            battleUIController.OpenVictoryPanel(); // 승리 패널을 엽니다.
         }
         else
         {

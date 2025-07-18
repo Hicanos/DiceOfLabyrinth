@@ -182,6 +182,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""GamePlay_Interactions"",
+                    ""type"": ""Value"",
+                    ""id"": ""ec48b682-d8e1-4454-89b5-7d0d3594dbd7"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold,Tap"",
+                    ""initialStateCheck"": true
+                },
+                {
                     ""name"": ""InputButton"",
                     ""type"": ""Button"",
                     ""id"": ""76a67f69-6456-4c10-bd5b-1822b15f7190"",
@@ -618,6 +627,50 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""GamePlay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1608caf9-01ca-45a1-8f94-cc936b4dd7d9"",
+                    ""path"": ""<Touchscreen>/primaryTouch/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Touch"",
+                    ""action"": ""GamePlay_Interactions"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Mouse Left Click"",
+                    ""id"": ""e1693ae6-dca2-409c-8f76-1a6da3a32a82"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GamePlay_Interactions"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""0a64113a-1317-4e17-8b41-c9196482ff34"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""GamePlay_Interactions"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""420ebcaf-11b2-4271-9932-5bad81ff378e"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""GamePlay_Interactions"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -1259,6 +1312,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_GamePlay = m_Player.FindAction("GamePlay", throwIfNotFound: true);
+        m_Player_GamePlay_Interactions = m_Player.FindAction("GamePlay_Interactions", throwIfNotFound: true);
         m_Player_InputButton = m_Player.FindAction("InputButton", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
@@ -1363,6 +1417,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Next;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_GamePlay;
+    private readonly InputAction m_Player_GamePlay_Interactions;
     private readonly InputAction m_Player_InputButton;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
@@ -1415,6 +1470,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/GamePlay".
         /// </summary>
         public InputAction @GamePlay => m_Wrapper.m_Player_GamePlay;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/GamePlay_Interactions".
+        /// </summary>
+        public InputAction @GamePlay_Interactions => m_Wrapper.m_Player_GamePlay_Interactions;
         /// <summary>
         /// Provides access to the underlying input action "Player/InputButton".
         /// </summary>
@@ -1475,6 +1534,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @GamePlay.started += instance.OnGamePlay;
             @GamePlay.performed += instance.OnGamePlay;
             @GamePlay.canceled += instance.OnGamePlay;
+            @GamePlay_Interactions.started += instance.OnGamePlay_Interactions;
+            @GamePlay_Interactions.performed += instance.OnGamePlay_Interactions;
+            @GamePlay_Interactions.canceled += instance.OnGamePlay_Interactions;
             @InputButton.started += instance.OnInputButton;
             @InputButton.performed += instance.OnInputButton;
             @InputButton.canceled += instance.OnInputButton;
@@ -1519,6 +1581,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @GamePlay.started -= instance.OnGamePlay;
             @GamePlay.performed -= instance.OnGamePlay;
             @GamePlay.canceled -= instance.OnGamePlay;
+            @GamePlay_Interactions.started -= instance.OnGamePlay_Interactions;
+            @GamePlay_Interactions.performed -= instance.OnGamePlay_Interactions;
+            @GamePlay_Interactions.canceled -= instance.OnGamePlay_Interactions;
             @InputButton.started -= instance.OnInputButton;
             @InputButton.performed -= instance.OnInputButton;
             @InputButton.canceled -= instance.OnInputButton;
@@ -1892,6 +1957,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnGamePlay(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "GamePlay_Interactions" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnGamePlay_Interactions(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "InputButton" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
