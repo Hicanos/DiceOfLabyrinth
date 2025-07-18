@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class BattleManager : MonoBehaviour
 {
@@ -35,7 +34,7 @@ public class BattleManager : MonoBehaviour
     EnterBattle enterBattle = new EnterBattle();
     public BattleSpawner BattleSpawner;
     public BattleUIValueChanger UIValueChanger;
-    [SerializeField] BattleInput battleInput;
+    //[SerializeField] BattleInput battleInput;
 
     public BattleEnemy Enemy;
     public BattleCharGroup BattleGroup;
@@ -47,8 +46,6 @@ public class BattleManager : MonoBehaviour
     public GameObject CharacterHPPrefab;
     public GameObject EnemyHPPrefab;
     public BattleUIHP BattleUIHP;
-
-    public InputAction InputAction;
     
     public BattleStateMachine StateMachine;
     public PlayerTurnState CurrentPlayerState;
@@ -72,9 +69,7 @@ public class BattleManager : MonoBehaviour
         StateMachine = new BattleStateMachine(I_PlayerTurnState);
 
         UIManager.Instance.BattleUI.Setting();
-        DiceManager.Instance.DiceHolding.SettingForHolding();
-
-        battleInput.InputStart();
+        DiceManager.Instance.DiceHolding.SettingForHolding();               
     }
     
     void Update()
@@ -85,6 +80,7 @@ public class BattleManager : MonoBehaviour
     {
         GetStartData(data);
         BattleStartValueSetting();
+        InputManager.Instance.BattleInputStart();
         enterBattle.BattleStart();
     }
 
@@ -151,7 +147,7 @@ public class BattleManager : MonoBehaviour
     {
         BattleGroup = null;
         isBattle = false;
-        battleInput.InputEnd();
+        InputManager.Instance.BattleInputEnd();
     }
 }
 

@@ -103,16 +103,6 @@ public class BattleEnemyAttack : MonoBehaviour
         List<int> BackIndex = BattleManager.Instance.BattleGroup.BackLine.ToList();
         List<int> targetIndex = new List<int>();
 
-        for(int i = 0; i < frontBack; i++)
-        {
-            frontIndex.Add(i);
-        }
-        for(int i = frontBack; i < characterCount; i++)
-        {
-            BackIndex.Add(i);
-        }
-
-
         for(int i = 0; i < targetCount; i++)
         {
             int randNum = GetRandomRange(1, 100);
@@ -137,7 +127,20 @@ public class BattleEnemyAttack : MonoBehaviour
 
     private List<int> GetTargetAll(int targetCount, int value = 0)
     {
-        return new List<int> { 0,1,2,3,4};
+        List<int> targetIndex = new List<int>();
+        List<int> frontIndex = BattleManager.Instance.BattleGroup.FrontLine;
+        List<int> BackIndex = BattleManager.Instance.BattleGroup.BackLine;
+
+        for (int i = 0; i < frontIndex.Count; i++)
+        {
+            targetIndex.Add(frontIndex[i]);
+        }
+        for(int i = 0; i < BackIndex.Count; i++)
+        {
+            targetIndex.Add(BackIndex[i]);
+        }
+
+        return targetIndex;
     }
 
     private List<int> GetTargetLowHp(int targetCount, int value = 0)

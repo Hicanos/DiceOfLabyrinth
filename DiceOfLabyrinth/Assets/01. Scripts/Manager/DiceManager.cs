@@ -48,7 +48,7 @@ public class DiceManager : MonoBehaviour
     public DiceBattle DiceBattle = new DiceBattle();
     DiceMy[] dicesDatas;
 
-    [SerializeField] RollMultipleDiceSynced rollDiceSynced;
+    public RollMultipleDiceSynced RollDiceSynced;
 
     //public GameObject Ground;
     public GameObject DiceBoard;
@@ -79,11 +79,13 @@ public class DiceManager : MonoBehaviour
     //public bool isSkipped = false;
     public bool IsRolling = false;
 
+    private Vector3[] rolldiceDefaultPosition;
+    public Vector3[] RolldiceDefaultPosition => rolldiceDefaultPosition;
+
     private Vector3[] dicePos; //굴린 후 정렬 위치
     public Vector3[] DicePos => dicePos;
 
     Vector3[] rotationVectors; //굴린 후 정렬시 적용할 회전값
-    Vector3[] defaultPos; //주사위 굴리는 기본 위치 화면 오른쪽
     public DiceRankingEnum DiceRank;
 
     void Start()
@@ -96,8 +98,6 @@ public class DiceManager : MonoBehaviour
         fakeDices = new GameObject[diceCount];
         dicesDatas = new DiceMy[diceCount];
         fixedDiceList = new List<int>();
-        
-        defaultPos = new Vector3[] { new Vector3(2.29f, 0, 2.07f), new Vector3(3.73f, 3.33f, 1.35f), new Vector3(4.57f, 0, 2.11f), new Vector3(6.05f, 2.96f, 1.35f), new Vector3(7.1f, -0.2f, 1.94f) };
     }
 
     public void DiceSettingForBattle()
@@ -120,6 +120,8 @@ public class DiceManager : MonoBehaviour
             fakeDices[i] = fakeDiceContainer.transform.GetChild(i).gameObject;
             fakeDices[i].SetActive(false);
         }
+        GoDefaultPositionDice();
+        GoDefaultPositionFakeDice();
     }
 
     public void RollDice()
@@ -130,8 +132,8 @@ public class DiceManager : MonoBehaviour
         StopCoroutine(DiceRollCoroutine);
 
         GetRandomDiceNum();
-        rollDiceSynced.SetDiceOutcome(diceResult);
-        rollDiceSynced.RollAll();
+        RollDiceSynced.SetDiceOutcome(diceResult);
+        RollDiceSynced.RollAll();
 
         StartCoroutine(DiceRollCoroutine);
     }
@@ -249,7 +251,7 @@ public class DiceManager : MonoBehaviour
 
         foreach (int index in fixedDiceList)
         {
-            rollDiceSynced.diceAndOutcomeArray[index].dice = dices[index].GetComponent<Dice>();
+            RollDiceSynced.diceAndOutcomeArray[index].dice = dices[index].GetComponent<Dice>();
         }
 
         fixedDiceList.Clear();
@@ -270,7 +272,7 @@ public class DiceManager : MonoBehaviour
     {
         for (int i = 0; i < dices.Length; i++)
         {
-            dices[i].transform.localPosition = defaultPos[i];
+            dices[i].transform.localPosition = rolldiceDefaultPosition[i];
         }
     }
 
@@ -335,6 +337,7 @@ public class DiceManager : MonoBehaviour
         dicePos = loadScript.GetPoses().ToArray();
         DiceBattle.damageWightTable = loadScript.GetWeighting().ToArray();
         rotationVectors = loadScript.GetVectorCodes().ToArray();
+        rolldiceDefaultPosition = loadScript.GetDiceDefaultPosition();
     }
 
     public void StopSimulation()

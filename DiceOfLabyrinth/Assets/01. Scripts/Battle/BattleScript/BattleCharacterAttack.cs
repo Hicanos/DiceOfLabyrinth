@@ -47,6 +47,8 @@ public class BattleCharacterAttack : MonoBehaviour
 
         for (int i = 0; i < battleCharacters.Count; i++)
         {
+            if (battleCharacters[i].IsDied) continue;
+
             int characterAtk = battleCharacters[i].CurrentATK;
             int damage = (characterAtk - monsterDef) * (int)diceWeighting;
             damage = Mathf.Clamp(damage, 0, damage);
@@ -63,7 +65,9 @@ public class BattleCharacterAttack : MonoBehaviour
             }
             enumeratorDamage = DealDamage(battleManager.Enemy, damage);
             StartCoroutine(enumeratorDamage);
-            battleManager.Enemy.iEnemy.TakeDamage();            
+            battleManager.Enemy.iEnemy.TakeDamage();
+            string logString = $"{battleCharacters[i].CharNameKr}이/가 {battleManager.Enemy.Data.EnemyName}에게 데미지 {damage}!";
+            UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(logString);
 
             pastTime = 0;
             while (pastTime < destTime)
