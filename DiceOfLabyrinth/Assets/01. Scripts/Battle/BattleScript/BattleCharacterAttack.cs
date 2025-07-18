@@ -47,6 +47,8 @@ public class BattleCharacterAttack : MonoBehaviour
 
         for (int i = 0; i < battleCharacters.Count; i++)
         {
+            if (battleCharacters[i].IsDied) continue;
+
             int characterAtk = battleCharacters[i].CurrentATK;
             int damage = (characterAtk - monsterDef) * (int)diceWeighting;
             damage = Mathf.Clamp(damage, 0, damage);
