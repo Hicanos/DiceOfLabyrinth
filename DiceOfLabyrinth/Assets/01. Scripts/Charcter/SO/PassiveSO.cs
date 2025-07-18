@@ -15,11 +15,10 @@ public class PassiveSO : SkillSO
     // 패시브 스킬은 조건만 만족하면 자동으로 발동되며 버프도 반드시 적용됨
 
    
-    public int SignaturNumber; // 시그니처 넘버 = 캐릭터SO의 SignatureNumber와 동일
+    // 시그니처 넘버 = 캐릭터SO의 SignatureNumber와 동일
 
     public string[] BuffIDs; // 버프 아이디 배열
     public BuffAmount[] BuffAmounts; // 버프 양 배열
-    public int BuffProbability; // 버프 적용 확률
     public int BuffTurn; // 버프 지속 턴
     public float SkillValue; // 스킬 효과 수치
     public float PlusValue; // 추가 효과 수치

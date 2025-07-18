@@ -107,6 +107,16 @@ public class CharData
     public string DiceID;
 
     /// <summary>
+    /// ActiveSkil_lID
+    /// </summary>
+    public string ActiveSkill;
+
+    /// <summary>
+    /// PassiveSkill_ID
+    /// </summary>
+    public string PassiveSkill;
+
+    /// <summary>
     /// BattlePrefabPath
     /// </summary>
     public string BattlePrefabPath;
