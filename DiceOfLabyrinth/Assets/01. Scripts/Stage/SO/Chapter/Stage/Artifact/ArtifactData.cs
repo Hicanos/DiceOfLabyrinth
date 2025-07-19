@@ -13,6 +13,7 @@ public class ArtifactData : ScriptableObject
         Legendary
     }
     [SerializeField]private string artifactName;
+    [SerializeField] private string flavorText;
     [SerializeField]private string description;
     [SerializeField]private Sprite icon;
     [SerializeField]private ArtifactType artifactType;
@@ -24,6 +25,7 @@ public class ArtifactData : ScriptableObject
     [SerializeField] private List<SetEffectData> setEffectData = new List<SetEffectData>();
 
     public string ArtifactName => artifactName;
+    public string FlavorText => flavorText;
     public string Description => description;
     public Sprite Icon => icon;
     public ArtifactType Type => artifactType;
