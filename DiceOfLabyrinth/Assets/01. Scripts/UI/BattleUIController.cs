@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
+using UnityEngine.UI;
 
 public class BattleUIController : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class BattleUIController : MonoBehaviour
 
     public ChapterData chapterData;
     public MessagePopup messagePopup; // 체크 패널, 스테이지가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
+    public InputActionReference pointerPositionAction; // Input System을 사용하기 위한 Input Action Asset
 
     [Header("Select Item Panel")]
     [SerializeField] private TMP_Text itemTitleText;
@@ -69,7 +71,6 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private Color platformSelectedColor; // 플랫폼 선택 시 색상
     private int selectedPlatformIndex = -1; // 선택된 플랫폼 인덱스
 #if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
-
     private void Update()
     {
         if (Keyboard.current == null) return; // Input System이 없으면 무시
@@ -151,34 +152,33 @@ public class BattleUIController : MonoBehaviour
     }
     public void OnClickPerformed(InputAction.CallbackContext context)
     {
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        Vector2 pointerPos = pointerPositionAction.action.ReadValue<Vector2>();
+        Ray ray = Camera.main.ScreenPointToRay(pointerPos);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             var relay = hit.transform.GetComponent<PlatformClickRelay>();
             if (relay != null)
-
             {
                 if (context.interaction is TapInteraction)
                 {
-                    // characterPlatforms 배열에 포함된 오브젝트인지도 추가로 확인 가능
                     for (int i = 0; i < characterPlatforms.Length; i++)
                     {
                         if (hit.transform.gameObject == characterPlatforms[i])
                         {
                             OnPlatformClicked(i);
+                            Debug.Log($"Platform {i} clicked.");
                             break;
                         }
                     }
                 }
-                else if (context.interaction is HoldInteraction)
-                {
-                    Debug.Log($"Platform {relay.platformIndex} is held.");
-                }
-                else
-                {
-                    Debug.LogWarning("Unknown interaction type detected.");
-                }
+                //else if (context.interaction is HoldInteraction)
+                //{
+                //    Debug.Log($"Platform {relay.platformIndex} is held.");
+                //}
+                //else
+                //{
+                //    Debug.LogWarning("Unknown interaction type detected.");
+                //}
             }
         }
     }
