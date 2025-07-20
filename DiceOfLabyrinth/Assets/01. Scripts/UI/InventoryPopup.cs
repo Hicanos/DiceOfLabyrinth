@@ -161,20 +161,20 @@ public class InventoryPopup : MonoBehaviour
         }
     }
 
-    public void OnClickStagmaSlot(int slotIndex)
+    public void OnClickEngravingSlot(int slotIndex)
     {
-        StagmaDescriptionRefresh(slotIndex);
+        EngravingDescriptionRefresh(slotIndex);
     }
-    private void StagmaDescriptionRefresh(int slotIndex)
+    private void EngravingDescriptionRefresh(int slotIndex)
     {
-        if (StageManager.Instance.stageSaveData.stagmas[slotIndex] != null)
+        if (StageManager.Instance.stageSaveData.engravings[slotIndex] != null)
         {
-            var stagmaInSlot = StageManager.Instance.stageSaveData.stagmas[slotIndex];
-            itemIcon.GetComponent<UnityEngine.UI.Image>().sprite = stagmaInSlot.Icon;
-            itemRarity.GetComponent<UnityEngine.UI.Image>().sprite = stagmaInSlot.BgSprite;
-            itemNameText.text = stagmaInSlot.StagmaName;
+            var EngravingInSlot = StageManager.Instance.stageSaveData.engravings[slotIndex];
+            itemIcon.GetComponent<UnityEngine.UI.Image>().sprite = EngravingInSlot.Icon;
+            itemRarity.GetComponent<UnityEngine.UI.Image>().sprite = EngravingInSlot.BgSprite;
+            itemNameText.text = EngravingInSlot.EngravingName;
             itemTypeText.text = "";
-            itemDescriptionText.text = stagmaInSlot.Description;
+            itemDescriptionText.text = EngravingInSlot.Description;
             itemFlavorText.text = "";
         }
         else

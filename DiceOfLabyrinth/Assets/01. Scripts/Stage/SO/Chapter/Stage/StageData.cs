@@ -27,7 +27,7 @@ public class StageInfo
     //[SerializeField] private List<ElitePhaseData> elitePhases;
     [SerializeField] private List<EnemyData> enemies;
     [SerializeField] private List<ChoiceOptions> choiceOptions;
-    [SerializeField] private List<StagmaData> stagmaList;
+    [SerializeField] private List<EngravingData> engravingList;
     [SerializeField] private List<ArtifactData> artifactList;
 
     // 읽기 전용 프로퍼티들
@@ -43,7 +43,7 @@ public class StageInfo
     public List<EnemyData> Enemies => enemies;
     public List<ChoiceOptions> ChoiceOptions => choiceOptions;
 
-    public List<StagmaData> StagmaList => stagmaList;
+    public List<EngravingData> EngravingList => engravingList;
     public List<ArtifactData> ArtifactList => artifactList;
 
 }

@@ -90,7 +90,7 @@ public class BattleManager : MonoBehaviour
 
         if (BattleGroup == null)
         {
-            BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.stagmas);
+            BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.engravings);
         }        
     }
 
@@ -157,11 +157,11 @@ public class BattleCharGroup
 
     private List<BattleCharacter>  battleCharacters;
     private List<ArtifactData>     artifacts;
-    private List<StagmaData>       stagmas;
+    private List<EngravingData>       stagmas;
 
     public List<BattleCharacter> BattleCharacters => battleCharacters;
     public List<ArtifactData>    Artifacts => artifacts;
-    public List<StagmaData>      Stagmas => stagmas;
+    public List<EngravingData>      Stagmas => stagmas;
 
     public int DeadCount;
     private bool isAllDead => DeadCount == numFive ? true : false;
@@ -177,7 +177,7 @@ public class BattleCharGroup
     public List<int> BackLine = new List<int>();
     private int frontLineNum;
 
-    public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<StagmaData> stagmas)
+    public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> stagmas)
     {
         battleCharacters = characters; this.artifacts = artifacts; this.stagmas = stagmas;
 
