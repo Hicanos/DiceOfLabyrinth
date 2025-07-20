@@ -251,7 +251,7 @@ public class StageManager : MonoBehaviour
         {
             if (stageSaveData.stagmas[i] == stagmaName)
             {
-                messagePopup.Open($"각인 {stagmaName.stagmaName}은(는) 이미 목록에 있습니다.");
+                messagePopup.Open($"각인 {stagmaName.StagmaName}은(는) 이미 목록에 있습니다.");
                 return;
             }
         }
@@ -262,7 +262,7 @@ public class StageManager : MonoBehaviour
             if (stageSaveData.stagmas[i] == null)
             {
                 stageSaveData.stagmas[i] = stagmaName;
-                messagePopup.Open($"각인 {stagmaName.stagmaName}이(가) 추가되었습니다.");
+                messagePopup.Open($"각인 {stagmaName.StagmaName}이(가) 추가되었습니다.");
                 return;
             }
         }

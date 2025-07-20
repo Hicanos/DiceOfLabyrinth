@@ -580,7 +580,7 @@ public class BattleUIController : MonoBehaviour
             picked.Add(candidate);
 
             var iconImage = itemChoiceIcon[i].GetComponent<Image>();
-            iconImage.sprite = candidate.icon;
+            iconImage.sprite = candidate.Icon;
         }
 
         selectDungeonPanel.SetActive(false);
@@ -722,7 +722,7 @@ public class BattleUIController : MonoBehaviour
             case StageSaveData.CurrentPhaseState.EliteStagmaReward:
                 selectedStagma = stagmaChoices[selectIndex];
                 itemTitleText.text = selectedStagma.name; // 선택된 스태그마 이름 설정
-                itemDescriptionText.text = selectedStagma.description; // 선택된 스태그마 설명 설정
+                itemDescriptionText.text = selectedStagma.Description; // 선택된 스태그마 설명 설정
                 break;
             case StageSaveData.CurrentPhaseState.NormalReward:
             case StageSaveData.CurrentPhaseState.EliteArtifactReward:

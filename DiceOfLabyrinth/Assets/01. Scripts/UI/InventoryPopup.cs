@@ -16,11 +16,13 @@ public class InventoryPopup : MonoBehaviour
     [SerializeField] private GameObject[] equipedArtifactRarity = new GameObject[4];
     [SerializeField] private GameObject[] equipedArtifactRockIcon = new GameObject[4];
 
-    [Header("ArtifactDescriptions")]
-    [SerializeField] private TMP_Text artifactNameText;
-    [SerializeField] private TMP_Text artifactSetEffectText;
-    [SerializeField] private TMP_Text artifactDescriptionText;
-    [SerializeField] private TMP_Text artifactFlavorText;
+    [Header("ItemDescriptions")]
+    [SerializeField] private GameObject itemIcon;
+    [SerializeField] private GameObject itemRarity;
+    [SerializeField] private TMP_Text itemNameText;
+    [SerializeField] private TMP_Text itemTypeText;
+    [SerializeField] private TMP_Text itemDescriptionText;
+    [SerializeField] private TMP_Text itemFlavorText;
 
     private void Awake()
     {
@@ -41,6 +43,11 @@ public class InventoryPopup : MonoBehaviour
         setEffectDescriptionPopup.SetActive(false);
         Refresh();
         OnClickArtifactSlot(0); // 0번 슬롯으로 초기화
+    }
+    public void OnClickCloseButton()
+    {
+        inventoryPopup.SetActive(false);
+        setEffectDescriptionPopup.SetActive(false);
     }
 
     private void Refresh()
@@ -91,22 +98,91 @@ public class InventoryPopup : MonoBehaviour
 
     public void OnClickArtifactSlot(int slotIndex)
     {
-        DescriptionRefresh(slotIndex);
+        ArtifactDescriptionRefresh(slotIndex);
     }
 
-    private void DescriptionRefresh(int slotIndex)
+    private void ArtifactDescriptionRefresh(int slotIndex)
     {
         if (StageManager.Instance.stageSaveData.artifacts[slotIndex] != null)
         {
             var artifactInSlot = StageManager.Instance.stageSaveData.artifacts[slotIndex];
             string setEffectText = "";
-            for(int i = 0; i < artifactInSlot.SetEffectData.Count; i++)
+            for (int i = 0; i < artifactInSlot.SetEffectData.Count; i++)
             {
                 setEffectText += $"#{artifactInSlot.SetEffectData[i].EffectName} ";
             }
-            artifactNameText.text = artifactInSlot.ArtifactName;
-            artifactDescriptionText.text = artifactInSlot.Description;
-            artifactFlavorText.text = artifactInSlot.FlavorText;
+            itemIcon.GetComponent<UnityEngine.UI.Image>().sprite = artifactInSlot.Icon;
+            itemRarity.GetComponent<UnityEngine.UI.Image>().sprite = artifactInSlot.RaritySprite;
+            itemIcon.SetActive(true);
+            itemNameText.text = artifactInSlot.ArtifactName;
+            itemTypeText.text = setEffectText;
+            itemDescriptionText.text = artifactInSlot.Description;
+            itemFlavorText.text = artifactInSlot.FlavorText;
+        }
+        else
+        {
+            itemIcon.SetActive(false);
+            itemNameText.text = "";
+            itemTypeText.text = "";
+            itemDescriptionText.text = "";
+            itemFlavorText.text = "";
+        }
+    }
+
+    public void OnClickEquipedArtifactSlot(int slotIndex)
+    {
+        EquipedArtifactDescriptionRefresh(slotIndex);
+    }
+    private void EquipedArtifactDescriptionRefresh(int slotIndex)
+    {
+        if (StageManager.Instance.stageSaveData.equipedArtifacts[slotIndex] != null)
+        {
+            var artifactInSlot = StageManager.Instance.stageSaveData.equipedArtifacts[slotIndex];
+            string setEffectText = "";
+            for (int i = 0; i < artifactInSlot.SetEffectData.Count; i++)
+            {
+                setEffectText += $"#{artifactInSlot.SetEffectData[i].EffectName} ";
+            }
+            itemIcon.GetComponent<UnityEngine.UI.Image>().sprite = artifactInSlot.Icon;
+            itemRarity.GetComponent<UnityEngine.UI.Image>().sprite = artifactInSlot.RaritySprite;
+            itemIcon.SetActive(true);
+            itemNameText.text = artifactInSlot.ArtifactName;
+            itemTypeText.text = setEffectText;
+            itemDescriptionText.text = artifactInSlot.Description;
+            itemFlavorText.text = artifactInSlot.FlavorText;
+        }
+        else
+        {
+            itemIcon.SetActive(false);
+            itemNameText.text = "";
+            itemTypeText.text = "";
+            itemDescriptionText.text = "";
+            itemFlavorText.text = "";
+        }
+    }
+
+    public void OnClickStagmaSlot(int slotIndex)
+    {
+        StagmaDescriptionRefresh(slotIndex);
+    }
+    private void StagmaDescriptionRefresh(int slotIndex)
+    {
+        if (StageManager.Instance.stageSaveData.stagmas[slotIndex] != null)
+        {
+            var stagmaInSlot = StageManager.Instance.stageSaveData.stagmas[slotIndex];
+            itemIcon.GetComponent<UnityEngine.UI.Image>().sprite = stagmaInSlot.Icon;
+            itemRarity.GetComponent<UnityEngine.UI.Image>().sprite = stagmaInSlot.BgSprite;
+            itemNameText.text = stagmaInSlot.StagmaName;
+            itemTypeText.text = "";
+            itemDescriptionText.text = stagmaInSlot.Description;
+            itemFlavorText.text = "";
+        }
+        else
+        {
+            itemNameText.text = "";
+            itemTypeText.text = "";
+            itemDescriptionText.text = "";
+            itemFlavorText.text = "";
         }
     }
 }
