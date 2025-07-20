@@ -172,6 +172,7 @@ public class InventoryPopup : MonoBehaviour
             var EngravingInSlot = StageManager.Instance.stageSaveData.engravings[slotIndex];
             itemIcon.GetComponent<UnityEngine.UI.Image>().sprite = EngravingInSlot.Icon;
             itemRarity.GetComponent<UnityEngine.UI.Image>().sprite = EngravingInSlot.BgSprite;
+            itemIcon.SetActive(true);
             itemNameText.text = EngravingInSlot.EngravingName;
             itemTypeText.text = "";
             itemDescriptionText.text = EngravingInSlot.Description;
@@ -179,6 +180,7 @@ public class InventoryPopup : MonoBehaviour
         }
         else
         {
+            itemIcon.SetActive(false);
             itemNameText.text = "";
             itemTypeText.text = "";
             itemDescriptionText.text = "";
