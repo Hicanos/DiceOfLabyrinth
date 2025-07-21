@@ -55,6 +55,7 @@ public class BattleButtonConfirm : AbstractBattleButton
         diceManager.HideFakeDice();
         diceManager.DiceHolding.isCantFix = false;
 
+        //BattleManager.Instance.BattlePlayerTurnState.AbstractButtonPushed();
         BattleManager.Instance.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Confirm);
 
         float diceWeighting = DiceManager.Instance.DiceBattle.GetDamageWeighting(); //족보별 계수

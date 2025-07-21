@@ -116,7 +116,6 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
             data = new BattleResultData(false, BattleGroup.BattleCharacters);
             //StageManager.Instance.battleUIController.OpenDefeatPanel();
             StageManager.Instance.OnBattleResult(data);
