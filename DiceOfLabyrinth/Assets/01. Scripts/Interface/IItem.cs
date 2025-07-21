@@ -4,5 +4,5 @@
 
 public interface IItem
 {
-    void UseItem(); // 아이템 사용 메서드
+    void UseItem(LobbyCharacter targetCharacter, int amount); // 대상 캐릭터와 사용량을 받는 메서드
 }

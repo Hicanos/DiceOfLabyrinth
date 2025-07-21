@@ -1,16 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class AscensionStone : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // 돌파석: 캐릭터를 중복 획득 했을 때 해당 아이템을 획득함
+    // 돌파석을 사용하면 캐릭터의 돌파레벨을 상승시키고, 능력치를 일정 비율 상승시킴
+    // 현재는 급하게 구현할 필요 없음
 }
