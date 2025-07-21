@@ -90,7 +90,7 @@ public class BattleManager : MonoBehaviour
 
         if (BattleGroup == null)
         {
-            BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.stagmas);
+            BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.stagmas); //data.engraving
         }        
     }
 
@@ -156,11 +156,11 @@ public class BattleCharGroup
 
     private List<BattleCharacter>  battleCharacters;
     private List<ArtifactData>     artifacts;
-    private List<StagmaData>       stagmas;
+    private List<StagmaData>       engraving;
 
     public List<BattleCharacter> BattleCharacters => battleCharacters;
     public List<ArtifactData>    Artifacts => artifacts;
-    public List<StagmaData>      Stagmas => stagmas;
+    public List<StagmaData>      Engraving => engraving;
 
     public int DeadCount;
     private bool isAllDead => DeadCount == numFive ? true : false;
@@ -176,9 +176,9 @@ public class BattleCharGroup
     public List<int> BackLine = new List<int>();
     private int frontLineNum;
 
-    public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<StagmaData> stagmas)
+    public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<StagmaData> engraving)
     {
-        battleCharacters = characters; this.artifacts = artifacts; this.stagmas = stagmas;
+        battleCharacters = characters; this.artifacts = artifacts; this.engraving = engraving;
 
         CurrentFormationType = StageManager.Instance.stageSaveData.currentFormationType;
         frontLineNum = (int)CurrentFormationType;
