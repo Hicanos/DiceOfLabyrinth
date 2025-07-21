@@ -11,7 +11,7 @@ public class BattleButtonSkill : AbstractBattleButton
     {
         GetIndex();
         button = GetComponent<Button>();
-        character = BattleManager.Instance.BattleGroup.BattleCharacters[index];
+        character = BattleManager.Instance.BattleGroup.BattleCharacters[index-1];
     }
 
     public override void OnOffButton(PlayerTurnState state)
