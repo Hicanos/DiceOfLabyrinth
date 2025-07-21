@@ -16,12 +16,23 @@ public class BattleUILog : MonoBehaviour
         Vector2 size = content.sizeDelta;
         size.y += padding * 2;
         content.sizeDelta = size;
-
-        //StartCoroutine(MakeLogCoroutine());
     }
 
-    public void MakeBattleLog(string logString)
+    public void MakeBattleLog(bool isCharacterTurn)
     {
+        if(isCharacterTurn)
+        {
+            StartCoroutine(MakeLogCoroutine("플레이어 턴"));
+        }
+        else
+        {
+            StartCoroutine(MakeLogCoroutine("에너미 턴"));
+        }
+    }
+
+    public void MakeBattleLog(string logSubject, string logObject, int damage, bool isCharacterAttack)
+    {
+        string logString = MakeLogString(logSubject, logObject, damage, isCharacterAttack);
         StartCoroutine(MakeLogCoroutine(logString));
     }
 
@@ -36,9 +47,10 @@ public class BattleUILog : MonoBehaviour
         ContentSizeFitter contentSizeFitter;
 
         go = Instantiate(UIManager.Instance.BattleUI.BattleLogPrefab, content);
-        logText = go.GetComponentInChildren<TextMeshProUGUI>();
         rectTransform = go.GetComponent<RectTransform>();
         contentSizeFitter = go.GetComponent<ContentSizeFitter>();
+        logText = go.GetComponentInChildren<TextMeshProUGUI>();
+        logText.richText = true;
 
         yield return new WaitForEndOfFrame();
 
@@ -48,6 +60,7 @@ public class BattleUILog : MonoBehaviour
         logText.rectTransform.sizeDelta = textSize;
 
         logText.text = logString;
+        yield return new WaitForEndOfFrame();
         contentHeight = rectTransform.sizeDelta.y;
 
         contentSize = content.sizeDelta;
@@ -55,6 +68,22 @@ public class BattleUILog : MonoBehaviour
         content.sizeDelta = contentSize;
 
         scrollbar.value = 0;
+    }
+
+    private string MakeLogString(string logSubject, string logObject, int damage, bool isCharacterAttack)
+    {
+        string logString;
+
+        if (isCharacterAttack)
+        {
+            logString = $"<color=green>{logSubject}</color> : <color=red>{logObject}</color>에게 데미지 <color=yellow>{damage}</color>";
+        }
+        else
+        {
+            logString = $"<color=red>{logSubject}</color> : <color=green>{logObject}</color>에게 데미지 <color=yellow>{damage}</color>";
+        }
+        
+        return logString;
     }
 
     public void ResetLog()

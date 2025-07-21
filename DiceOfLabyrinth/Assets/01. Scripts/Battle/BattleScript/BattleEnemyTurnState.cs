@@ -2,6 +2,7 @@
 {
     public void Enter()
     {
+        UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(false);
         Attack();        
     }
 
