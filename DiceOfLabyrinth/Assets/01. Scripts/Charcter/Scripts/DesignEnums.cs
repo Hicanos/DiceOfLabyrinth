@@ -1,6 +1,4 @@
-using System;
-
-public static class DesignEnums
+﻿public static class DesignEnums
 {
     public enum ClassTypes
     {

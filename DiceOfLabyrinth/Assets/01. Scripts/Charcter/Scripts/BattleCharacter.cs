@@ -24,6 +24,7 @@ public class BattleCharacter : IDamagable
     public int RegularHP { get; private set; }
     public float CritChance { get; private set; }
     public float CritDamage { get; private set; }
+    public float Penetration { get; private set; } // 관통력
 
     [Header("배틀 상태")]
     // 전투 중 실시간 변동 데이터
@@ -34,6 +35,7 @@ public class BattleCharacter : IDamagable
     public int CurrentDEF;
     public float CurrentCritChance;
     public float CurrentCritDamage;
+    public float CurrentPenetration;
 
     [Header("처음 저장되는 기본 값")]
     private int initialHP;
@@ -41,6 +43,7 @@ public class BattleCharacter : IDamagable
     private int initialDEF;
     private float initialCritChance;
     private float initialCritDamage;
+    private float initialPenetration;
     private int initialLevel;
 
     public bool IsDied { get; private set; }
@@ -105,6 +108,7 @@ public class BattleCharacter : IDamagable
         CritChance = lobbyChar.CritChance;
         CritDamage = lobbyChar.CritDamage;
         CharacterData = lobbyChar.CharacterData;
+        Penetration = CharacterData.penetration; // 관통력은 배틀에서만 성장하므로 CharacterSO에서 가져옴
 
         // 초기값 저장
         initialATK = RegularATK;
@@ -131,6 +135,7 @@ public class BattleCharacter : IDamagable
         CurrentDEF = initialDEF;
         CurrentCritChance = initialCritChance;
         CurrentCritDamage = initialCritDamage;
+        CurrentPenetration = initialPenetration;
     }
 
     public void ApplyATK(int amount) => CurrentATK += amount;
