@@ -152,6 +152,8 @@ public class BattleUIController : MonoBehaviour
     }
     public void OnClickPerformed(InputAction.CallbackContext context)
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
         Vector2 pointerPos = pointerPositionAction.action.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(pointerPos);
         if (Physics.Raycast(ray, out RaycastHit hit))

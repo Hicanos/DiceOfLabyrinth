@@ -10,25 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e6ba8ae37c2edc840847011c17d97c4e, type: 3}
-  m_Name: Amnesia
+  m_Name: Euphoria
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: ff1856276b44d44a89198135189abbde, type: 3}
-  effectName: "\uB9DD\uAC01"
+  icon: {fileID: 21300000, guid: e7ca3bca77bb5434eae67584d8f7e8c4, type: 3}
+  effectName: "\uD658\uD76C"
   description: 
   setEffectCounts:
+  - setEffectType: 3
+    setEffectCountData:
+    - count: 1
+      effectValue: 0.01
+    - count: 2
+      effectValue: 0.02
+    - count: 3
+      effectValue: 0.03
+    - count: 4
+      effectValue: 0.04
   - setEffectType: 4
     setEffectCountData:
     - count: 1
-      effectValue: -1
+      effectValue: 1
     - count: 2
-      effectValue: -2
+      effectValue: 2
     - count: 3
-      effectValue: -3
-  - setEffectType: 9
-    setEffectCountData:
-    - count: 1
-      effectValue: 0.06
-    - count: 2
-      effectValue: 0.12
-    - count: 3
-      effectValue: 0.18
+      effectValue: 3
+    - count: 4
+      effectValue: 4

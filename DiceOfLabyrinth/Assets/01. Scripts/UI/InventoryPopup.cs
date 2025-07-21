@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class InventoryPopup : MonoBehaviour
@@ -16,6 +17,11 @@ public class InventoryPopup : MonoBehaviour
     [SerializeField] private GameObject[] equipedArtifactRarity = new GameObject[4];
     [SerializeField] private GameObject[] equipedArtifactRockIcon = new GameObject[4];
 
+
+    [Header("EngravingSlots")]
+    [SerializeField] private GameObject[] engravingIcon = new GameObject[3];
+    [SerializeField] private GameObject[] engravingBg = new GameObject[3];
+
     [Header("ItemDescriptions")]
     [SerializeField] private GameObject itemIcon;
     [SerializeField] private GameObject itemRarity;
@@ -23,6 +29,11 @@ public class InventoryPopup : MonoBehaviour
     [SerializeField] private TMP_Text itemTypeText;
     [SerializeField] private TMP_Text itemDescriptionText;
     [SerializeField] private TMP_Text itemFlavorText;
+
+    [Header("SetEffectViewer")]
+    [SerializeField] private GameObject createPositionObject;
+    [SerializeField] private GameObject viewerPrefab;
+
 
     private void Awake()
     {
@@ -54,6 +65,8 @@ public class InventoryPopup : MonoBehaviour
     {
         ArtifactSlotRefresh();
         EquipedArtifactSlotRefresh();
+        EngravingSlotRefresh();
+        SetEffectViewerRefresh();
     }
     private void ArtifactSlotRefresh()// 아티팩트 슬롯 리프레시
     {
@@ -92,6 +105,25 @@ public class InventoryPopup : MonoBehaviour
                 equipedArtifactIcon[i].SetActive(false);
                 equipedArtifactRarity[i].SetActive(false);
                 equipedArtifactRockIcon[i].SetActive(true);
+            }
+        }
+    }
+    private void EngravingSlotRefresh()// 각인 슬롯 리프레시
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (StageManager.Instance.stageSaveData.engravings[i] != null)
+            {
+                EngravingData engraving = StageManager.Instance.stageSaveData.engravings[i];
+                engravingIcon[i].SetActive(true);
+                engravingIcon[i].GetComponent<UnityEngine.UI.Image>().sprite = engraving.Icon;
+                engravingBg[i].SetActive(true);
+                engravingBg[i].GetComponent<UnityEngine.UI.Image>().sprite = engraving.BgSprite;
+            }
+            else
+            {
+                engravingIcon[i].SetActive(false);
+                engravingBg[i].SetActive(false);
             }
         }
     }
@@ -185,6 +217,47 @@ public class InventoryPopup : MonoBehaviour
             itemTypeText.text = "";
             itemDescriptionText.text = "";
             itemFlavorText.text = "";
+        }
+    }
+    private void SetEffectViewerRefresh()
+    {
+        
+        foreach (Transform child in createPositionObject.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        // 세트 효과별로 카운트 집계
+        Dictionary<string, (SetEffectData data, int count,string countText)> effectDict = new();
+        foreach (var artifact in StageManager.Instance.stageSaveData.artifacts)
+        {
+            if (artifact == null) continue;
+            foreach (var effect in artifact.SetEffectData)
+            {
+                string countText = "";
+                foreach (var setEffectCount in effect.SetEffectCounts)
+                {
+                    countText += $"{setEffectCount.SetEffectCountData.Count}/";
+                }
+                if (effectDict.ContainsKey(effect.EffectName))
+                {
+                    effectDict[effect.EffectName] = (effect, effectDict[effect.EffectName].count + 1,countText);
+                }
+                else
+                {
+                    effectDict.Add(effect.EffectName, (effect, 1,countText));
+                }
+            }
+        }
+
+        // 세트 효과별로 UI 오브젝트 생성 및 데이터 할당
+        foreach (var kvp in effectDict) // kvp.Key는 세트 효과 이름, kvp.Value는 (SetEffectData, count) 튜플
+        {
+            GameObject viewerObj = Instantiate(viewerPrefab, createPositionObject.transform);
+            var viewer = viewerObj.GetComponent<SetEffectViewer>();
+            viewer.SetNameText(kvp.Key);
+            viewer.setEffectData = kvp.Value.data;
+            viewer.SetCurrentCountText(kvp.Value.count);
+            viewer.SetCountText(kvp.Value.countText);
         }
     }
 }
