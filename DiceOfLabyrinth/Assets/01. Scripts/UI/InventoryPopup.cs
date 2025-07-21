@@ -221,13 +221,13 @@ public class InventoryPopup : MonoBehaviour
     }
     private void SetEffectViewerRefresh()
     {
-        
+
         foreach (Transform child in createPositionObject.transform)
         {
             Destroy(child.gameObject);
         }
         // 세트 효과별로 카운트 집계
-        Dictionary<string, (SetEffectData data, int count,string countText)> effectDict = new();
+        Dictionary<string, (SetEffectData data, int count, string countText)> effectDict = new();
         foreach (var artifact in StageManager.Instance.stageSaveData.artifacts)
         {
             if (artifact == null) continue;
@@ -240,11 +240,11 @@ public class InventoryPopup : MonoBehaviour
                 }
                 if (effectDict.ContainsKey(effect.EffectName))
                 {
-                    effectDict[effect.EffectName] = (effect, effectDict[effect.EffectName].count + 1,countText);
+                    effectDict[effect.EffectName] = (effect, effectDict[effect.EffectName].count + 1, countText);
                 }
                 else
                 {
-                    effectDict.Add(effect.EffectName, (effect, 1,countText));
+                    effectDict.Add(effect.EffectName, (effect, 1, countText));
                 }
             }
         }
