@@ -14,6 +14,7 @@
             ChangePlayerTurnState(PlayerTurnState.BattleStart);
         }
 
+        UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(true);
         string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
         ChangePlayerTurnState(PlayerTurnState.Enter);
     }
@@ -31,7 +32,31 @@
     public void ChangePlayerTurnState(PlayerTurnState state)
     {
         battleManager.CurrentPlayerState = state;
+
         OnOffButton();
+    }
+
+    private void ChangePlayerTurnState()
+    {
+        switch (battleManager.CurrentPlayerState)
+        {
+            case PlayerTurnState.Enter:
+                battleManager.CurrentPlayerState = PlayerTurnState.Roll;
+                break;
+            case PlayerTurnState.Roll:
+                battleManager.CurrentPlayerState = PlayerTurnState.Confirm;
+                break;
+            case PlayerTurnState.Confirm:
+                battleManager.CurrentPlayerState = PlayerTurnState.EndTurn;
+                break;
+        }
+
+        OnOffButton();
+    }
+
+    public void AbstractButtonPushed()
+    {
+        ChangePlayerTurnState();
     }
 
     public void EndPlayerTurn()

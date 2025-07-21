@@ -49,7 +49,7 @@ public class InputManager : MonoBehaviour
     public void WriteInputVector(InputAction.CallbackContext context)
     {
         if (isInputActive == false) return;
-        Debug.Log("인풋");
+        //Debug.Log("인풋");
 
         WriteVec(context.ReadValue<Vector2>());
     }
@@ -64,7 +64,7 @@ public class InputManager : MonoBehaviour
         if (isInputActive == false) return;
         if (context.phase == InputActionPhase.Started)
         {
-            Debug.Log("start");
+            //Debug.Log("start");
 
             BattleManager.Instance.BattleSpawner.SkipCharacterSpwan();
             DiceManager.Instance.DiceHolding.SkipRolling(posVec);
@@ -72,7 +72,7 @@ public class InputManager : MonoBehaviour
 
         if (context.phase == InputActionPhase.Canceled)
         {
-            Debug.Log("Exit");
+            //Debug.Log("Exit");
 
             DiceManager.Instance.DiceHolding.SelectDice(posVec);
         }

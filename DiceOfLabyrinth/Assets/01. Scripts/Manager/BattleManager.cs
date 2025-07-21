@@ -116,7 +116,6 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.BattleEnd);
             data = new BattleResultData(false, BattleGroup.BattleCharacters);
             //StageManager.Instance.battleUIController.OpenDefeatPanel();
             StageManager.Instance.OnBattleResult(data);
@@ -179,7 +178,7 @@ public class BattleCharGroup
 
     public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> stagmas)
     {
-        battleCharacters = characters; this.artifacts = artifacts; this.stagmas = stagmas;
+        battleCharacters = characters; this.artifacts = artifacts; this.engraving = engraving;
 
         CurrentFormationType = StageManager.Instance.stageSaveData.currentFormationType;
         frontLineNum = (int)CurrentFormationType;

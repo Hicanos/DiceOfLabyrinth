@@ -164,6 +164,9 @@ public class BattleSpawner : MonoBehaviour
             DiceManager.Instance.RollDiceSynced.diceAndOutcomeArray[i].dice = dice.GetComponent<Dice>();
             fakeDice.SetActive(false);
             fakeDice.layer = fakeDiceLayer;
+
+            DiceManager.Instance.Dices[i] = dice;
+            DiceManager.Instance.FakeDices[i] = fakeDice;
         }        
     }
 

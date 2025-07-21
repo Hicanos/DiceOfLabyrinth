@@ -43,7 +43,9 @@ public class BattleButtonRollDice : AbstractBattleButton
             case PlayerTurnState.ConfirmEnd:
                 ChangeRollToEndTurn();
                 rollButton.interactable = true;
-                //버튼 외형 바꾸기
+                break;
+            case PlayerTurnState.EndTurn:
+                rollButton.interactable = false;
                 break;
             case PlayerTurnState.BattleEnd:
                 gameObject.SetActive(false);
@@ -60,12 +62,15 @@ public class BattleButtonRollDice : AbstractBattleButton
 
             BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.Reroll, DiceManager.Instance.RollRemain.ToString());
             DiceManager.Instance.DiceHolding.GetFixedList();
+
+            //BattleManager.Instance.BattlePlayerTurnState.AbstractButtonPushed();
             BattleManager.Instance.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.Roll);
         }
         else
         {
             rollButton.interactable = false;
 
+            //BattleManager.Instance.BattlePlayerTurnState.AbstractButtonPushed();
             BattleManager.Instance.BattlePlayerTurnState.EndPlayerTurn();
         }
     }

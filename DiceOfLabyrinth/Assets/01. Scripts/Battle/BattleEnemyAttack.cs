@@ -74,11 +74,12 @@ public class BattleEnemyAttack : MonoBehaviour
                 if (damage < 0) damage = 0;
 
                 battleCharacter.TakeDamage(damage);
+                UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(battleManager.Enemy.Data.EnemyName, battleCharacter.CharNameKr, damage, false);
                 if (battleCharacter.IsDied) battleManager.BattleGroup.CharacterDead(characterIndex);
                 battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)characterIndex);
 
-                Debug.Log($"skillValue({skillValue})*Atk({battleManager.Enemy.CurrentAtk})-Def({battleCharacter.CurrentDEF})");
-                Debug.Log($"캐릭터{characterIndex + 1}에게 {damage}데미지");
+                //Debug.Log($"skillValue({skillValue})*Atk({battleManager.Enemy.CurrentAtk})-Def({battleCharacter.CurrentDEF})");
+                //Debug.Log($"캐릭터{characterIndex + 1}에게 {damage}데미지");
 
                 if (skill.Debuff == EnemyDebuff.None) continue;
                 else
