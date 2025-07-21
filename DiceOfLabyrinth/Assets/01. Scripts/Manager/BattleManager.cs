@@ -156,11 +156,11 @@ public class BattleCharGroup
 
     private List<BattleCharacter>  battleCharacters;
     private List<ArtifactData>     artifacts;
-    private List<EngravingData>       stagmas;
+    private List<EngravingData>       engravings;
 
     public List<BattleCharacter> BattleCharacters => battleCharacters;
     public List<ArtifactData>    Artifacts => artifacts;
-    public List<EngravingData>      Stagmas => stagmas;
+    public List<EngravingData>      Engravings => engravings;
 
     public int DeadCount;
     private bool isAllDead => DeadCount == numFive ? true : false;
@@ -176,9 +176,9 @@ public class BattleCharGroup
     public List<int> BackLine = new List<int>();
     private int frontLineNum;
 
-    public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> stagmas)
+    public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> engravings)
     {
-        battleCharacters = characters; this.artifacts = artifacts; this.engraving = engraving;
+        battleCharacters = characters; this.artifacts = artifacts; this.engravings = engravings;
 
         CurrentFormationType = StageManager.Instance.stageSaveData.currentFormationType;
         frontLineNum = (int)CurrentFormationType;
