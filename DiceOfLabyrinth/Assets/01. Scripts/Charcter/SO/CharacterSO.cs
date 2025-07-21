@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 /// <summary>
 /// 테스트 캐릭터를 만들기 위한 Scriptable Object
 /// </summary>

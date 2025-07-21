@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
-using UnityEngine.TextCore.Text;
 
 /// <summary>
 /// JSON 파일을 읽어 CharacterSO를 자동으로 생성하는 에디터 윈도우
