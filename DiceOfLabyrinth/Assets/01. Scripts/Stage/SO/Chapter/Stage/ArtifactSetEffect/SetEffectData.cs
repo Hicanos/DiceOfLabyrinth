@@ -42,11 +42,11 @@ public struct SetEffectTypeData
         AdditionalElementDamage,// 추가 원소 피해
         DamageReduction,// 피해 감소
         FirstAttackDamage,// 첫 공격 피해
-        HealingPerTurn, // 턴당 회복
+        HealingWhenStartBattle, // 전투 시작 시 회복
         AdditionalMaxCost, // 추가 최대 비용
-        AdditionalCostGainPerTurn, // 턴당 추가 비용 획득
+        SignitureCostGain, // 턴당 추가 비용 획득
         AdditionalDamageToBoss, // 보스에게 추가 피해
-        AdditionalDamageAfterFewTurns, // 몇 턴 후 추가 피해
+        GainManaStone, // 마나 스톤 획득
         IgnoreDefense, // 방어력 무시
         CriticalChance, // 치명타 확률
         CriticalDamage, // 치명타 피해

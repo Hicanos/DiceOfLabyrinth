@@ -33,7 +33,8 @@ public class InventoryPopup : MonoBehaviour
     [Header("SetEffectViewer")]
     [SerializeField] private GameObject createPositionObject;
     [SerializeField] private GameObject viewerPrefab;
-
+    [Header("SetEffectDescriptionPopup")]
+    [SerializeField] private TMP_Text setEffectDescriptionText;
 
     private void Awake()
     {
@@ -226,18 +227,30 @@ public class InventoryPopup : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+        var allArtifacts = new List<ArtifactData>();// artifacts와 equipedArtifacts를 합쳐서 하나의 리스트로 만듦
+        allArtifacts.AddRange(StageManager.Instance.stageSaveData.artifacts);
+        allArtifacts.AddRange(StageManager.Instance.stageSaveData.equipedArtifacts);
         // 세트 효과별로 카운트 집계
         Dictionary<string, (SetEffectData data, int count, string countText)> effectDict = new();
-        foreach (var artifact in StageManager.Instance.stageSaveData.artifacts)
+        foreach (var artifact in allArtifacts)
         {
             if (artifact == null) continue;
             foreach (var effect in artifact.SetEffectData)
             {
                 string countText = "";
-                foreach (var setEffectCount in effect.SetEffectCounts)
+                List<int> counts = new List<int>();
+                foreach (var setEffectType in effect.SetEffectCounts)
                 {
-                    countText += $"{setEffectCount.SetEffectCountData.Count}/";
+                    foreach (var setEffectCountData in setEffectType.SetEffectCountData)
+                    {
+                        if (!counts.Contains(setEffectCountData.Count))
+                        {
+                            counts.Add(setEffectCountData.Count);
+                        }
+                    }
                 }
+                counts.Sort();
+                countText = string.Join("/", counts);
                 if (effectDict.ContainsKey(effect.EffectName))
                 {
                     effectDict[effect.EffectName] = (effect, effectDict[effect.EffectName].count + 1, countText);
@@ -247,17 +260,41 @@ public class InventoryPopup : MonoBehaviour
                     effectDict.Add(effect.EffectName, (effect, 1, countText));
                 }
             }
+
         }
 
         // 세트 효과별로 UI 오브젝트 생성 및 데이터 할당
-        foreach (var kvp in effectDict) // kvp.Key는 세트 효과 이름, kvp.Value는 (SetEffectData, count) 튜플
+        foreach (var kvp in effectDict) // kvp.Key는 세트 효과 이름, kvp.Value는 (SetEffectData, count, countText) 튜플
         {
             GameObject viewerObj = Instantiate(viewerPrefab, createPositionObject.transform);
             var viewer = viewerObj.GetComponent<SetEffectViewer>();
             viewer.SetNameText(kvp.Key);
             viewer.setEffectData = kvp.Value.data;
             viewer.SetCurrentCountText(kvp.Value.count);
-            viewer.SetCountText(kvp.Value.countText);
+            viewer.SetCountText(kvp.Value.countText, kvp.Value.count);
+            viewer.SetIcon();
+        }
+    }
+    public void OnClickSetEffectViewer()
+    {
+        inventoryPopup.SetActive(true);
+        setEffectDescriptionPopup.SetActive(true);
+        SetEffectViewer setEffectViewer = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<SetEffectViewer>();
+        //온 클릭한 이 버튼의 컴포넌트에서 SetEffectViewer를 찾아서
+        SetEffectDescriptionPopupRefresh(setEffectViewer);
+    }
+
+    private void SetEffectDescriptionPopupRefresh(SetEffectViewer setEffectViewer)
+    {
+        if (setEffectViewer != null && setEffectViewer.setEffectData != null)
+        {
+            setEffectDescriptionPopup.SetActive(true);
+            setEffectDescriptionText.text = setEffectViewer.setEffectData.Description;
+        }
+        else
+        {
+            setEffectDescriptionPopup.SetActive(false);
+            setEffectDescriptionText.text = "";
         }
     }
 }
