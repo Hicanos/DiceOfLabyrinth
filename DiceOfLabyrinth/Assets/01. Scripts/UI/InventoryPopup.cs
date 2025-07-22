@@ -7,6 +7,7 @@ public class InventoryPopup : MonoBehaviour
     [Header("InventoryPopup")]
     [SerializeField] private GameObject inventoryPopup;
     [SerializeField] private GameObject setEffectDescriptionPopup;
+    [SerializeField] private GameObject setEffectPopupBg;
 
     [Header("ArtifactSlots")]
     [SerializeField] private GameObject[] artifactIcon = new GameObject[12];
@@ -36,6 +37,8 @@ public class InventoryPopup : MonoBehaviour
 
     [Header("SetEffectDescriptionPopup")]
     public GameObject setEffectDescriptionPopupObject;
+    public TMP_Text setEffectNameText;
+    public GameObject setEffectIcon;
     public TMP_Text setEffectDescriptionText;
     public static InventoryPopup Instance { get; private set; }
 
@@ -57,6 +60,7 @@ public class InventoryPopup : MonoBehaviour
     {
         inventoryPopup.SetActive(true);
         setEffectDescriptionPopup.SetActive(false);
+        setEffectPopupBg.SetActive(false);
         Refresh();
         OnClickArtifactSlot(0); // 0번 슬롯으로 초기화
     }
@@ -64,6 +68,7 @@ public class InventoryPopup : MonoBehaviour
     {
         inventoryPopup.SetActive(false);
         setEffectDescriptionPopup.SetActive(false);
+        setEffectPopupBg.SetActive(false);
     }
 
     private void Refresh()
@@ -278,4 +283,10 @@ public class InventoryPopup : MonoBehaviour
             viewer.SetIcon();
         }
     }
+
+    public void OnClickCloseSetEffectDescriptionPopup()
+    {
+        setEffectDescriptionPopup.SetActive(false);
+        setEffectPopupBg.SetActive(false); 
+    }                                             
 }

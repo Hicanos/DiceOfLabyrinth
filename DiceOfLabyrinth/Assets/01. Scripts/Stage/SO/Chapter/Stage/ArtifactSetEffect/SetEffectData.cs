@@ -5,14 +5,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewSetEffectData", menuName = "SetEffect/SetEffectData")]
 public class SetEffectData : ScriptableObject
 {
-    [Header("SetEffectData")]
     [SerializeField] private Sprite icon;
     [SerializeField] private string effectName;
     [TextArea]
     [SerializeField] private string description;
     [SerializeField] private List<SetEffectTypeData> setEffectCounts;
-    [Header("SetEffectDescriptionPopup")]
-    [SerializeField] private TMP_Text setEffectDescriptionText;
 
     public Sprite Icon => icon;
     public string EffectName => effectName;
