@@ -227,7 +227,7 @@ public class DiceManager : MonoBehaviour
                 IsRolling = false;
 
 
-                BattleManager.Instance.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
+                BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(PlayerTurnState.RollEnd);
                 SortingFakeDice();
 
                 break;
@@ -352,7 +352,7 @@ public class DiceManager : MonoBehaviour
             dice.StopSimulation();
             StopCoroutine(SortingAfterRoll());
 
-            BattleManager.Instance.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
+            BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(PlayerTurnState.RollEnd);
         }
         BattleManager.Instance.GetCost(signitureAmount);
     }
