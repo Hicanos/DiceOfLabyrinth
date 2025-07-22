@@ -105,18 +105,28 @@ public class ItemManager
             ownedItems.Add(ItemID, 1);
         }
     }
+    /// <summary>
+    /// 아이템의 ID를 통해 해당 아이템SO를 반환하는 메서드
+    /// </summary>
+    /// <param name="itemID"></param>
 
-    public void GetItemSO(string itemID)
-    {
-        // 아이템의 ID를 통해 보유 아이템 중에서 아이템 SO를 가져오는 메서드
-
+    public ItemSO GetItemSO(string itemID)
+    {    
         if (!IsValidItemID(itemID))
         {
             // 유효하지 않은 아이템ID인 경우 예외 처리
-            return;
+            return null;
         }
         // 아이템ID가 유효한 경우, 해당 아이템SO를 반환
-
+        if (allItems.TryGetValue(itemID, out ItemSO itemSO))
+        {
+            return itemSO;
+        }
+        else
+        {
+            // 아이템SO가 존재하지 않는 경우 null 반환
+            return null;
+        }
     }
 
 
