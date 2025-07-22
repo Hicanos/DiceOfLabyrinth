@@ -102,9 +102,4 @@ public class SetEffectViewer : MonoBehaviour
             effectDescriptionText.text = "데이터가 없습니다.";
         }
     }
-    public void OnClickCloseSetEffectDescriptionPopup()
-    {
-        effectDescriptionPopup.SetActive(false);
-        effectDescriptionPopupBg.SetActive(false);
-    }
 }
