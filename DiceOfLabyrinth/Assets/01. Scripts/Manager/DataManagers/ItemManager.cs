@@ -89,10 +89,35 @@ public class ItemManager
     public void GetItem(string ItemID)
     {
         // 아이템SO의 ItemID가 유효한지 확인 (별도의 메서드 호출)
-
+        if (!IsValidItemID(ItemID))
+        {
+            // 유효하지 않은 아이템ID인 경우 예외 처리
+            return;
+        }
+        // 유효한 아이템이라면 보유 중인 아이템 항목에 추가.
+        // 이미 존재한다면 개수만 증가시키고, 존재하지 않는다면 새로 추가
+        if (ownedItems.ContainsKey(ItemID))
+        {
+            ownedItems[ItemID]++;
+        }
+        else
+        {
+            ownedItems.Add(ItemID, 1);
+        }
     }
 
+    public void GetItemSO(string itemID)
+    {
+        // 아이템의 ID를 통해 보유 아이템 중에서 아이템 SO를 가져오는 메서드
 
+        if (!IsValidItemID(itemID))
+        {
+            // 유효하지 않은 아이템ID인 경우 예외 처리
+            return;
+        }
+        // 아이템ID가 유효한 경우, 해당 아이템SO를 반환
+
+    }
 
 
     // 보유 중인 아이템 중, EXP 포션 리스트
