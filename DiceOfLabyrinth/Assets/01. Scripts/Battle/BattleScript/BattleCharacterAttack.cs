@@ -22,6 +22,10 @@ public class BattleCharacterAttack : MonoBehaviour
     {
         isCharacterAttacking = true;
         battleManager = BattleManager.Instance;
+        //for(int i=0; i < battleManager.BattleGroup.BattleEngravings.Length; i++)
+        //{
+        //    battleManager.BattleGroup.BattleEngravings[i].GetEngravingEffectInAttack();
+        //}        
         enumeratorAttack = CharacterAttackCoroutine(diceWeighting);
         StartCoroutine(enumeratorAttack);
     }
@@ -44,14 +48,15 @@ public class BattleCharacterAttack : MonoBehaviour
         GameObject[] characterPrefabs = battleManager.BattleGroup.CharacterPrefabs;
 
         int monsterDef = battleManager.Enemy.Data.Def;
+        int characterAtk;
+        int damage;
 
         for (int i = 0; i < battleCharacters.Count; i++)
         {
             if (battleCharacters[i].IsDied) continue;
 
-            int characterAtk = battleCharacters[i].CurrentATK;
-            int damage = (characterAtk - monsterDef) * (int)diceWeighting;
-            damage = Mathf.Clamp(damage, 0, damage);
+            characterAtk = battleCharacters[i].CurrentATK;
+            damage = CalculateDamage(characterAtk, monsterDef, diceWeighting);
 
             Vector3 firstPosition = characterPrefabs[i].transform.position;
 
@@ -63,6 +68,7 @@ public class BattleCharacterAttack : MonoBehaviour
                 pastTime += Time.deltaTime;
                 yield return null;
             }
+
             enumeratorDamage = DealDamage(battleManager.Enemy, damage);
             StartCoroutine(enumeratorDamage);
             battleManager.Enemy.iEnemy.TakeDamage();
@@ -101,4 +107,15 @@ public class BattleCharacterAttack : MonoBehaviour
             battleManager.EndBattle();
         }
     }
+
+    private int CalculateDamage(int characterAtk, int monsterDef, float diceWeighting)
+    {
+        //{공격력 - 방어력 * (1-방어력 관통률)} * (1 + 버프 + 아티팩트 + 속성 + 패시브) * (족보별 계수 * 각인 계수)
+        int damage = (characterAtk - monsterDef) * (int)diceWeighting;
+
+
+
+        damage = Mathf.Clamp(damage, 0, damage);
+        return damage;
+    }  
 }

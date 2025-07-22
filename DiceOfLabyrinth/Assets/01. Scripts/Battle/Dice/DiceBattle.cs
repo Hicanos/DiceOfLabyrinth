@@ -21,7 +21,7 @@ public class DiceBattle
     }
 
     public float GetDamageWeighting() //족보별계수
-    {
+    {        
         return damageWightTable[(int)DiceManager.Instance.DiceRank];
     }
 
