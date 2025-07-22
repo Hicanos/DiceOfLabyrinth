@@ -248,7 +248,7 @@ public class InventoryPopup : MonoBehaviour
             {
                 string countText = "";
                 List<int> counts = new List<int>();
-                foreach (var setEffectType in effect.SetEffectCounts)
+                foreach (var setEffectType in effect.SetEffects)
                 {
                     foreach (var setEffectCountData in setEffectType.SetEffectCountData)
                     {

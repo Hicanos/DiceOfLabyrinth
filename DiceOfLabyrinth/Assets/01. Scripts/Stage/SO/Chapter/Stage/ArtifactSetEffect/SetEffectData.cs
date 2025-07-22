@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 [CreateAssetMenu(fileName = "NewSetEffectData", menuName = "SetEffect/SetEffectData")]
 public class SetEffectData : ScriptableObject
@@ -9,29 +10,32 @@ public class SetEffectData : ScriptableObject
     [SerializeField] private string effectName;
     [TextArea]
     [SerializeField] private string description;
-    [SerializeField] private List<SetEffectTypeData> setEffectCounts;
+    [SerializeField] private List<SetEffectTypeData> setEffects;
 
     public Sprite Icon => icon;
     public string EffectName => effectName;
     public string Description => description;
-    public List<SetEffectTypeData> SetEffectCounts => setEffectCounts;
-    
+    public List<SetEffectTypeData> SetEffects => setEffects;
+
     public float GetEffectValue(SetEffectTypeData.SetEffectType effectType, int count)
     {
-        foreach (var setEffect in setEffectCounts)
+        float value = 0f;
+        foreach (var setEffect in setEffects)
         {
             if (setEffect.EffectType == effectType)
             {
+                int maxCount = 0;
                 foreach (var effectCount in setEffect.SetEffectCountData)
                 {
-                    if (effectCount.Count == count)
+                    if (effectCount.Count <= count && effectCount.Count >= maxCount)
                     {
-                        return effectCount.EffectValue;
+                        maxCount = effectCount.Count;
+                        value = effectCount.EffectValue;
                     }
                 }
             }
         }
-        return 0f; // 기본값
+        return value; // 가장 큰 count 이하의 effectValue 반환
     }
 }
 
