@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
-using UnityEngine.TextCore.Text;
 
 /// <summary>
 /// JSON 파일을 읽어 CharacterSO를 자동으로 생성하는 에디터 윈도우
@@ -102,6 +101,9 @@ public class CharacterSOGenerator : EditorWindow
             so.dialog1 = data.dialog1;
             so.dialog2 = data.dialog2;
             so.diceID = data.DiceID;
+            so.activeSkillID = data.ActiveSkill;
+            so.passiveSkillID = data.PassiveSkill; // 패시브 스킬 ID 할당
+
 
             if (!string.IsNullOrEmpty(data.BattlePrefabPath))
             {
@@ -175,6 +177,11 @@ public class CharacterSOGenerator : EditorWindow
                 entry.SetLabel("CharacterSO", true);
             }
 
+            // 스킬 ID를 통해 액티브 및 패시브 스킬 SO를 할당
+
+
+
+
             // 에셋 저장 및 데이터베이스 갱신
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -235,6 +242,8 @@ public class CharacterSOGenerator : EditorWindow
         public float ElementDMG;
         public DesignEnums.ElementTypes ElementType;
         public string DiceID;
+        public string ActiveSkill; // 액티브 스킬 ID
+        public string PassiveSkill; // 패시브 스킬 ID
         public string Description;
         public string dialog1;
         public string dialog2;

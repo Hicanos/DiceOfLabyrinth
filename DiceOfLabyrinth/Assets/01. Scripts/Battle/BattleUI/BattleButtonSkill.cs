@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class BattleButtonSkill : AbstractBattleButton
 {
+    BattleCharacter character;
     Button button;
     int index;
     public override void Setting()
     {
-        button = GetComponent<Button>();
         GetIndex();
+        button = GetComponent<Button>();
+        character = BattleManager.Instance.BattleGroup.BattleCharacters[index-1];
     }
 
     public override void OnOffButton(PlayerTurnState state)
@@ -38,7 +41,7 @@ public class BattleButtonSkill : AbstractBattleButton
 
     public override void OnPush()
     {
-        Debug.Log(index + " 캐릭터 스킬 사용");
+        Debug.Log(character.CharNameKr + " 스킬 사용");
     }
 
     private void GetIndex()

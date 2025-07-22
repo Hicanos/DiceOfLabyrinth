@@ -23,7 +23,7 @@ public class StageSaveData
         Battle,
         NormalReward,
         EliteArtifactReward,
-        EliteStagmaReward,
+        EliteEngravingReward,
         BossReward,
         Shop,
         EquipmedArtifact
@@ -39,8 +39,8 @@ public class StageSaveData
 
     [Header("Stage Resources")]
     public int manaStone; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
-    public List<ArtifactData> artifacts = new List<ArtifactData>(18);// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
-    public List<StagmaData> stagmas = new List<StagmaData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
+    public List<ArtifactData> artifacts = new List<ArtifactData>(12);// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
+    public List<EngravingData> engravings = new List<EngravingData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<ArtifactData> equipedArtifacts = new List<ArtifactData>(4); // 현재 장착된 아티팩트 목록
 
     [Header("Stage Characters")]
@@ -80,14 +80,14 @@ public class StageSaveData
         currentFormationType = CurrentFormationType.FormationA;
         currentPhaseState = CurrentPhaseState.None;
         manaStone = 0;
-        while (artifacts.Count < 18) // 아티팩트 목록 크기를 18로 고정
+        while (artifacts.Count < 12) // 아티팩트 목록 크기를 12로 고정
             artifacts.Add(null);
-        while (artifacts.Count > 18)
-            artifacts.RemoveAt(artifacts.Count - 1); // 아티팩트 목록 크기를 18로 고정
-        while (stagmas.Count < 3) // 스태그마 목록 크기를 3으로 고정
-            stagmas.Add(null);
-        while (stagmas.Count > 3)
-            stagmas.RemoveAt(stagmas.Count - 1); // 스태그마 목록 크기를 3으로 고정
+        while (artifacts.Count > 12)
+            artifacts.RemoveAt(artifacts.Count - 1); // 아티팩트 목록 크기를 12로 고정
+        while (engravings.Count < 3) // 스태그마 목록 크기를 3으로 고정
+            engravings.Add(null);
+        while (engravings.Count > 3)
+            engravings.RemoveAt(engravings.Count - 1); // 스태그마 목록 크기를 3으로 고정
         while (entryCharacters.Count < 5) // 엔트리 캐릭터 목록 크기를 5로 고정
             entryCharacters.Add(null);
         while (entryCharacters.Count > 5)
@@ -96,10 +96,10 @@ public class StageSaveData
             battleCharacters.Add(null);
         while (battleCharacters.Count > 5)
             battleCharacters.RemoveAt(battleCharacters.Count - 1); // 전투 캐릭터 목록 크기를 5로 고정
-        for (int i = 0; i < 18; i++)
+        for (int i = 0; i < 12; i++)
             artifacts[i] = null;
         for (int i = 0; i < 3; i++)
-            stagmas[i] = null;
+            engravings[i] = null;
         for (int i = 0; i < entryCharacters.Count; i++)
             entryCharacters[i] = null;
         leaderCharacter = null;
@@ -193,7 +193,7 @@ public class StageManager : MonoBehaviour
             return;
         }
         else if (stageSaveData.currentPhaseIndex >= 0 || stageSaveData.currentPhaseIndex <= 4) // 현재 선택지 상태가 비어있지 않은 경우
-                                                                                               // "StartReward", "NormalReward", "SelectChoice", "EliteArtifactReward", "EliteStagmaReward", "BossReward", "Shop" , "TeamSelect",  "Standby", "Battle" 중 하나
+                                                                                               // "StartReward", "NormalReward", "SelectChoice", "EliteArtifactReward", "EliteEngravingReward", "BossReward", "Shop" , "TeamSelect",  "Standby", "Battle" 중 하나
         {
             switch (stageSaveData.currentPhaseState)
             {
@@ -201,19 +201,19 @@ public class StageManager : MonoBehaviour
                     battleUIController.OpenTeamFormationPanel(); // 팀 선택 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.StartReward:
-                    battleUIController.OpenSelectStagmaPanel(StageSaveData.CurrentPhaseState.StartReward);
+                    battleUIController.OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.StartReward);
                     return;
                 case StageSaveData.CurrentPhaseState.NormalReward:
                     battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.NormalReward); // 노멀 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.EliteArtifactReward:
-                    battleUIController.OpenSelectStagmaPanel(StageSaveData.CurrentPhaseState.EliteArtifactReward); // 엘리트 아티팩트 리워드 상태에 해당하는 스태그마 선택 UI를 엽니다.
+                    battleUIController.OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.EliteArtifactReward); // 엘리트 아티팩트 리워드 상태에 해당하는 스태그마 선택 UI를 엽니다.
                     return;
-                case StageSaveData.CurrentPhaseState.EliteStagmaReward:
-                    battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.EliteStagmaReward); // 엘리트 스태그마 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
+                case StageSaveData.CurrentPhaseState.EliteEngravingReward:
+                    battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.EliteEngravingReward); // 엘리트 스태그마 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.BossReward:
-                    battleUIController.OpenSelectStagmaPanel(StageSaveData.CurrentPhaseState.BossReward); // 보스 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
+                    battleUIController.OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.BossReward); // 보스 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.Standby:
                     battleUIController.OpenStagePanel(stageSaveData.currentPhaseIndex); // 스탠바이 상태에 해당하는 UI를 엽니다.
@@ -238,20 +238,20 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    public void AddStagma(StagmaData stagmaName)
+    public void AddEngraving(EngravingData engravingName)
     {
         // 리스트 크기를 3으로 고정
-        while (stageSaveData.stagmas.Count < 3)
-            stageSaveData.stagmas.Add(null);
-        while (stageSaveData.stagmas.Count > 3)
-            stageSaveData.stagmas.RemoveAt(stageSaveData.stagmas.Count - 1);
+        while (stageSaveData.engravings.Count < 3)
+            stageSaveData.engravings.Add(null);
+        while (stageSaveData.engravings.Count > 3)
+            stageSaveData.engravings.RemoveAt(stageSaveData.engravings.Count - 1);
 
         // 이미 보유 중인지 체크
         for (int i = 0; i < 3; i++)
         {
-            if (stageSaveData.stagmas[i] == stagmaName)
+            if (stageSaveData.engravings[i] == engravingName)
             {
-                messagePopup.Open($"스태그마 {stagmaName.stagmaName}은(는) 이미 목록에 있습니다.");
+                messagePopup.Open($"각인 {engravingName.EngravingName}은(는) 이미 목록에 있습니다.");
                 return;
             }
         }
@@ -259,10 +259,10 @@ public class StageManager : MonoBehaviour
         // 빈 슬롯(null) 찾아서 추가
         for (int i = 0; i < 3; i++)
         {
-            if (stageSaveData.stagmas[i] == null)
+            if (stageSaveData.engravings[i] == null)
             {
-                stageSaveData.stagmas[i] = stagmaName;
-                messagePopup.Open($"스태그마 {stagmaName.stagmaName}이(가) 추가되었습니다.");
+                stageSaveData.engravings[i] = engravingName;
+                messagePopup.Open($"각인 {engravingName.EngravingName}이(가) 추가되었습니다.");
                 return;
             }
         }
@@ -273,36 +273,36 @@ public class StageManager : MonoBehaviour
 
     public void AddArtifacts(ArtifactData artifactName)
     {
-        // 리스트 크기를 18로 고정
-        while (stageSaveData.artifacts.Count < 18)
+        // 리스트 크기를 12로 고정
+        while (stageSaveData.artifacts.Count < 12)
             stageSaveData.artifacts.Add(null);
-        while (stageSaveData.artifacts.Count > 18)
+        while (stageSaveData.artifacts.Count > 12)
             stageSaveData.artifacts.RemoveAt(stageSaveData.artifacts.Count - 1);
 
         // 이미 보유 중인지 체크
-        for (int i = 0; i < 18; i++)
+        for (int i = 0; i < 12; i++)
         {
             if (stageSaveData.artifacts[i] == artifactName)
             {
-                messagePopup.Open($"아티팩트 {artifactName.artifactName}은(는) 이미 목록에 있습니다.");
+                messagePopup.Open($"아티팩트 {artifactName.ArtifactName}은(는) 이미 목록에 있습니다.");
                 return;
             }
         }
 
         // 빈 슬롯(null) 찾아서 추가
-        for (int i = 0; i < 18; i++)
+        for (int i = 0; i < 12; i++)
         {
             if (stageSaveData.artifacts[i] == null)
             {
                 stageSaveData.artifacts[i] = artifactName;
                 Debug.Log($"Artifact {artifactName} added.");
-                messagePopup.Open($"아티팩트 {artifactName.artifactName}이(가) 추가되었습니다.");
+                messagePopup.Open($"아티팩트 {artifactName.ArtifactName}이(가) 추가되었습니다.");
                 return;
             }
         }
 
         // 모두 차 있으면 안내
-        messagePopup.Open("최대 18개의 아티팩트를 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
+        messagePopup.Open("최대 12개의 아티팩트를 소지할 수 있습니다. 더 이상 추가할 수 없습니다.");
     }
 
     public void EquipArtifacts(ArtifactData artifactName)
@@ -318,7 +318,7 @@ public class StageManager : MonoBehaviour
         {
             if (stageSaveData.equipedArtifacts[i] == artifactName)
             {
-                messagePopup.Open($"아티팩트 {artifactName.artifactName}은(는) 이미 장착되어 있습니다.");
+                messagePopup.Open($"아티팩트 {artifactName.ArtifactName}은(는) 이미 장착되어 있습니다.");
                 return;
             }
         }
@@ -326,7 +326,7 @@ public class StageManager : MonoBehaviour
         // 소지품에 있는지 체크
         if (!stageSaveData.artifacts.Contains(artifactName))
         {
-            messagePopup.Open($"아티팩트 {artifactName.artifactName}이(가) 소지품에 없습니다.");
+            messagePopup.Open($"아티팩트 {artifactName.ArtifactName}이(가) 소지품에 없습니다.");
             return;
         }
 
@@ -385,7 +385,7 @@ public class StageManager : MonoBehaviour
 
         if (result.isVictory)
         {
-            RoomClear(stageSaveData.selectedEnemy); // 룸 클리어 로직 호출
+            battleUIController.OpenVictoryPanel(); // 승리 패널을 엽니다.
         }
         else
         {

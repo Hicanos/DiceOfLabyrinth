@@ -36,6 +36,23 @@ public class LoadDiceDataScript
         return loadPoses;
     }
 
+    public Vector3[] GetDiceDefaultPosition()
+    {
+        int i = 0;
+        JToken dicePoses = root["RollDiceDefaultPosition"];
+        Vector3[] loadPoses = new Vector3[dicePoses.Count()];
+
+        foreach (JToken jtoken in dicePoses)
+        {
+            loadPoses[i].x = (float)jtoken["X"];
+            loadPoses[i].y = (float)jtoken["Y"];
+            loadPoses[i].z = (float)jtoken["Z"];
+            i++;
+        }
+
+        return loadPoses;
+    }
+
     public float[] GetWeighting()
     {
         JToken damageWeighting = root["DamageWeighting"];

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using TMPro;
+using System.Collections.Generic;
 
 public class BattleUI : MonoBehaviour
 {
@@ -8,7 +9,11 @@ public class BattleUI : MonoBehaviour
     public GameObject victoryUI;
     public GameObject defeatUI;
     public GameObject stagmaDisplayer;
+    public GameObject CharacterInfo;
     public Canvas     battleCanvas;
+    [SerializeField] BattleUICharacterInfo characterInfoUI;
+    public BattleUILog BattleUILog;
+    public GameObject BattleLogPrefab;
 
     [Header("AbstractButtons")]
     [SerializeField] AbstractBattleButton diceBackboard;
@@ -21,7 +26,7 @@ public class BattleUI : MonoBehaviour
     [SerializeField] AbstractBattleButton patternDisplayer;
 
     public AbstractBattleButton Roll => roll;
-    [NonSerialized] public AbstractBattleButton[] Buttons = new AbstractBattleButton[8];
+    [NonSerialized] public List<AbstractBattleButton> Buttons = new List<AbstractBattleButton>();
 
     [Header("Texts For Value Changer")]
     [SerializeField] TextMeshProUGUI cost;
@@ -32,27 +37,16 @@ public class BattleUI : MonoBehaviour
 
     [NonSerialized] private TextMeshProUGUI[] texts;
 
-    //[NonSerialized] private RectTransform[]   characterHPs;
-    //[NonSerialized] private TextMeshProUGUI[] characterHPTexts;
-
-    //[NonSerialized] private RectTransform[]   enemyHPs;
-    //[NonSerialized] private TextMeshProUGUI[] enemyHPTexts;
-
-    //[Header("Enemy HP Bars")]
-    //[SerializeField] Image hPBar_Enemy;
-
-    //[NonSerialized] public Image[] EnemyHPBars = new Image[1];
-
     public void Setting()
     {
-        Buttons[0] = diceBackboard;
-        Buttons[1] = roll;
-        Buttons[2] = char1;
-        Buttons[3] = char2;
-        Buttons[4] = char3;
-        Buttons[5] = char4;
-        Buttons[6] = char5;
-        Buttons[7] = patternDisplayer;
+        Buttons.Add(diceBackboard);
+        Buttons.Add(roll);
+        Buttons.Add(char1);
+        Buttons.Add(char2);
+        Buttons.Add(char3);
+        Buttons.Add(char4);
+        Buttons.Add(char5);
+        Buttons.Add(patternDisplayer);
 
         texts = new TextMeshProUGUI[5];
         texts[0] = cost;
@@ -60,28 +54,6 @@ public class BattleUI : MonoBehaviour
         texts[2] = monsterSkillDescription;
         texts[3] = rank;
         texts[4] = reRoll;
-
-        //characterHPTexts = new TextMeshProUGUI[5];
-        //characterHPTexts[0] = hPBar_Char1.GetComponentInChildren<TextMeshProUGUI>();
-        //characterHPTexts[1] = hPBar_Char2.GetComponentInChildren<TextMeshProUGUI>();
-        //characterHPTexts[2] = hPBar_Char3.GetComponentInChildren<TextMeshProUGUI>();
-        //characterHPTexts[3] = hPBar_Char4.GetComponentInChildren<TextMeshProUGUI>();
-        //characterHPTexts[4] = hPBar_Char5.GetComponentInChildren<TextMeshProUGUI>();
-
-        //characterHPs = new RectTransform[5];
-        //characterHPs[0] = hPBar_Char1.GetComponentsInChildren<RectTransform>()[1];
-        //characterHPs[1] = hPBar_Char2.GetComponentsInChildren<RectTransform>()[1];
-        //characterHPs[2] = hPBar_Char3.GetComponentsInChildren<RectTransform>()[1];
-        //characterHPs[3] = hPBar_Char4.GetComponentsInChildren<RectTransform>()[1];
-        //characterHPs[4] = hPBar_Char5.GetComponentsInChildren<RectTransform>()[1];
-
-        //enemyHPs = new RectTransform[1];
-        //enemyHPs[0] = hPBar_Enemy.GetComponentsInChildren<RectTransform>()[1];
-
-        //enemyHPTexts = new TextMeshProUGUI[1];
-        //enemyHPTexts[0] = hPBar_Enemy.GetComponentInChildren<TextMeshProUGUI>();
-
-        //EnemyHPBars[0] = hPBar_Enemy;
     }
 
     /// <summary>
@@ -98,5 +70,12 @@ public class BattleUI : MonoBehaviour
         {
             DiceManager.Instance.DiceHolding.areas[i] = fixedDiceArea.transform.GetChild(i).gameObject;
         }
+    }
+
+    public void OpenCharacterInfo(int index)
+    {
+        characterInfoUI.UpdateCharacterInfo(index);
+
+        CharacterInfo.SetActive(true);
     }
 }

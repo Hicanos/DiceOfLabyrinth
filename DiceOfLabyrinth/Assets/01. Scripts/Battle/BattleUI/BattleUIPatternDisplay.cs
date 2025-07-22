@@ -6,7 +6,7 @@ using TMPro;
 public class BattleUIPatternDisplay : AbstractBattleButton
 {
     [SerializeField] GameObject descriptionPanel;
-    [SerializeField] Image image_DescriptionPanel;
+    [SerializeField] Image image_PatternName;
     [SerializeField] TextMeshProUGUI text_SkillDescription;
     [SerializeField] Button button;
 
@@ -46,14 +46,14 @@ public class BattleUIPatternDisplay : AbstractBattleButton
 
     IEnumerator BlinkUI()
     {
-        Color color = image_DescriptionPanel.color;
+        Color color = image_PatternName.color;
         Color textColor = text_SkillDescription.color;
 
         for (float f = 1; f > 0.25f; f -= Time.deltaTime)
         {
             color.a = f;
             textColor.a = f;
-            image_DescriptionPanel.color = color;
+            image_PatternName.color = color;
             text_SkillDescription.color = textColor;
             yield return null;
         }
@@ -67,7 +67,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
         {
             color.a = f;
             textColor.a = f;
-            image_DescriptionPanel.color = color;
+            image_PatternName.color = color;
             text_SkillDescription.color = textColor;
             yield return null;
         }

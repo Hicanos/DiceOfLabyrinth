@@ -74,11 +74,12 @@ public class BattleEnemyAttack : MonoBehaviour
                 if (damage < 0) damage = 0;
 
                 battleCharacter.TakeDamage(damage);
+                UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(battleManager.Enemy.Data.EnemyName, battleCharacter.CharNameKr, damage, false);
                 if (battleCharacter.IsDied) battleManager.BattleGroup.CharacterDead(characterIndex);
                 battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)characterIndex);
 
-                Debug.Log($"skillValue({skillValue})*Atk({battleManager.Enemy.CurrentAtk})-Def({battleCharacter.CurrentDEF})");
-                Debug.Log($"캐릭터{characterIndex + 1}에게 {damage}데미지");
+                //Debug.Log($"skillValue({skillValue})*Atk({battleManager.Enemy.CurrentAtk})-Def({battleCharacter.CurrentDEF})");
+                //Debug.Log($"캐릭터{characterIndex + 1}에게 {damage}데미지");
 
                 if (skill.Debuff == EnemyDebuff.None) continue;
                 else
@@ -102,16 +103,6 @@ public class BattleEnemyAttack : MonoBehaviour
         List<int> frontIndex = BattleManager.Instance.BattleGroup.FrontLine.ToList();
         List<int> BackIndex = BattleManager.Instance.BattleGroup.BackLine.ToList();
         List<int> targetIndex = new List<int>();
-
-        for(int i = 0; i < frontBack; i++)
-        {
-            frontIndex.Add(i);
-        }
-        for(int i = frontBack; i < characterCount; i++)
-        {
-            BackIndex.Add(i);
-        }
-
 
         for(int i = 0; i < targetCount; i++)
         {
@@ -137,7 +128,20 @@ public class BattleEnemyAttack : MonoBehaviour
 
     private List<int> GetTargetAll(int targetCount, int value = 0)
     {
-        return new List<int> { 0,1,2,3,4};
+        List<int> targetIndex = new List<int>();
+        List<int> frontIndex = BattleManager.Instance.BattleGroup.FrontLine;
+        List<int> BackIndex = BattleManager.Instance.BattleGroup.BackLine;
+
+        for (int i = 0; i < frontIndex.Count; i++)
+        {
+            targetIndex.Add(frontIndex[i]);
+        }
+        for(int i = 0; i < BackIndex.Count; i++)
+        {
+            targetIndex.Add(BackIndex[i]);
+        }
+
+        return targetIndex;
     }
 
     private List<int> GetTargetLowHp(int targetCount, int value = 0)

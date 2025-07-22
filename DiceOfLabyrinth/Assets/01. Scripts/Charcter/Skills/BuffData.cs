@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 [Serializable]
@@ -65,8 +64,8 @@ public class BuffData
     /// Buff_Maxtack
     /// </summary>
     public int Stack;
-
 }
+
 public class BuffDataLoader
 {
     public List<BuffData> ItemsList { get; private set; }

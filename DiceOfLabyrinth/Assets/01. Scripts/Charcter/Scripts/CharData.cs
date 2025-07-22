@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 [Serializable]
@@ -105,6 +104,16 @@ public class CharData
     /// DiceID
     /// </summary>
     public string DiceID;
+
+    /// <summary>
+    /// ActiveSkil_lID
+    /// </summary>
+    public string ActiveSkill;
+
+    /// <summary>
+    /// PassiveSkill_ID
+    /// </summary>
+    public string PassiveSkill;
 
     /// <summary>
     /// BattlePrefabPath
