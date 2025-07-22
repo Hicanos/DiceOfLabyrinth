@@ -70,10 +70,13 @@ public class DiceManager : MonoBehaviour
     const int diceCount = 5;
 
     private int[,] faceProbability = new int[5, 6];
-    private int[] signitureArr = new int[5];    
+    private int[] signitureArr = new int[5];
+
     private int rollCount = 0;
     private readonly int maxRollCount = 3;
-    public int RollRemain => maxRollCount - rollCount;
+    public int AdditionalRollCount;
+    public int RollRemain => maxRollCount + AdditionalRollCount - rollCount;
+
     //public bool isSkipped = false;
     public bool IsRolling = false;
 
@@ -84,6 +87,8 @@ public class DiceManager : MonoBehaviour
     public Vector3[] DicePos => dicePos;
 
     Vector3[] rotationVectors; //굴린 후 정렬시 적용할 회전값
+
+    public DiceRankingEnum DiceRankBefore;
     public DiceRankingEnum DiceRank;
 
     void Start()
@@ -222,7 +227,7 @@ public class DiceManager : MonoBehaviour
                 IsRolling = false;
 
 
-                BattleManager.Instance.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
+                BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(PlayerTurnState.RollEnd);
                 SortingFakeDice();
 
                 break;
@@ -347,7 +352,7 @@ public class DiceManager : MonoBehaviour
             dice.StopSimulation();
             StopCoroutine(SortingAfterRoll());
 
-            BattleManager.Instance.BattlePlayerTurnState.ChangePlayerTurnState(PlayerTurnState.RollEnd);
+            BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(PlayerTurnState.RollEnd);
         }
         BattleManager.Instance.GetCost(signitureAmount);
     }
