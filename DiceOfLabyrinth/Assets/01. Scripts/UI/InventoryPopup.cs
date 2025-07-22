@@ -270,7 +270,6 @@ public class InventoryPopup : MonoBehaviour
                     effectDict.Add(effect.EffectName, (effect, 1, countText));
                 }
             }
-
         }
         // 세트 효과별로 UI 오브젝트 생성 및 데이터 할당
         foreach (var kvp in effectDict) // kvp.Key는 세트 효과 이름, kvp.Value는 (SetEffectData, count, countText) 튜플
