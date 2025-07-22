@@ -13,27 +13,7 @@ public class SetEffectViewer : MonoBehaviour
     [Header("SetEffectViewer Colors")]
     [SerializeField] private Color validCountColor = Color.white;
     [SerializeField] private Color invalidCountColor = new Color(0.53f, 0.53f, 0.53f);
-    [Header("SetEffectViewerDescription Popup")]
-    private GameObject effectDescriptionPopup;
-    private GameObject effectDescriptionPopupBg;
-    private TMP_Text effectDescriptionNameText;
-    private GameObject effectDescriptionIconObject;
-    private TMP_Text effectDescriptionText;
-
-    private void Awake()
-    {
-        if (InventoryPopup.Instance != null)
-        {
-            effectDescriptionPopup = InventoryPopup.Instance.setEffectDescriptionPopupObject;
-            effectDescriptionNameText = InventoryPopup.Instance.setEffectNameText;
-            effectDescriptionIconObject = InventoryPopup.Instance.setEffectIcon;
-            effectDescriptionText = InventoryPopup.Instance.setEffectDescriptionText;
-        }
-        else
-        {
-            Debug.LogWarning("InventoryPopup.Instance is null. Popup references not set.");
-        }
-    }
+    
     public void SetNameText(string text)
     {
         effectNameText.text = text;
@@ -80,8 +60,8 @@ public class SetEffectViewer : MonoBehaviour
 
     public void OnClickSetEffectViewer()
     {
-        effectDescriptionPopup.SetActive(true);
-        effectDescriptionPopupBg.SetActive(true);
+        InventoryPopup.Instance.setEffectDescriptionPopupObject.SetActive(true);
+        InventoryPopup.Instance.setEffectDescriptionPopupBg.SetActive(true);
         SetEffectDescriptionPopupRefresh();
     }
 
@@ -89,17 +69,17 @@ public class SetEffectViewer : MonoBehaviour
     {
         if (setEffectData != null && setEffectData.Description != null && setEffectData.Description.Length > 0)
         {
-            effectDescriptionPopup.SetActive(true);
-            effectDescriptionNameText.text = setEffectData.EffectName;
-            effectDescriptionIconObject.GetComponent<UnityEngine.UI.Image>().sprite = setEffectData.Icon;
-            effectDescriptionText.text = setEffectData.Description;
+            InventoryPopup.Instance.setEffectDescriptionPopupObject.SetActive(true);
+            InventoryPopup.Instance.setEffectNameText.text = setEffectData.EffectName;
+            InventoryPopup.Instance.setEffectIcon.GetComponent<UnityEngine.UI.Image>().sprite = setEffectData.Icon;
+            InventoryPopup.Instance.setEffectDescriptionText.text = setEffectData.Description;
         }
         else
         {
-            effectDescriptionPopup.SetActive(true);
-            effectDescriptionNameText.text = "데이터 없음";
-            effectDescriptionIconObject.GetComponent<UnityEngine.UI.Image>().sprite = null;
-            effectDescriptionText.text = "데이터가 없습니다.";
+            InventoryPopup.Instance.setEffectDescriptionPopupObject.SetActive(true);
+            InventoryPopup.Instance.setEffectNameText.text = "데이터 없음";
+            InventoryPopup.Instance.setEffectIcon.GetComponent<UnityEngine.UI.Image>().sprite = null;
+            InventoryPopup.Instance.setEffectDescriptionText.text = "데이터가 없습니다.";
         }
     }
 }

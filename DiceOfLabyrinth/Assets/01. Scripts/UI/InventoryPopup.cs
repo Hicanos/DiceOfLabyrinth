@@ -37,6 +37,7 @@ public class InventoryPopup : MonoBehaviour
 
     [Header("SetEffectDescriptionPopup")]
     public GameObject setEffectDescriptionPopupObject;
+    public GameObject setEffectDescriptionPopupBg;
     public TMP_Text setEffectNameText;
     public GameObject setEffectIcon;
     public TMP_Text setEffectDescriptionText;
