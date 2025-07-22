@@ -16,28 +16,24 @@ public class ArtifactData : ScriptableObject
     [SerializeField] private string flavorText;
     [SerializeField]private string description;
     [SerializeField]private Sprite icon;
-    [SerializeField]private ArtifactType artifactType;
-    [SerializeField]private int additionalAtk;
-    [SerializeField]private int additionalDef;
+    [SerializeField]private ArtifactType artifactRarity;
     [SerializeField]private ArtifactRaritySprite raritySprite;
 
-
+    [SerializeField] private List<ArtifactEffectData> artifactEffects = new List<ArtifactEffectData>();
     [SerializeField] private List<SetEffectData> setEffectData = new List<SetEffectData>();
 
     public string ArtifactName => artifactName;
     public string FlavorText => flavorText;
     public string Description => description;
     public Sprite Icon => icon;
-    public ArtifactType Type => artifactType;
-    public int AdditionalAtk => additionalAtk;
-    public int AdditionalDef => additionalDef;
+    public ArtifactType ArtifactRarity => artifactRarity;
     public List<SetEffectData> SetEffectData => setEffectData;
     public Sprite RaritySprite 
     {
         get {
             if (raritySprite == null)
                 return null;
-            switch (artifactType) {
+            switch (artifactRarity) {
                 case ArtifactType.Common:
                     return raritySprite.CommonSprite;
                 case ArtifactType.Uncommon:
@@ -53,4 +49,36 @@ public class ArtifactData : ScriptableObject
             }
         }
     }
+}
+[System.Serializable]
+public class ArtifactEffectData
+{
+    public enum EffectType
+    {
+        AdditionalElementDamage, //속성 추가 피해
+        AdditionalAttack, // 공격력 추가
+        AdditionalDefense,// 방어력 추가
+        AdditionalMaxHp, // 최대 체력 추가
+        AdditionalDamage, // 추가 피해
+        AdditionalDiceRoll, // 추가 주사위 굴림
+        AdditionalAttackCount, // 추가 공격 횟수
+        AdditionalDamageToBoss, // 보스에게 추가 피해
+        AdditionalDamageIfHaveSignitureDice, // 시그니처 주사위가 있을 때 추가 피해
+        HealingWhenStartBattle, // 전투 시작 시 회복
+        DebuffToEnemyAtFirstTurn, // 첫 턴 적에게 디버프
+        RemoveDebuffPerTurn, // 턴당 디버프 제거
+        CostRegenerationWhenUse10Cost, // 10 코스트 사용 시 비용 재생
+        CostRegenerationEveryTurn, // 턴마다 비용 재생
+        ReviveWhenDie, // 죽을 때 부활
+        AdditionalMaxCost,// 최대 코스트
+        AdditionalManaStone, // 마석 추가 획득
+        IgnoreDefense, // 방어력 관통
+        CriticalChance, // 치명타 확률
+        CriticalDamage, // 치명타 피해
+        GenerateBarrier, // 보호막 생성
+    }
+    [SerializeField] private EffectType effectType;
+    [SerializeField] private float effectValue;
+    public EffectType Type => effectType;
+    public float Value => effectValue;
 }

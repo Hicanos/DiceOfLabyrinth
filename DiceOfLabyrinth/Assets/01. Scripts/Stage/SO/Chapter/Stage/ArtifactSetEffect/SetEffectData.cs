@@ -1,5 +1,7 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 [CreateAssetMenu(fileName = "NewSetEffectData", menuName = "SetEffect/SetEffectData")]
 public class SetEffectData : ScriptableObject
@@ -8,29 +10,32 @@ public class SetEffectData : ScriptableObject
     [SerializeField] private string effectName;
     [TextArea]
     [SerializeField] private string description;
-    [SerializeField] private List<SetEffectTypeData> setEffectCounts;
+    [SerializeField] private List<SetEffectTypeData> setEffects;
 
     public Sprite Icon => icon;
     public string EffectName => effectName;
     public string Description => description;
-    public List<SetEffectTypeData> SetEffectCounts => setEffectCounts;
-    
+    public List<SetEffectTypeData> SetEffects => setEffects;
+
     public float GetEffectValue(SetEffectTypeData.SetEffectType effectType, int count)
     {
-        foreach (var setEffect in setEffectCounts)
+        float value = 0f;
+        foreach (var setEffect in setEffects)
         {
             if (setEffect.EffectType == effectType)
             {
+                int maxCount = 0;
                 foreach (var effectCount in setEffect.SetEffectCountData)
                 {
-                    if (effectCount.Count == count)
+                    if (effectCount.Count <= count && effectCount.Count >= maxCount)
                     {
-                        return effectCount.EffectValue;
+                        maxCount = effectCount.Count;
+                        value = effectCount.EffectValue;
                     }
                 }
             }
         }
-        return 0f; // 기본값
+        return value; // 가장 큰 count 이하의 effectValue 반환
     }
 }
 
@@ -42,11 +47,11 @@ public struct SetEffectTypeData
         AdditionalElementDamage,// 추가 원소 피해
         DamageReduction,// 피해 감소
         FirstAttackDamage,// 첫 공격 피해
-        HealingPerTurn, // 턴당 회복
+        HealingWhenStartBattle, // 전투 시작 시 회복
         AdditionalMaxCost, // 추가 최대 비용
-        AdditionalCostGainPerTurn, // 턴당 추가 비용 획득
+        SignitureCostGain, // 턴당 추가 비용 획득
         AdditionalDamageToBoss, // 보스에게 추가 피해
-        AdditionalDamageAfterFewTurns, // 몇 턴 후 추가 피해
+        GainManaStone, // 마나 스톤 획득
         IgnoreDefense, // 방어력 무시
         CriticalChance, // 치명타 확률
         CriticalDamage, // 치명타 피해

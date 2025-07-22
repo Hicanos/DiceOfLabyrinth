@@ -637,21 +637,21 @@ public class BattleUIController : MonoBehaviour
             case StageSaveData.CurrentPhaseState.NormalReward:
                 // 커먼, 언커먼만
                 availableArtifacts = available
-                    .Where(a => a.Type == ArtifactData.ArtifactType.Common || a.Type == ArtifactData.ArtifactType.Uncommon)
+                    .Where(a => a.ArtifactRarity == ArtifactData.ArtifactType.Common || a.ArtifactRarity == ArtifactData.ArtifactType.Uncommon)
                     .ToList();
                 break;
             case StageSaveData.CurrentPhaseState.EliteArtifactReward:
                 // 언커먼, 레어만
                 availableArtifacts = available
-                    .Where(a => a.Type == ArtifactData.ArtifactType.Uncommon || a.Type == ArtifactData.ArtifactType.Rare)
+                    .Where(a => a.ArtifactRarity == ArtifactData.ArtifactType.Uncommon || a.ArtifactRarity == ArtifactData.ArtifactType.Rare)
                     .ToList();
                 break;
             case StageSaveData.CurrentPhaseState.BossReward:
                 // 레어, 유니크, 레전더리만
                 availableArtifacts = available
-                    .Where(a => a.Type == ArtifactData.ArtifactType.Rare
-                             || a.Type == ArtifactData.ArtifactType.Unique
-                             || a.Type == ArtifactData.ArtifactType.Legendary)
+                    .Where(a => a.ArtifactRarity == ArtifactData.ArtifactType.Rare
+                             || a.ArtifactRarity == ArtifactData.ArtifactType.Unique
+                             || a.ArtifactRarity == ArtifactData.ArtifactType.Legendary)
                     .ToList();
                 break;
             default:

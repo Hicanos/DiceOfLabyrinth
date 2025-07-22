@@ -12,27 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ba8ae37c2edc840847011c17d97c4e, type: 3}
   m_Name: Euphoria
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: e7ca3bca77bb5434eae67584d8f7e8c4, type: 3}
+  icon: {fileID: 21300000, guid: 58970a89444fa4449aa695a1c2a25953, type: 3}
   effectName: "\uD658\uD76C"
-  description: 
-  setEffectCounts:
+  description: "[1/2/3/4] \uB8F8 \uC785\uC7A5 \uC2DC \uCD5C\uB300 \uCCB4\uB825 \uBE44\uB840
+    \uD68C\uBCF5 + [2/4/6/8%]"
+  setEffects:
   - setEffectType: 3
     setEffectCountData:
     - count: 1
-      effectValue: 0.01
+      effectValue: 0.2
     - count: 2
-      effectValue: 0.02
+      effectValue: 0.4
     - count: 3
-      effectValue: 0.03
+      effectValue: 0.6
     - count: 4
-      effectValue: 0.04
-  - setEffectType: 4
-    setEffectCountData:
-    - count: 1
-      effectValue: 1
-    - count: 2
-      effectValue: 2
-    - count: 3
-      effectValue: 3
-    - count: 4
-      effectValue: 4
+      effectValue: 0.8

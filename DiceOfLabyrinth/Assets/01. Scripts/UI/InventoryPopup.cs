@@ -7,6 +7,7 @@ public class InventoryPopup : MonoBehaviour
     [Header("InventoryPopup")]
     [SerializeField] private GameObject inventoryPopup;
     [SerializeField] private GameObject setEffectDescriptionPopup;
+    [SerializeField] private GameObject setEffectPopupBg;
 
     [Header("ArtifactSlots")]
     [SerializeField] private GameObject[] artifactIcon = new GameObject[12];
@@ -34,9 +35,17 @@ public class InventoryPopup : MonoBehaviour
     [SerializeField] private GameObject createPositionObject;
     [SerializeField] private GameObject viewerPrefab;
 
+    [Header("SetEffectDescriptionPopup")]
+    public GameObject setEffectDescriptionPopupObject;
+    public GameObject setEffectDescriptionPopupBg;
+    public TMP_Text setEffectNameText;
+    public GameObject setEffectIcon;
+    public TMP_Text setEffectDescriptionText;
+    public static InventoryPopup Instance { get; private set; }
 
     private void Awake()
     {
+        Instance = this;
         if (inventoryPopup == null)
         {
             Debug.LogError("InventoryPopup is not assigned in the inspector.");
@@ -52,6 +61,7 @@ public class InventoryPopup : MonoBehaviour
     {
         inventoryPopup.SetActive(true);
         setEffectDescriptionPopup.SetActive(false);
+        setEffectPopupBg.SetActive(false);
         Refresh();
         OnClickArtifactSlot(0); // 0번 슬롯으로 초기화
     }
@@ -59,6 +69,7 @@ public class InventoryPopup : MonoBehaviour
     {
         inventoryPopup.SetActive(false);
         setEffectDescriptionPopup.SetActive(false);
+        setEffectPopupBg.SetActive(false);
     }
 
     private void Refresh()
@@ -226,18 +237,30 @@ public class InventoryPopup : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+        var allArtifacts = new List<ArtifactData>();// artifacts와 equipedArtifacts를 합쳐서 하나의 리스트로 만듦
+        allArtifacts.AddRange(StageManager.Instance.stageSaveData.artifacts);
+        allArtifacts.AddRange(StageManager.Instance.stageSaveData.equipedArtifacts);
         // 세트 효과별로 카운트 집계
         Dictionary<string, (SetEffectData data, int count, string countText)> effectDict = new();
-        foreach (var artifact in StageManager.Instance.stageSaveData.artifacts)
+        foreach (var artifact in allArtifacts)
         {
             if (artifact == null) continue;
             foreach (var effect in artifact.SetEffectData)
             {
                 string countText = "";
-                foreach (var setEffectCount in effect.SetEffectCounts)
+                List<int> counts = new List<int>();
+                foreach (var setEffectType in effect.SetEffects)
                 {
-                    countText += $"{setEffectCount.SetEffectCountData.Count}/";
+                    foreach (var setEffectCountData in setEffectType.SetEffectCountData)
+                    {
+                        if (!counts.Contains(setEffectCountData.Count))
+                        {
+                            counts.Add(setEffectCountData.Count);
+                        }
+                    }
                 }
+                counts.Sort();
+                countText = string.Join("/", counts);
                 if (effectDict.ContainsKey(effect.EffectName))
                 {
                     effectDict[effect.EffectName] = (effect, effectDict[effect.EffectName].count + 1, countText);
@@ -248,16 +271,22 @@ public class InventoryPopup : MonoBehaviour
                 }
             }
         }
-
         // 세트 효과별로 UI 오브젝트 생성 및 데이터 할당
-        foreach (var kvp in effectDict) // kvp.Key는 세트 효과 이름, kvp.Value는 (SetEffectData, count) 튜플
+        foreach (var kvp in effectDict) // kvp.Key는 세트 효과 이름, kvp.Value는 (SetEffectData, count, countText) 튜플
         {
             GameObject viewerObj = Instantiate(viewerPrefab, createPositionObject.transform);
             var viewer = viewerObj.GetComponent<SetEffectViewer>();
             viewer.SetNameText(kvp.Key);
             viewer.setEffectData = kvp.Value.data;
             viewer.SetCurrentCountText(kvp.Value.count);
-            viewer.SetCountText(kvp.Value.countText);
+            viewer.SetCountText(kvp.Value.countText, kvp.Value.count);
+            viewer.SetIcon();
         }
     }
+
+    public void OnClickCloseSetEffectDescriptionPopup()
+    {
+        setEffectDescriptionPopup.SetActive(false);
+        setEffectPopupBg.SetActive(false); 
+    }                                             
 }
