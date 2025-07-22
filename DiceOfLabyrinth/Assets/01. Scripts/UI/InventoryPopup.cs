@@ -33,11 +33,15 @@ public class InventoryPopup : MonoBehaviour
     [Header("SetEffectViewer")]
     [SerializeField] private GameObject createPositionObject;
     [SerializeField] private GameObject viewerPrefab;
+
     [Header("SetEffectDescriptionPopup")]
-    [SerializeField] private TMP_Text setEffectDescriptionText;
+    public GameObject setEffectDescriptionPopupObject;
+    public TMP_Text setEffectDescriptionText;
+    public static InventoryPopup Instance { get; private set; }
 
     private void Awake()
     {
+        Instance = this;
         if (inventoryPopup == null)
         {
             Debug.LogError("InventoryPopup is not assigned in the inspector.");
@@ -262,7 +266,6 @@ public class InventoryPopup : MonoBehaviour
             }
 
         }
-
         // 세트 효과별로 UI 오브젝트 생성 및 데이터 할당
         foreach (var kvp in effectDict) // kvp.Key는 세트 효과 이름, kvp.Value는 (SetEffectData, count, countText) 튜플
         {
@@ -273,28 +276,6 @@ public class InventoryPopup : MonoBehaviour
             viewer.SetCurrentCountText(kvp.Value.count);
             viewer.SetCountText(kvp.Value.countText, kvp.Value.count);
             viewer.SetIcon();
-        }
-    }
-    public void OnClickSetEffectViewer()
-    {
-        inventoryPopup.SetActive(true);
-        setEffectDescriptionPopup.SetActive(true);
-        SetEffectViewer setEffectViewer = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<SetEffectViewer>();
-        //온 클릭한 이 버튼의 컴포넌트에서 SetEffectViewer를 찾아서
-        SetEffectDescriptionPopupRefresh(setEffectViewer);
-    }
-
-    private void SetEffectDescriptionPopupRefresh(SetEffectViewer setEffectViewer)
-    {
-        if (setEffectViewer != null && setEffectViewer.setEffectData != null)
-        {
-            setEffectDescriptionPopup.SetActive(true);
-            setEffectDescriptionText.text = setEffectViewer.setEffectData.Description;
-        }
-        else
-        {
-            setEffectDescriptionPopup.SetActive(false);
-            setEffectDescriptionText.text = "";
         }
     }
 }

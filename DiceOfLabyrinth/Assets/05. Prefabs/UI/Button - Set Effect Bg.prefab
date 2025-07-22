@@ -834,7 +834,8 @@ MonoBehaviour:
   effectIconObject: {fileID: 4861910788310733579}
   validCountColor: {r: 1, g: 1, b: 1, a: 1}
   invalidCountColor: {r: 0.53, g: 0.53, b: 0.53, a: 1}
-  descriptionPopup: {fileID: 0}
+  effectDescriptionPopup: {fileID: 0}
+  effectDescriptionText: {fileID: 0}
 --- !u!114 &3347419970902523015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -881,7 +882,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 924653050840237816}
         m_TargetAssemblyTypeName: SetEffectViewer, Assembly-CSharp
-        m_MethodName: OnClickViewer
+        m_MethodName: OnClickSetEffectViewer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
