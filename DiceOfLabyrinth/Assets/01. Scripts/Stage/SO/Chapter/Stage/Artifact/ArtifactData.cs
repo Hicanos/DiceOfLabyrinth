@@ -75,6 +75,7 @@ public class ArtifactEffectData
         IgnoreDefense, // 방어력 관통
         CriticalChance, // 치명타 확률
         CriticalDamage, // 치명타 피해
+        GenerateBarrier, // 보호막 생성
     }
     [SerializeField] private EffectType effectType;
     [SerializeField] private float effectValue;
