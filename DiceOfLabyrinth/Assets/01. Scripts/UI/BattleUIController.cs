@@ -255,7 +255,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(true);
         }
-        // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
+         shopPanel.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
 
 
@@ -514,7 +514,7 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
-        // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
+        shopPanel.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -536,7 +536,7 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
-        // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
+        shopPanel.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -593,7 +593,7 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(true);
         selectEventPanel.SetActive(false);
-        // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
+        shopPanel.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -681,7 +681,7 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(true);
         selectEventPanel.SetActive(false);
-        // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
+        shopPanel.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -779,16 +779,19 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickStageNextButton() // 스테이지 패널에서 다음 버튼 클릭 시 호출되는 함수
     {
-        if (StageManager.Instance.stageSaveData.currentPhaseIndex < 4) // 4룸 까지가 일반 또는 엘리트 스테이지
+        if (StageManager.Instance.stageSaveData.currentPhaseIndex < 4) // 페이즈4 까지는 선택지 패널을 열고 그 후 배틀 룸 입장
         {
             OpenSelectChoicePanel(); // 선택지 이벤트 패널 열기
         }
-        else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 4) // 5룸은 보스 선택지 대신 상점을 염
+        else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 4) // 페이즈 5는 선택지 대신 상점을 염
         {
-            //messagePopup.Open("보스가 등장했습니다! 입장할래?",
-            //() => StageManager.Instance.selectBossEnemy(),
-            //() => messagePopup.Close());
             OpenShopPanel(); // 상점 패널 열기
+        }
+        else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5) // 페이즈 6은 보스 룸
+        {
+            MessagePopup.Instance.Open("보스가 등장했습니다! 입장할래?",
+            () => StageManager.Instance.selectBossEnemy(),
+            () => MessagePopup.Instance.Close());
         }
         else // 페이즈 인덱스가 범위를 벗어난 경우
         {
@@ -798,6 +801,7 @@ public class BattleUIController : MonoBehaviour
 
     public void OpenSelectChoicePanel() // 선택지 이벤트 패널을 여는 함수
     {
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.SelectChoice; // 현재 페이즈 상태를 선택지 이벤트로 설정
         var stageSelectChoices = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
             .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ChoiceOptions; // 현재 스테이지의 선택지 목록을 가져옴\
                                                                                                         // 노말/엘리트 클리어 카운트 2 이상이면 해당 선택지 제외
@@ -834,7 +838,7 @@ public class BattleUIController : MonoBehaviour
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
-        // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
+        shopPanel.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         selectEventPanel.SetActive(true); // 선택지 이벤트 패널 활성화
         foreach (var characterPlatform in characterPlatforms)
@@ -885,7 +889,7 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
-        // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
+        shopPanel.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -905,7 +909,7 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(true); // 패배 패널 활성화
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
-        // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
+        shopPanel.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -956,7 +960,7 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
-        // shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
+        shopPanel.SetActive(false);
         // selectEquipmedArtifactPanel.SetActive(true); // 아티팩트 선택 패널 활성화
         foreach (var characterPlatform in characterPlatforms)
         {

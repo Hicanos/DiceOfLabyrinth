@@ -46,6 +46,12 @@ public class ShopPanel : MonoBehaviour
             Instance = this;
         }
     }
+
+    private void OnEnable()
+    {
+        // 상점 패널이 활성화될 때 초기화
+        StartShop();
+    }
     public void StartShop()
     {
         selectedArtifactIndexInOwnedList = -1; // 초기화
@@ -228,6 +234,7 @@ public class ShopPanel : MonoBehaviour
             exceptedArtifacts.Add(artifact); // 상점에서 제외할 아티팩트 목록에 추가
         }
         ShopArtifactRefresh();
+        OnClickShopArtifactSlot(0); // 첫 번째 슬롯으로 초기화
     }
     public void OnClickSellButton()
     {
@@ -274,5 +281,12 @@ public class ShopPanel : MonoBehaviour
         ShopArtifactRefresh(); // 상점 아티팩트 갱신
         shopArtifactViewers[selectedArtifactIndexInShopList].SetActive(false); // 선택한 아티팩트 뷰어 비활성화
         OnClickShopArtifactSlot(selectedArtifactIndexInShopList + 1); // 다음 슬롯으로 이동
+    }
+
+    public void OnClickCloseButton()
+    {
+        gameObject.SetActive(false); // 상점 패널 닫기
+        StageManager.Instance.stageSaveData.currentPhaseIndex = 5;
+        StageManager.Instance.battleUIController.OpenStagePanel(5); // 스테이지 패널 열기
     }
 }
