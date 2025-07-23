@@ -13,6 +13,7 @@ public class ShopPopup : MonoBehaviour
     private int selectedArtifactIndexInShopList = -1; // -1은 아무것도 선택되지 않았음을 나타냄
 
     [SerializeField] private AnimationRect animationRect;
+    [SerializeField] private MessagePopup messagePopup;
 
     [Header("Shop Panel")]
     [SerializeField] private int baseResetCost = 20;
@@ -99,7 +100,7 @@ public class ShopPopup : MonoBehaviour
     {
         if(StageManager.Instance.stageSaveData.currentChapterIndex == -1)
         {
-            MessagePopup.Instance.Open("챕터가 선택되지 않아서 상점 아티팩트 데이터를 불러올 수 없습니다.");
+            messagePopup.Open("챕터가 선택되지 않아서 상점 아티팩트 데이터를 불러올 수 없습니다.");
             return; // 챕터가 선택되지 않은 경우 리턴
         }
         List<ArtifactData> shopInventoryArtifacts = StageManager.Instance.chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
@@ -244,7 +245,7 @@ public class ShopPopup : MonoBehaviour
     {
         if(StageManager.Instance.stageSaveData.manaStone < resetCost)
         {
-            MessagePopup.Instance.Open("마석이 부족합니다.");
+            messagePopup.Open("마석이 부족합니다.");
             return; // 마석이 부족하면 리턴
         }
         StageManager.Instance.stageSaveData.manaStone -= resetCost; // 마석 차감
@@ -260,12 +261,12 @@ public class ShopPopup : MonoBehaviour
     {
         if (selectedArtifactIndexInOwnedList < 0 || selectedArtifactIndexInOwnedList >= StageManager.Instance.stageSaveData.artifacts.Count)
         {
-            MessagePopup.Instance.Open("판매할 아티팩트를 선택해주세요.");
+            messagePopup.Open("판매할 아티팩트를 선택해주세요.");
             return; // 유효하지 않은 인덱스면 리턴
         }
         if (StageManager.Instance.stageSaveData.artifacts[selectedArtifactIndexInOwnedList] == null)
         {
-            MessagePopup.Instance.Open("판매할 아티팩트가 없습니다.");
+            messagePopup.Open("판매할 아티팩트가 없습니다.");
             return; // 선택한 슬롯에 아티팩트가 없으면 리턴
         }
         ArtifactData soldArtifact = StageManager.Instance.stageSaveData.artifacts[selectedArtifactIndexInOwnedList];
@@ -286,13 +287,13 @@ public class ShopPopup : MonoBehaviour
     {
         if (selectedArtifactIndexInShopList < 0 || selectedArtifactIndexInShopList >= selectableArtifacts.Count)
         {
-            MessagePopup.Instance.Open("구매할 아티팩트를 선택해주세요.");
+            messagePopup.Open("구매할 아티팩트를 선택해주세요.");
             return; // 유효하지 않은 인덱스면 리턴
         }
         ArtifactData selectedArtifact = selectableArtifacts[selectedArtifactIndexInShopList];
         if (StageManager.Instance.stageSaveData.manaStone < selectedArtifact.PurchasePrice)
         {
-            MessagePopup.Instance.Open("마석이 부족합니다.");
+            messagePopup.Open("마석이 부족합니다.");
             return; // 마석이 부족하면 리턴
         }
         StageManager.Instance.stageSaveData.manaStone -= selectedArtifact.PurchasePrice; // 마석 차감

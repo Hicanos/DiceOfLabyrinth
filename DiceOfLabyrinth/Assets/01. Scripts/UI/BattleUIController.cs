@@ -783,9 +783,9 @@ public class BattleUIController : MonoBehaviour
         }
         else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5) // 페이즈 6은 보스 룸
         {
-            MessagePopup.Instance.Open("보스가 등장했습니다! 입장할래?",
+            messagePopup.Open("보스가 등장했습니다! 입장할래?",
             () => StageManager.Instance.selectBossEnemy(),
-            () => MessagePopup.Instance.Close());
+            () => messagePopup.Close());
         }
         else // 페이즈 인덱스가 범위를 벗어난 경우
         {
