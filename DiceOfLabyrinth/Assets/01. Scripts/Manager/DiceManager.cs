@@ -357,4 +357,13 @@ public class DiceManager : MonoBehaviour
         }
         BattleManager.Instance.GetCost(signitureAmount);
     }
+
+    public void DestroyDices()
+    {
+        for(int i = 0; i < Dices.Length; i++)
+        {
+            Destroy(Dices[i]);
+            Destroy(FakeDices[i]);
+        }
+    }
 }

@@ -128,6 +128,7 @@ public class BattleManager : MonoBehaviour
         BattleResultData data;
         isBattle = false;
 
+        BattleSpawner.DeactiveCharacterHP(BattleGroup);
         EngravingAdditionalValue.AdditionalDamage = 1;
         DiceManager.Instance.ResetSetting();
 
@@ -142,13 +143,13 @@ public class BattleManager : MonoBehaviour
             }
 
             data = new BattleResultData(true, BattleGroup.BattleCharacters);
-            ExitBattleSetting();
+            
             StageManager.Instance.OnBattleResult(data);            
         }
         else
         {
             data = new BattleResultData(false, BattleGroup.BattleCharacters);
-            ExitBattleSetting();
+
             StageManager.Instance.OnBattleResult(data);
         }
     }
@@ -179,6 +180,7 @@ public class BattleManager : MonoBehaviour
         isBattle = false;
         ArtifactAdditionalValue.Reset();
         EngravingAdditionalValue.Reset();
+        DiceManager.Instance.DestroyDices();
         InputManager.Instance.BattleInputEnd();
     }
 }
