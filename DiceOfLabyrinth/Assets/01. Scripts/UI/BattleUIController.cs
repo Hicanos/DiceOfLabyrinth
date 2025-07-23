@@ -942,7 +942,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        ShopPanel.Instance.Refresh();
+        ShopPanel.Instance.StartShop();
     }
 
     public void OpenSelectEquipedArtifactPanel() // 아티팩트 장착 선택 패널을 여는 함수
