@@ -1,8 +1,9 @@
-﻿using TMPro;
+﻿using Helios.GUI;
+using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using Helios.GUI;
 
 public class ShopPopup : MonoBehaviour
 {
@@ -71,7 +72,7 @@ public class ShopPopup : MonoBehaviour
         selectedArtifactIndexInShopList = -1; // 초기화
         OwnedArtifactRefresh(); //소유한 아티팩트 갱신
         exceptedArtifacts.Clear(); // 상점에서 제외할 아티팩트 목록 초기화
-        //ShopArtifactRefresh(); //상점 아티팩트 갱신
+        ShopArtifactRefresh(); //상점 아티팩트 갱신
         resetCost = baseResetCost;
     }
 
@@ -94,41 +95,47 @@ public class ShopPopup : MonoBehaviour
             }
         }
     }
-    //private void ShopArtifactRefresh()
-    //{
-    //    List<ArtifactData> shopInventoryArtifacts = StageManager.Instance.chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ArtifactList;
-    //    shopInventoryArtifacts.RemoveAll(artifact => exceptedArtifacts.Contains(artifact)); // 제외할 아티팩트 제거
-    //    shopInventoryArtifacts.RemoveAll(artifact => StageManager.Instance.stageSaveData.artifacts.Contains(artifact)); // 이미 소유한 아티팩트 제거
-    //    shopInventoryArtifacts.RemoveAll(artifact => StageManager.Instance.stageSaveData.equipedArtifacts.Contains(artifact)); // 장착된 아티팩트 제거
-    //    // 리스트에서 랜덤 6개 선택
-    //    selectableArtifacts.Clear();
-    //    for (int i = 0; i < 6 && shopInventoryArtifacts.Count > 0; i++)
-    //    {
-    //        int randomIndex = Random.Range(0, shopInventoryArtifacts.Count);
-    //        selectableArtifacts.Add(shopInventoryArtifacts[randomIndex]);
-    //        shopInventoryArtifacts.RemoveAt(randomIndex);
-    //    }
-    //    // 선택된 아티팩트로 상점 뷰어 갱신
-    //    for (int i = 0; i < shopArtifactViewers.Count; i++)
-    //    {
-    //        if (i < selectableArtifacts.Count)
-    //        {
-    //            ArtifactData artifact = selectableArtifacts[i];
-    //            shopArtifactViewers[i].SetActive(true);
-    //            shopArtifactViewerNameText[i].text = artifact.ArtifactName;
-    //            purchasePriceText[i].text = $"{artifact.PurchasePrice}";
-    //            shopArtifactViewerIcons[i].GetComponent<UnityEngine.UI.Image>().sprite = artifact.Icon;
-    //            shopArtifactViewerRarities[i].GetComponent<UnityEngine.UI.Image>().sprite = artifact.RaritySprite;
-    //        }
-    //        else
-    //        {
-    //            if (shopArtifactViewers[i] != null)
-    //            {
-    //                shopArtifactViewers[i].SetActive(false); // 선택된 아티팩트가 없으면 뷰어 비활성화
-    //            }
-    //        }
-    //    }
-    //}
+    private void ShopArtifactRefresh()
+    {
+        if(StageManager.Instance.stageSaveData.currentChapterIndex == -1)
+        {
+            MessagePopup.Instance.Open("챕터가 선택되지 않아서 상점 아티팩트 데이터를 불러올 수 없습니다.");
+            return; // 챕터가 선택되지 않은 경우 리턴
+        }
+        List<ArtifactData> shopInventoryArtifacts = StageManager.Instance.chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+            .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ArtifactList.ToList(); 
+        shopInventoryArtifacts.RemoveAll(artifact => exceptedArtifacts.Contains(artifact)); // 제외할 아티팩트 제거
+        shopInventoryArtifacts.RemoveAll(artifact => StageManager.Instance.stageSaveData.artifacts.Contains(artifact)); // 이미 소유한 아티팩트 제거
+        shopInventoryArtifacts.RemoveAll(artifact => StageManager.Instance.stageSaveData.equipedArtifacts.Contains(artifact)); // 장착된 아티팩트 제거
+        // 리스트에서 랜덤 6개 선택
+        selectableArtifacts.Clear();
+        for (int i = 0; i < 6 && shopInventoryArtifacts.Count > 0; i++)
+        {
+            int randomIndex = Random.Range(0, shopInventoryArtifacts.Count);
+            selectableArtifacts.Add(shopInventoryArtifacts[randomIndex]);
+            shopInventoryArtifacts.RemoveAt(randomIndex);
+        }
+        // 선택된 아티팩트로 상점 뷰어 갱신
+        for (int i = 0; i < shopArtifactViewers.Count; i++)
+        {
+            if (i < selectableArtifacts.Count)
+            {
+                ArtifactData artifact = selectableArtifacts[i];
+                shopArtifactViewers[i].SetActive(true);
+                shopArtifactViewerNameText[i].text = artifact.ArtifactName;
+                purchasePriceText[i].text = $"{artifact.PurchasePrice}";
+                shopArtifactViewerIcons[i].GetComponent<UnityEngine.UI.Image>().sprite = artifact.Icon;
+                shopArtifactViewerRarities[i].GetComponent<UnityEngine.UI.Image>().sprite = artifact.RaritySprite;
+            }
+            else
+            {
+                if (shopArtifactViewers[i] != null)
+                {
+                    shopArtifactViewers[i].SetActive(false); // 선택된 아티팩트가 없으면 뷰어 비활성화
+                }
+            }
+        }
+    }
     public void OnClickShopArtifactSlot(int index)
     {
         if (index < 0 || index >= selectableArtifacts.Count)
@@ -246,7 +253,7 @@ public class ShopPopup : MonoBehaviour
         {
             exceptedArtifacts.Add(artifact); // 상점에서 제외할 아티팩트 목록에 추가
         }
-        //ShopArtifactRefresh();
+        ShopArtifactRefresh();
         OnClickShopArtifactSlot(0); // 첫 번째 슬롯으로 초기화
     }
     public void OnClickSellButton()
@@ -291,7 +298,7 @@ public class ShopPopup : MonoBehaviour
         StageManager.Instance.stageSaveData.manaStone -= selectedArtifact.PurchasePrice; // 마석 차감
         StageManager.Instance.stageSaveData.artifacts.Add(selectedArtifact); // 아티팩트 추가
         exceptedArtifacts.Add(selectedArtifact); // 상점에서 제외할 아티팩트 목록에 추가
-        //ShopArtifactRefresh(); // 상점 아티팩트 갱신
+        ShopArtifactRefresh(); // 상점 아티팩트 갱신
         shopArtifactViewers[selectedArtifactIndexInShopList].SetActive(false); // 선택한 아티팩트 뷰어 비활성화
         OnClickShopArtifactSlot(selectedArtifactIndexInShopList + 1); // 다음 슬롯으로 이동
     }
