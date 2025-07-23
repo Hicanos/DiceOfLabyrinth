@@ -1,7 +1,7 @@
 ﻿public class BattlePlayerTurnState : IBattleTurnState
 {
     BattleManager battleManager = BattleManager.Instance;
-    public PlayerTurnState DetailedTurnState;
+    public DetailedTurnState DetailedTurnState;
 
     public void Enter()
     {
@@ -12,16 +12,18 @@
         if (battleManager.BattleTurn == 1)
         {
             AbstractButtonSetting();
-            ChangeDetailedTurnState(PlayerTurnState.BattleStart);
+            ChangeDetailedTurnState(DetailedTurnState.BattleStart);
+            battleManager.BattleGroup.ArtifactEffect.EffectWhenFirstTurn();
         }
 
         UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(true);
         string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
-        //for(int i = 0; i < battleManager.BattleGroup.BattleEngravings.Length; i++)
-        //{
-        //    battleManager.BattleGroup.BattleEngravings[i].GetEngravingEffectInTurnEnter();
-        //}
-        ChangeDetailedTurnState(PlayerTurnState.Enter);
+        for (int i = 0; i < battleManager.BattleGroup.BattleEngravings.Length; i++)
+        {
+            battleManager.BattleGroup.BattleEngravings[i].GetEngravingEffectInTurnEnter();
+        }
+        battleManager.BattleGroup.ArtifactEffect.EffectPerTurn();
+        ChangeDetailedTurnState(DetailedTurnState.Enter);
     }
 
     public void BattleUpdate()
@@ -30,17 +32,14 @@
     }
 
     public void Exit()
-    {
-        if (battleManager.BattleTurn > 1)
-        {
-            DiceManager.Instance.DiceRankBefore = DiceManager.Instance.DiceRank;
-        }
+    {        
+        DiceManager.Instance.DiceRankBefore = DiceManager.Instance.DiceRank;
 
-        battleManager.BattleGroup.EngravingDamageRatio = 0;
+        battleManager.EngravingAdditionalValue.AdditionalDamage = 1;
         DiceManager.Instance.AdditionalRollCount = 0;
     }
 
-    public void ChangeDetailedTurnState(PlayerTurnState state)
+    public void ChangeDetailedTurnState(DetailedTurnState state)
     {
         battleManager.CurrentPlayerState = state;
 
@@ -72,7 +71,7 @@
 
     public void EndPlayerTurn()
     {
-        battleManager.StateMachine.ChangeState(battleManager.I_EnemyTurnState);
+        battleManager.StateMachine.currentState = battleManager.I_EnemyTurnState;
     }
 
     private void OnOffButton()

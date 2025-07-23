@@ -51,7 +51,8 @@ public class DiceManager : MonoBehaviour
     //public GameObject Ground;
     public GameObject DiceBoard;
 
-    int signitureAmount;
+    private int signitureAmount;
+    public int SignitureAmount => signitureAmount;
 
     public IEnumerator DiceRollCoroutine;
 
@@ -227,7 +228,7 @@ public class DiceManager : MonoBehaviour
                 IsRolling = false;
 
 
-                BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(PlayerTurnState.RollEnd);
+                BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.RollEnd);
                 SortingFakeDice();
 
                 break;
@@ -352,7 +353,7 @@ public class DiceManager : MonoBehaviour
             dice.StopSimulation();
             StopCoroutine(SortingAfterRoll());
 
-            BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(PlayerTurnState.RollEnd);
+            BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.RollEnd);
         }
         BattleManager.Instance.GetCost(signitureAmount);
     }

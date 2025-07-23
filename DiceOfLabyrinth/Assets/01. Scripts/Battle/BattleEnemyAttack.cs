@@ -43,7 +43,7 @@ public class BattleEnemyAttack : MonoBehaviour
         yield return new WaitForSeconds(tempWaitAttackAnimEnd);
 
         //isEnemyAttacking = false;
-        BattleManager.Instance.StateMachine.ChangeState(BattleManager.Instance.I_PlayerTurnState);
+        BattleManager.Instance.StateMachine.currentState = BattleManager.Instance.I_PlayerTurnState;
     }    
 
     public void EnemyAttackTest()
