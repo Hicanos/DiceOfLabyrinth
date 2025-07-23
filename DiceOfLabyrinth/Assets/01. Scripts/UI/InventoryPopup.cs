@@ -1,5 +1,6 @@
 ﻿using Helios.GUI;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -271,19 +272,17 @@ public class InventoryPopup : MonoBehaviour
             foreach (var effect in artifact.SetEffectData)
             {
                 string countText = "";
-                List<int> counts = new List<int>();
+                HashSet<int> counts = new HashSet<int>();
                 foreach (var setEffectType in effect.SetEffects)
                 {
                     foreach (var setEffectCountData in setEffectType.SetEffectCountData)
                     {
-                        if (!counts.Contains(setEffectCountData.Count))
-                        {
-                            counts.Add(setEffectCountData.Count);
-                        }
+                        counts.Add(setEffectCountData.Count); // 중복은 자동 제거됨
                     }
                 }
-                counts.Sort();
-                countText = string.Join("/", counts);
+                List<int> countList = counts.ToList();
+                countList.Sort();
+                countText = string.Join("/", countList);
                 if (effectDict.ContainsKey(effect.EffectName))
                 {
                     effectDict[effect.EffectName] = (effect, effectDict[effect.EffectName].count + 1, countText);
