@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class MessagePopup : MonoBehaviour
 {
-    public static MessagePopup Instance { get; private set; }
     [SerializeField] private TMP_Text msgText;
     [SerializeField] private GameObject bottomUI;
     [SerializeField] private GameObject yesButton;
@@ -20,10 +19,6 @@ public class MessagePopup : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
         if (!cgFade)
         {
             cgFade = GetComponent<CanvasGroup>();
