@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using Helios.GUI;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class InventoryPopup : MonoBehaviour
 {
+    [SerializeField] private AnimationRect animationRect;
+
     [Header("InventoryPopup")]
     [SerializeField] private GameObject inventoryPopup;
     [SerializeField] private GameObject setEffectDescriptionPopup;
+    [SerializeField] private GameObject shopPopup; // 테스트용 지워야함
 
     [Header("ArtifactSlots")]
     [SerializeField] private GameObject[] artifactIcon = new GameObject[12];
@@ -54,6 +58,23 @@ public class InventoryPopup : MonoBehaviour
         setEffectDescriptionPopup.SetActive(false);
         Refresh();
         OnClickArtifactSlot(0); // 0번 슬롯으로 초기화
+    }
+    public void OnClickShopButton() // 테스트용 지워야함
+    {
+        shopPopup.SetActive(true);
+        animationRect.AnimLeftIn();
+        animationRect.AnimRightIn();
+        setEffectDescriptionPopup.SetActive(false);
+        inventoryPopup.SetActive(false);
+    }
+    public void OnClickShopCloseButton() // 테스트용 지워야함
+    {
+        animationRect.CloseWithCallback(() =>
+        {
+            shopPopup.SetActive(false);
+            inventoryPopup.SetActive(false);
+            setEffectDescriptionPopup.SetActive(false);
+        });
     }
     public void OnClickCloseButton()
     {
