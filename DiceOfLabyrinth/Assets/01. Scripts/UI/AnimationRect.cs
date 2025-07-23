@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 #if DOTWEEN
 using DG.Tweening;
 #endif
@@ -90,11 +90,20 @@ namespace Helios.GUI {
     }
 
     public void AnimLeftOut() {
-        for(int i = 0; i < rectAnimRight.Length; i++) {
-            if(rectAnimRight[i] == null) continue;
+        for(int i = 0; i < rectAnimLeft.Length; i++) {
+            if(rectAnimLeft[i] == null) continue;
+            Vector2 vector2 = rectAnimLeft[i].anchoredPosition;
+            rectAnimLeft[i].anchoredPosition = new Vector2(vector2.x, vector2.y);
+            rectAnimLeft[i].DOAnchorPosX(vector2.x - 1500, timeAnimLeft).SetEase(Ease.OutCubic).SetDelay(timeDelayLeft + timeDelayLeftNext * i * 2);
+        }
+    }
+
+    public void AnimRightOut() {
+        for (int i = 0; i < rectAnimRight.Length; i++) {
+            if (rectAnimRight[i] == null) continue;
             Vector2 vector2 = rectAnimRight[i].anchoredPosition;
             rectAnimRight[i].anchoredPosition = new Vector2(vector2.x, vector2.y);
-            rectAnimRight[i].DOAnchorPosX(vector2.x - 1500, timeAnimRight).SetEase(Ease.OutCubic).SetDelay(timeDelayRight + timeDelayRightNext * i * 2);
+            rectAnimRight[i].DOAnchorPosX(vector2.x + 1500, timeAnimRight).SetEase(Ease.OutCubic).SetDelay(timeDelayRight + timeDelayRightNext * i * 2);
         }
     }
 #endif
