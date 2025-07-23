@@ -65,6 +65,7 @@ public class ArtifactData : ScriptableObject
     }
     public ArtifactType ArtifactRarity => artifactRarity;
     public List<SetEffectData> SetEffectData => setEffectData;
+    public List<ArtifactEffectData> ArtifactEffects => artifactEffects;
     public Sprite RaritySprite 
     {
         get {
