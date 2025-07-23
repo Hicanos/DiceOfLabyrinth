@@ -16,14 +16,14 @@ public class CharacterInfoButton : AbstractBattleButton
     {
     }
 
-    public override void OnOffButton(PlayerTurnState state)
+    public override void OnOffButton(DetailedTurnState state)
     {
         switch(state)
         {
-            case PlayerTurnState.Roll:
+            case DetailedTurnState.Roll:
                 gameObject.transform.position = gameObject.transform.position + Vector3.up * 100;
                 break;
-            case PlayerTurnState.Confirm:
+            case DetailedTurnState.Confirm:
                 gameObject.transform.position = gameObject.transform.position - Vector3.up * 100;
                 break;
         }

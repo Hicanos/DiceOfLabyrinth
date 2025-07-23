@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public enum PlayerTurnState
+public enum DetailedTurnState
 {
     BattleStart,
     Enter,
@@ -15,6 +15,6 @@ public enum PlayerTurnState
 public abstract class AbstractBattleButton : MonoBehaviour
 {
     public abstract void Setting();
-    public abstract void OnOffButton(PlayerTurnState state);
+    public abstract void OnOffButton(DetailedTurnState state);
     public abstract void OnPush();    
 }

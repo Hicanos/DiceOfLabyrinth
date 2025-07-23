@@ -24,6 +24,7 @@ public class BattleUI : MonoBehaviour
     [SerializeField] AbstractBattleButton char4;
     [SerializeField] AbstractBattleButton char5;
     [SerializeField] AbstractBattleButton patternDisplayer;
+    [SerializeField] AbstractBattleButton battleLog;
 
     public AbstractBattleButton Roll => roll;
     [NonSerialized] public List<AbstractBattleButton> Buttons = new List<AbstractBattleButton>();
@@ -47,6 +48,7 @@ public class BattleUI : MonoBehaviour
         Buttons.Add(char4);
         Buttons.Add(char5);
         Buttons.Add(patternDisplayer);
+        Buttons.Add(battleLog);
 
         texts = new TextMeshProUGUI[5];
         texts[0] = cost;
