@@ -45,7 +45,10 @@ public class InventoryPopup : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
         if (inventoryPopup == null)
         {
             Debug.LogError("InventoryPopup is not assigned in the inspector.");

@@ -779,16 +779,16 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickStageNextButton() // 스테이지 패널에서 다음 버튼 클릭 시 호출되는 함수
     {
-        if (StageManager.Instance.stageSaveData.currentPhaseIndex < 4) // 4룸 까지가 일반 또는 노말 스테이지
+        if (StageManager.Instance.stageSaveData.currentPhaseIndex < 4) // 4룸 까지가 일반 또는 엘리트 스테이지
         {
             OpenSelectChoicePanel(); // 선택지 이벤트 패널 열기
         }
-        else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 4) // 5룸은 보스 룸
+        else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 4) // 5룸은 보스 선택지 대신 상점을 염
         {
-            StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.BossReward; // 현재 페이즈 상태를 보스 리워드로 설정
-            messagePopup.Open("보스가 등장했습니다! 입장할래?",
-            () => StageManager.Instance.selectBossEnemy(),
-            () => messagePopup.Close());
+            //messagePopup.Open("보스가 등장했습니다! 입장할래?",
+            //() => StageManager.Instance.selectBossEnemy(),
+            //() => messagePopup.Close());
+            OpenShopPanel(); // 상점 패널 열기
         }
         else // 페이즈 인덱스가 범위를 벗어난 경우
         {
@@ -935,17 +935,16 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
-        // shopPanel.SetActive(true); // 상점 패널 활성화
+        shopPanel.SetActive(true);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        messagePopup.Open("상점은 아직 구현되지 않았으므로 바로 보스 스테이지로 넘어갑니다.",
-        () => OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex),
-        () => messagePopup.Close());
+        ShopPanel.Instance.Refresh();
     }
+
     public void OpenSelectEquipedArtifactPanel() // 아티팩트 장착 선택 패널을 여는 함수
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.EquipmedArtifact; // 현재 페이즈 상태를 "EquipmedArtifact"로 설정

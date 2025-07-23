@@ -26,6 +26,43 @@ public class ArtifactData : ScriptableObject
     public string FlavorText => flavorText;
     public string Description => description;
     public Sprite Icon => icon;
+    public int PurchasePrice
+    {
+        get {
+            switch (artifactRarity) {
+                case ArtifactType.Common:
+                    return 110;
+                case ArtifactType.Uncommon:
+                    return 180;
+                case ArtifactType.Rare:
+                    return 260;
+                case ArtifactType.Unique:
+                    return 380;
+                case ArtifactType.Legendary:
+                    return 540;
+                default:
+                    return 9999;
+            }
+        }
+    }
+    public int SellPrice
+    {         get {
+            switch (artifactRarity) {
+                case ArtifactType.Common:
+                    return 66;
+                case ArtifactType.Uncommon:
+                    return 108;
+                case ArtifactType.Rare:
+                    return 156;
+                case ArtifactType.Unique:
+                    return 228;
+                case ArtifactType.Legendary:
+                    return 324;
+                default:
+                    return 0;
+            }
+        }
+    }
     public ArtifactType ArtifactRarity => artifactRarity;
     public List<SetEffectData> SetEffectData => setEffectData;
     public Sprite RaritySprite 
