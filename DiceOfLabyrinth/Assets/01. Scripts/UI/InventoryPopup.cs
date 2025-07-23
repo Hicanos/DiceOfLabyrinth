@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class InventoryPopup : MonoBehaviour
 {
-    [SerializeField] private AnimationRect animationRect;
+    //[SerializeField] private AnimationRect animationRect;
 
     [Header("InventoryPopup")]
     [SerializeField] private GameObject inventoryPopup;
@@ -71,23 +71,23 @@ public class InventoryPopup : MonoBehaviour
         Refresh();
         OnClickArtifactSlot(0); // 0번 슬롯으로 초기화
     }
-    public void OnClickShopButton() // 테스트용 지워야함
-    {
-        shopPopup.SetActive(true);
-        animationRect.AnimLeftIn();
-        animationRect.AnimRightIn();
-        setEffectDescriptionPopup.SetActive(false);
-        inventoryPopup.SetActive(false);
-    }
-    public void OnClickShopCloseButton() // 테스트용 지워야함
-    {
-        animationRect.CloseWithCallback(() =>
-        {
-            shopPopup.SetActive(false);
-            inventoryPopup.SetActive(false);
-            setEffectDescriptionPopup.SetActive(false);
-        });
-    }
+    //public void OnClickShopButton() // 테스트용 지워야함
+    //{
+    //    shopPopup.SetActive(true);
+    //    animationRect.AnimLeftIn();
+    //    animationRect.AnimRightIn();
+    //    setEffectDescriptionPopup.SetActive(false);
+    //    inventoryPopup.SetActive(false);
+    //}
+    //public void OnClickShopCloseButton() // 테스트용 지워야함
+    //{
+    //    animationRect.CloseWithCallback(() =>
+    //    {
+    //        shopPopup.SetActive(false);
+    //        inventoryPopup.SetActive(false);
+    //        setEffectDescriptionPopup.SetActive(false);
+    //    });
+    //}
     public void OnClickCloseButton()
     {
         inventoryPopup.SetActive(false);
