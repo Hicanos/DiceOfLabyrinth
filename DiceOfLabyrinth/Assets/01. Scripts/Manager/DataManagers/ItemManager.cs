@@ -95,7 +95,7 @@ public class ItemManager
 
 
     // 아이템 획득 메서드
-    public void GetItem(string ItemID)
+    public void GetItem(string ItemID, int Count)
     {
         // 아이템SO의 ItemID가 유효한지 확인 (별도의 메서드 호출)
         if (!IsValidItemID(ItemID))
@@ -107,11 +107,11 @@ public class ItemManager
         // 이미 존재한다면 개수만 증가시키고, 존재하지 않는다면 새로 추가
         if (ownedItems.ContainsKey(ItemID))
         {
-            ownedItems[ItemID]++;
+            ownedItems[ItemID] += Count;
         }
         else
         {
-            ownedItems.Add(ItemID, 1);
+            ownedItems.Add(ItemID, Count);
         }
     }
     /// <summary>
