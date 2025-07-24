@@ -22,7 +22,7 @@ public class ShopPopup : MonoBehaviour
 
     [Header("Owned Artifact")]
     [SerializeField] private GameObject[] ownedArtifactIcons = new GameObject[12];
-    [SerializeField] private GameObject[] ownedArtifactRarities = new GameObject[12]; 
+    [SerializeField] private GameObject[] ownedArtifactRarities = new GameObject[12];
 
     [Header("OwnedArtifactDescriptions")]
     [SerializeField] private TMP_Text ownedArtifactNameText;
@@ -50,6 +50,10 @@ public class ShopPopup : MonoBehaviour
     [SerializeField] private TMP_Text shopArtifactSetEffectText;
     [SerializeField] private TMP_Text shopArtifactDescriptionText;
     [SerializeField] private TMP_Text shopArtifactPurchasePriceText;
+
+    [Header("Reset Text")]
+    [SerializeField] private TMP_Text resetCostText;
+    private int resetCount;
 
     private void Awake()
     {
@@ -145,7 +149,7 @@ public class ShopPopup : MonoBehaviour
         }
         if (selectableArtifacts[index] == null)
         {
-            OnClickShopArtifactSlot(index + 1); // 선택한 슬롯에 아티팩트가 없으면 다음 슬롯으로 이동
+            OnClickShopArtifactSlot(index - 1); // 선택한 슬롯에 아티팩트가 없으면 다음 슬롯으로 이동
             return;
         }
         selectedArtifactIndexInShopList = index; // 선택한 슬롯 인덱스 저장
@@ -201,6 +205,14 @@ public class ShopPopup : MonoBehaviour
         shopArtifactSetEffectText.text = string.Join(" ", artifactInSlot.SetEffectData.ConvertAll(setEffect => $"#{setEffect.EffectName}"));
         shopArtifactDescriptionText.text = artifactInSlot.Description;
         shopArtifactPurchasePriceText.text = $"{artifactInSlot.PurchasePrice}"; // 구매 가격 표시
+        if (StageManager.Instance.stageSaveData.manaStone < artifactInSlot.PurchasePrice)
+        {
+            shopArtifactPurchasePriceText.color = Color.red; // 마석이 부족하면 빨간색으로 표시
+        }
+        else
+        {
+            shopArtifactPurchasePriceText.color = Color.white; // 충분하면 흰색으로 표시
+        }
     }
     private void OwnedArtifactIconRefresh(int slotIndex)
     {
@@ -248,14 +260,33 @@ public class ShopPopup : MonoBehaviour
             messagePopup.Open("마석이 부족합니다.");
             return; // 마석이 부족하면 리턴
         }
+        if (resetCount >= 3)
+        {
+            messagePopup.Open("아티팩트 리셋은 3번만 가능합니다.");
+            return; // 3번만 리셋 가능
+        }
         StageManager.Instance.stageSaveData.manaStone -= resetCost; // 마석 차감
         resetCost = Mathf.Min(resetCost * 2, maxResetCost); // 리셋 비용 증가, 최대값 제한
-        foreach(var artifact in selectableArtifacts)
+        resetCount++;
+        foreach (var artifact in selectableArtifacts)
         {
             exceptedArtifacts.Add(artifact); // 상점에서 제외할 아티팩트 목록에 추가
         }
         ShopArtifactRefresh();
+        ResetButtonRefresh();
         OnClickShopArtifactSlot(0); // 첫 번째 슬롯으로 초기화
+    }
+    private void ResetButtonRefresh()
+    {
+        resetCostText.text = $"{resetCost}";
+        if (StageManager.Instance.stageSaveData.manaStone < resetCost)
+        {
+            resetCostText.color = Color.red; // 마석이 부족하면 빨간색으로 표시
+        }
+        else
+        {
+            resetCostText.color = Color.white; // 충분하면 흰색으로 표시
+        }
     }
     public void OnClickSellButton()
     {
@@ -296,12 +327,27 @@ public class ShopPopup : MonoBehaviour
             messagePopup.Open("마석이 부족합니다.");
             return; // 마석이 부족하면 리턴
         }
+        int emptySlot= -1; // 빈 슬롯 인덱스 초기화
+        for (int i = 0; i < StageManager.Instance.stageSaveData.artifacts.Count; i++)
+        {
+            if (StageManager.Instance.stageSaveData.artifacts[i] == null)
+            {
+                emptySlot = i; // 빈 슬롯 발견
+                break;
+            }
+        }
+        if(emptySlot == -1)
+        {
+            messagePopup.Open("아티팩트 슬롯이 부족합니다. 슬롯을 비우고 다시 시도해주세요.");
+            return; // 빈 슬롯이 없으면 리턴
+        }
         StageManager.Instance.stageSaveData.manaStone -= selectedArtifact.PurchasePrice; // 마석 차감
-        StageManager.Instance.stageSaveData.artifacts.Add(selectedArtifact); // 아티팩트 추가
+        StageManager.Instance.stageSaveData.artifacts[emptySlot] = selectedArtifact; // 빈 슬롯에 아티팩트 추가
+        OwnedArtifactRefresh(); // 소유한 아티팩트 갱신
+        OnClickOwnedArtifactSlot(emptySlot); // 새로 추가된 아티팩트 정보 갱신
         exceptedArtifacts.Add(selectedArtifact); // 상점에서 제외할 아티팩트 목록에 추가
-        ShopArtifactRefresh(); // 상점 아티팩트 갱신
         shopArtifactViewers[selectedArtifactIndexInShopList].SetActive(false); // 선택한 아티팩트 뷰어 비활성화
-        OnClickShopArtifactSlot(selectedArtifactIndexInShopList + 1); // 다음 슬롯으로 이동
+        OnClickShopArtifactSlot(selectedArtifactIndexInShopList - 1);
     }
 
     public void OnClickCloseButton()
