@@ -55,10 +55,10 @@ public class BattleManager : MonoBehaviour
     private IBattleTurnState currentBattleState;
 
     public EngravingBuffMaker EngravingBuffMaker = new EngravingBuffMaker();
-    public EngravingBuffs EngravingBuffs = new EngravingBuffs();
+    public EngravingBuffContainer EngravingBuffs = new EngravingBuffContainer();
     public EngravingAdditionalStatus EngravingAdditionalStatus = new EngravingAdditionalStatus();
 
-    public AdditionalValues ArtifactAdditionalValue = new AdditionalValues();
+    //public AdditionalValues ArtifactAdditionalValue = new AdditionalValues();
 
 
     [Header("Values")]
@@ -68,7 +68,7 @@ public class BattleManager : MonoBehaviour
     public  bool    isBattle;
     public  bool    IsBoss;
     public  bool    IsWon;
-    public int MaxCost => maxCost + ArtifactAdditionalValue.AdditionalMaxCost;
+    public int MaxCost => maxCost;
 
     void Start()
     {
@@ -79,9 +79,7 @@ public class BattleManager : MonoBehaviour
         I_EnemyTurnState = new BattleEnemyTurnState();
 
         StateMachine = new BattleStateMachine(I_PlayerTurnState);
-        currentBattleState = I_PlayerTurnState;
-
-        ArtifactAdditionalValue.Init(0);
+        currentBattleState = I_PlayerTurnState;        
 
         UIManager.Instance.BattleUI.Setting();
         DiceManager.Instance.DiceHolding.SettingForHolding();               
@@ -91,11 +89,6 @@ public class BattleManager : MonoBehaviour
     {
         StateMachine.BattleUpdate();
         BattleStateUpdate();
-
-        if (isBattle)
-        {
-            BattleGroup.ArtifactEffect.EffectWhenUpdate();
-        }
     }
 
     private void BattleStateUpdate()
@@ -182,7 +175,6 @@ public class BattleManager : MonoBehaviour
     {
         BattleGroup = null;
         isBattle = false;
-        ArtifactAdditionalValue.Reset();
         DiceManager.Instance.DestroyDices();
         InputManager.Instance.BattleInputEnd();
     }
@@ -193,11 +185,12 @@ public class BattleCharGroup
     const int numFive = 5;
 
     private List<BattleCharacter>  battleCharacters;
+    private List<ArtifactData> artifacts;
     private List<EngravingData> engravings;
     //private EngravingEffect[]    engravingEffects;
-    public ArtifactEffect        ArtifactEffect;
     public List<BattleCharacter> BattleCharacters => battleCharacters;
 
+    public List<ArtifactData> Artifacts => artifacts;
     public List<EngravingData> Engravings => engravings;
     //public EngravingEffect[]   BattleEngravings => engravingEffects;    
 
@@ -218,7 +211,7 @@ public class BattleCharGroup
 
     public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> engravings)
     {
-        battleCharacters = characters; this.engravings = engravings;
+        battleCharacters = characters; this.artifacts = artifacts; this.engravings = engravings;
 
         CurrentFormationType = StageManager.Instance.stageSaveData.currentFormationType;
         frontLineNum = (int)CurrentFormationType;
@@ -231,14 +224,6 @@ public class BattleCharGroup
         {
             BackLine.Add(i);
         }
-
-        ArtifactEffect = new ArtifactEffect(artifacts);
-
-        //engravingEffects = new EngravingEffect[engravings.Count];
-        //for (int i = 0; i < engravings.Count; i++)
-        //{
-        //    engravingEffects[i] = new EngravingEffect(engravings[i]);
-        //}
     }
 
     public void CharacterDead(int index)

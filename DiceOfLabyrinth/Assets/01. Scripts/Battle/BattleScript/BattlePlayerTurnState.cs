@@ -13,7 +13,6 @@
         {
             AbstractButtonSetting();
             ChangeDetailedTurnState(DetailedTurnState.BattleStart);
-            battleManager.BattleGroup.ArtifactEffect.EffectWhenFirstTurn();
         }
         else
         {
@@ -23,7 +22,6 @@
         UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(true);
         string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
         
-        battleManager.BattleGroup.ArtifactEffect.EffectPerTurn();
         ChangeDetailedTurnState(DetailedTurnState.Enter);
     }
 
