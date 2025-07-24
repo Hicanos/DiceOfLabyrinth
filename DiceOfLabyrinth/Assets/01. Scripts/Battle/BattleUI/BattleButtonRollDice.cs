@@ -13,21 +13,21 @@ public class BattleButtonRollDice : AbstractBattleButton
 
     }
 
-    public override void OnOffButton(PlayerTurnState state)
+    public override void OnOffButton(DetailedTurnState state)
     {
         switch (state)
         {
-            case PlayerTurnState.BattleStart:
+            case DetailedTurnState.BattleStart:
                 gameObject.SetActive(true);
                 break;
-            case PlayerTurnState.Enter:
+            case DetailedTurnState.Enter:
                 ChangeEndTurnToRoll();
                 rollButton.interactable = true;
                 break;
-            case PlayerTurnState.Roll:
+            case DetailedTurnState.Roll:
                 rollButton.interactable = false;
                 break;
-            case PlayerTurnState.RollEnd:
+            case DetailedTurnState.RollEnd:
                 if (DiceManager.Instance.RollRemain == 0)
                 {
                     rollButton.interactable = false;
@@ -37,17 +37,17 @@ public class BattleButtonRollDice : AbstractBattleButton
                     rollButton.interactable = true;
                 }
                 break;
-            case PlayerTurnState.Confirm:
+            case DetailedTurnState.Attack:
                 rollButton.interactable = false;
                 break;
-            case PlayerTurnState.ConfirmEnd:
+            case DetailedTurnState.AttackEnd:
                 ChangeRollToEndTurn();
                 rollButton.interactable = true;
                 break;
-            case PlayerTurnState.EndTurn:
+            case DetailedTurnState.EndTurn:
                 rollButton.interactable = false;
                 break;
-            case PlayerTurnState.BattleEnd:
+            case DetailedTurnState.BattleEnd:
                 gameObject.SetActive(false);
                 break;
         }
@@ -64,7 +64,7 @@ public class BattleButtonRollDice : AbstractBattleButton
             DiceManager.Instance.DiceHolding.GetFixedList();
 
             //BattleManager.Instance.BattlePlayerTurnState.AbstractButtonPushed();
-            BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(PlayerTurnState.Roll);
+            BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.Roll);
         }
         else
         {

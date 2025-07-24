@@ -7,7 +7,8 @@ using PredictedDice;
 public class BattleSpawner : MonoBehaviour
 {
     BattleManager battleManager;
-    bool isPreparing = false;
+    bool isPreparing;
+    bool isActive;
     const int numFIve = 5;
     private Vector3 spawnDetach = Vector3.right * 12;
     private Vector3[] characterDestPos = new Vector3[5];
@@ -34,6 +35,7 @@ public class BattleSpawner : MonoBehaviour
 
     private void CharacterSpawn()
     {
+        isActive = false;
         battleManager = BattleManager.Instance;
         StageManager stageManager = StageManager.Instance;
         List<BattleCharacter> battleCharacters = battleManager.BattleGroup.BattleCharacters;
@@ -63,7 +65,8 @@ public class BattleSpawner : MonoBehaviour
     private void CharacterActive()
     {
         isPreparing = true;
-        
+        isActive = true;
+
         for (int i = 0; i < numFIve; i++)
         {
             battleManager.BattleGroup.CharacterPrefabs[i].SetActive(true);
@@ -101,8 +104,15 @@ public class BattleSpawner : MonoBehaviour
             yield return null;
         }        
         
-        LoadCharacterHP(battleGroup);
-        
+        if(!isActive)
+        {
+            LoadCharacterHP(battleGroup);
+        }
+        else
+        {
+            ActiveCharacterHP(battleGroup);
+        }
+
         isPreparing = false;
         BattleStart();
     }    
@@ -119,7 +129,15 @@ public class BattleSpawner : MonoBehaviour
         {
             battleGroup.CharacterPrefabs[i].transform.localPosition = characterDestPos[i];
         }
-        LoadCharacterHP(battleGroup);
+
+        if (!isActive)
+        {
+            LoadCharacterHP(battleGroup);
+        }
+        else
+        {
+            ActiveCharacterHP(battleGroup);
+        }
 
         BattleStart();
     }
@@ -146,6 +164,22 @@ public class BattleSpawner : MonoBehaviour
             battleGroup.CharacterHPs[i] = go.GetComponentsInChildren<RectTransform>()[3];
             battleGroup.CharacterHPTexts[i] = go.GetComponentInChildren<TextMeshProUGUI>();
             battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+        }
+    }
+
+    public void DeactiveCharacterHP(BattleCharGroup battleGroup)
+    {
+        for (int i = 0; i < numFIve; i++)
+        {
+            battleGroup.CharacterHPs[i].gameObject.SetActive(false);
+        }
+    }
+
+    private void ActiveCharacterHP(BattleCharGroup battleGroup)
+    {
+        for (int i = 0; i < numFIve; i++)
+        {
+            battleGroup.CharacterHPs[i].gameObject.SetActive(true);
         }
     }
 

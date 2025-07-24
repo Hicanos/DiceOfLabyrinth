@@ -132,6 +132,9 @@ public class StageManager : MonoBehaviour
     public BattleUIController battleUIController; // 배틀 UI 컨트롤러, 스테이지 시작 시 초기화됩니다.
     public MessagePopup messagePopup; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
+    [SerializeField] private int normalManaStoneReward = 100; // 노멀 룸 클리어 시 획득하는 마나 스톤 보상
+    [SerializeField] private int eliteManaStoneReward = 150; // 엘리트 룸 클리어 시 획득하는 마나 스톤 보상
+
     public static StageManager Instance { get; private set; }
     void Awake()
     {
@@ -574,7 +577,7 @@ public class StageManager : MonoBehaviour
         }
         int randomIndex = Random.Range(0, normalEnemies.Count);
         stageSaveData.selectedEnemy = normalEnemies[randomIndex];
-        var battleStartData = new BattleStartData(stageSaveData);
+        var battleStartData = new BattleStartData(stageSaveData, normalManaStoneReward);
         battleUIController.OpenBattlePanel();
         BattleManager.Instance.StartBattle(battleStartData);
     }
@@ -606,7 +609,7 @@ public class StageManager : MonoBehaviour
         }
         int randomIndex = Random.Range(0, eliteEnemies.Count);
         stageSaveData.selectedEnemy = eliteEnemies[randomIndex];
-        var battleStartData = new BattleStartData(stageSaveData);
+        var battleStartData = new BattleStartData(stageSaveData, normalManaStoneReward);
         battleUIController.OpenBattlePanel();
         BattleManager.Instance.StartBattle(battleStartData);
     }
@@ -661,7 +664,7 @@ public class StageManager : MonoBehaviour
         }
 
         stageSaveData.selectedEnemy = selectedBoss;
-        var battleStartData = new BattleStartData(stageSaveData);
+        var battleStartData = new BattleStartData(stageSaveData, 0);
         battleUIController.OpenBattlePanel();
         BattleManager.Instance.StartBattle(battleStartData);
     }

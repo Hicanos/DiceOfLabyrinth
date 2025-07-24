@@ -51,7 +51,8 @@ public class DiceManager : MonoBehaviour
     //public GameObject Ground;
     public GameObject DiceBoard;
 
-    int signitureAmount;
+    private int signitureAmount;
+    public int SignitureAmount => signitureAmount;
 
     public IEnumerator DiceRollCoroutine;
 
@@ -74,8 +75,7 @@ public class DiceManager : MonoBehaviour
 
     private int rollCount = 0;
     private readonly int maxRollCount = 3;
-    public int AdditionalRollCount;
-    public int RollRemain => maxRollCount + AdditionalRollCount - rollCount;
+    public int RollRemain => maxRollCount + (int)BattleManager.Instance.EngravingAdditionalStatus.AdditionalRoll - rollCount;
 
     //public bool isSkipped = false;
     public bool IsRolling = false;
@@ -227,7 +227,7 @@ public class DiceManager : MonoBehaviour
                 IsRolling = false;
 
 
-                BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(PlayerTurnState.RollEnd);
+                BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.RollEnd);
                 SortingFakeDice();
 
                 break;
@@ -352,8 +352,17 @@ public class DiceManager : MonoBehaviour
             dice.StopSimulation();
             StopCoroutine(SortingAfterRoll());
 
-            BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(PlayerTurnState.RollEnd);
+            BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.RollEnd);
         }
         BattleManager.Instance.GetCost(signitureAmount);
+    }
+
+    public void DestroyDices()
+    {
+        for(int i = 0; i < Dices.Length; i++)
+        {
+            Destroy(Dices[i]);
+            Destroy(FakeDices[i]);
+        }
     }
 }

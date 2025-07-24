@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class BattleUILogButton : MonoBehaviour
+public class BattleUILogButton : AbstractBattleButton
 {
     [SerializeField] RectTransform log;
     [SerializeField] float destTime;
@@ -11,13 +11,31 @@ public class BattleUILogButton : MonoBehaviour
     IEnumerator openCoroutine;
     IEnumerator closeCoroutine;
 
-    public void OnClickLog()
+    public override void Setting()
     {
-        if(isOff)
+        
+    }
+
+    public override void OnOffButton(DetailedTurnState state)
+    {
+        switch (state)
+        {
+            case DetailedTurnState.BattleStart:
+                gameObject.SetActive(true);
+                break;
+            case DetailedTurnState.BattleEnd:
+                gameObject.SetActive(false);
+                break;
+        }
+    }
+
+    public override void OnPush()
+    {
+        if (isOff)
         {
             isOff = false;
 
-            if(closeCoroutine != null)
+            if (closeCoroutine != null)
             {
                 StopCoroutine(closeCoroutine);
             }
@@ -29,7 +47,7 @@ public class BattleUILogButton : MonoBehaviour
         {
             isOff = true;
 
-            if(openCoroutine != null)
+            if (openCoroutine != null)
             {
                 StopCoroutine(openCoroutine);
             }
@@ -75,5 +93,5 @@ public class BattleUILogButton : MonoBehaviour
             pastTime -= Time.deltaTime;
             yield return null;
         }
-    }
+    }    
 }

@@ -22,10 +22,7 @@ public class BattleCharacterAttack : MonoBehaviour
     {
         isCharacterAttacking = true;
         battleManager = BattleManager.Instance;
-        //for(int i=0; i < battleManager.BattleGroup.BattleEngravings.Length; i++)
-        //{
-        //    battleManager.BattleGroup.BattleEngravings[i].GetEngravingEffectInAttack();
-        //}        
+        
         enumeratorAttack = CharacterAttackCoroutine(diceWeighting);
         StartCoroutine(enumeratorAttack);
     }
@@ -50,13 +47,18 @@ public class BattleCharacterAttack : MonoBehaviour
         int monsterDef = battleManager.Enemy.Data.Def;
         int characterAtk;
         int damage;
+        float penetration;
+        float elementDamage = 1;
 
         for (int i = 0; i < battleCharacters.Count; i++)
         {
             if (battleCharacters[i].IsDied) continue;
 
             characterAtk = battleCharacters[i].CurrentATK;
-            damage = CalculateDamage(characterAtk, monsterDef, diceWeighting);
+            penetration = battleCharacters[i].Penetration;
+            elementDamage = JudgeElementSuperiority(battleCharacters[i].CharacterData, battleManager.Enemy.Data);
+
+            damage = CalculateDamage(characterAtk, monsterDef, penetration, elementDamage, diceWeighting);
 
             Vector3 firstPosition = characterPrefabs[i].transform.position;
 
@@ -88,7 +90,7 @@ public class BattleCharacterAttack : MonoBehaviour
             yield return new WaitForSeconds(waitSecondCharAttack);
         }
         isCharacterAttacking = false;
-        BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(PlayerTurnState.ConfirmEnd);
+        BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.AttackEnd);
     }
 
     IEnumerator DealDamage(IDamagable target, int damage)
@@ -102,20 +104,41 @@ public class BattleCharacterAttack : MonoBehaviour
         if (battleManager.Enemy.IsDead)
         {
             isCharacterAttacking = false;
-            battleManager.BattlePlayerTurnState.ChangeDetailedTurnState(PlayerTurnState.BattleEnd);
+            battleManager.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.BattleEnd);
             yield return new WaitForSeconds(waitSecondEnemyDie);
             battleManager.EndBattle();
         }
     }
 
-    private int CalculateDamage(int characterAtk, int monsterDef, float diceWeighting)
+    private float JudgeElementSuperiority(CharacterSO characterData, EnemyData enemyData)
+    {
+        float elementDamage = 1;
+
+        if (characterData.elementType == DesignEnums.ElementTypes.Water)
+        {
+            if (enemyData.Attribute == DesignEnums.ElementTypes.Fire)
+            {
+                elementDamage = characterData.elementDMG;
+            }
+        }
+        else
+        {
+            if ((int)characterData.elementType > (int)enemyData.Attribute)
+            {
+                elementDamage = characterData.elementDMG;
+            }
+        }
+        return elementDamage;
+    }
+
+    private int CalculateDamage(int characterAtk, int monsterDef, float penetration, float elementDamage, float diceWeighting)
     {
         //{공격력 - 방어력 * (1-방어력 관통률)} * (1 + 버프 + 아티팩트 + 속성 + 패시브) * (족보별 계수 * 각인 계수)
-        int damage = (characterAtk - monsterDef) * (int)diceWeighting;
+        float engravingAddAtk = battleManager.EngravingAdditionalStatus.AdditionalStatus[(int)EffectTypeEnum.AdditionalDamage];
 
-
-
+        float damage = (characterAtk - monsterDef * (1- penetration)) * (1 + elementDamage) * ((int)diceWeighting * engravingAddAtk);
+        Debug.Log(engravingAddAtk);
         damage = Mathf.Clamp(damage, 0, damage);
-        return damage;
-    }  
+        return (int)damage;
+    }
 }

@@ -48,16 +48,28 @@ public class BattleManager : MonoBehaviour
     public BattleUIHP BattleUIHP;
     
     public BattleStateMachine StateMachine;
-    public PlayerTurnState CurrentPlayerState;
+    public DetailedTurnState CurrentDetailedState;
     public IBattleTurnState I_PlayerTurnState;
     public IBattleTurnState I_EnemyTurnState;
     public BattlePlayerTurnState BattlePlayerTurnState;
+    private IBattleTurnState currentBattleState;
+
+    public EngravingBuffMaker EngravingBuffMaker = new EngravingBuffMaker();
+    public EngravingBuffContainer EngravingBuffs = new EngravingBuffContainer();
+    public EngravingAdditionalStatus EngravingAdditionalStatus = new EngravingAdditionalStatus();
+
+    //public AdditionalValues ArtifactAdditionalValue = new AdditionalValues();
+
 
     [Header("Values")]
-    public  readonly int MaxCost = 12;
+    private  readonly int maxCost = 12;
     public  int     BattleTurn   = 0;
     private int     currnetCost  = 0;
     public  bool    isBattle;
+    public  bool    IsBoss;
+    public  bool    IsWon;
+    public int MaxCost => maxCost;
+
     void Start()
     {
         I_PlayerTurnState = new BattlePlayerTurnState();
@@ -67,6 +79,7 @@ public class BattleManager : MonoBehaviour
         I_EnemyTurnState = new BattleEnemyTurnState();
 
         StateMachine = new BattleStateMachine(I_PlayerTurnState);
+        currentBattleState = I_PlayerTurnState;        
 
         UIManager.Instance.BattleUI.Setting();
         DiceManager.Instance.DiceHolding.SettingForHolding();               
@@ -75,12 +88,24 @@ public class BattleManager : MonoBehaviour
     void Update()
     {
         StateMachine.BattleUpdate();
+        BattleStateUpdate();
+    }
+
+    private void BattleStateUpdate()
+    {
+        if(currentBattleState != StateMachine.currentState)
+        {
+            currentBattleState = StateMachine.currentState;
+            StateMachine.ChangeState(currentBattleState);
+        }
     }
 
     public void StartBattle(BattleStartData data) //전투 시작시
     {
+        IsWon = false;
         GetStartData(data);
         BattleStartValueSetting();
+        EngravingBuffMaker.MakeEngravingBuff();
         InputManager.Instance.BattleInputStart();
         enterBattle.BattleStart();
     }
@@ -99,7 +124,9 @@ public class BattleManager : MonoBehaviour
     {
         BattleResultData data;
         isBattle = false;
+        IsWon = isWon;
 
+        BattleSpawner.DeactiveCharacterHP(BattleGroup);
         DiceManager.Instance.ResetSetting();
 
         BattleSpawner.CharacterDeActive();
@@ -107,7 +134,7 @@ public class BattleManager : MonoBehaviour
         //결과창 실행
         if (isWon)
         {
-            //for(int i = 0; i < BattleGroup.BattleEngravings.Length; i++)
+            //for (int i = 0; i < BattleGroup.BattleEngravings.Length; i++)
             //{
             //    BattleGroup.BattleEngravings[i].GetEngravingEffectInBattleEnd();
             //}
@@ -119,7 +146,7 @@ public class BattleManager : MonoBehaviour
         else
         {
             data = new BattleResultData(false, BattleGroup.BattleCharacters);
-            
+
             StageManager.Instance.OnBattleResult(data);
         }
     }
@@ -148,6 +175,7 @@ public class BattleManager : MonoBehaviour
     {
         BattleGroup = null;
         isBattle = false;
+        DiceManager.Instance.DestroyDices();
         InputManager.Instance.BattleInputEnd();
     }
 }
@@ -157,16 +185,14 @@ public class BattleCharGroup
     const int numFive = 5;
 
     private List<BattleCharacter>  battleCharacters;
-    private List<ArtifactData>     artifacts;
-    //private BattleEngraving[]    battleEngravings = new BattleEngraving[3];
-
+    private List<ArtifactData> artifacts;
+    private List<EngravingData> engravings;
+    //private EngravingEffect[]    engravingEffects;
     public List<BattleCharacter> BattleCharacters => battleCharacters;
-    public List<ArtifactData>    Artifacts => artifacts;
-    //public BattleEngraving[]   BattleEngravings => battleEngravings;
-    public float EngravingDamageRatio;
 
-    public int DeadCount;
-    private bool isAllDead => DeadCount == numFive ? true : false;
+    public List<ArtifactData> Artifacts => artifacts;
+    public List<EngravingData> Engravings => engravings;
+    //public EngravingEffect[]   BattleEngravings => engravingEffects;    
 
     public GameObject[] CharacterPrefabs = new GameObject[numFive];
     public StageSaveData.CurrentFormationType CurrentFormationType;
@@ -179,9 +205,13 @@ public class BattleCharGroup
     public List<int> BackLine = new List<int>();
     private int frontLineNum;
 
+    public List<int> DeadIndex = new List<int>();
+    public int DeadCount;
+    private bool isAllDead => DeadCount == numFive ? true : false;
+
     public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> engravings)
     {
-        battleCharacters = characters; this.artifacts = artifacts;
+        battleCharacters = characters; this.artifacts = artifacts; this.engravings = engravings;
 
         CurrentFormationType = StageManager.Instance.stageSaveData.currentFormationType;
         frontLineNum = (int)CurrentFormationType;
@@ -194,18 +224,14 @@ public class BattleCharGroup
         {
             BackLine.Add(i);
         }
-
-        //for(int i = 0; i < engravings.Count; i++)
-        //{
-        //    battleEngravings[i] = new BattleEngraving(engravings[i]);
-        //}
     }
 
     public void CharacterDead(int index)
     {
         DeadCount++;
+        DeadIndex.Add(index);
 
-        if(FrontLine.Contains<int>(index))
+        if (FrontLine.Contains<int>(index))
         {
             FrontLine.Remove(index);
         }
@@ -227,98 +253,17 @@ public class BattleCharGroup
         if (index <= frontLineNum)
         {
             FrontLine.Add(index);
+            FrontLine.Sort();
+            battleCharacters[index].Revive();
         }
         else if (index > frontLineNum)
         {
             BackLine.Add(index);
+            BackLine.Sort();
+            battleCharacters[index].Revive();
         }
     }
 }
-
-//public class BattleEngraving
-//{
-//    EngravingData data;
-
-//    List<DamageCondition> damageConditions;
-//    DamageConditionRank[] damageConditionsRank;
-//    BonusAbilityRoll[] bonusAbilityRoll;
-
-//    public BattleEngraving(EngravingData data)
-//    {
-//        this.data = data;
-//        damageConditions = data.DamageConditions;
-//        damageConditionsRank = data.DamageConditionRanks;
-//        bonusAbilityRoll = data.BonusAbilityRolls;
-//    }
-
-//    public void GetEngravingEffectInAttack()
-//    {
-//        BattleManager battleManager = BattleManager.Instance;
-//        DiceManager diceManager = DiceManager.Instance;
-
-//        for (int i = 0; i < damageConditions.Count; i++)
-//        {
-//            switch (damageConditions[i].Type)
-//            {
-//                case DamageCondition.ConditionType.SameAsPreviousTurn:
-//                    if (battleManager.BattleTurn > 1 && diceManager.DiceRankBefore == diceManager.DiceRank)
-//                    {
-//                        battleManager.BattleGroup.EngravingDamageRatio += damageConditions[i].AdditionalValue;
-//                        Debug.Log("SameAsPreviousTurn Engraving Active");
-//                    }
-//                    break;
-//                case DamageCondition.ConditionType.FirstAttack:
-//                    if (battleManager.BattleTurn == 1)
-//                    {
-//                        battleManager.BattleGroup.EngravingDamageRatio += damageConditions[i].AdditionalValue;
-//                        Debug.Log("FirstAttack Engraving Active");
-//                    }
-//                    break;
-//            }
-//        }
-
-//        for (int i = 0; i < damageConditionsRank.Length; i++)
-//        {
-//            if (diceManager.DiceRank == damageConditionsRank[i].ConditionRank)
-//            {
-//                battleManager.BattleGroup.EngravingDamageRatio += damageConditionsRank[i].AdditionalValue;
-//                Debug.Log($"{diceManager.DiceRank} Engraving Active");
-//            }
-//        }
-//    }
-
-//    public void GetEngravingEffectInTurnEnter()
-//    {        
-//        DiceManager diceManager = DiceManager.Instance;
-
-//        for(int i = 0;i < bonusAbilityRoll.Length; i++)
-//        {
-//            switch (bonusAbilityRoll[i].Ability)
-//            {
-//                case AbilityEnum.BonusReroll:
-//                    Debug.Log("BonusReroll Engraving Active");
-//                    diceManager.AdditionalRollCount += (int)bonusAbilityRoll[i].Value;
-//                    break;
-//            }
-//        }
-//    }
-
-//    public void GetEngravingEffectInBattleEnd()
-//    {
-//        for (int i = 0; i < bonusAbilityRoll.Length; i++)
-//        {
-//            switch (bonusAbilityRoll[i].Ability)
-//            {
-//                case AbilityEnum.FirstTurnKillReward:
-//                    if(BattleManager.Instance.BattleTurn == 1)
-//                    {
-//                        Debug.Log("FirstTurnKillReward Engraving Active");
-//                    }
-//                    break;
-//            }
-//        }
-//    }
-//}
 
 public class BattleEnemy : IDamagable
 {
@@ -328,6 +273,8 @@ public class BattleEnemy : IDamagable
     private int currentAtk;
     private int currentDef;
     private bool isDead;
+    public float DebuffAtk;
+    public float DebuffDef;
     public EnemyData Data => data;
     public int CurrentHP => currentHP;
     public int CurrentAtk => currentAtk;

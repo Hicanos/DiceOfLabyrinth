@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Helios.GUI;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
 public class InventoryPopup : MonoBehaviour
 {
+    //[SerializeField] private AnimationRect animationRect;
+
     [Header("InventoryPopup")]
     [SerializeField] private GameObject inventoryPopup;
     [SerializeField] private GameObject setEffectDescriptionPopup;
@@ -45,7 +49,10 @@ public class InventoryPopup : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
         if (inventoryPopup == null)
         {
             Debug.LogError("InventoryPopup is not assigned in the inspector.");
@@ -65,6 +72,23 @@ public class InventoryPopup : MonoBehaviour
         Refresh();
         OnClickArtifactSlot(0); // 0번 슬롯으로 초기화
     }
+    //public void OnClickShopButton() // 테스트용 지워야함
+    //{
+    //    shopPopup.SetActive(true);
+    //    animationRect.AnimLeftIn();
+    //    animationRect.AnimRightIn();
+    //    setEffectDescriptionPopup.SetActive(false);
+    //    inventoryPopup.SetActive(false);
+    //}
+    //public void OnClickShopCloseButton() // 테스트용 지워야함
+    //{
+    //    animationRect.CloseWithCallback(() =>
+    //    {
+    //        shopPopup.SetActive(false);
+    //        inventoryPopup.SetActive(false);
+    //        setEffectDescriptionPopup.SetActive(false);
+    //    });
+    //}
     public void OnClickCloseButton()
     {
         inventoryPopup.SetActive(false);
@@ -248,19 +272,17 @@ public class InventoryPopup : MonoBehaviour
             foreach (var effect in artifact.SetEffectData)
             {
                 string countText = "";
-                List<int> counts = new List<int>();
+                HashSet<int> counts = new HashSet<int>();
                 foreach (var setEffectType in effect.SetEffects)
                 {
                     foreach (var setEffectCountData in setEffectType.SetEffectCountData)
                     {
-                        if (!counts.Contains(setEffectCountData.Count))
-                        {
-                            counts.Add(setEffectCountData.Count);
-                        }
+                        counts.Add(setEffectCountData.Count); // 중복은 자동 제거됨
                     }
                 }
-                counts.Sort();
-                countText = string.Join("/", counts);
+                List<int> countList = counts.ToList();
+                countList.Sort();
+                countText = string.Join("/", countList);
                 if (effectDict.ContainsKey(effect.EffectName))
                 {
                     effectDict[effect.EffectName] = (effect, effectDict[effect.EffectName].count + 1, countText);
