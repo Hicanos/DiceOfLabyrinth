@@ -1,5 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+public enum ConditionTypeEnum
+{
+    None,
+    CorrectDiceRank,
+    SameDiceRankAsPreviousTurn,
+    AttackInTurn,
+    KillInTurn
+}
+
+public enum EffectTypeEnum
+{
+    AdditionalDamage,
+    AdditionalRoll,
+    AdditionalStone
+}
 
 public class EngravingBuffMaker
 {    
@@ -30,13 +45,13 @@ public class EngravingBuffMaker
 
         switch (condition.ConditionType)
         {
-            case DamageCondition.ConditionTypeEnum.CorrectDiceRank:
+            case ConditionTypeEnum.CorrectDiceRank:
                 return conditionFunc = new Func<DamageCondition, bool>(CorrectDiceRankCondition);
-            case DamageCondition.ConditionTypeEnum.SameDiceRankAsPreviousTurn:
+            case ConditionTypeEnum.SameDiceRankAsPreviousTurn:
                 return conditionFunc = new Func<DamageCondition, bool>(SameDiceRankAsPreviousTurnCondition);
-            case DamageCondition.ConditionTypeEnum.AttackInTurn:
+            case ConditionTypeEnum.AttackInTurn:
                 return conditionFunc = new Func<DamageCondition, bool>(AttackInTurnCondition);
-            case DamageCondition.ConditionTypeEnum.KillInTurn:
+            case ConditionTypeEnum.KillInTurn:
                 return conditionFunc = new Func<DamageCondition, bool>(KillInTurnCondition);
             default:
                 return conditionFunc = new Func<DamageCondition, bool>(DefaultCondition);
@@ -84,9 +99,9 @@ public class EngravingBuffMaker
     {
         switch (condition.EffectType)
         {
-            case DamageCondition.EffectTypeEnum.AdditionalDamage:
+            case EffectTypeEnum.AdditionalDamage:
                 return DetailedTurnState.Attack;
-            case DamageCondition.EffectTypeEnum.AdditionalStone:
+            case EffectTypeEnum.AdditionalStone:
                 return DetailedTurnState.BattleEnd;
             default:
                 return DetailedTurnState.Enter;

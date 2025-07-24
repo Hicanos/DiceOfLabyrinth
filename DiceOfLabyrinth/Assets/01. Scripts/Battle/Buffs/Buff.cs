@@ -11,7 +11,7 @@ public class Buff : IBuff
     public Func<DamageCondition, bool> JudgeCondition;
     public DamageCondition Condition;
     public DetailedTurnState EffectTime;
-    public DamageCondition.EffectTypeEnum EffectType;
+    public EffectTypeEnum EffectType;
     public float EffectValue;
     public int BuffDuration;
 

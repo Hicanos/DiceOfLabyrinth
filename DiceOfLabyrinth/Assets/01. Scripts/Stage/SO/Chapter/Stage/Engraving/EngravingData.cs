@@ -19,23 +19,7 @@ public class EngravingData : ScriptableObject
 
 [System.Serializable]
 public struct DamageCondition
-{
-    public enum ConditionTypeEnum
-    {
-        None,
-        CorrectDiceRank,
-        SameDiceRankAsPreviousTurn,
-        AttackInTurn,
-        KillInTurn
-    }
-
-    public enum EffectTypeEnum
-    {
-        AdditionalDamage,
-        AdditionalRoll,
-        AdditionalStone
-    }
-
+{   
     [SerializeField] private ConditionTypeEnum conditionType;
     [SerializeField] private float conditionValue;
     [SerializeField] private DiceRankingEnum conditionRank;
