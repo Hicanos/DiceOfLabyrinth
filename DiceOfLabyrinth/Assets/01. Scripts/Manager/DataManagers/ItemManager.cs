@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 /// <summary>
 /// 아이템 데이터를 관리하는 매니저 클래스
@@ -49,29 +50,29 @@ public class ItemManager
 #endif
     }
 
-    // 아이템ID 유효성 검사
-    private bool IsValidItemID(string itemID)
-    {
-        // 아이템ID가 null이거나 빈 문자열인 경우
-        if (string.IsNullOrEmpty(itemID))
-        {
-            return false;
-        }
-        // 아이템SO 딕셔너리에 해당 아이템ID가 존재하는지 확인
-        return allItems.ContainsKey(itemID);
-    }
 
     // 모든 아이템 데이터 로드
 
-    // Addressable에서 모든 아이템 SO 비동기 로드
+
+    // Addressable에서 모든 아이템 SO 비동기 로드, 아이템은 ItemSO 라벨
     private void LoadAllItemSOs()
     {
-        Addressables.LoadAssetsAsync<ItemSO>("ItemSO", OnItemSOLoaded).Completed += (op) =>
+        // "ItemSO" 라벨이 붙은 모든 ItemSO를 비동기로 로드
+        Addressables.LoadAssetsAsync<ItemSO>("ItemSO", OnItemSOLoaded).Completed += handle =>
         {
-            isLoaded = true;
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                isLoaded = true;
 #if UNITY_EDITOR
-            Debug.Log("모든 아이템 SO 로드 완료");
+                Debug.Log($"All ItemSOs loaded successfully. Count: {allItems.Count}");
 #endif
+            }
+            else
+            {
+#if UNITY_EDITOR
+                Debug.LogError("Failed to load ItemSOs.");
+#endif
+            }
         };
     }
 
@@ -82,7 +83,15 @@ public class ItemManager
             allItems.Add(itemSO.ItemID, itemSO);
     }
 
-
+    // 아이템ID 유효성 검사
+    private bool IsValidItemID(string itemID)
+    {
+        // 아이템ID가 null이거나 빈 문자열인 경우
+        if (string.IsNullOrEmpty(itemID))
+            return false;
+        // 아이템SO 딕셔너리에 해당 아이템ID가 존재하는지 확인
+        return allItems.ContainsKey(itemID);
+    }
 
 
     // 아이템 획득 메서드
