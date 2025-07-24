@@ -153,6 +153,10 @@ public class BattleUIController : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject())
             return;
+#if UNITY_ANDROID || UNITY_IOS
+    if (Input.touchCount > 0 && EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+        return;
+#endif
         Vector2 pointerPos = pointerPositionAction.action.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(pointerPos);
         if (Physics.Raycast(ray, out RaycastHit hit))
@@ -172,14 +176,6 @@ public class BattleUIController : MonoBehaviour
                         }
                     }
                 }
-                //else if (context.interaction is HoldInteraction)
-                //{
-                //    Debug.Log($"Platform {relay.platformIndex} is held.");
-                //}
-                //else
-                //{
-                //    Debug.LogWarning("Unknown interaction type detected.");
-                //}
             }
         }
     }
