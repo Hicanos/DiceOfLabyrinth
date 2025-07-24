@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 public enum ConditionTypeEnum
 {
     None,
@@ -18,7 +19,7 @@ public enum EffectTypeEnum
 
 public class EngravingBuffMaker
 {    
-    EngravingBuffs engravingBuffs = new EngravingBuffs();
+    EngravingBuffContainer engravingBuffs = new EngravingBuffContainer();
     
     public void MakeEngravingBuff()
     {
@@ -33,7 +34,7 @@ public class EngravingBuffMaker
             {
                 condition = engravings[i].DamageConditions[j];
 
-                buff = new Buff(GetConditionType(condition), condition, GetEffectType(condition));
+                buff = new EngravingBuff(GetConditionType(condition), condition, GetEffectType(condition));
                 engravingBuffs.AddEngravingBuffs(buff);
             }
         }

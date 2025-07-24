@@ -3,10 +3,11 @@
 public interface IBuff
 {
     public void Action();
+    public void CallBack();
     public void ReduceDuration();
 }
 
-public class Buff : IBuff
+public class EngravingBuff : IBuff
 {
     public Func<DamageCondition, bool> JudgeCondition;
     public DamageCondition Condition;
@@ -15,7 +16,7 @@ public class Buff : IBuff
     public float EffectValue;
     public int BuffDuration;
 
-    public Buff(Func<DamageCondition, bool> jungeCondition, DamageCondition condition, DetailedTurnState effectTime)
+    public EngravingBuff(Func<DamageCondition, bool> jungeCondition, DamageCondition condition, DetailedTurnState effectTime)
     {
         JudgeCondition = jungeCondition;
         EffectTime = effectTime;
@@ -33,6 +34,11 @@ public class Buff : IBuff
         {
             BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] += EffectValue;
         }
+    }
+
+    public void CallBack()
+    {
+
     }
 
     public void ReduceDuration()

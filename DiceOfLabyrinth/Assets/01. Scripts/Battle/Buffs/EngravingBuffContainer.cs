@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class EngravingBuffs
+public class EngravingBuffContainer
 {
     private List<IBuff> Buffs = new List<IBuff>();
 
