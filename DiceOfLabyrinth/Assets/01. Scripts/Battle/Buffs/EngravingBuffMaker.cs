@@ -28,7 +28,7 @@ public class EngravingBuffMaker
         IBuff buff;
         for (int i = 0; i < engravings.Count; i++)
         {
-            if (engravings[i] == null) return;
+            if (engravings[i] == null) continue;
 
             for (int j = 0; j < engravings[i].DamageConditions.Count; j++)
             {

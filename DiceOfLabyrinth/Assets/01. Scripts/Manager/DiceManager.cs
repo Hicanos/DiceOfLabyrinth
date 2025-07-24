@@ -75,8 +75,7 @@ public class DiceManager : MonoBehaviour
 
     private int rollCount = 0;
     private readonly int maxRollCount = 3;
-    public int AdditionalRollCount;
-    public int RollRemain => maxRollCount + AdditionalRollCount - rollCount;
+    public int RollRemain => maxRollCount + (int)BattleManager.Instance.EngravingAdditionalStatus.AdditionalRoll - rollCount;
 
     //public bool isSkipped = false;
     public bool IsRolling = false;
