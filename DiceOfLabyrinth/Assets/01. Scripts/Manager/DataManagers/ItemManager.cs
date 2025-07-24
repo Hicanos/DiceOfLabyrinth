@@ -100,7 +100,7 @@ public class ItemManager
         // 아이템SO의 ItemID가 유효한지 확인 (별도의 메서드 호출)
         if (!IsValidItemID(ItemID))
         {
-            // 유효하지 않은 아이템ID인 경우 예외 처리
+            // 유효하지 않은 아이템ID인 경우 예외 처리(보통 일어나면 안됨)
             return;
         }
         // 유효한 아이템이라면 보유 중인 아이템 항목에 추가.
@@ -139,9 +139,60 @@ public class ItemManager
     }
 
 
-    // 보유 중인 아이템 중, EXP 포션 리스트
+    // 하위는 각 아이템 종류별로 보유 중인 아이템 반환(인벤토리 필터 등)
 
-    // 보유 중인 아이템 중, 스킬 북 리스트
+    // 보유중인 EXP 포션 딕셔너리
+    public Dictionary<string, int> GetPotions()
+    {
+        // 아이템들 중 EXPpotion으로 생성된 SO만 출력
+        Dictionary<string, int> potions = new Dictionary<string, int>();
+        foreach (var item in ownedItems)
+        {
+            ItemSO itemSO = GetItemSO(item.Key);
+            if (itemSO is EXPpotion expPotion)
+            {
+                potions.Add(item.Key, item.Value);
+            }
+        }
+        return potions;
+    }
 
-    // 보유 중인 아이템 중, 돌파석 리스트
+
+    // 보유 중인 아이템 중, 스킬 북 딕셔너리
+
+    public Dictionary<string, int> GetSkillBooks()
+    {
+        // 아이템들 중 SkillBook으로 생성된 SO만 출력
+        Dictionary<string, int> skillBooks = new Dictionary<string, int>();
+        foreach (var item in ownedItems)
+        {
+            ItemSO itemSO = GetItemSO(item.Key);
+            if (itemSO is SkillBook skillBook)
+            {
+                skillBooks.Add(item.Key, item.Value);
+            }
+        }
+        return skillBooks;
+    }
+
+
+    // 보유 중인 아이템 중, 돌파석(AscensionStone) 리스트
+    public Dictionary<string, int> GetAscensionStones()
+    {
+        // 아이템들 중 AscensionStone으로 생성된 SO만 출력
+        Dictionary<string, int> ascensionStones = new Dictionary<string, int>();
+        foreach (var item in ownedItems)
+        {
+            ItemSO itemSO = GetItemSO(item.Key);
+            if (itemSO is AscensionStone ascensionStone)
+            {
+                ascensionStones.Add(item.Key, item.Value);
+            }
+        }
+        return ascensionStones;
+    }
+    
+    // 보유 중인 아이템을 아이템 ID 순서대로 정렬 (아이템ID: Item_(숫자) 형식)
+
+
 }
