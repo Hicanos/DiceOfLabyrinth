@@ -85,6 +85,17 @@ public class DataSaver
     public class ItemData
     {
         // 플레이어가 획득한 아이템 정보 (스킬 강화 아이템 등)
+        // ItemManager의 Dictionary<string, int> ownedItems를 기반으로 저장
+        public string ItemID; // 아이템 ID
+        public int Quantity; // 아이템 개수
+
+        // 생성자
+        public ItemData() { }
+        public ItemData(string itemID, int quantity)
+        {
+            ItemID = itemID;
+            Quantity = quantity;
+        }
     }
 
     /// <summary>
@@ -95,7 +106,10 @@ public class DataSaver
     {
         public UserData userData = new UserData();
         public List<CharacterData> characters = new List<CharacterData>();
+
         // StageData, ItemData (List로 저장)
+        // ItemData
+        public List<ItemData> items = new List<ItemData>();
     }
 
     private static readonly string SavePath = Path.Combine(Application.persistentDataPath, "save.json");
@@ -176,8 +190,7 @@ public class DataSaver
             if (File.Exists(SavePath))
             {
                 string json = File.ReadAllText(SavePath);
-                SaveData = JsonConvert.DeserializeObject<GameSaveData>(json);
-                CharacterManager.Instance.LoadAllCharactersAsync();
+                SaveData = JsonConvert.DeserializeObject<GameSaveData>(json);                
 #if UNITY_EDITOR
                 Debug.Log($"게임 데이터 로드됨: {SavePath}");
 #endif
@@ -185,7 +198,6 @@ public class DataSaver
             else
             {
                 SaveData = new GameSaveData();
-                CharacterManager.Instance.LoadAllCharactersAsync();
                 Save(); // 초기화 후 새로 저장
 #if UNITY_EDITOR
                 Debug.Log("저장 파일이 없어 새 데이터로 초기화");
@@ -196,8 +208,11 @@ public class DataSaver
         {
             Debug.LogError($"게임 데이터 불러오기 실패: {ex.Message}");
             SaveData = new GameSaveData();
-            CharacterManager.Instance.LoadAllCharactersAsync();
+            
             Save(); // 초기화 후 새로 저장
         }
+
+        CharacterManager.Instance.LoadAllCharactersAsync();
+        ItemManager.Instance.LoadAllItemSOs();
     }
 }

@@ -11,6 +11,7 @@ public class ItemSO : ScriptableObject
     public string ItemID; // 아이템의 고유 ID
     public string NameKr; // 아이템의 한국어 이름
     public string NameEn; // 아이템의 영어 이름
+    public Sprite Icon; // 아이템의 아이콘 이미지
 
     [TextArea(3, 5)]
     public string Description; // 아이템의 한국어 설명
@@ -21,8 +22,6 @@ public class ItemSO : ScriptableObject
     public ItemLoot LootType; // 아이템의 획득 방식 (예: StageClear, CharacterRecruit 등)
     public bool IsStackable; // 아이템이 인벤토리에서 한 칸에 여러 개 쌓일 수 있는지 여부(true면 스택가능)
     public int MaxStackSize = 1; // 아이템의 최대 스택 크기 (스택 가능 아이템에만 적용)
-
-
 }
 
 public enum ItemType
