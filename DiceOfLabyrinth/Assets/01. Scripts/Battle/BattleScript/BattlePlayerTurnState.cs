@@ -34,7 +34,7 @@
     {        
         DiceManager.Instance.DiceRankBefore = DiceManager.Instance.DiceRank;
 
-        DiceManager.Instance.AdditionalRollCount = 0;
+        //DiceManager.Instance.AdditionalRollCount = 0;
     }
 
     public void ChangeDetailedTurnState(DetailedTurnState state)
