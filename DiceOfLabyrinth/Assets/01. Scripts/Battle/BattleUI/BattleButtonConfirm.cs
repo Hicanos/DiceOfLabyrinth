@@ -13,25 +13,28 @@ public class BattleButtonConfirm : AbstractBattleButton
         diceManager = DiceManager.Instance;
     }
 
-    public override void OnOffButton(PlayerTurnState state)
+    public override void OnOffButton(DetailedTurnState state)
     {
         switch (state)
         {            
-            case PlayerTurnState.Enter:
+            case DetailedTurnState.Enter:
                 gameObject.SetActive(true);
                 confirmButton.interactable = false;
                 break;
-            case PlayerTurnState.Roll:
+            case DetailedTurnState.Roll:
                 backBoard.SetActive(true);
                 confirmButton.interactable = false;
                 break;
-            case PlayerTurnState.RollEnd:
+            case DetailedTurnState.RollEnd:
                 gameObject.SetActive(true);
                 confirmButton.interactable = true;
                 break;
-            case PlayerTurnState.Confirm:
+            case DetailedTurnState.Attack:
                 backBoard.SetActive(false);
                 confirmButton.interactable = false;
+                break;
+            case DetailedTurnState.BattleEnd:
+                gameObject.SetActive(false);
                 break;
         }
     }
@@ -56,7 +59,7 @@ public class BattleButtonConfirm : AbstractBattleButton
         diceManager.DiceHolding.isCantFix = false;
 
         //BattleManager.Instance.BattlePlayerTurnState.AbstractButtonPushed();
-        BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(PlayerTurnState.Confirm);
+        BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.Attack);
 
         float diceWeighting = DiceManager.Instance.DiceBattle.GetDamageWeighting(); //족보별 계수
         BattleManager battleManager = BattleManager.Instance;

@@ -53,7 +53,7 @@ public class DiceHolding : MonoBehaviour
             {
                 dice = hit.collider.gameObject.GetComponent<DiceMy>();
                 dice.SetIndex();
-                Debug.Log("실릭트");
+                //Debug.Log("실릭트");
                 DiceFixed(dice);
             }
         }
@@ -179,7 +179,7 @@ public class DiceHolding : MonoBehaviour
             {
                 diceManager.StopSimulation();
                 diceManager.IsRolling = false;
-                Debug.Log("스킵 다이스");
+                //Debug.Log("스킵 다이스");
                 //diceManager.isSkipped = true;
                 diceManager.SortingFakeDice();
             }
@@ -214,11 +214,13 @@ public class DiceHolding : MonoBehaviour
         Vector3 result;
         for (int i = 0; i < 5; i++)
         {
+            if(fixedDiceList.Contains<int>(i)) continue;
             Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, targetRects[i].position);
             RectTransformUtility.ScreenPointToWorldPointInRectangle(targetRects[i], screenPos, canvas.worldCamera, out result);
             result.y = fakeDicePositionY;
 
             diceManager.FakeDices[i].transform.position = result;
+            fixedDiceList.Add(i);
         }
         
         DiceRollButton.interactable = false;
@@ -230,7 +232,13 @@ public class DiceHolding : MonoBehaviour
         {
             diceManager.FakeDices[i].transform.localPosition = diceManager.DicePos[i];
         }
-        DiceRollButton.interactable = true;
+        
+        fixedDiceList.RemoveRange(0, fixedDiceList.Count);
+
+        if (diceManager.RollRemain > 0)
+        {
+            DiceRollButton.interactable = true;
+        }
     }
 
     IEnumerator AllDiceFixed()

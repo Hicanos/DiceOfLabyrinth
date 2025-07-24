@@ -36,7 +36,7 @@ public class EnemyData: ScriptableObject
     [SerializeField] private string enemyName;
     [SerializeField] private EnemyType enemyType;
     [SerializeField] private EnemySpecies enemySpecies;
-    [SerializeField] private EnemyAttribute enemyAttribute;
+    [SerializeField] private DesignEnums.ElementTypes enemyAttribute;
     [SerializeField] private int baseMaxHp;
     [SerializeField] private int baseAtk;
     [SerializeField] private int baseDef;
@@ -53,7 +53,7 @@ public class EnemyData: ScriptableObject
     public int EnemyLevel => (StageManager.Instance.stageSaveData.currentStageIndex + 1) * 10;
     public EnemyType Type => enemyType;
     public EnemySpecies Species => enemySpecies;
-    public EnemyAttribute Attribute => enemyAttribute;
+    public DesignEnums.ElementTypes Attribute => enemyAttribute;
     public string Description => description;
     public GameObject EnemyPrefab => enemyPrefab;
     public List<int> ActiveSkills => activeSkills;

@@ -14,26 +14,26 @@ public class BattleButtonSkill : AbstractBattleButton
         character = BattleManager.Instance.BattleGroup.BattleCharacters[index-1];
     }
 
-    public override void OnOffButton(PlayerTurnState state)
+    public override void OnOffButton(DetailedTurnState state)
     {
         switch (state)
         {
-            case PlayerTurnState.BattleStart:
+            case DetailedTurnState.BattleStart:
                 gameObject.transform.parent.gameObject.SetActive(true);
                 break;
-            case PlayerTurnState.Enter:
+            case DetailedTurnState.Enter:
                 button.interactable = true;
                 break;
-            case PlayerTurnState.Confirm:
+            case DetailedTurnState.Attack:
                 button.interactable = false;
                 break;
-            case PlayerTurnState.ConfirmEnd:
+            case DetailedTurnState.AttackEnd:
                 button.interactable = true;
                 break;
-            case PlayerTurnState.EndTurn:
+            case DetailedTurnState.EndTurn:
                 button.interactable = false;
                 break;
-            case PlayerTurnState.BattleEnd:
+            case DetailedTurnState.BattleEnd:
                 gameObject.transform.parent.gameObject.SetActive(false);
                 break;
         }

@@ -15,24 +15,24 @@ public class BattleUIPatternDisplay : AbstractBattleButton
 
     }
 
-    public override void OnOffButton(PlayerTurnState state)
+    public override void OnOffButton(DetailedTurnState state)
     {
         switch (state)
         {
-            case PlayerTurnState.BattleStart:
+            case DetailedTurnState.BattleStart:
                 gameObject.SetActive(true);
                 descriptionPanel.gameObject.SetActive(false);
                 break;
-            case PlayerTurnState.Enter:
+            case DetailedTurnState.Enter:
                 StartCoroutine(BlinkUI());
                 break;
-            case PlayerTurnState.Roll:
+            case DetailedTurnState.Roll:
                 button.interactable = false;
                 break;
-            case PlayerTurnState.Confirm:
+            case DetailedTurnState.Attack:
                 button.interactable = true;
                 break;
-            case PlayerTurnState.BattleEnd:
+            case DetailedTurnState.BattleEnd:
                 descriptionPanel.gameObject.SetActive(true);
                 gameObject.SetActive(false);
                 break;

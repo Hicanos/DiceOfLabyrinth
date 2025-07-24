@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-
-public enum DiceRankingEnum
+﻿public enum DiceRankingEnum
 {
+    None,
     Top,
     Triple,
     Quadruple,

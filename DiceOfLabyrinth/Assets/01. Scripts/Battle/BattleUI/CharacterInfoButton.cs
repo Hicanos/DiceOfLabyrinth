@@ -12,18 +12,23 @@ public class CharacterInfoButton : AbstractBattleButton
         UIManager.Instance.BattleUI.Buttons.Add(this);
     }
 
+    private void OnDisable()
+    {
+        UIManager.Instance.BattleUI.Buttons.Remove(this);
+    }
+
     public override void Setting()
     {
     }
 
-    public override void OnOffButton(PlayerTurnState state)
+    public override void OnOffButton(DetailedTurnState state)
     {
         switch(state)
         {
-            case PlayerTurnState.Roll:
+            case DetailedTurnState.Roll:
                 gameObject.transform.position = gameObject.transform.position + Vector3.up * 100;
                 break;
-            case PlayerTurnState.Confirm:
+            case DetailedTurnState.Attack:
                 gameObject.transform.position = gameObject.transform.position - Vector3.up * 100;
                 break;
         }

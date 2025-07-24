@@ -4,9 +4,10 @@
     void BattleUpdate();
     void Exit();
 }
+
 public class BattleStateMachine
 {
-    IBattleTurnState currentState;
+    public IBattleTurnState currentState;
 
     public BattleStateMachine(IBattleTurnState defaultState)
     {

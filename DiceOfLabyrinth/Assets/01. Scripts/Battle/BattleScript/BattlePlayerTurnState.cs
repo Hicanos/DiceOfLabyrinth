@@ -1,7 +1,7 @@
 ﻿public class BattlePlayerTurnState : IBattleTurnState
 {
     BattleManager battleManager = BattleManager.Instance;
-    public PlayerTurnState DetailedTurnState;
+    public DetailedTurnState DetailedTurnState;
 
     public void Enter()
     {
@@ -12,16 +12,17 @@
         if (battleManager.BattleTurn == 1)
         {
             AbstractButtonSetting();
-            ChangeDetailedTurnState(PlayerTurnState.BattleStart);
+            ChangeDetailedTurnState(DetailedTurnState.BattleStart);
+        }
+        else
+        {
+            battleManager.EngravingBuffs.ReduceDuration();
         }
 
         UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(true);
         string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
-        //for(int i = 0; i < battleManager.BattleGroup.BattleEngravings.Length; i++)
-        //{
-        //    battleManager.BattleGroup.BattleEngravings[i].GetEngravingEffectInTurnEnter();
-        //}
-        ChangeDetailedTurnState(PlayerTurnState.Enter);
+        
+        ChangeDetailedTurnState(DetailedTurnState.Enter);
     }
 
     public void BattleUpdate()
@@ -30,56 +31,29 @@
     }
 
     public void Exit()
-    {
-        if (battleManager.BattleTurn > 1)
-        {
-            DiceManager.Instance.DiceRankBefore = DiceManager.Instance.DiceRank;
-        }
+    {        
+        DiceManager.Instance.DiceRankBefore = DiceManager.Instance.DiceRank;
 
-        battleManager.BattleGroup.EngravingDamageRatio = 0;
-        DiceManager.Instance.AdditionalRollCount = 0;
+        //DiceManager.Instance.AdditionalRollCount = 0;
     }
 
-    public void ChangeDetailedTurnState(PlayerTurnState state)
+    public void ChangeDetailedTurnState(DetailedTurnState state)
     {
-        battleManager.CurrentPlayerState = state;
-
+        battleManager.CurrentDetailedState = state;
+        battleManager.EngravingBuffs.Action();
         OnOffButton();
     }
 
-    //private void ChangePlayerTurnState()
-    //{
-    //    switch (battleManager.CurrentPlayerState)
-    //    {
-    //        case PlayerTurnState.Enter:
-    //            battleManager.CurrentPlayerState = PlayerTurnState.Roll;
-    //            break;
-    //        case PlayerTurnState.Roll:
-    //            battleManager.CurrentPlayerState = PlayerTurnState.Confirm;
-    //            break;
-    //        case PlayerTurnState.Confirm:
-    //            battleManager.CurrentPlayerState = PlayerTurnState.EndTurn;
-    //            break;
-    //    }
-
-    //    OnOffButton();
-    //}
-
-    //public void AbstractButtonPushed()
-    //{
-    //    ChangePlayerTurnState();
-    //}
-
     public void EndPlayerTurn()
     {
-        battleManager.StateMachine.ChangeState(battleManager.I_EnemyTurnState);
+        battleManager.StateMachine.currentState = battleManager.I_EnemyTurnState;
     }
 
     private void OnOffButton()
     {
         foreach (AbstractBattleButton button in UIManager.Instance.BattleUI.Buttons)
         {
-            button.OnOffButton(battleManager.CurrentPlayerState);
+            button.OnOffButton(battleManager.CurrentDetailedState);
         }
     }
 
