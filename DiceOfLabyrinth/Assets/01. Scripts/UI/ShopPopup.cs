@@ -82,6 +82,7 @@ public class ShopPopup : MonoBehaviour
         //exceptedArtifacts.Clear(); // 상점에서 제외할 아티팩트 목록 초기화, // 현재는 사용하지 않음
         ShopArtifactRefresh(); //상점 아티팩트 갱신
         resetCost = baseResetCost;
+        ResetButtonRefresh();
     }
 
     private void OwnedArtifactRefresh()
@@ -152,7 +153,6 @@ public class ShopPopup : MonoBehaviour
         }
         if (selectableArtifacts[index] == null)
         {
-            OnClickShopArtifactSlot(index - 1); // 선택한 슬롯에 아티팩트가 없으면 다음 슬롯으로 이동
             return;
         }
         selectedArtifactIndexInShopList = index; // 선택한 슬롯 인덱스 저장
@@ -167,7 +167,6 @@ public class ShopPopup : MonoBehaviour
         }
         if (StageManager.Instance.stageSaveData.artifacts[index] == null)
         {
-            OnClickOwnedArtifactSlot(index -1); // 선택한 슬롯에 아티팩트가 없으면 이전 슬롯으로 이동
             return;
         }
         selectedArtifactIndexInOwnedList = index; // 선택한 슬롯 인덱스 저장
@@ -226,8 +225,8 @@ public class ShopPopup : MonoBehaviour
             }
             else
             {
-                ownedArtifactIcons[i].GetComponent<CanvasGroup>().alpha = selectedAlpha;
-                ownedArtifactRarities[i].GetComponent<CanvasGroup>().alpha = selectedAlpha;
+                ownedArtifactIcons[i].GetComponent<CanvasGroup>().alpha = unselectedAlpha;
+                ownedArtifactRarities[i].GetComponent<CanvasGroup>().alpha = unselectedAlpha;
             }
         }
     }

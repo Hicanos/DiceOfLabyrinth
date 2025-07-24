@@ -44,6 +44,7 @@ public class BattleUIController : MonoBehaviour
 
     [Header("Popup")]
     [SerializeField] private GameObject shopPopup;
+    [SerializeField] private GameObject recoveryPopup; // 회복 팝업
 
     [Header("Item Choice Icons")]
     [SerializeField] private GameObject[] itemChoiceIcon = new GameObject[3]; // 아이템 선택 아이콘을 위한 배열
@@ -195,7 +196,8 @@ public class BattleUIController : MonoBehaviour
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
-        //shopPanel.SetActive(false); // 상점 패널은 현재 사용하지 않으므로 주석 처리
+        shopPopup.SetActive(false);
+        recoveryPopup.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         selectEventPanel.SetActive(false);
         foreach (var characterPlatform in characterPlatforms)
@@ -246,6 +248,7 @@ public class BattleUIController : MonoBehaviour
                 characterPlatform.SetActive(true);
         }
          shopPopup.SetActive(false);
+        recoveryPopup.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
 
 
@@ -505,6 +508,7 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
+        recoveryPopup.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -527,6 +531,7 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
+        recoveryPopup.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -584,6 +589,7 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(true);
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
+        recoveryPopup.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -672,6 +678,7 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(true);
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
+        recoveryPopup.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -829,6 +836,7 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
         shopPopup.SetActive(false);
+        recoveryPopup.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         selectEventPanel.SetActive(true); // 선택지 이벤트 패널 활성화
         foreach (var characterPlatform in characterPlatforms)
@@ -880,6 +888,7 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
+        recoveryPopup.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -900,6 +909,7 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
+        recoveryPopup.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -930,6 +940,7 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(true);
+        recoveryPopup.SetActive(false);
         // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -951,6 +962,7 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
+        recoveryPopup.SetActive(false);
         // selectEquipmedArtifactPanel.SetActive(true); // 아티팩트 선택 패널 활성화
         foreach (var characterPlatform in characterPlatforms)
         {
