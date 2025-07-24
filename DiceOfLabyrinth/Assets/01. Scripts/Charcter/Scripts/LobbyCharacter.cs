@@ -15,7 +15,6 @@ public class LobbyCharacter : Character
     public int RegularHP; // (아무런 보정이 없는) 체력
     public float CritChance; // 치명타 확률
     public float CritDamage; // 치명타 피해량
-    public int MaxLevel = 20; // 최대 레벨
 
 
     // 로비 캐릭터 데이터
@@ -47,16 +46,11 @@ public class LobbyCharacter : Character
         GetExpToNextLevel();
         CurrentExp += exp;
         // 레벨업 조건 및 처리 로직 추가 가능
-        // 현재 최대레벨은 20, 20에 도달하면 더이상 레벨이 증가하지 않음
-        while (CurrentExp >= GetExpToNextLevel()&& Level < MaxLevel)
+        // 현재 최대레벨 제거됨
+        while (CurrentExp >= GetExpToNextLevel())
         {
             CurrentExp -= GetExpToNextLevel();
             LevelUP();
-        }
-
-        if (Level >= MaxLevel)
-        {
-            CurrentExp = 0;
         }
         // 변동된 값(CurrentExp) 저장
         DataSaver.Instance.SaveCharacter(this);
@@ -65,15 +59,14 @@ public class LobbyCharacter : Character
 
     private void LevelUP()
     {
-        if (Level < MaxLevel)
-        {
-            Level++;
-            // 레벨이 올라가면 올라간만큼 기본 능력치 증가함
-            GetMaxHP();
-            RegularATK = GetATK();
-            RegularDEF = GetDEF();
-            RegularHP = GetMaxHP();
-        }
+
+        Level++;
+        // 레벨이 올라가면 올라간만큼 기본 능력치 증가함
+        GetMaxHP();
+        RegularATK = GetATK();
+        RegularDEF = GetDEF();
+        RegularHP = GetMaxHP();
+
     }
 
     /// <summary>
