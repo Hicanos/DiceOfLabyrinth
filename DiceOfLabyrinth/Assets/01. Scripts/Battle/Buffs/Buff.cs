@@ -1,0 +1,47 @@
+﻿using System;
+
+public interface IBuff
+{
+    public void Action();
+    public void ReduceDuration();
+}
+
+public class Buff : IBuff
+{
+    public Func<DamageCondition, bool> JudgeCondition;
+    public DamageCondition Condition;
+    public DetailedTurnState EffectTime;
+    public DamageCondition.EffectTypeEnum EffectType;
+    public float EffectValue;
+    public int BuffDuration;
+
+    public Buff(Func<DamageCondition, bool> jungeCondition, DamageCondition condition, DetailedTurnState effectTime)
+    {
+        JudgeCondition = jungeCondition;
+        EffectTime = effectTime;
+        Condition = condition;
+        EffectType = condition.EffectType;
+        EffectValue = condition.EffectValue;
+        BuffDuration = condition.BuffDuration;
+    }
+
+    public void Action()
+    {
+        if (BattleManager.Instance.CurrentDetailedState != EffectTime) return;
+
+        if (JudgeCondition != null && JudgeCondition(Condition))
+        {
+            BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] += EffectValue;
+        }
+    }
+
+    public void ReduceDuration()
+    {
+        BuffDuration--;
+
+        if (BuffDuration == 0)
+        {
+            BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] -= EffectValue;
+        }
+    }
+}

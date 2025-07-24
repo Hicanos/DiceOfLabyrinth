@@ -22,10 +22,7 @@ public class BattleCharacterAttack : MonoBehaviour
     {
         isCharacterAttacking = true;
         battleManager = BattleManager.Instance;
-        for (int i = 0; i < battleManager.BattleGroup.BattleEngravings.Length; i++)
-        {
-            battleManager.BattleGroup.BattleEngravings[i].GetEngravingEffectInAttack();
-        }
+        
         enumeratorAttack = CharacterAttackCoroutine(diceWeighting);
         StartCoroutine(enumeratorAttack);
     }
@@ -93,7 +90,7 @@ public class BattleCharacterAttack : MonoBehaviour
             yield return new WaitForSeconds(waitSecondCharAttack);
         }
         isCharacterAttacking = false;
-        BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.ConfirmEnd);
+        BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.AttackEnd);
     }
 
     IEnumerator DealDamage(IDamagable target, int damage)
@@ -138,7 +135,7 @@ public class BattleCharacterAttack : MonoBehaviour
     {
         //{공격력 - 방어력 * (1-방어력 관통률)} * (1 + 버프 + 아티팩트 + 속성 + 패시브) * (족보별 계수 * 각인 계수)
         float artifactAddAtk = battleManager.ArtifactAdditionalValue.TotalAdditionalDamage;
-        float engravingAddAtk = battleManager.EngravingAdditionalValue.TotalAdditionalDamage;
+        float engravingAddAtk = battleManager.EngravingAdditionalStatus.AdditionalStatus[(int)DamageCondition.EffectTypeEnum.AdditionalDamage];
         elementDamage += battleManager.ArtifactAdditionalValue.AdditionalElementDamage;
 
         float damage = (characterAtk - monsterDef * (1- penetration)) * (1 + artifactAddAtk + elementDamage) * ((int)diceWeighting * engravingAddAtk);
