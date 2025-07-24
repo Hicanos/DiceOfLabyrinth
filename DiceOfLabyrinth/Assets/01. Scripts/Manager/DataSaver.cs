@@ -190,8 +190,7 @@ public class DataSaver
             if (File.Exists(SavePath))
             {
                 string json = File.ReadAllText(SavePath);
-                SaveData = JsonConvert.DeserializeObject<GameSaveData>(json);
-                CharacterManager.Instance.LoadAllCharactersAsync();
+                SaveData = JsonConvert.DeserializeObject<GameSaveData>(json);                
 #if UNITY_EDITOR
                 Debug.Log($"게임 데이터 로드됨: {SavePath}");
 #endif
@@ -199,7 +198,6 @@ public class DataSaver
             else
             {
                 SaveData = new GameSaveData();
-                CharacterManager.Instance.LoadAllCharactersAsync();
                 Save(); // 초기화 후 새로 저장
 #if UNITY_EDITOR
                 Debug.Log("저장 파일이 없어 새 데이터로 초기화");
@@ -210,8 +208,11 @@ public class DataSaver
         {
             Debug.LogError($"게임 데이터 불러오기 실패: {ex.Message}");
             SaveData = new GameSaveData();
-            CharacterManager.Instance.LoadAllCharactersAsync();
+            
             Save(); // 초기화 후 새로 저장
         }
+
+        CharacterManager.Instance.LoadAllCharactersAsync();
+        ItemManager.Instance.LoadAllItemSOs();
     }
 }

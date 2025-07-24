@@ -41,8 +41,8 @@ public class ItemManager
     //이니셜라이저
     private void Initialize()
     {
+        // Addressable에서 모든 아이템 SO를 비동기적으로 로드
         ownedItems = new Dictionary<string, int>();
-        LoadAllItemSOs(); // Addressable에서 모든 아이템 SO를 비동기적으로 로드
 
         //에디터에만 실행하는 디버그
 #if UNITY_EDITOR
@@ -55,7 +55,7 @@ public class ItemManager
 
 
     // Addressable에서 모든 아이템 SO 비동기 로드, 아이템은 ItemSO 라벨
-    private void LoadAllItemSOs()
+    public void LoadAllItemSOs()
     {
         // "ItemSO" 라벨이 붙은 모든 ItemSO를 비동기로 로드
         Addressables.LoadAssetsAsync<ItemSO>("ItemSO", OnItemSOLoaded).Completed += handle =>
