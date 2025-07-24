@@ -30,13 +30,13 @@ public class ShopPopup : MonoBehaviour
     [SerializeField] private TMP_Text ownedArtifactDescriptionText;
     [SerializeField] private TMP_Text sellPriceText;
 
-    [Header("Artifact Icon Refresh Color")]
-    [SerializeField] private Color selectedColor = Color.white;
-    [SerializeField] private Color unselectedColor = new Color(1, 1, 1, 0.5f);
+    [Header("Artifact Icon Refresh Alpha")]
+    [SerializeField, Range(0f, 1f)] private float selectedAlpha = 1f;
+    [SerializeField, Range(0f, 1f)] private float unselectedAlpha = 0.5f;
 
     [Header("ShopArtifact")]
     [SerializeField] private List<ArtifactData> selectableArtifacts = new List<ArtifactData>(6); // 상점에서 선택 가능한 아티팩트 목록
-    [SerializeField] private List<ArtifactData> exceptedArtifacts = new List<ArtifactData>(); // 상점에서 제외할 아티팩트 목록
+    //[SerializeField] private List<ArtifactData> exceptedArtifacts = new List<ArtifactData>(); // 상점에서 제외할 아티팩트 목록//현재는 사용하지 않음
     [SerializeField] private List<GameObject> shopArtifactViewers = new List<GameObject>(6); // 상점 아티팩트 뷰어 목록
 
     [Header("ShopArtifactViewers")]
@@ -56,7 +56,7 @@ public class ShopPopup : MonoBehaviour
 
     [Header("Recovery Popup")]
     [SerializeField] private GameObject recoveryPopup;
-    private int resetCount;
+    //private int resetCount;
 
     private void Awake()
     {
@@ -79,7 +79,7 @@ public class ShopPopup : MonoBehaviour
         selectedArtifactIndexInOwnedList = -1; // 초기화
         selectedArtifactIndexInShopList = -1; // 초기화
         OwnedArtifactRefresh(); //소유한 아티팩트 갱신
-        exceptedArtifacts.Clear(); // 상점에서 제외할 아티팩트 목록 초기화
+        //exceptedArtifacts.Clear(); // 상점에서 제외할 아티팩트 목록 초기화, // 현재는 사용하지 않음
         ShopArtifactRefresh(); //상점 아티팩트 갱신
         resetCost = baseResetCost;
     }
@@ -112,7 +112,7 @@ public class ShopPopup : MonoBehaviour
         }
         List<ArtifactData> shopInventoryArtifacts = StageManager.Instance.chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
             .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ArtifactList.ToList(); 
-        shopInventoryArtifacts.RemoveAll(artifact => exceptedArtifacts.Contains(artifact)); // 제외할 아티팩트 제거
+        //shopInventoryArtifacts.RemoveAll(artifact => exceptedArtifacts.Contains(artifact)); // 제외할 아티팩트 제거
         shopInventoryArtifacts.RemoveAll(artifact => StageManager.Instance.stageSaveData.artifacts.Contains(artifact)); // 이미 소유한 아티팩트 제거
         shopInventoryArtifacts.RemoveAll(artifact => StageManager.Instance.stageSaveData.equipedArtifacts.Contains(artifact)); // 장착된 아티팩트 제거
         // 리스트에서 랜덤 6개 선택
@@ -179,14 +179,12 @@ public class ShopPopup : MonoBehaviour
     {
         for (int i = 0; i < 6; i++)
         {
-            if (i == slotIndex)
+            var canvasGroup = shopArtifactViewers[i].GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
             {
-                shopArtifactViewers[i].GetComponent<UnityEngine.UI.Image>().color = selectedColor;
+                canvasGroup = shopArtifactViewers[i].AddComponent<CanvasGroup>();
             }
-            else
-            {
-                shopArtifactViewers[i].GetComponent<UnityEngine.UI.Image>().color = unselectedColor;
-            }
+            canvasGroup.alpha = (i == slotIndex) ? selectedAlpha : unselectedAlpha;
         }
     }
     private void ShopArtifactDescriptionRefresh(int slotIndex)
@@ -223,13 +221,13 @@ public class ShopPopup : MonoBehaviour
         {
             if (i == slotIndex)
             {
-                ownedArtifactIcons[i].GetComponent<UnityEngine.UI.Image>().color = selectedColor;
-                ownedArtifactRarities[i].GetComponent<UnityEngine.UI.Image>().color = selectedColor;
+                ownedArtifactIcons[i].GetComponent<CanvasGroup>().alpha = selectedAlpha;
+                ownedArtifactRarities[i].GetComponent<CanvasGroup>().alpha = selectedAlpha;
             }
             else
             {
-                ownedArtifactIcons[i].GetComponent<UnityEngine.UI.Image>().color = unselectedColor;
-                ownedArtifactRarities[i].GetComponent<UnityEngine.UI.Image>().color = unselectedColor;
+                ownedArtifactIcons[i].GetComponent<CanvasGroup>().alpha = selectedAlpha;
+                ownedArtifactRarities[i].GetComponent<CanvasGroup>().alpha = selectedAlpha;
             }
         }
     }
@@ -263,18 +261,18 @@ public class ShopPopup : MonoBehaviour
             messagePopup.Open("마석이 부족합니다.");
             return; // 마석이 부족하면 리턴
         }
-        if (resetCount >= 3)
-        {
-            messagePopup.Open("아티팩트 리셋은 3번만 가능합니다.");
-            return; // 3번만 리셋 가능
-        }
+        //if (resetCount >= 3)
+        //{
+        //    messagePopup.Open("아티팩트 리셋은 3번만 가능합니다.");
+        //    return; // 3번만 리셋 가능
+        //}
         StageManager.Instance.stageSaveData.manaStone -= resetCost; // 마석 차감
         resetCost = Mathf.Min(resetCost * 2, maxResetCost); // 리셋 비용 증가, 최대값 제한
-        resetCount++;
-        foreach (var artifact in selectableArtifacts)
-        {
-            exceptedArtifacts.Add(artifact); // 상점에서 제외할 아티팩트 목록에 추가
-        }
+        //resetCount++;
+        //foreach (var artifact in selectableArtifacts)
+        //{
+        //    exceptedArtifacts.Add(artifact); // 상점에서 제외할 아티팩트 목록에 추가
+        //}
         ShopArtifactRefresh();
         ResetButtonRefresh();
         OnClickShopArtifactSlot(0); // 첫 번째 슬롯으로 초기화
@@ -348,7 +346,7 @@ public class ShopPopup : MonoBehaviour
         StageManager.Instance.stageSaveData.artifacts[emptySlot] = selectedArtifact; // 빈 슬롯에 아티팩트 추가
         OwnedArtifactRefresh(); // 소유한 아티팩트 갱신
         OnClickOwnedArtifactSlot(emptySlot); // 새로 추가된 아티팩트 정보 갱신
-        exceptedArtifacts.Add(selectedArtifact); // 상점에서 제외할 아티팩트 목록에 추가
+        //exceptedArtifacts.Add(selectedArtifact); // 상점에서 제외할 아티팩트 목록에 추가
         shopArtifactViewers[selectedArtifactIndexInShopList].SetActive(false); // 선택한 아티팩트 뷰어 비활성화
         OnClickShopArtifactSlot(selectedArtifactIndexInShopList - 1);
     }
