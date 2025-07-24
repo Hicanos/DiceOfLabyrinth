@@ -53,6 +53,9 @@ public class ShopPopup : MonoBehaviour
 
     [Header("Reset Text")]
     [SerializeField] private TMP_Text resetCostText;
+
+    [Header("Recovery Popup")]
+    [SerializeField] private GameObject recoveryPopup;
     private int resetCount;
 
     private void Awake()
@@ -348,6 +351,16 @@ public class ShopPopup : MonoBehaviour
         exceptedArtifacts.Add(selectedArtifact); // 상점에서 제외할 아티팩트 목록에 추가
         shopArtifactViewers[selectedArtifactIndexInShopList].SetActive(false); // 선택한 아티팩트 뷰어 비활성화
         OnClickShopArtifactSlot(selectedArtifactIndexInShopList - 1);
+    }
+
+    public void OnClickRecoveryPopupButton()
+    {
+        
+        animationRect.CloseWithCallback(() =>
+        {
+            gameObject.SetActive(false);
+        });
+        recoveryPopup.SetActive(true);
     }
 
     public void OnClickCloseButton()
