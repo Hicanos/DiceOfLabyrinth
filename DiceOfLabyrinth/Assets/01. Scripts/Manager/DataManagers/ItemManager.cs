@@ -63,6 +63,8 @@ public class ItemManager
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 isLoaded = true;
+                // 모든 아이템 중 보유중인 아이템을 불러옴
+                LoadOwnedItemsFromData();
 #if UNITY_EDITOR
                 Debug.Log($"All ItemSOs loaded successfully. Count: {allItems.Count}");
 #endif
@@ -81,6 +83,20 @@ public class ItemManager
     {
         if (itemSO != null && !allItems.ContainsKey(itemSO.ItemID))
             allItems.Add(itemSO.ItemID, itemSO);
+    }
+
+    // Json 파일로부터 보유 중인 아이템을 불러오는 메서드
+    public void LoadOwnedItemsFromData()
+    {
+        // DataSaver에서 저장된 아이템 데이터를 불러와 ownedItems 딕셔너리에 추가
+        ownedItems.Clear();
+        foreach (var itemData in DataSaver.Instance.SaveData.items)
+        {
+            if (allItems.ContainsKey(itemData.ItemID))
+            {
+                ownedItems[itemData.ItemID] = itemData.Quantity;
+            }
+        }
     }
 
     // 아이템ID 유효성 검사
@@ -113,6 +129,9 @@ public class ItemManager
         {
             ownedItems.Add(ItemID, Count);
         }
+#if UNITY_EDITOR
+        Debug.Log($"아이템 획득: {ItemID}, 추가 개수: {Count}, 총 개수: {ownedItems[ItemID]}");
+#endif
     }
     /// <summary>
     /// 아이템의 ID를 통해 해당 아이템SO를 반환하는 메서드
