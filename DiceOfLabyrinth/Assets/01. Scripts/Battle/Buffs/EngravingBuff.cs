@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public interface IBuff
 {
@@ -33,6 +34,7 @@ public class EngravingBuff : IBuff
         if (JudgeCondition != null && JudgeCondition(Condition))
         {
             BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] += EffectValue;
+            Debug.Log("Action");
         }
     }
 

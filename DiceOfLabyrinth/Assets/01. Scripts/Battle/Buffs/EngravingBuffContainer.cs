@@ -33,9 +33,10 @@ public class EngravingBuffContainer
 
 public class EngravingAdditionalStatus
 {
-    public float AdditionalDamage;
-    public float AdditionalRoll;
-    public float AdditionalStone;
-
     public float[] AdditionalStatus = new float[3];
+    
+    public EngravingAdditionalStatus()
+    {
+        AdditionalStatus[0] = 1;
+    }
 }
