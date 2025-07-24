@@ -29,7 +29,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
             case DetailedTurnState.Roll:
                 button.interactable = false;
                 break;
-            case DetailedTurnState.Confirm:
+            case DetailedTurnState.Attack:
                 button.interactable = true;
                 break;
             case DetailedTurnState.BattleEnd:

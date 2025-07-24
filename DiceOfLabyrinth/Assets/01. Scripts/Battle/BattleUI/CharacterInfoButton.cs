@@ -28,7 +28,7 @@ public class CharacterInfoButton : AbstractBattleButton
             case DetailedTurnState.Roll:
                 gameObject.transform.position = gameObject.transform.position + Vector3.up * 100;
                 break;
-            case DetailedTurnState.Confirm:
+            case DetailedTurnState.Attack:
                 gameObject.transform.position = gameObject.transform.position - Vector3.up * 100;
                 break;
         }

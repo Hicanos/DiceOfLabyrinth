@@ -37,10 +37,10 @@ public class BattleButtonRollDice : AbstractBattleButton
                     rollButton.interactable = true;
                 }
                 break;
-            case DetailedTurnState.Confirm:
+            case DetailedTurnState.Attack:
                 rollButton.interactable = false;
                 break;
-            case DetailedTurnState.ConfirmEnd:
+            case DetailedTurnState.AttackEnd:
                 ChangeRollToEndTurn();
                 rollButton.interactable = true;
                 break;

@@ -29,7 +29,7 @@ public class BattleButtonConfirm : AbstractBattleButton
                 gameObject.SetActive(true);
                 confirmButton.interactable = true;
                 break;
-            case DetailedTurnState.Confirm:
+            case DetailedTurnState.Attack:
                 backBoard.SetActive(false);
                 confirmButton.interactable = false;
                 break;
@@ -59,7 +59,7 @@ public class BattleButtonConfirm : AbstractBattleButton
         diceManager.DiceHolding.isCantFix = false;
 
         //BattleManager.Instance.BattlePlayerTurnState.AbstractButtonPushed();
-        BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.Confirm);
+        BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.Attack);
 
         float diceWeighting = DiceManager.Instance.DiceBattle.GetDamageWeighting(); //족보별 계수
         BattleManager battleManager = BattleManager.Instance;

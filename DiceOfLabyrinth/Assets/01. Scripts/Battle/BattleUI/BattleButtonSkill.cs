@@ -24,10 +24,10 @@ public class BattleButtonSkill : AbstractBattleButton
             case DetailedTurnState.Enter:
                 button.interactable = true;
                 break;
-            case DetailedTurnState.Confirm:
+            case DetailedTurnState.Attack:
                 button.interactable = false;
                 break;
-            case DetailedTurnState.ConfirmEnd:
+            case DetailedTurnState.AttackEnd:
                 button.interactable = true;
                 break;
             case DetailedTurnState.EndTurn:
