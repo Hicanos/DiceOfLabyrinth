@@ -16,6 +16,7 @@ public class GetCharacter : MonoBehaviour
 
     public void GetCharacters()
     {
+        // 캐릭터 획득 (수정 전)
         // 1. 이미 보유한 캐릭터 ID 집합
         var ownedCharIDs = new HashSet<string>(
             CharacterManager.Instance.OwnedCharacters.Select(c => c.CharacterData.charID)
@@ -28,7 +29,6 @@ public class GetCharacter : MonoBehaviour
 
         // 3. 후보가 5명 미만이면 모두, 아니면 5명만 랜덤으로 선택
         int count = Mathf.Min(5, candidates.Count);
-
         // 4. 랜덤 셔플
         for (int i = 0; i < candidates.Count; i++)
         {
@@ -37,7 +37,6 @@ public class GetCharacter : MonoBehaviour
             candidates[i] = candidates[j];
             candidates[j] = temp;
         }
-
         // 5. 획득 처리
         for (int i = 0; i < count; i++)
         {
