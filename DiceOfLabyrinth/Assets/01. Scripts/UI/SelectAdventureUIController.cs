@@ -173,7 +173,7 @@ public class SelectAdventureUIController : MonoBehaviour
             if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isCompleted)
             {
                 messagePopup.Open(
-                $"해당 챕터()는 이미 완료되었습니다. 다시 시작하시겠습니까?.",
+                $"해당 챕터는 이미 완료되었습니다. 다시 시작하시겠습니까?.",
                  () => EnterDungeon(), // 확인(Yes) 버튼 클릭 시 입장
                  () => messagePopup.Close() // 취소(No) 버튼 클릭 시
             );
@@ -183,7 +183,7 @@ public class SelectAdventureUIController : MonoBehaviour
         }
         else if (chapterIndex != StageManager.Instance.stageSaveData.currentChapterIndex) // 현재 챕터와 선택한 챕터가 다를 때엔 이전 챕터의 종료를 먼저 하라는 팝업을 띄워야 합니다.
         {
-            messagePopup.Open($"진행 중인 챕터가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
+            messagePopup.Open($"진행 중인 챕터({StageManager.Instance.chapterData.GetNameAndDifficulty(StageManager.Instance.stageSaveData.currentChapterIndex)})가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
             return;
         }
         else // 진행 중이던 챕터를 다시 선택한 경우
@@ -193,9 +193,8 @@ public class SelectAdventureUIController : MonoBehaviour
             scarceStaminaPanel.SetActive(false);
             {
                 // 코스트 지불 없이 바로 배틀 씬으로 이동할 수 있도록 처리합니다.
-                Debug.Log($"진행 중이던 챕터를 다시 선택했습니다. 코스트 계산 패널을 열지 않습니다.");
                 // 진행중이던 챕터를 다시 시작했다는 팝업을 띄우는 로직을 추가할 수 있습니다.
-                messagePopup.Open($"진행 중이던 챕터를 다시 선택했습니다. 배틀 씬으로 이동하시겠습니까?",
+                messagePopup.Open($"진행 중이던 챕터({StageManager.Instance.chapterData.GetNameAndDifficulty(StageManager.Instance.stageSaveData.currentChapterIndex)})를 다시 시작하시겠습니까?",
                 () => StageManager.Instance.RestoreStageState(), // 확인(Yes) 버튼 클릭 시
                 () => messagePopup.Close() // 취소(No) 버튼 클릭 시
                 );
@@ -277,7 +276,7 @@ public class SelectAdventureUIController : MonoBehaviour
         }
         else if (StageManager.Instance.stageSaveData.currentChapterIndex != -1) // 현재 진행 중인 챕터가 있을 때
         {
-            messagePopup.Open($"진행 중인 챕터가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
+            messagePopup.Open($"진행 중인 챕터({StageManager.Instance.chapterData.GetNameAndDifficulty(StageManager.Instance.stageSaveData.currentChapterIndex)})가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
         }
         else if (UserDataManager.Instance.userdata.stamina < actualCost) // 스태미나가 부족할 때
         {

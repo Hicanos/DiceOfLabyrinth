@@ -39,6 +39,11 @@ public class RecoveryPopup : MonoBehaviour
     }
     private void OnEnable()
     {
+        if (StageManager.Instance.stageSaveData.currentChapterIndex == -1)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
         StartRecoveryPopup();
     }
 

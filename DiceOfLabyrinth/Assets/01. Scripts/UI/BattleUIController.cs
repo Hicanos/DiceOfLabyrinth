@@ -25,7 +25,7 @@ public class BattleUIController : MonoBehaviour
     [Header("Select Item Panel")]
     [SerializeField] private TMP_Text itemTitleText;
     [SerializeField] private TMP_Text itemDescriptionText;
-    [SerializeField] private int selectIndex = 0; // 선택된 아이템 인덱스, 스태그마와 아티팩트 선택을 위한 인덱스
+    [SerializeField] private int selectIndex = 0; // 선택된 아이템 인덱스, 각인과 아티팩트 선택을 위한 인덱스
     [SerializeField] private EngravingData[] engravingChoices = new EngravingData[3];
     [SerializeField] private ArtifactData[] artifactChoices = new ArtifactData[3];
     [SerializeField] private EngravingData selectedEngraving;
@@ -198,7 +198,7 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         selectEventPanel.SetActive(false);
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -249,9 +249,7 @@ public class BattleUIController : MonoBehaviour
         }
          shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
-
-
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         // characterButtons의 개수를 보유 캐릭터 수 만큼으로 설정하는 로직은 나중에 구현할 예정 현재는 7개로 사용
 
         int ownedCount = CharacterManager.Instance.OwnedCharacters.Count;
@@ -350,10 +348,10 @@ public class BattleUIController : MonoBehaviour
                         StageManager.Instance.stageSaveData.leaderCharacter = selectedCharacter;
                         messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
                     }
-                    else
-                    {
-                        messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 팀에 추가되었습니다.");
-                    }
+                    //else
+                    //{
+                    //    messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 팀에 추가되었습니다.");
+                    //}
                     break;
                 }
             }
@@ -372,40 +370,54 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickSelectLeaderButton()
     {
-        var entry = StageManager.Instance.stageSaveData.entryCharacters;
-        if (entry.All(c => c == null))
+        //var entry = StageManager.Instance.stageSaveData.entryCharacters;
+        //if (entry.All(c => c == null))
+        //{
+        //    messagePopup.Open("팀에 캐릭터가 없습니다. 팀을 구성해 주세요.");
+        //    return;
+        //}
+
+        //// 리더가 null이면 0번 인덱스(첫 번째 null이 아닌 캐릭터)를 리더로 지정
+        //if (StageManager.Instance.stageSaveData.leaderCharacter == null)
+        //{
+        //    for (int i = 0; i < entry.Count; i++)
+        //    {
+        //        if (entry[i] != null)
+        //        {
+        //            StageManager.Instance.stageSaveData.leaderCharacter = entry[i];
+        //            messagePopup.Open($"[{entry[i].nameKr}] 캐릭터가 리더로 설정되었습니다.");
+        //            return;
+        //        }
+        //    }
+        //}
+
+        //// 리더가 entryCharacters에 있으면 다음 인덱스의 캐릭터(비어있지 않은 캐릭터)를 리더로, 마지막 인덱스면 0번부터 다시 탐색
+        //int currentLeaderIndex = entry.FindIndex(c => c == StageManager.Instance.stageSaveData.leaderCharacter);
+        //int count = entry.Count;
+        //for (int offset = 1; offset <= count; offset++)
+        //{
+        //    int nextIndex = (currentLeaderIndex + offset) % count;
+        //    if (entry[nextIndex] != null)
+        //    {
+        //        StageManager.Instance.stageSaveData.leaderCharacter = entry[nextIndex];
+        //        messagePopup.Open($"[{entry[nextIndex].nameKr}] 캐릭터가 리더로 설정되었습니다.");
+        //        break;
+        //    }
+        //}
+        // 플랫폼 인덱스를 기반으로 리더를 선정하게 변경
+        if (selectedPlatformIndex < 0 || selectedPlatformIndex >= characterPlatforms.Length)
         {
-            messagePopup.Open("팀에 캐릭터가 없습니다. 팀을 구성해 주세요.");
+            messagePopup.Open("리더를 선택할 수 없습니다. 플랫폼을 먼저 선택해 주세요.");
             return;
         }
-
-        // 리더가 null이면 0번 인덱스(첫 번째 null이 아닌 캐릭터)를 리더로 지정
-        if (StageManager.Instance.stageSaveData.leaderCharacter == null)
+        var selectedCharacter = StageManager.Instance.stageSaveData.entryCharacters[selectedPlatformIndex];
+        if (selectedCharacter == null)
         {
-            for (int i = 0; i < entry.Count; i++)
-            {
-                if (entry[i] != null)
-                {
-                    StageManager.Instance.stageSaveData.leaderCharacter = entry[i];
-                    messagePopup.Open($"[{entry[i].nameKr}] 캐릭터가 리더로 설정되었습니다.");
-                    return;
-                }
-            }
+            messagePopup.Open("선택한 플랫폼에 캐릭터가 없습니다.");
+            return;
         }
-
-        // 리더가 entryCharacters에 있으면 다음 인덱스의 캐릭터(비어있지 않은 캐릭터)를 리더로, 마지막 인덱스면 0번부터 다시 탐색
-        int currentLeaderIndex = entry.FindIndex(c => c == StageManager.Instance.stageSaveData.leaderCharacter);
-        int count = entry.Count;
-        for (int offset = 1; offset <= count; offset++)
-        {
-            int nextIndex = (currentLeaderIndex + offset) % count;
-            if (entry[nextIndex] != null)
-            {
-                StageManager.Instance.stageSaveData.leaderCharacter = entry[nextIndex];
-                messagePopup.Open($"[{entry[nextIndex].nameKr}] 캐릭터가 리더로 설정되었습니다.");
-                break;
-            }
-        }
+        StageManager.Instance.stageSaveData.leaderCharacter = selectedCharacter; // 선택한 캐릭터를 리더로 설정
+        messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
     }
 
 
@@ -509,7 +521,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -532,7 +544,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -544,25 +556,25 @@ public class BattleUIController : MonoBehaviour
     {
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태를 설정
         selectedArtifact = null; // 선택된 아티팩트 초기화
-        selectedEngraving = null; // 선택된 스태그마 초기화
-        engravingChoices = new EngravingData[3]; // 스태그마 선택 배열 초기화
+        selectedEngraving = null; // 선택된 각인 초기화
+        engravingChoices = new EngravingData[3]; // 각인 선택 배열 초기화
         artifactChoices = new ArtifactData[3]; // 아티팩트 선택 배열 초기화
         //예외 상태 스트링 값을 처리하는 스위치
         switch (phaseState)
         {
             case StageSaveData.CurrentPhaseState.StartReward:
             case StageSaveData.CurrentPhaseState.EliteEngravingReward:
-                // 스태그마 선택 UI를 열어야 하는 경우만 break(아래 코드 실행)
+                // 각인 선택 UI를 열어야 하는 경우만 break(아래 코드 실행)
                 break;
             default:
                 Debug.LogError($"잘못된 phase state: {phaseState}");
                 return;
         }
 
-        List<EngravingData> allEngravings = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].EngravingList; // 현재 스테이지의 스태그마 목록을 가져옴
+        List<EngravingData> allEngravings = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].EngravingList; // 현재 스테이지의 각인 목록을 가져옴
         var owned = StageManager.Instance.stageSaveData.engravings.Where(s => s != null).ToList();
         var availableEngravings = allEngravings.Except(owned).ToList();
-        itemTitleText.text = "각인 선택"; // 스태그마 선택 UI 제목 설정
+        itemTitleText.text = "각인 선택"; // 각인 선택 UI 제목 설정
         itemDescriptionText.text = ""; // 초기화
         HashSet<EngravingData> picked = new HashSet<EngravingData>();
         for (int i = 0; i < 3; i++)
@@ -590,7 +602,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -603,8 +615,8 @@ public class BattleUIController : MonoBehaviour
     {
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태를 설정
         selectedArtifact = null; // 선택된 아티팩트 초기화
-        selectedEngraving = null; // 선택된 스태그마 초기화
-        engravingChoices = new EngravingData[3]; // 스태그마 선택 배열 초기화
+        selectedEngraving = null; // 선택된 각인 초기화
+        engravingChoices = new EngravingData[3]; // 각인 선택 배열 초기화
         artifactChoices = new ArtifactData[3]; // 아티팩트 선택 배열 초기화
         // 예외 상태 스트링 값을 처리하는 스위치
         switch (phaseState)
@@ -679,7 +691,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             characterPlatform.SetActive(false); // 캐릭터 플랫폼 비활성화
@@ -687,7 +699,7 @@ public class BattleUIController : MonoBehaviour
         OnClickSelectItemNumber(0); // 첫 번째 아이템을 선택한 것으로 초기화
     }
 
-    public void OnClickSelectItemNumber(int selectIndex) // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
+    public void OnClickSelectItemNumber(int selectIndex) // 아티팩트 패널과 각인 패널 둘 다 다루니 아이템 패널이라고 함
     {
         this.selectIndex = selectIndex; // 선택된 아이템 인덱스 설정
         if (selectIndex < 0 || selectIndex >= 3)
@@ -720,8 +732,8 @@ public class BattleUIController : MonoBehaviour
             case StageSaveData.CurrentPhaseState.StartReward:
             case StageSaveData.CurrentPhaseState.EliteEngravingReward:
                 selectedEngraving = engravingChoices[selectIndex];
-                itemTitleText.text = selectedEngraving.name; // 선택된 스태그마 이름 설정
-                itemDescriptionText.text = selectedEngraving.Description; // 선택된 스태그마 설명 설정
+                itemTitleText.text = selectedEngraving.name; // 선택된 각인 이름 설정
+                itemDescriptionText.text = selectedEngraving.Description; // 선택된 각인 설명 설정
                 break;
             case StageSaveData.CurrentPhaseState.NormalReward:
             case StageSaveData.CurrentPhaseState.EliteArtifactReward:
@@ -736,7 +748,7 @@ public class BattleUIController : MonoBehaviour
         }
     }
 
-    public void OnClickSelectItem() // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
+    public void OnClickSelectItem() // 아티팩트 패널과 각인 패널 둘 다 다루니 아이템 패널이라고 함
     {
         var phaseState = StageManager.Instance.stageSaveData.currentPhaseState; // 현재 페이즈 상태를 가져옴
         selectItemPanel.SetActive(false);
@@ -763,7 +775,7 @@ public class BattleUIController : MonoBehaviour
             
                 break;
             case StageSaveData.CurrentPhaseState.EliteArtifactReward:
-                OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.EliteEngravingReward); // 엘리트 아티팩트 리워드 페이즈에서는 스태그마 선택 패널을 열도록 함
+                OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.EliteEngravingReward); // 엘리트 아티팩트 리워드 페이즈에서는 각인 선택 패널을 열도록 함
                 break;
             case StageSaveData.CurrentPhaseState.BossReward:
                 OpenSelectEquipedArtifactPanel(); // 보스 리워드 페이즈에서는 아티팩트 장착 패널을 열도록 함
@@ -837,7 +849,7 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         selectEventPanel.SetActive(true); // 선택지 이벤트 패널 활성화
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -889,7 +901,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -910,7 +922,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -941,7 +953,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(true);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -952,7 +964,7 @@ public class BattleUIController : MonoBehaviour
 
     public void OpenSelectEquipedArtifactPanel() // 아티팩트 장착 선택 패널을 여는 함수
     {
-        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.EquipmedArtifact; // 현재 페이즈 상태를 "EquipmedArtifact"로 설정
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.EquipmentArtifact; // 현재 페이즈 상태를 "EquipmentArtifact"로 설정
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(false);
@@ -963,14 +975,11 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectEquipmedArtifactPanel.SetActive(true); // 아티팩트 선택 패널 활성화
+        InventoryPopup.Instance.OnClickInventoryButton(); // 인벤토리 팝업 열기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        messagePopup.Open("장착할 아티팩트 선택은 아직 구현되지 않았으므로 바로 스테이지 클리어로 넘어갑니다.",
-        () => StageManager.Instance.StageComplete(StageManager.Instance.stageSaveData.currentStageIndex), // 스테이지 클리어 처리
-        () => messagePopup.Close());
     }
 }
