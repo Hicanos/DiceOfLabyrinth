@@ -29,6 +29,11 @@ public class EngravingBuffContainer
     {
         Buffs.Remove(buff);
     }
+
+    public void RemoveAllBuffs()
+    {
+        Buffs.Clear();
+    }
 }
 
 public class EngravingAdditionalStatus
@@ -38,5 +43,13 @@ public class EngravingAdditionalStatus
     public EngravingAdditionalStatus()
     {
         AdditionalStatus[0] = 1;
+    }
+
+    public void ResetStatus()
+    {
+        for(int i = 0; i < AdditionalStatus.Length; i++)
+        {
+            AdditionalStatus[i] = 0;
+        }
     }
 }
