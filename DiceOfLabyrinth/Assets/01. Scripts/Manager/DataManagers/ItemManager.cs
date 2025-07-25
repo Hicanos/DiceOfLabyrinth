@@ -30,6 +30,7 @@ public class ItemManager
 
     // 보유 중인 아이템과, 해당 아이템의 개수를 저장하는 딕셔너리
     private Dictionary<string, int> ownedItems;
+    public Dictionary<string, int> OwnedItems => ownedItems;
 
     // Addressable로 로드된 모든 아이템 SO
     private Dictionary<string, ItemSO> allItems = new Dictionary<string, ItemSO>();
@@ -46,7 +47,7 @@ public class ItemManager
 
         //에디터에만 실행하는 디버그
 #if UNITY_EDITOR
-        Debug.Log("ItemManager Initialized");
+        Debug.Log("ItemManager 이니셜라이즈");
 #endif
     }
 
@@ -66,7 +67,7 @@ public class ItemManager
                 // 모든 아이템 중 보유중인 아이템을 불러옴
                 LoadOwnedItemsFromData();
 #if UNITY_EDITOR
-                Debug.Log($"All ItemSOs loaded successfully. Count: {allItems.Count}");
+                Debug.Log($"모든 아이템 로드됨. 보유 아이템 로드 시작 Count: {allItems.Count}");
 #endif
             }
             else
@@ -95,6 +96,9 @@ public class ItemManager
             if (allItems.ContainsKey(itemData.ItemID))
             {
                 ownedItems[itemData.ItemID] = itemData.Quantity;
+#if UNITY_EDITOR
+                Debug.Log($"보유 아이템 로드됨: \n{itemData.ItemID}\n아이템 이름: {allItems[itemData.ItemID].NameKr}\n개수: {itemData.Quantity}");
+#endif
             }
         }
     }
@@ -111,7 +115,7 @@ public class ItemManager
 
 
     // 아이템 획득 메서드
-    public void GetItem(string ItemID, int Count)
+    public void GetItem(string ItemID, int Count = 1)
     {
         // 아이템SO의 ItemID가 유효한지 확인 (별도의 메서드 호출)
         if (!IsValidItemID(ItemID))
@@ -157,10 +161,36 @@ public class ItemManager
         }
     }
 
+    // 가챠에서 중복 캐릭터를 얻었을 때 charID를 통해 돌파석(AscensionStone) 획득
+    public void GetAscensionStone(string charID, int count = 1)
+    {
+        // 아이템ID가 유효한지 확인
+        // charID를 가진 AscensionStone의 아이템 ID를 찾기
+        // AscensionStone의 SO에 존재하는 CharID와 매개변수 charID가 일치하는지 확인
+        string itemID = null;
+        foreach (var item in allItems.Values)
+        {
+            if (item is AscensionStone ascensionStone && ascensionStone.CharID == charID)
+            {
+                itemID = item.ItemID;
+                break;
+            }
+        }
+
+        if (!IsValidItemID(itemID))
+        {
+            // 유효하지 않은 아이템ID인 경우 예외 처리
+            return;
+        }
+        // 돌파석 획득
+        GetItem(itemID, count);
+    }
+
+
 
     // 하위는 각 아이템 종류별로 보유 중인 아이템 반환(인벤토리 필터 등)
 
-    // 보유중인 EXP 포션 딕셔너리
+        // 보유중인 EXP 포션 딕셔너리
     public Dictionary<string, int> GetPotions()
     {
         // 아이템들 중 EXPpotion으로 생성된 SO만 출력
