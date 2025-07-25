@@ -2,8 +2,8 @@
 
 public class LobbyUIController : MonoBehaviour
 {
-    private void Start()
+    private void OnEnable()
     {
-        //
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Lobby);
     }
 }
