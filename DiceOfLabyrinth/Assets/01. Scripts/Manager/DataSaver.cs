@@ -116,12 +116,49 @@ public class DataSaver
     public GameSaveData SaveData = new GameSaveData();
 
     /// <summary>
+    /// 캐릭터 정보 동기화
+    /// </summary>
+    public void SyncCharacterData()
+    {
+        if (CharacterManager.Instance != null)
+        {
+            var lobbyCharacters = CharacterManager.Instance.OwnedCharacters;
+            SaveData.characters = lobbyCharacters.Select(lobbyChar => new CharacterData
+            {
+                CharacterID = lobbyChar.CharacterData.charID,
+                Level = lobbyChar.Level,
+                CurrentExp = lobbyChar.CurrentExp,
+                ATK = lobbyChar.RegularATK,
+                DEF = lobbyChar.RegularDEF,
+                HP = lobbyChar.RegularHP,
+                CritChance = lobbyChar.CritChance,
+                CritDamage = lobbyChar.CritDamage
+            }).ToList();
+        }
+    }
+
+    /// <summary>
+    /// 아이템 정보 동기화
+    /// </summary>
+    public void SyncItemData()
+    {
+        if (ItemManager.Instance != null)
+        {
+            var items = ItemManager.Instance.OwnedItems;
+            SaveData.items = items.Select(item => new ItemData(item.Key, item.Value)).ToList();
+        }
+    }
+
+    /// <summary>
     /// 게임 데이터 저장(json 파일)
     /// </summary>
     public void Save()
     {
         try
         {
+            SyncCharacterData();
+            SyncItemData();
+
             string json = JsonConvert.SerializeObject(SaveData, Formatting.Indented);
             File.WriteAllText(SavePath, json);
 #if UNITY_EDITOR
@@ -177,6 +214,12 @@ public class DataSaver
             CritDamage = lobbyChar.CritDamage
         }).ToList();
 
+        Save();
+    }
+
+    public void SaveItems(Dictionary<string, int> items)
+    {
+        SaveData.items = items.Select(item => new ItemData(item.Key, item.Value)).ToList();
         Save();
     }
 

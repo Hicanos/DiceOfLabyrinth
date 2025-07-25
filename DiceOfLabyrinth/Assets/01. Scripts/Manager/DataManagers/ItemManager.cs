@@ -30,6 +30,7 @@ public class ItemManager
 
     // 보유 중인 아이템과, 해당 아이템의 개수를 저장하는 딕셔너리
     private Dictionary<string, int> ownedItems;
+    public Dictionary<string, int> OwnedItems => ownedItems;
 
     // Addressable로 로드된 모든 아이템 SO
     private Dictionary<string, ItemSO> allItems = new Dictionary<string, ItemSO>();
@@ -46,7 +47,7 @@ public class ItemManager
 
         //에디터에만 실행하는 디버그
 #if UNITY_EDITOR
-        Debug.Log("ItemManager Initialized");
+        Debug.Log("ItemManager 이니셜라이즈");
 #endif
     }
 
@@ -66,7 +67,7 @@ public class ItemManager
                 // 모든 아이템 중 보유중인 아이템을 불러옴
                 LoadOwnedItemsFromData();
 #if UNITY_EDITOR
-                Debug.Log($"All ItemSOs loaded successfully. Count: {allItems.Count}");
+                Debug.Log($"모든 아이템 로드됨. 보유 아이템 로드 시작 Count: {allItems.Count}");
 #endif
             }
             else
@@ -95,6 +96,9 @@ public class ItemManager
             if (allItems.ContainsKey(itemData.ItemID))
             {
                 ownedItems[itemData.ItemID] = itemData.Quantity;
+#if UNITY_EDITOR
+                Debug.Log($"보유 아이템 로드됨: \n{itemData.ItemID}\n아이템 이름: {allItems[itemData.ItemID].NameKr}\n개수: {itemData.Quantity}");
+#endif
             }
         }
     }
@@ -111,7 +115,7 @@ public class ItemManager
 
 
     // 아이템 획득 메서드
-    public void GetItem(string ItemID, int Count)
+    public void GetItem(string ItemID, int Count = 1)
     {
         // 아이템SO의 ItemID가 유효한지 확인 (별도의 메서드 호출)
         if (!IsValidItemID(ItemID))
