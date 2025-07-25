@@ -139,9 +139,7 @@ public class BattleCharacterAttack : MonoBehaviour
         float artifactAddAtk = battleManager.ArtifactAdditionalStatus.AdditionalStatus[(int)AdditionalStatusEnum.AdditionalDamage];
 
         float damage = (characterAtk - monsterDef * (1- penetration)) * (1 + artifactAddAtk + elementDamage + additionalElementDamage) * ((int)diceWeighting * engravingAddAtk);
-        Debug.Log("Engrving : " + engravingAddAtk);
-        Debug.Log("Artifact : " + artifactAddAtk);
-        Debug.Log("Element : " + additionalElementDamage);
+        Debug.Log($"Engrving :  + {engravingAddAtk}\nArtifact :  + {artifactAddAtk}\nElement :  + {additionalElementDamage}");
         damage = Mathf.Clamp(damage, 0, damage);
         return (int)damage;
     }

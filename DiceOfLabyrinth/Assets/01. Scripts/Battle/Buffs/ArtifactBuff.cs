@@ -10,12 +10,12 @@ public class ArtifactBuff : IBuff
 
     public int BuffDuration;
 
-    public ArtifactBuff(ArtifactDetailData data, Func<ArtifactDetailData, bool> judgeCondition, Action<ArtifactDetailData> effectAction)
+    public ArtifactBuff(DetailedTurnState effectTime, ArtifactDetailData data, Func<ArtifactDetailData, bool> judgeCondition, Action<ArtifactDetailData> effectAction)
     {
         Data = data;
         JudgeCondition = judgeCondition;
         EffectAction = effectAction;
-
+        EffectTime = effectTime;
         BuffDuration = 0;
     }
 
@@ -50,12 +50,12 @@ public class ArtifactBuffUpdate : IBuff
     public int BuffUseCount;
     public bool isActiveThisTurn;
 
-    public ArtifactBuffUpdate(ArtifactDetailData data, Func<ArtifactDetailData, bool> judgeCondition, Action<ArtifactDetailData> effectAction)
+    public ArtifactBuffUpdate(DetailedTurnState effectTime, ArtifactDetailData data, Func<ArtifactDetailData, bool> judgeCondition, Action<ArtifactDetailData> effectAction)
     {
         Data = data;
         JudgeCondition = judgeCondition;
         EffectAction = effectAction;
-
+        EffectTime = effectTime;
         BuffUseCount = 1;
     }
 
@@ -73,6 +73,8 @@ public class ArtifactBuffUpdate : IBuff
 
     public void ReduceDuration()
     {
+        if (isActiveThisTurn == false) return;
+
         BuffDuration--;
     }
 

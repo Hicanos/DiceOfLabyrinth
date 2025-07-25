@@ -1,6 +1,6 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public enum AdditionalStatusEnum
 {
@@ -53,20 +53,31 @@ public class ArtifactBuffMaker
 
         for (int i = 0; i < artifacts.Count; i++)
         {
-            if (artifacts[i] != null) return;
+            if (artifacts[i] == null) return;
 
             for (int j = 0; j < artifacts[i].ArtifactEffects.Count; j++)
             {
                 detailData = new ArtifactDetailData(artifacts[i].ArtifactEffects[j]);                                
 
-                if(detailData.IsUpdate)
+                if(detailData.IsCallback)
                 {
-                    IBuff buff = new ArtifactBuffUpdate(detailData, GetArtifactCondition(detailData), GetEffectAction(detailData));
-                    BattleManager.Instance.ArtifactBuffs.AddArtifactBuffUpdate(buff);
+                    IBuff buff = new ArtifactBuffUpdate(detailData.ActionLocation, detailData, GetArtifactCondition(detailData), GetEffectAction(detailData));
+                    switch (detailData.CallBackPoint)
+                    {
+                        case ArtifactCallBackPoint.SpendCost:
+                            BattleManager.Instance.ArtifactBuffs.AddbuffsCallbackSpendCost(buff);
+                            break;
+                        case ArtifactCallBackPoint.CharacterHit:
+                            BattleManager.Instance.ArtifactBuffs.AddbuffsCallbackCharacterHit(buff);
+                            break;
+                        case ArtifactCallBackPoint.CharacterDie:
+                            BattleManager.Instance.ArtifactBuffs.AddbuffsCallbackCharacterDie(buff);
+                            break;
+                    }
                 }
                 else
                 {
-                    IBuff buff = new ArtifactBuff(detailData, GetArtifactCondition(detailData), GetEffectAction(detailData));
+                    IBuff buff = new ArtifactBuff(detailData.ActionLocation, detailData, GetArtifactCondition(detailData), GetEffectAction(detailData));
                     BattleManager.Instance.ArtifactBuffs.AddArtifactBuff(buff);
                 }
             }
@@ -192,19 +203,19 @@ public class ArtifactBuffMaker
     }
     private void EnemyDebuffAction(ArtifactDetailData data)
     {
-
+        Debug.Log("디버프 아티펙트 활성");
     }
     private void RemoveDebuffAction(ArtifactDetailData data)
     {
-
+        Debug.Log("디버프 제거 아티펙트 활성");
     }
     private void GetBarrierAction(ArtifactDetailData data)
     {
-
+        Debug.Log("방어막 아티펙트 활성");
     }
     private void CharacterReviveAction(ArtifactDetailData data)
     {
-
+        Debug.Log("부활 아티펙트 활성");
     }
     #endregion
 }
@@ -220,13 +231,14 @@ public class ArtifactDetailData
 
     public DetailedTurnState ActionLocation;
 
-    public bool IsUpdate;
+    public bool IsCallback;
+    public ArtifactCallBackPoint CallBackPoint;
 
-    private void Init(DetailedTurnState state, ArtifactConditionTypeEnum conType, float conValue, ArtifactEffectTypeEnum effType, float effValue, AdditionalStatusEnum addStatus = (AdditionalStatusEnum)0, bool isUpdate = false)
+    private void Init(DetailedTurnState state, ArtifactConditionTypeEnum conType, float conValue, ArtifactEffectTypeEnum effType, float effValue, AdditionalStatusEnum addStatus = (AdditionalStatusEnum)0, bool isCallback = false, ArtifactCallBackPoint point = 0)
     {
         ActionLocation = state;  ConditionType = conType; ConditionValue = conValue;
         EffectType = effType; EffectValue = effValue; additionalStatus = addStatus;
-        IsUpdate = isUpdate;
+        IsCallback = isCallback; CallBackPoint = point;
     }
 
     public ArtifactDetailData(ArtifactEffectData data)
@@ -272,13 +284,13 @@ public class ArtifactDetailData
             
 
             case ArtifactEffectData.EffectType.CostRegenerationWhenUse10Cost:
-                Init(0,ArtifactConditionTypeEnum.CostSpendAmount, 10, ArtifactEffectTypeEnum.GetCost, data.Value, 0, true);
+                Init(0,ArtifactConditionTypeEnum.CostSpendAmount, 10, ArtifactEffectTypeEnum.GetCost, data.Value, 0, true, ArtifactCallBackPoint.SpendCost);
                 break;
             case ArtifactEffectData.EffectType.ReviveWhenDie:
-                Init(0,ArtifactConditionTypeEnum.None, 1, ArtifactEffectTypeEnum.CharacterRevive, data.Value, 0, true);
+                Init(0,ArtifactConditionTypeEnum.Chace, 60, ArtifactEffectTypeEnum.CharacterRevive, data.Value, 0, true, ArtifactCallBackPoint.CharacterDie);
                 break;
             case ArtifactEffectData.EffectType.GenerateBarrier:
-                Init(0,ArtifactConditionTypeEnum.None, 1, ArtifactEffectTypeEnum.GetBarrier, data.Value,0,true);
+                Init(0,ArtifactConditionTypeEnum.None, 1, ArtifactEffectTypeEnum.GetBarrier, data.Value,0,true, ArtifactCallBackPoint.CharacterHit);
                 break;
         }
     }
