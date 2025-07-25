@@ -5,6 +5,7 @@
 
     public void Enter()
     {
+        UnityEngine.Debug.Log("enter");
         battleManager.BattleTurn++;
         
         battleManager.GetCost(AlivedCharacter());

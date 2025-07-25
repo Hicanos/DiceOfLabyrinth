@@ -203,7 +203,7 @@ public class BattleManager : MonoBehaviour
         isBattle = true;
     }
 
-    private void ExitBattleSetting()
+    public void ExitBattleSetting()
     {
         BattleGroup = null;
         isBattle = false;
