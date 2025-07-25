@@ -70,6 +70,11 @@ public class ShopPopup : MonoBehaviour
 
     private void OnEnable()
     {
+        if (StageManager.Instance.stageSaveData.currentChapterIndex == -1)
+        {
+            gameObject.SetActive(false); // 챕터가 선택되지 않은 경우 상점 패널 비활성화
+            return;
+        }
         // 상점 패널이 활성화될 때 초기화
         StartShop();
         animationRect.AnimLeftIn();
@@ -124,11 +129,8 @@ public class ShopPopup : MonoBehaviour
         {
             int randomIndex = Random.Range(0, shopInventoryArtifacts.Count);
             selectableArtifacts.Add(shopInventoryArtifacts[randomIndex]);
+            artifactPurchasePrices[i] = (int)(selectableArtifacts[i].PurchasePrice * Random.Range(0.75f, 1.25f));
             shopInventoryArtifacts.RemoveAt(randomIndex);
-        }
-        for (int i = 0; i < 6; i++)// 가격에 랜덤 요소 추가
-        {
-            artifactPurchasePrices[i] =(int) (selectableArtifacts[i].PurchasePrice * Random.Range(0.75f, 1.25f));
         }
         // 선택된 아티팩트로 상점 뷰어 갱신
         for (int i = 0; i < shopArtifactViewers.Count; i++)

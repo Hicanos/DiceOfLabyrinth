@@ -198,7 +198,7 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         selectEventPanel.SetActive(false);
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -249,9 +249,7 @@ public class BattleUIController : MonoBehaviour
         }
          shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
-
-
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         // characterButtons의 개수를 보유 캐릭터 수 만큼으로 설정하는 로직은 나중에 구현할 예정 현재는 7개로 사용
 
         int ownedCount = CharacterManager.Instance.OwnedCharacters.Count;
@@ -509,7 +507,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -532,7 +530,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -590,7 +588,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -679,7 +677,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             characterPlatform.SetActive(false); // 캐릭터 플랫폼 비활성화
@@ -837,7 +835,7 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         selectEventPanel.SetActive(true); // 선택지 이벤트 패널 활성화
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -889,7 +887,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -910,7 +908,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -941,7 +939,7 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(true);
         recoveryPopup.SetActive(false);
-        // selectArtifactPanel.SetActive(false); // 아티팩트 선택 패널은 현재 사용하지 않으므로 주석 처리
+        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -952,7 +950,7 @@ public class BattleUIController : MonoBehaviour
 
     public void OpenSelectEquipedArtifactPanel() // 아티팩트 장착 선택 패널을 여는 함수
     {
-        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.EquipmedArtifact; // 현재 페이즈 상태를 "EquipmedArtifact"로 설정
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.EquipmentArtifact; // 현재 페이즈 상태를 "EquipmentArtifact"로 설정
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(false);
@@ -963,14 +961,11 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        // selectEquipmedArtifactPanel.SetActive(true); // 아티팩트 선택 패널 활성화
+        InventoryPopup.Instance.OnClickInventoryButton(); // 인벤토리 팝업 열기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        messagePopup.Open("장착할 아티팩트 선택은 아직 구현되지 않았으므로 바로 스테이지 클리어로 넘어갑니다.",
-        () => StageManager.Instance.StageComplete(StageManager.Instance.stageSaveData.currentStageIndex), // 스테이지 클리어 처리
-        () => messagePopup.Close());
     }
 }

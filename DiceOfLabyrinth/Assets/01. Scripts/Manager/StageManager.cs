@@ -26,7 +26,7 @@ public class StageSaveData
         EliteEngravingReward,
         BossReward,
         Shop,
-        EquipmedArtifact
+        EquipmentArtifact
     }
     [Header("Stage Save Data")]
     public int currentChapterIndex; // 현재 챕터 인덱스
@@ -227,7 +227,7 @@ public class StageManager : MonoBehaviour
                 case StageSaveData.CurrentPhaseState.Shop:
                     // 상점 상태에 해당하는 UI를 엽니다.
                     return;
-                case StageSaveData.CurrentPhaseState.EquipmedArtifact:
+                case StageSaveData.CurrentPhaseState.EquipmentArtifact:
                     battleUIController.OpenSelectEquipedArtifactPanel(); // 아티팩트 장착 상태에 해당하는 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.SelectChoice:
@@ -374,7 +374,7 @@ public class StageManager : MonoBehaviour
                 battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.BossReward); // 보스 룸 클리어 시 아티팩트 선택 UI를 엽니다.
                 break;
             case EnemyData.EnemyType.Lord:
-                CompleteChapter(stageSaveData.currentChapterIndex); // 챕터 완료 로직을 호출합니다.
+                StageComplete(stageSaveData.currentStageIndex); // 챕터 완료 로직을 호출합니다. 스테이지 컴플리트 내부에서 챕터 완료 판정
                 break;
             default:
                 Debug.LogError($"Unknown enemy type: {type}");
