@@ -58,17 +58,21 @@ public class BattleManager : MonoBehaviour
     public EngravingBuffContainer EngravingBuffs = new EngravingBuffContainer();
     public EngravingAdditionalStatus EngravingAdditionalStatus = new EngravingAdditionalStatus();
 
+    public ArtifactBuffMaker ArtifactBuffMaker = new ArtifactBuffMaker();
+    public ArtifactBuffContainer ArtifactBuffs = new ArtifactBuffContainer();
+    public ArtifactAdditionalStatus ArtifactAdditionalStatus = new ArtifactAdditionalStatus();
     //public AdditionalValues ArtifactAdditionalValue = new AdditionalValues();
 
 
     [Header("Values")]
     private  readonly int maxCost = 12;
-    public  int     BattleTurn   = 0;
-    private int     currnetCost  = 0;
+    public  int     BattleTurn;
+    private int     currnetCost;
+    public  int     CostSpendedInTurn;
     public  bool    isBattle;
     public  bool    IsBoss;
     public  bool    IsWon;
-    public int MaxCost => maxCost;
+    public int MaxCost => maxCost + (int)ArtifactAdditionalStatus.AdditionalStatus[(int)AdditionalStatusEnum.AdditionalMaxCost];
 
     void Start()
     {
@@ -89,6 +93,11 @@ public class BattleManager : MonoBehaviour
     {
         StateMachine.BattleUpdate();
         BattleStateUpdate();
+
+        if(isBattle)
+        {
+            ArtifactBuffs.ActionUpdate();
+        }
     }
 
     private void BattleStateUpdate()

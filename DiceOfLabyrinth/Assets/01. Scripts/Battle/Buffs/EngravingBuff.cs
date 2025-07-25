@@ -1,10 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using System;
 
 public interface IBuff
 {
     public void Action();
-    public void CallBack();
     public void ReduceDuration();
 }
 
@@ -36,11 +35,6 @@ public class EngravingBuff : IBuff
             BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] += EffectValue;
             Debug.Log("Action");
         }
-    }
-
-    public void CallBack()
-    {
-
     }
 
     public void ReduceDuration()
