@@ -25,7 +25,7 @@ public class BattleUIController : MonoBehaviour
     [Header("Select Item Panel")]
     [SerializeField] private TMP_Text itemTitleText;
     [SerializeField] private TMP_Text itemDescriptionText;
-    [SerializeField] private int selectIndex = 0; // 선택된 아이템 인덱스, 스태그마와 아티팩트 선택을 위한 인덱스
+    [SerializeField] private int selectIndex = 0; // 선택된 아이템 인덱스, 각인과 아티팩트 선택을 위한 인덱스
     [SerializeField] private EngravingData[] engravingChoices = new EngravingData[3];
     [SerializeField] private ArtifactData[] artifactChoices = new ArtifactData[3];
     [SerializeField] private EngravingData selectedEngraving;
@@ -542,25 +542,25 @@ public class BattleUIController : MonoBehaviour
     {
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태를 설정
         selectedArtifact = null; // 선택된 아티팩트 초기화
-        selectedEngraving = null; // 선택된 스태그마 초기화
-        engravingChoices = new EngravingData[3]; // 스태그마 선택 배열 초기화
+        selectedEngraving = null; // 선택된 각인 초기화
+        engravingChoices = new EngravingData[3]; // 각인 선택 배열 초기화
         artifactChoices = new ArtifactData[3]; // 아티팩트 선택 배열 초기화
         //예외 상태 스트링 값을 처리하는 스위치
         switch (phaseState)
         {
             case StageSaveData.CurrentPhaseState.StartReward:
             case StageSaveData.CurrentPhaseState.EliteEngravingReward:
-                // 스태그마 선택 UI를 열어야 하는 경우만 break(아래 코드 실행)
+                // 각인 선택 UI를 열어야 하는 경우만 break(아래 코드 실행)
                 break;
             default:
                 Debug.LogError($"잘못된 phase state: {phaseState}");
                 return;
         }
 
-        List<EngravingData> allEngravings = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].EngravingList; // 현재 스테이지의 스태그마 목록을 가져옴
+        List<EngravingData> allEngravings = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].EngravingList; // 현재 스테이지의 각인 목록을 가져옴
         var owned = StageManager.Instance.stageSaveData.engravings.Where(s => s != null).ToList();
         var availableEngravings = allEngravings.Except(owned).ToList();
-        itemTitleText.text = "각인 선택"; // 스태그마 선택 UI 제목 설정
+        itemTitleText.text = "각인 선택"; // 각인 선택 UI 제목 설정
         itemDescriptionText.text = ""; // 초기화
         HashSet<EngravingData> picked = new HashSet<EngravingData>();
         for (int i = 0; i < 3; i++)
@@ -601,8 +601,8 @@ public class BattleUIController : MonoBehaviour
     {
         StageManager.Instance.stageSaveData.currentPhaseState = phaseState; // 현재 페이즈 상태를 설정
         selectedArtifact = null; // 선택된 아티팩트 초기화
-        selectedEngraving = null; // 선택된 스태그마 초기화
-        engravingChoices = new EngravingData[3]; // 스태그마 선택 배열 초기화
+        selectedEngraving = null; // 선택된 각인 초기화
+        engravingChoices = new EngravingData[3]; // 각인 선택 배열 초기화
         artifactChoices = new ArtifactData[3]; // 아티팩트 선택 배열 초기화
         // 예외 상태 스트링 값을 처리하는 스위치
         switch (phaseState)
@@ -685,7 +685,7 @@ public class BattleUIController : MonoBehaviour
         OnClickSelectItemNumber(0); // 첫 번째 아이템을 선택한 것으로 초기화
     }
 
-    public void OnClickSelectItemNumber(int selectIndex) // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
+    public void OnClickSelectItemNumber(int selectIndex) // 아티팩트 패널과 각인 패널 둘 다 다루니 아이템 패널이라고 함
     {
         this.selectIndex = selectIndex; // 선택된 아이템 인덱스 설정
         if (selectIndex < 0 || selectIndex >= 3)
@@ -718,8 +718,8 @@ public class BattleUIController : MonoBehaviour
             case StageSaveData.CurrentPhaseState.StartReward:
             case StageSaveData.CurrentPhaseState.EliteEngravingReward:
                 selectedEngraving = engravingChoices[selectIndex];
-                itemTitleText.text = selectedEngraving.name; // 선택된 스태그마 이름 설정
-                itemDescriptionText.text = selectedEngraving.Description; // 선택된 스태그마 설명 설정
+                itemTitleText.text = selectedEngraving.name; // 선택된 각인 이름 설정
+                itemDescriptionText.text = selectedEngraving.Description; // 선택된 각인 설명 설정
                 break;
             case StageSaveData.CurrentPhaseState.NormalReward:
             case StageSaveData.CurrentPhaseState.EliteArtifactReward:
@@ -734,7 +734,7 @@ public class BattleUIController : MonoBehaviour
         }
     }
 
-    public void OnClickSelectItem() // 아티팩트 패널과 스태그마 패널 둘 다 다루니 아이템 패널이라고 함
+    public void OnClickSelectItem() // 아티팩트 패널과 각인 패널 둘 다 다루니 아이템 패널이라고 함
     {
         var phaseState = StageManager.Instance.stageSaveData.currentPhaseState; // 현재 페이즈 상태를 가져옴
         selectItemPanel.SetActive(false);
@@ -761,7 +761,7 @@ public class BattleUIController : MonoBehaviour
             
                 break;
             case StageSaveData.CurrentPhaseState.EliteArtifactReward:
-                OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.EliteEngravingReward); // 엘리트 아티팩트 리워드 페이즈에서는 스태그마 선택 패널을 열도록 함
+                OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.EliteEngravingReward); // 엘리트 아티팩트 리워드 페이즈에서는 각인 선택 패널을 열도록 함
                 break;
             case StageSaveData.CurrentPhaseState.BossReward:
                 OpenSelectEquipedArtifactPanel(); // 보스 리워드 페이즈에서는 아티팩트 장착 패널을 열도록 함

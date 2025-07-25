@@ -40,7 +40,7 @@ public class StageSaveData
     [Header("Stage Resources")]
     public int manaStone; // 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<ArtifactData> artifacts = new List<ArtifactData>(12);// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
-    public List<EngravingData> engravings = new List<EngravingData>(3); // 최대 3개 제한, 스태그마 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
+    public List<EngravingData> engravings = new List<EngravingData>(3); // 최대 3개 제한, 각인 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<ArtifactData> equipedArtifacts = new List<ArtifactData>(4); // 현재 장착된 아티팩트 목록
 
     [Header("Stage Characters")]
@@ -84,10 +84,10 @@ public class StageSaveData
             artifacts.Add(null);
         while (artifacts.Count > 12)
             artifacts.RemoveAt(artifacts.Count - 1); // 아티팩트 목록 크기를 12로 고정
-        while (engravings.Count < 3) // 스태그마 목록 크기를 3으로 고정
+        while (engravings.Count < 3) // 각인 목록 크기를 3으로 고정
             engravings.Add(null);
         while (engravings.Count > 3)
-            engravings.RemoveAt(engravings.Count - 1); // 스태그마 목록 크기를 3으로 고정
+            engravings.RemoveAt(engravings.Count - 1); // 인그레이빙 목록 크기를 3으로 고정
         while (entryCharacters.Count < 5) // 엔트리 캐릭터 목록 크기를 5로 고정
             entryCharacters.Add(null);
         while (entryCharacters.Count > 5)
@@ -153,6 +153,22 @@ public class StageManager : MonoBehaviour
         {
             Debug.LogError("ChapterData is not assigned in StageManager. Please assign it in the inspector.");
         }
+        if (battleUIController == null)
+        {
+            battleUIController = FindAnyObjectByType<BattleUIController>();
+            if (battleUIController == null)
+            {
+                Debug.LogWarning("BattleUIController not found in the scene. Please ensure it is present.");
+            }
+        }
+        if (messagePopup == null)
+        {
+            messagePopup = FindAnyObjectByType<MessagePopup>();
+            if (messagePopup == null)
+            {
+                Debug.LogWarning("MessagePopup not found in the scene. Please ensure it is present.");
+            }
+        }
     }
 
     public void RestoreStageState()//배틀씬에 입장시 세이브 데이터에 따라 진행도를 복원하고 UI 컨트롤러에 알려줍니다.
@@ -210,10 +226,10 @@ public class StageManager : MonoBehaviour
                     battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.NormalReward); // 노멀 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.EliteArtifactReward:
-                    battleUIController.OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.EliteArtifactReward); // 엘리트 아티팩트 리워드 상태에 해당하는 스태그마 선택 UI를 엽니다.
+                    battleUIController.OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.EliteArtifactReward); // 엘리트 아티팩트 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.EliteEngravingReward:
-                    battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.EliteEngravingReward); // 엘리트 스태그마 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
+                    battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.EliteEngravingReward); // 엘리트 각인 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.BossReward:
                     battleUIController.OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.BossReward); // 보스 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
@@ -225,7 +241,7 @@ public class StageManager : MonoBehaviour
                     battleUIController.OpenStagePanel(stageSaveData.currentPhaseIndex); // 배틀 중이었어도 복구시엔 스테이지 패널을 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.Shop:
-                    // 상점 상태에 해당하는 UI를 엽니다.
+                    battleUIController.OpenShopPopup(); // 상점 상태에 해당하는 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.EquipmentArtifact:
                     battleUIController.OpenSelectEquipedArtifactPanel(); // 아티팩트 장착 상태에 해당하는 UI를 엽니다.
@@ -235,7 +251,9 @@ public class StageManager : MonoBehaviour
                     return;
 
                 default:
-                    Debug.LogError($"Unknown choice state: {stageSaveData.currentPhaseState}");
+                    messagePopup.Open($"Unknown choice state: {stageSaveData.currentPhaseState}\n" +
+                        "로비로 돌아갑니다.");
+                    SceneManagerEx.Instance.LoadScene("LobbyScene"); // 로비 씬으로 이동
                     return;
             }
         }
@@ -376,6 +394,7 @@ public class StageManager : MonoBehaviour
             case EnemyData.EnemyType.Lord:
                 StageComplete(stageSaveData.currentStageIndex); // 챕터 완료 로직을 호출합니다. 스테이지 컴플리트 내부에서 챕터 완료 판정
                 break;
+
             default:
                 Debug.LogError($"Unknown enemy type: {type}");
                 return;
