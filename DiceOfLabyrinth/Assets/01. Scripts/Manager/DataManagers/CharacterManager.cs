@@ -88,9 +88,7 @@ public class CharacterManager
     /// </summary>
     public void AcquireCharacter(string charID)
     {
-        if (OwnedCharacters.Any(c => c.CharacterData.charID == charID))
-            return;
-
+        
         if (AllCharacters.TryGetValue(charID, out var so))
         {
             var lobbyChar = new LobbyCharacter();

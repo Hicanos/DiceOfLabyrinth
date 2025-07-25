@@ -161,10 +161,36 @@ public class ItemManager
         }
     }
 
+    // 가챠에서 중복 캐릭터를 얻었을 때 charID를 통해 돌파석(AscensionStone) 획득
+    public void GetAscensionStone(string charID, int count = 1)
+    {
+        // 아이템ID가 유효한지 확인
+        // charID를 가진 AscensionStone의 아이템 ID를 찾기
+        // AscensionStone의 SO에 존재하는 CharID와 매개변수 charID가 일치하는지 확인
+        string itemID = null;
+        foreach (var item in allItems.Values)
+        {
+            if (item is AscensionStone ascensionStone && ascensionStone.CharID == charID)
+            {
+                itemID = item.ItemID;
+                break;
+            }
+        }
+
+        if (!IsValidItemID(itemID))
+        {
+            // 유효하지 않은 아이템ID인 경우 예외 처리
+            return;
+        }
+        // 돌파석 획득
+        GetItem(itemID, count);
+    }
+
+
 
     // 하위는 각 아이템 종류별로 보유 중인 아이템 반환(인벤토리 필터 등)
 
-    // 보유중인 EXP 포션 딕셔너리
+        // 보유중인 EXP 포션 딕셔너리
     public Dictionary<string, int> GetPotions()
     {
         // 아이템들 중 EXPpotion으로 생성된 SO만 출력

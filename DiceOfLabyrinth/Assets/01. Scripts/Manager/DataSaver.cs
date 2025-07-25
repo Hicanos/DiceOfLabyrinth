@@ -75,11 +75,82 @@ public class DataSaver
         public int Power; // 스킬 파워
     }
 
-    [Serializable]
-    public class StageData
-    {
-        // 플레이어가 클리어한 스테이지 정보
-    }
+    //[Serializable]
+    //public class StageData
+    //{
+    //    // StageSaveData의 모든 필드 복사
+    //    public int currentChapterIndex;
+    //    public int currentStageIndex;
+    //    public int currentPhaseIndex;
+    //    public int normalStageCompleteCount;
+    //    public int eliteStageCompleteCount;
+    //    public int manaStone;
+    //    public int savedExpReward;
+    //    public int savedGoldReward;
+    //    public int savedJewelReward;
+
+    //    // enum, 리스트 등도 복사
+    //    public int currentFormationType;
+    //    public int currentPhaseState;
+    //    //public List<ArtifactData> artifacts = new List<ArtifactData>(12);
+    //    //public List<EngravingData> engravings = new List<EngravingData>(3);
+    //    //public List<ArtifactData> equipedArtifacts = new List<ArtifactData>(4);
+    //    //public List<CharacterSO> entryCharacters = new List<CharacterSO>(5);
+    //    //public CharacterSO leaderCharacter;
+    //    //public List<BattleCharacter> battleCharacters = new List<BattleCharacter>(5);
+    //    //public EnemyData selectedEnemy;
+    //    //public List<ChapterStates> chapterStates = new List<ChapterStates>();
+
+    //    // 변환 생성자
+    //    public StageData(StageSaveData saveData)
+    //    {
+    //        currentChapterIndex = saveData.currentChapterIndex;
+    //        currentStageIndex = saveData.currentStageIndex;
+    //        currentPhaseIndex = saveData.currentPhaseIndex;
+    //        normalStageCompleteCount = saveData.normalStageCompleteCount;
+    //        eliteStageCompleteCount = saveData.eliteStageCompleteCount;
+    //        manaStone = saveData.manaStone;
+    //        savedExpReward = saveData.savedExpReward;
+    //        savedGoldReward = saveData.savedGoldReward;
+    //        savedJewelReward = saveData.savedJewelReward;
+    //        currentFormationType = (int)saveData.currentFormationType;
+    //        currentPhaseState = (int)saveData.currentPhaseState;
+    //        //artifacts = new List<ArtifactData>(saveData.artifacts);
+    //        //engravings = new List<EngravingData>(saveData.engravings);
+    //        //equipedArtifacts = new List<ArtifactData>(saveData.equipedArtifacts);
+    //        //entryCharacters = new List<CharacterSO>(saveData.entryCharacters);
+    //        //leaderCharacter = saveData.leaderCharacter;
+    //        //battleCharacters = new List<BattleCharacter>(saveData.battleCharacters);
+    //        //selectedEnemy = saveData.selectedEnemy;
+    //        //chapterStates = new List<ChapterStates>(saveData.chapterStates);
+    //    }
+
+    //    // 역변환 메서드
+    //    public StageSaveData ToStageSaveData()
+    //    {
+    //        var saveData = new StageSaveData();
+    //        saveData.currentChapterIndex = currentChapterIndex;
+    //        saveData.currentStageIndex = currentStageIndex;
+    //        saveData.currentPhaseIndex = currentPhaseIndex;
+    //        saveData.normalStageCompleteCount = normalStageCompleteCount;
+    //        saveData.eliteStageCompleteCount = eliteStageCompleteCount;
+    //        saveData.manaStone = manaStone;
+    //        saveData.savedExpReward = savedExpReward;
+    //        saveData.savedGoldReward = savedGoldReward;
+    //        saveData.savedJewelReward = savedJewelReward;
+    //        //saveData.currentFormationType = (StageSaveData.CurrentFormationType)currentFormationType;
+    //        //saveData.currentPhaseState = (StageSaveData.CurrentPhaseState)currentPhaseState;
+    //        //saveData.artifacts = new List<ArtifactData>(artifacts);
+    //        //saveData.engravings = new List<EngravingData>(engravings);
+    //        //saveData.equipedArtifacts = new List<ArtifactData>(equipedArtifacts);
+    //        //saveData.entryCharacters = new List<CharacterSO>(entryCharacters);
+    //        //saveData.leaderCharacter = leaderCharacter;
+    //        //saveData.battleCharacters = new List<BattleCharacter>(battleCharacters);
+    //        //saveData.selectedEnemy = selectedEnemy;
+    //        //saveData.chapterStates = new List<ChapterStates>(chapterStates);
+    //        return saveData;
+    //    }
+    //}
 
     [Serializable]
     public class ItemData
@@ -106,10 +177,8 @@ public class DataSaver
     {
         public UserData userData = new UserData();
         public List<CharacterData> characters = new List<CharacterData>();
-
-        // StageData, ItemData (List로 저장)
-        // ItemData
         public List<ItemData> items = new List<ItemData>();
+        //public StageData stageData; // null로 두고, 저장 시점에만 생성
     }
 
     private static readonly string SavePath = Path.Combine(Application.persistentDataPath, "save.json");
@@ -158,6 +227,10 @@ public class DataSaver
         {
             SyncCharacterData();
             SyncItemData();
+
+            // StageSaveData → StageData 변환 및 저장
+            //if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
+            //    SaveData.stageData = new StageData(StageManager.Instance.stageSaveData);
 
             string json = JsonConvert.SerializeObject(SaveData, Formatting.Indented);
             File.WriteAllText(SavePath, json);
@@ -233,7 +306,11 @@ public class DataSaver
             if (File.Exists(SavePath))
             {
                 string json = File.ReadAllText(SavePath);
-                SaveData = JsonConvert.DeserializeObject<GameSaveData>(json);                
+                SaveData = JsonConvert.DeserializeObject<GameSaveData>(json);
+
+                // StageData → StageSaveData 변환 및 복원
+                //if (SaveData.stageData != null && StageManager.Instance != null)
+                //    StageManager.Instance.stageSaveData = SaveData.stageData.ToStageSaveData();
 #if UNITY_EDITOR
                 Debug.Log($"게임 데이터 로드됨: {SavePath}");
 #endif
@@ -251,7 +328,6 @@ public class DataSaver
         {
             Debug.LogError($"게임 데이터 불러오기 실패: {ex.Message}");
             SaveData = new GameSaveData();
-            
             Save(); // 초기화 후 새로 저장
         }
 
