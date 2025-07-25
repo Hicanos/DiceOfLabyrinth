@@ -348,10 +348,10 @@ public class BattleUIController : MonoBehaviour
                         StageManager.Instance.stageSaveData.leaderCharacter = selectedCharacter;
                         messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
                     }
-                    else
-                    {
-                        messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 팀에 추가되었습니다.");
-                    }
+                    //else
+                    //{
+                    //    messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 팀에 추가되었습니다.");
+                    //}
                     break;
                 }
             }
@@ -370,40 +370,54 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickSelectLeaderButton()
     {
-        var entry = StageManager.Instance.stageSaveData.entryCharacters;
-        if (entry.All(c => c == null))
+        //var entry = StageManager.Instance.stageSaveData.entryCharacters;
+        //if (entry.All(c => c == null))
+        //{
+        //    messagePopup.Open("팀에 캐릭터가 없습니다. 팀을 구성해 주세요.");
+        //    return;
+        //}
+
+        //// 리더가 null이면 0번 인덱스(첫 번째 null이 아닌 캐릭터)를 리더로 지정
+        //if (StageManager.Instance.stageSaveData.leaderCharacter == null)
+        //{
+        //    for (int i = 0; i < entry.Count; i++)
+        //    {
+        //        if (entry[i] != null)
+        //        {
+        //            StageManager.Instance.stageSaveData.leaderCharacter = entry[i];
+        //            messagePopup.Open($"[{entry[i].nameKr}] 캐릭터가 리더로 설정되었습니다.");
+        //            return;
+        //        }
+        //    }
+        //}
+
+        //// 리더가 entryCharacters에 있으면 다음 인덱스의 캐릭터(비어있지 않은 캐릭터)를 리더로, 마지막 인덱스면 0번부터 다시 탐색
+        //int currentLeaderIndex = entry.FindIndex(c => c == StageManager.Instance.stageSaveData.leaderCharacter);
+        //int count = entry.Count;
+        //for (int offset = 1; offset <= count; offset++)
+        //{
+        //    int nextIndex = (currentLeaderIndex + offset) % count;
+        //    if (entry[nextIndex] != null)
+        //    {
+        //        StageManager.Instance.stageSaveData.leaderCharacter = entry[nextIndex];
+        //        messagePopup.Open($"[{entry[nextIndex].nameKr}] 캐릭터가 리더로 설정되었습니다.");
+        //        break;
+        //    }
+        //}
+        // 플랫폼 인덱스를 기반으로 리더를 선정하게 변경
+        if (selectedPlatformIndex < 0 || selectedPlatformIndex >= characterPlatforms.Length)
         {
-            messagePopup.Open("팀에 캐릭터가 없습니다. 팀을 구성해 주세요.");
+            messagePopup.Open("리더를 선택할 수 없습니다. 플랫폼을 먼저 선택해 주세요.");
             return;
         }
-
-        // 리더가 null이면 0번 인덱스(첫 번째 null이 아닌 캐릭터)를 리더로 지정
-        if (StageManager.Instance.stageSaveData.leaderCharacter == null)
+        var selectedCharacter = StageManager.Instance.stageSaveData.entryCharacters[selectedPlatformIndex];
+        if (selectedCharacter == null)
         {
-            for (int i = 0; i < entry.Count; i++)
-            {
-                if (entry[i] != null)
-                {
-                    StageManager.Instance.stageSaveData.leaderCharacter = entry[i];
-                    messagePopup.Open($"[{entry[i].nameKr}] 캐릭터가 리더로 설정되었습니다.");
-                    return;
-                }
-            }
+            messagePopup.Open("선택한 플랫폼에 캐릭터가 없습니다.");
+            return;
         }
-
-        // 리더가 entryCharacters에 있으면 다음 인덱스의 캐릭터(비어있지 않은 캐릭터)를 리더로, 마지막 인덱스면 0번부터 다시 탐색
-        int currentLeaderIndex = entry.FindIndex(c => c == StageManager.Instance.stageSaveData.leaderCharacter);
-        int count = entry.Count;
-        for (int offset = 1; offset <= count; offset++)
-        {
-            int nextIndex = (currentLeaderIndex + offset) % count;
-            if (entry[nextIndex] != null)
-            {
-                StageManager.Instance.stageSaveData.leaderCharacter = entry[nextIndex];
-                messagePopup.Open($"[{entry[nextIndex].nameKr}] 캐릭터가 리더로 설정되었습니다.");
-                break;
-            }
-        }
+        StageManager.Instance.stageSaveData.leaderCharacter = selectedCharacter; // 선택한 캐릭터를 리더로 설정
+        messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
     }
 
 
