@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using PredictedDice;
-using UnityEngine.UI;
 
 public class BattleSpawner : MonoBehaviour
 {
@@ -158,7 +158,7 @@ public class BattleSpawner : MonoBehaviour
     {
         GameObject go;
         Transform layoutGroupTransform;
-        HorizontalLayoutGroup layoutGroup;
+
         for (int i = 0; i < numFIve; i++)
         {
             go = Instantiate(battleManager.CharacterHPCanvas, battleGroup.CharacterPrefabs[i].transform);
@@ -175,7 +175,6 @@ public class BattleSpawner : MonoBehaviour
 
             battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
         }
-
     }
 
     public void DeactiveCharacterHP(BattleCharGroup battleGroup)

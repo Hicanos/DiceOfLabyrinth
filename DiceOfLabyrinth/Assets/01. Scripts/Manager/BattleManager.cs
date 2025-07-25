@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
