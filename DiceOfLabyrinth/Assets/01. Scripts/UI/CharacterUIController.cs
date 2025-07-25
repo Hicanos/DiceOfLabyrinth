@@ -1,16 +1,12 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CharacterUIController : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [Header("Panels")]
+    [SerializeField] private GameObject characterListPanel;
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        
+        characterListPanel.SetActive(true);
     }
 }
