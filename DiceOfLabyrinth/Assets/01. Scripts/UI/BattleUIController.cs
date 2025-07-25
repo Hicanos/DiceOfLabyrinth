@@ -198,7 +198,8 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        if(InventoryPopup.Instance != null)
+            InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         selectEventPanel.SetActive(false);
         foreach (var characterPlatform in characterPlatforms)
         {
