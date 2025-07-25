@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -156,13 +157,22 @@ public class BattleSpawner : MonoBehaviour
     private void LoadCharacterHP(BattleCharGroup battleGroup)
     {
         GameObject go;
+        Transform layoutGroupTransform;
+
         for (int i = 0; i < numFIve; i++)
         {
-            go = Instantiate(battleManager.CharacterHPPrefab, battleGroup.CharacterPrefabs[i].transform);
+            go = Instantiate(battleManager.CharacterHPCanvas, battleGroup.CharacterPrefabs[i].transform);
             battleGroup.CharacterHPBars[i] = go;
 
-            battleGroup.CharacterHPs[i] = go.GetComponentsInChildren<RectTransform>()[3];
-            battleGroup.CharacterHPTexts[i] = go.GetComponentInChildren<TextMeshProUGUI>();
+            go = Instantiate(battleManager.CharacterHPBack, battleGroup.CharacterHPBars[i].transform);
+            battleGroup.LayoutGroups[i] = go.GetComponentInChildren<HorizontalLayoutGroup>();
+            layoutGroupTransform = battleGroup.LayoutGroups[i].transform;
+
+            battleGroup.CharacterHPs[i] = Instantiate(battleManager.CharacterHPFront, layoutGroupTransform).GetComponent<RectTransform>();
+            battleGroup.CharacterBarriers[i] = Instantiate(battleManager.CharacterHPBarrier, layoutGroupTransform).GetComponent<RectTransform>();
+
+            battleGroup.CharacterHPTexts[i] = Instantiate(battleManager.CharacterHPText, go.transform).GetComponent<TextMeshProUGUI>();
+
             battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
         }
     }
@@ -171,6 +181,7 @@ public class BattleSpawner : MonoBehaviour
     {
         for (int i = 0; i < numFIve; i++)
         {
+            battleGroup.LayoutGroups[i].childControlWidth = true;
             battleGroup.CharacterHPs[i].gameObject.SetActive(false);
         }
     }

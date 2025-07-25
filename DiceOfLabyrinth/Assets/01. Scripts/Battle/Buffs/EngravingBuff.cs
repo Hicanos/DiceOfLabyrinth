@@ -1,10 +1,8 @@
 ﻿using System;
-using UnityEngine;
 
 public interface IBuff
 {
     public void Action();
-    public void CallBack();
     public void ReduceDuration();
 }
 
@@ -15,7 +13,10 @@ public class EngravingBuff : IBuff
     public DetailedTurnState EffectTime;
     public EffectTypeEnum EffectType;
     public float EffectValue;
-    public int BuffDuration;
+    public int MaxBuffDuration;
+    private int buffDuration;
+
+    public bool isActive;
 
     public EngravingBuff(Func<DamageCondition, bool> jungeCondition, DamageCondition condition, DetailedTurnState effectTime)
     {
@@ -24,7 +25,8 @@ public class EngravingBuff : IBuff
         Condition = condition;
         EffectType = condition.EffectType;
         EffectValue = condition.EffectValue;
-        BuffDuration = condition.BuffDuration;
+        MaxBuffDuration = condition.BuffDuration;
+        buffDuration = MaxBuffDuration;
     }
 
     public void Action()
@@ -33,23 +35,20 @@ public class EngravingBuff : IBuff
 
         if (JudgeCondition != null && JudgeCondition(Condition))
         {
+            isActive = true;
+            buffDuration = MaxBuffDuration;
             BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] += EffectValue;
-            Debug.Log("Action");
         }
-    }
-
-    public void CallBack()
-    {
-
     }
 
     public void ReduceDuration()
     {
-        BuffDuration--;
+        buffDuration--;
 
-        if (BuffDuration == 0)
+        if (buffDuration == 0 && isActive)
         {
             BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] -= EffectValue;
+            isActive = false;
         }
     }
 }

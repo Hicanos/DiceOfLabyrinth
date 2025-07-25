@@ -73,7 +73,8 @@ public class BattleEnemyAttack : MonoBehaviour
                 int damage = skillValue * battleManager.Enemy.CurrentAtk - battleCharacter.CurrentDEF;
                 if (damage < 0) damage = 0;
 
-                battleCharacter.TakeDamage(damage);
+                battleManager.BattleGroup.CharacterHit(characterIndex, damage);
+                //battleCharacter.TakeDamage(damage);
                 UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(battleManager.Enemy.Data.EnemyName, battleCharacter.CharNameKr, damage, false);
                 if (battleCharacter.IsDied) battleManager.BattleGroup.CharacterDead(characterIndex);
                 battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)characterIndex);

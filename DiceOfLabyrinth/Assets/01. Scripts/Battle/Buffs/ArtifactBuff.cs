@@ -2,48 +2,84 @@
 
 public class ArtifactBuff : IBuff
 {
-    public Func<DamageCondition, bool> JudgeCondition;
-    public ArtifactEffectData Condition;
-    public ArtifactEffectTypeEnum EffectType;
+    public ArtifactDetailData Data;
+    public Func<ArtifactDetailData, bool> JudgeCondition;
+    public Action<ArtifactDetailData> EffectAction;
 
     public DetailedTurnState EffectTime;
-    public float EffectValue;
+
     public int BuffDuration;
 
-    public ArtifactBuff(Func<DamageCondition, bool> jungeCondition, ArtifactEffectData effectData, DetailedTurnState effectTime)
+    public ArtifactBuff(DetailedTurnState effectTime, ArtifactDetailData data, Func<ArtifactDetailData, bool> judgeCondition, Action<ArtifactDetailData> effectAction)
     {
-        JudgeCondition = jungeCondition;
+        Data = data;
+        JudgeCondition = judgeCondition;
+        EffectAction = effectAction;
         EffectTime = effectTime;
-        Condition = effectData;
-
-        EffectValue = effectData.Value;
-
-        //EffectType = ;
         BuffDuration = 0;
     }
 
     public void Action()
     {
         if (BattleManager.Instance.CurrentDetailedState != EffectTime) return;
+        if (JudgeCondition(Data) == false) return;
 
-        //if (JudgeCondition != null && JudgeCondition(Condition))
-        //{
-        //    BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] += EffectValue;
-        //}
-    }
-
-    public void CallBack()
-    {
-
+        EffectAction(Data);
     }
 
     public void ReduceDuration()
     {
-        BuffDuration--;
+        //BuffDuration--;
 
-        if (BuffDuration == 0)
-        {
-            BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] -= EffectValue;
-        }
+        //if (BuffDuration == 0)
+        //{
+            
+        //}
+    }
+}
+
+public class ArtifactBuffUpdate : IBuff
+{
+    ArtifactDetailData Data;
+    public Func<ArtifactDetailData, bool> JudgeCondition;
+    public Action<ArtifactDetailData> EffectAction;
+
+    public DetailedTurnState EffectTime;
+
+    public int BuffDuration;
+    public int BuffUseCount;
+    public bool isActiveThisTurn;
+
+    public ArtifactBuffUpdate(DetailedTurnState effectTime, ArtifactDetailData data, Func<ArtifactDetailData, bool> judgeCondition, Action<ArtifactDetailData> effectAction)
+    {
+        Data = data;
+        JudgeCondition = judgeCondition;
+        EffectAction = effectAction;
+        EffectTime = effectTime;
+        BuffUseCount = 1;
+    }
+
+    public void Action()
+    {
+        if (JudgeCondition(Data) == false) return;
+        if (isActiveThisTurn) return;
+        if (BuffUseCount == 0) return;
+
+        isActiveThisTurn = true;
+
+        EffectAction(Data);
+        ReduceUseCount();
+    }
+
+    public void ReduceDuration()
+    {
+        if (isActiveThisTurn == false) return;
+
+        BuffDuration--;
+    }
+
+    private void ReduceUseCount()
+    {
+        BuffUseCount--;
     }
 }

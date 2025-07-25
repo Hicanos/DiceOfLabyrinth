@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,11 +42,7 @@ public class BattleManager : MonoBehaviour
 
     public BattleCharacterAttack CharacterAttack;
     public BattleEnemyAttack EnemyAttack;
-    public EnemyPatternContainer EnemyPatternContainer;
-
-    public GameObject CharacterHPPrefab;
-    public GameObject EnemyHPPrefab;
-    public BattleUIHP BattleUIHP;
+    public EnemyPatternContainer EnemyPatternContainer;    
     
     public BattleStateMachine StateMachine;
     public DetailedTurnState CurrentDetailedState;
@@ -56,19 +53,31 @@ public class BattleManager : MonoBehaviour
 
     public EngravingBuffMaker EngravingBuffMaker = new EngravingBuffMaker();
     public EngravingBuffContainer EngravingBuffs = new EngravingBuffContainer();
-    public EngravingAdditionalStatus EngravingAdditionalStatus = new EngravingAdditionalStatus();
+    public EngravingAdditionalStatus EngravingAdditionalStatus;
 
+    public ArtifactBuffMaker ArtifactBuffMaker = new ArtifactBuffMaker();
+    public ArtifactBuffContainer ArtifactBuffs = new ArtifactBuffContainer();
+    public ArtifactAdditionalStatus ArtifactAdditionalStatus;
     //public AdditionalValues ArtifactAdditionalValue = new AdditionalValues();
-
+    [Header("Character HP UIs")]
+    public GameObject CharacterHPCanvas;
+    public GameObject CharacterHPBack;
+    public GameObject CharacterHPFront;
+    public GameObject CharacterHPBarrier;
+    public GameObject CharacterHPText;
+    public GameObject EnemyHPPrefab;
+    public BattleUIHP BattleUIHP;
 
     [Header("Values")]
-    private  readonly int maxCost = 12;
-    public  int     BattleTurn   = 0;
-    private int     currnetCost  = 0;
+    public  int     BattleTurn;
+    public  int     CostSpendedInTurn;
     public  bool    isBattle;
     public  bool    IsBoss;
     public  bool    IsWon;
-    public int MaxCost => maxCost;
+    private  readonly int maxCost = 12;
+    private int     currnetCost;
+
+    public int MaxCost => maxCost + (int)ArtifactAdditionalStatus.AdditionalStatus[(int)AdditionalStatusEnum.AdditionalMaxCost];
 
     void Start()
     {
@@ -89,6 +98,8 @@ public class BattleManager : MonoBehaviour
     {
         StateMachine.BattleUpdate();
         BattleStateUpdate();
+
+        //if(isBattle) {ArtifactBuffs.ActionUpdate();}
     }
 
     private void BattleStateUpdate()
@@ -106,7 +117,12 @@ public class BattleManager : MonoBehaviour
         GetStartData(data);
         BattleStartValueSetting();
         EngravingBuffMaker.MakeEngravingBuff();
+        ArtifactBuffMaker.MakeArtifactBuff();
         InputManager.Instance.BattleInputStart();
+
+        ArtifactAdditionalStatus = new ArtifactAdditionalStatus();
+        EngravingAdditionalStatus = new EngravingAdditionalStatus();
+
         enterBattle.BattleStart();
     }
 
@@ -125,6 +141,11 @@ public class BattleManager : MonoBehaviour
         BattleResultData data;
         isBattle = false;
         IsWon = isWon;
+
+        EngravingBuffs.RemoveAllBuffs();
+        ArtifactBuffs.RemoveAllBuffs();
+        EngravingAdditionalStatus.ResetStatus();
+        ArtifactAdditionalStatus.ResetStatus();
 
         BattleSpawner.DeactiveCharacterHP(BattleGroup);
         DiceManager.Instance.ResetSetting();
@@ -162,7 +183,18 @@ public class BattleManager : MonoBehaviour
         cost = Mathf.Clamp(cost + iNum, 0, MaxCost);
 
         currnetCost = cost;
-        UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, cost.ToString());        
+        UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, cost.ToString());
+    }
+
+    public void SpendCost(int iNum)
+    {
+        int cost = currnetCost;
+
+        cost = Mathf.Clamp(cost - iNum, 0, MaxCost);
+
+        currnetCost = cost;
+        UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, cost.ToString());
+        ArtifactBuffs.ActionCallbackSpendCost();
     }
 
     private void BattleStartValueSetting()
@@ -171,7 +203,7 @@ public class BattleManager : MonoBehaviour
         isBattle = true;
     }
 
-    private void ExitBattleSetting()
+    public void ExitBattleSetting()
     {
         BattleGroup = null;
         isBattle = false;
@@ -199,7 +231,9 @@ public class BattleCharGroup
 
     [NonSerialized] public GameObject[]      CharacterHPBars  = new GameObject[numFive];
     [NonSerialized] public RectTransform[]   CharacterHPs     = new RectTransform[numFive];
+    [NonSerialized] public RectTransform[]   CharacterBarriers= new RectTransform[numFive];
     [NonSerialized] public TextMeshProUGUI[] CharacterHPTexts = new TextMeshProUGUI[numFive];
+    [NonSerialized] public HorizontalLayoutGroup[] LayoutGroups = new HorizontalLayoutGroup[numFive];
 
     public List<int> FrontLine = new List<int>();
     public List<int> BackLine = new List<int>();
@@ -226,10 +260,39 @@ public class BattleCharGroup
         }
     }
 
+    public void CharacterHeal(int index, int amount)
+    {
+        BattleCharacters[index].Heal(amount);
+    }
+
+    public void CharacterGetBarrier(int index, int amount)
+    {
+        float barrierRatio;
+        float hpRatio;
+        Vector3 vec = Vector3.one;
+
+        barrierRatio = amount / (battleCharacters[index].CurrentHP + amount);
+        hpRatio = battleCharacters[index].CurrentHP / (battleCharacters[index].CurrentHP + amount);
+
+        vec.x = barrierRatio;
+        CharacterBarriers[index].localScale = vec;
+
+        vec.x = hpRatio;
+        CharacterHPs[index].localScale = vec;
+    }
+
+    public void CharacterHit(int index, int damage)
+    {
+        LayoutGroups[index].childControlWidth = false;
+        BattleCharacters[index].TakeDamage(damage);
+        BattleManager.Instance.ArtifactBuffs.ActionCallbackCharacterHit();
+    }
+
     public void CharacterDead(int index)
     {
         DeadCount++;
         DeadIndex.Add(index);
+        BattleManager.Instance.ArtifactBuffs.ActionCallbackCharacterDie();
 
         if (FrontLine.Contains<int>(index))
         {

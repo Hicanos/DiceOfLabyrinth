@@ -1540,6 +1540,7 @@ MonoBehaviour:
   RollDiceSynced: {fileID: 630142358}
   DiceBoard: {fileID: 1058215125}
   IsRolling: 0
+  DiceRankBefore: 0
   DiceRank: 0
 --- !u!4 &1531840405
 Transform:
@@ -2082,12 +2083,19 @@ MonoBehaviour:
   CharacterAttack: {fileID: 562530837}
   EnemyAttack: {fileID: 562530836}
   EnemyPatternContainer: {fileID: 562530839}
-  CharacterHPPrefab: {fileID: 8686863719124662963, guid: 83f53905d4392be41becafab42e5a40f, type: 3}
+  CurrentDetailedState: 0
+  CharacterHPCanvas: {fileID: 8686863719124662963, guid: 83f53905d4392be41becafab42e5a40f, type: 3}
+  CharacterHPBack: {fileID: 8354483439385447502, guid: ebb824e45e808d64f874846d530d11b7, type: 3}
+  CharacterHPFront: {fileID: 3948877890493290502, guid: 9320c032d44178449804c1567c00f173, type: 3}
+  CharacterHPBarrier: {fileID: 7665564408766802699, guid: 0241db6c810aca548932b46422951dc3, type: 3}
+  CharacterHPText: {fileID: 5269274774389542425, guid: 6a6d209b2f7935b4aa9ec07bff538df9, type: 3}
   EnemyHPPrefab: {fileID: 8686863719124662963, guid: 1d56b95780a60b042839dab99b38bde7, type: 3}
   BattleUIHP: {fileID: 5666082356261757288}
-  CurrentPlayerState: 0
   BattleTurn: 0
+  CostSpendedInTurn: 0
   isBattle: 0
+  IsBoss: 0
+  IsWon: 0
 --- !u!1 &5666082356261757285
 GameObject:
   m_ObjectHideFlags: 0

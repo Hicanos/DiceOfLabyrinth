@@ -135,9 +135,11 @@ public class BattleCharacterAttack : MonoBehaviour
     {
         //{공격력 - 방어력 * (1-방어력 관통률)} * (1 + 버프 + 아티팩트 + 속성 + 패시브) * (족보별 계수 * 각인 계수)
         float engravingAddAtk = battleManager.EngravingAdditionalStatus.AdditionalStatus[(int)EffectTypeEnum.AdditionalDamage];
-        Debug.Log(engravingAddAtk);
-        float damage = (characterAtk - monsterDef * (1- penetration)) * (1 + elementDamage) * ((int)diceWeighting * engravingAddAtk);
-        Debug.Log(engravingAddAtk);
+        float additionalElementDamage = battleManager.ArtifactAdditionalStatus.AdditionalStatus[(int)AdditionalStatusEnum.AdditionalElementDamage];
+        float artifactAddAtk = battleManager.ArtifactAdditionalStatus.AdditionalStatus[(int)AdditionalStatusEnum.AdditionalDamage];
+
+        float damage = (characterAtk - monsterDef * (1- penetration)) * (1 + artifactAddAtk + elementDamage + additionalElementDamage) * ((int)diceWeighting * engravingAddAtk);
+        Debug.Log($"Engrving :  + {engravingAddAtk}\nArtifact :  + {artifactAddAtk}\nElement :  + {additionalElementDamage}");
         damage = Mathf.Clamp(damage, 0, damage);
         return (int)damage;
     }

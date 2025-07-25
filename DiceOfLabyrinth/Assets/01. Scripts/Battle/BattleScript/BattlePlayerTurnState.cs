@@ -5,6 +5,7 @@
 
     public void Enter()
     {
+        UnityEngine.Debug.Log("enter");
         battleManager.BattleTurn++;
         
         battleManager.GetCost(AlivedCharacter());
@@ -21,7 +22,7 @@
 
         UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(true);
         string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
-        
+        battleManager.CostSpendedInTurn = 0;
         ChangeDetailedTurnState(DetailedTurnState.Enter);
     }
 
@@ -41,6 +42,7 @@
     {
         battleManager.CurrentDetailedState = state;
         battleManager.EngravingBuffs.Action();
+        battleManager.ArtifactBuffs.Action();
         OnOffButton();
     }
 
