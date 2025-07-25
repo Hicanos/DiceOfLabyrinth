@@ -20,11 +20,14 @@ public class SoundManager : MonoBehaviour
 
     private Dictionary<SoundType, AudioClip> soundDict;
     public enum SoundType { ButtonClick, // UI 관련 사운드
-        BGM_Lobby,
-        BGM_Battle,
-        BGM_Victory,
-        BGM_GameOver,
-        BGM_Title,
+        BGM_Lobby,// 로비 배경음악
+        BGM_Battle, // 전투 배경음악
+        BGM_EliteBattle, // 엘리트 전투 배경음악
+        BGM_LordBattle, // 보스 전투 배경음악
+        BGM_Victory,// 전투 승리 배경음악
+        BGM_GameOver,// 게임 오버 배경음악
+        BGM_Title,// 타이틀 배경음악
+        SFX_Attack, // 전투 관련 사운드
     }
 
     private void Awake()
@@ -32,6 +35,14 @@ public class SoundManager : MonoBehaviour
         if (Instance == null)
         { 
             Instance = this;
+        }
+        soundDict = new Dictionary<SoundType, AudioClip>();
+        foreach (var entry in soundEntries)
+        {
+            if (!soundDict.ContainsKey(entry.type) && entry.clip != null)
+            {
+                soundDict.Add(entry.type, entry.clip);
+            }
         }
     }
     public void PlayBGM(SoundType type) // 배경음악 재생
