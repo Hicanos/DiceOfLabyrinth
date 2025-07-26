@@ -37,8 +37,8 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
     {
         Init();
     }
-    private void Start()
-    {
+    //private void Start()
+    //{
         // 필요시 테스트용 스킬 호출 위치
         //UseActiveSkill(0, 1); // 오른손 공격
         //UseActiveSkill(1, 1); // 강력한 공격
@@ -46,7 +46,7 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
         //UseActiveSkill(4, 1);// 점프 공격
         //UseActiveSkill(5, 1); // 내려찍기 공격
         //UseActiveSkill(14, 1); // 회전 공격
-    }
+    //}
     public void Init()
     {
         ActiveSkills = new List<Action<Vector3>>(new Action<Vector3>[15]);
@@ -554,6 +554,11 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
         PlayAnimationByState(EnemyState.SpinAttack);
         yield return new WaitForSeconds(2.25f);
         PlayAnimationByState(EnemyState.Idle);
+    }
+
+    public void JumpAttackSound()
+    {
+        SoundManager.Instance.PlaySFX(SoundManager.SoundType.SFX_Attack);
     }
 }
 

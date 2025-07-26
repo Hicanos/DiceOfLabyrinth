@@ -27,7 +27,8 @@ public class SoundManager : MonoBehaviour
         BGM_Victory,// 전투 승리 배경음악
         BGM_GameOver,// 게임 오버 배경음악
         BGM_Title,// 타이틀 배경음악
-        SFX_Attack, // 전투 관련 사운드
+        SFX_Hit, // 피격음
+        SFX_Swing, // 공격음
     }
 
     private void Awake()
