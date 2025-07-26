@@ -558,7 +558,7 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
 
     public void JumpAttackSound()
     {
-        SoundManager.Instance.PlaySFX(SoundManager.SoundType.SFX_Attack);
+        SoundManager.Instance.PlaySFX(SoundManager.SoundType.SFX_Swing);
     }
 }
 
