@@ -77,8 +77,7 @@ public class ShopPopup : MonoBehaviour
         }
         // 상점 패널이 활성화될 때 초기화
         StartShop();
-        animationRect.AnimLeftIn();
-        animationRect.AnimRightIn();
+        animationRect.PlayAllIn();
     }
 
     public void StartShop()

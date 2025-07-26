@@ -35,17 +35,7 @@ namespace Helios.GUI {
 
         Vector3 scaleStart = new Vector3(0.0f, 0.0f, 0.0f);
 
-        private void OnEnable() {
-#if DOTWEEN
-        AnimScaleIn();
-        AnimRightIn();
-        AnimLeftIn();
-        AnimTopIn();
-        AnimBotIn();
-#else
-            enabled = false;
-#endif
-        }
+
 
 #if DOTWEEN
 
@@ -65,6 +55,15 @@ namespace Helios.GUI {
             if (rectAnimRight[i] != null)
                 originPosRight[i] = rectAnimRight[i].anchoredPosition;
         }
+    }
+
+    public void PlayAllIn()
+    {
+        AnimScaleIn();
+        AnimRightIn();
+        AnimLeftIn();
+        AnimTopIn();
+        AnimBotIn();
     }
 
     void AnimScaleIn() {
