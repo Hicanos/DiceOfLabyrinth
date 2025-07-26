@@ -191,6 +191,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""GamePlay_Pointer_press"",
+                    ""type"": ""Button"",
+                    ""id"": ""1f87282a-1e7d-487b-80e1-cd8b8bc6bbf3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""initialStateCheck"": true
+                },
+                {
                     ""name"": ""InputButton"",
                     ""type"": ""Button"",
                     ""id"": ""76a67f69-6456-4c10-bd5b-1822b15f7190"",
@@ -682,6 +691,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse;Joystick;XR;Touch;Gamepad"",
                     ""action"": ""GamePlay_Pointer"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f7a0138a-4fab-4d59-8ce7-a6df12863f43"",
+                    ""path"": ""<Pointer>/position"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse;Joystick;XR;Touch;Gamepad"",
+                    ""action"": ""GamePlay_Pointer_press"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1280,6 +1300,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_GamePlay = m_Player.FindAction("GamePlay", throwIfNotFound: true);
         m_Player_GamePlay_Pointer = m_Player.FindAction("GamePlay_Pointer", throwIfNotFound: true);
+        m_Player_GamePlay_Pointer_press = m_Player.FindAction("GamePlay_Pointer_press", throwIfNotFound: true);
         m_Player_InputButton = m_Player.FindAction("InputButton", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
@@ -1385,6 +1406,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_GamePlay;
     private readonly InputAction m_Player_GamePlay_Pointer;
+    private readonly InputAction m_Player_GamePlay_Pointer_press;
     private readonly InputAction m_Player_InputButton;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
@@ -1441,6 +1463,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/GamePlay_Pointer".
         /// </summary>
         public InputAction @GamePlay_Pointer => m_Wrapper.m_Player_GamePlay_Pointer;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/GamePlay_Pointer_press".
+        /// </summary>
+        public InputAction @GamePlay_Pointer_press => m_Wrapper.m_Player_GamePlay_Pointer_press;
         /// <summary>
         /// Provides access to the underlying input action "Player/InputButton".
         /// </summary>
@@ -1504,6 +1530,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @GamePlay_Pointer.started += instance.OnGamePlay_Pointer;
             @GamePlay_Pointer.performed += instance.OnGamePlay_Pointer;
             @GamePlay_Pointer.canceled += instance.OnGamePlay_Pointer;
+            @GamePlay_Pointer_press.started += instance.OnGamePlay_Pointer_press;
+            @GamePlay_Pointer_press.performed += instance.OnGamePlay_Pointer_press;
+            @GamePlay_Pointer_press.canceled += instance.OnGamePlay_Pointer_press;
             @InputButton.started += instance.OnInputButton;
             @InputButton.performed += instance.OnInputButton;
             @InputButton.canceled += instance.OnInputButton;
@@ -1551,6 +1580,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @GamePlay_Pointer.started -= instance.OnGamePlay_Pointer;
             @GamePlay_Pointer.performed -= instance.OnGamePlay_Pointer;
             @GamePlay_Pointer.canceled -= instance.OnGamePlay_Pointer;
+            @GamePlay_Pointer_press.started -= instance.OnGamePlay_Pointer_press;
+            @GamePlay_Pointer_press.performed -= instance.OnGamePlay_Pointer_press;
+            @GamePlay_Pointer_press.canceled -= instance.OnGamePlay_Pointer_press;
             @InputButton.started -= instance.OnInputButton;
             @InputButton.performed -= instance.OnInputButton;
             @InputButton.canceled -= instance.OnInputButton;
@@ -1931,6 +1963,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnGamePlay_Pointer(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "GamePlay_Pointer_press" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnGamePlay_Pointer_press(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "InputButton" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

@@ -19,16 +19,19 @@ public class SoundManager : MonoBehaviour
     public List<SoundEntry> SoundEntries => soundEntries;
 
     private Dictionary<SoundType, AudioClip> soundDict;
-    public enum SoundType { ButtonClick, // UI 관련 사운드
+    public enum SoundType { 
+        UIClick, // UI 관련 사운드
         BGM_Lobby,// 로비 배경음악
-        BGM_Battle, // 전투 배경음악
-        BGM_EliteBattle, // 엘리트 전투 배경음악
+        BGM_Dungeon, // 던전 배경음악
+        BGM_NormalEliteBattle, // 엘리트 전투 배경음악
+        BGM_GuardianBattle, // 가디언 전투 배경음악
         BGM_LordBattle, // 보스 전투 배경음악
-        BGM_Victory,// 전투 승리 배경음악
-        BGM_GameOver,// 게임 오버 배경음악
         BGM_Title,// 타이틀 배경음악
-        SFX_Hit, // 피격음
+        SFX_Victory,// 전투 승리 배경음악
+        SFX_Defeat, // 전투 패배 배경음악
+        SFX_Hit_Sword, // 타격음
         SFX_Swing, // 공격음
+        SFX_Swing2, // 공격음2
     }
 
     private void Awake()
