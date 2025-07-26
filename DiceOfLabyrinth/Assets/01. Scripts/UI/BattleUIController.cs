@@ -974,7 +974,6 @@ public class BattleUIController : MonoBehaviour
                 characterPlatform.SetActive(false);
         }
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
-        ShopPopup.Instance.StartShop();
     }
 
     public void OpenSelectEquipedArtifactPanel() // 아티팩트 장착 선택 패널을 여는 함수

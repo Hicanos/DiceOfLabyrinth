@@ -58,14 +58,16 @@ namespace Helios.GUI {
             if (rectAnimLeft[i] != null)
                 originPosLeft[i] = rectAnimLeft[i].anchoredPosition;
         }
+        Debug.Log("originPosLeft length: " + originPosLeft.Length);
 
-        originPosRight = new Vector2[rectAnimRight.Length];
+            originPosRight = new Vector2[rectAnimRight.Length];
         for (int i = 0; i < rectAnimRight.Length; i++)
         {
             if (rectAnimRight[i] != null)
                 originPosRight[i] = rectAnimRight[i].anchoredPosition;
         }
-    }
+        Debug.Log("originPosRight length: " + originPosRight.Length);
+        }
 
     void AnimScaleIn() {
         for(int i = 0; i < rectAnimScale.Length; i++) {
