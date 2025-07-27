@@ -139,6 +139,8 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
         }
         transform.position = end;
 
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
+
         // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
         Vector3 returnDir = (savedPosition - transform.position).normalized;
         if (returnDir.sqrMagnitude > 0.0001f)
@@ -228,6 +230,7 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
         float attackDuration = 1f; // 실제 애니메이션 길이로 조정
 
         yield return new WaitForSeconds(attackDuration);
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
 
         // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
         Vector3 returnDir = (savedPosition - transform.position).normalized;
@@ -318,6 +321,7 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
         float attackDuration = 1f; // 실제 애니메이션 길이로 조정
 
         yield return new WaitForSeconds(attackDuration);
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
 
         // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
         Vector3 returnDir = (savedPosition - transform.position).normalized;
@@ -407,6 +411,7 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
         float attackDuration = 1f; // 실제 애니메이션 길이로 조정
 
         yield return new WaitForSeconds(attackDuration);
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
 
         // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
         Vector3 returnDir = (savedPosition - transform.position).normalized;
@@ -473,6 +478,7 @@ public class Gnoll : MonoBehaviour, IEnemy // 테스트에너미 클래스는 �
         float spinAttackDuration = 1f; // 실제 애니메이션 길이로 조정
 
         yield return new WaitForSeconds(spinAttackDuration);
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
 
         // Idle 상태로 전환
         PlayAnimationByState(EnemyState.Idle);

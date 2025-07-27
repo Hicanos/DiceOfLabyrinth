@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 
 public class BattleEnemyAttack : MonoBehaviour
 {
@@ -32,21 +33,7 @@ public class BattleEnemyAttack : MonoBehaviour
         StopCoroutine(enemyAttack());
     }
 
-    IEnumerator enemyAttack()
-    {
-        yield return new WaitForSeconds(waitSecondEnemyAttack);
-
-        isEnemyAttacking = true;
-        enemySkillData = BattleManager.Instance.Enemy.currentSkill;
-        EnemyAttackTest();
-
-        yield return new WaitForSeconds(tempWaitAttackAnimEnd);
-
-        //isEnemyAttacking = false;
-        BattleManager.Instance.StateMachine.currentState = BattleManager.Instance.I_PlayerTurnState;
-    }    
-
-    public void EnemyAttackTest()
+    public void EnemyAttackDealDamage()
     {
         BattleManager battleManager = BattleManager.Instance;
         BattleCharacter battleCharacter;
@@ -80,12 +67,45 @@ public class BattleEnemyAttack : MonoBehaviour
                 if (skill.Debuff == EnemyDebuff.None) continue;
                 else
                 {
-                    if (GetRandomRange(1,100) <= skill.DebuffChance)
+                    if (GetRandomRange(1, 100) <= skill.DebuffChance)
                     {
                         Debug.Log($"캐릭터{characterIndex + 1} {skill.Debuff}걸림");
                     }
                 }
             }
+        }
+    }
+
+    IEnumerator enemyAttack()
+    {
+        yield return new WaitForSeconds(waitSecondEnemyAttack);
+
+        isEnemyAttacking = true;
+        enemySkillData = BattleManager.Instance.Enemy.currentSkill;
+        EnemyAttackTest();
+
+        yield return new WaitForSeconds(tempWaitAttackAnimEnd);
+
+        //isEnemyAttacking = false;
+        BattleManager.Instance.StateMachine.currentState = BattleManager.Instance.I_PlayerTurnState;
+    }    
+
+    public void EnemyAttackTest()
+    {
+        BattleManager battleManager = BattleManager.Instance;
+
+        int skillLength = battleManager.Enemy.currentSkill.Skills.Length;
+        List<int> targetIndexTest = new List<int>();
+
+        for (int i = 0; i < skillLength; i++)
+        {
+            EnemySkill skill = enemySkillData.Skills[i];
+            int targetCount = skill.TragetCount;
+            int provability = skill.FrontLineProbability;            
+
+            targetIndexTest = targetGetterDictionary[skill.Method](targetCount, provability);
+
+            battleManager.Enemy.currentTargetIndex = targetIndexTest;            
         }
         List<int> targetList = battleManager.Enemy.currentTargetIndex;
 

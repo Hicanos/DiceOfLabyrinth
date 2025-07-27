@@ -126,6 +126,7 @@ public class Goblin : MonoBehaviour, IEnemy
         // 공격 애니메이션
         PlayAnimationByState(EnemyState.RightAttack);
         yield return new WaitForSeconds(1f);
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
 
         // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
         Vector3 returnDir = (savedPosition - transform.position).normalized;
@@ -205,6 +206,7 @@ public class Goblin : MonoBehaviour, IEnemy
 
         PlayAnimationByState(EnemyState.SlashDown);
         yield return new WaitForSeconds(1.5f);
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
 
         // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
         Vector3 returnDir = (savedPosition - transform.position).normalized;
@@ -265,6 +267,7 @@ public class Goblin : MonoBehaviour, IEnemy
     {
         PlayAnimationByState(EnemyState.SpinAttack);
         yield return new WaitForSeconds(1f);
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
         PlayAnimationByState(EnemyState.Idle);
     }
     public void TakeDamage()

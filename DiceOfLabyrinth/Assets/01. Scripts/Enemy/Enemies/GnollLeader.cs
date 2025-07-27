@@ -162,6 +162,7 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
         float attackDuration = 1.15f; // 실제 애니메이션 길이로 조정
 
         yield return new WaitForSeconds(attackDuration);
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
 
         // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
         Vector3 returnDir = (savedPosition - transform.position).normalized;
@@ -249,6 +250,7 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
         PlayAnimationByState(EnemyState.StrongAttack);
         float attackDuration = 1f; // 실제 애니메이션 길이로 조정
         yield return new WaitForSeconds(attackDuration);
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
         // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
         Vector3 returnDir = (savedPosition - transform.position).normalized;
         if (returnDir.sqrMagnitude > 0.0001f)
@@ -327,6 +329,7 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
         float attackDuration = 4.16f; // 실제 애니메이션 길이로 조정
         yield return new WaitForSeconds(attackDuration);
         // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
         Vector3 returnDir = (savedPosition - transform.position).normalized;
         if (returnDir.sqrMagnitude > 0.0001f)
         {
@@ -412,7 +415,7 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
             yield return null;
         }
         transform.position = end;
-
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
         // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
         Vector3 returnDir = (savedPosition - transform.position).normalized;
         if (returnDir.sqrMagnitude > 0.0001f)
@@ -494,7 +497,7 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
 
         PlayAnimationByState(EnemyState.SlashDown);
         yield return new WaitForSeconds(2.24f);
-
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
         // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
         Vector3 returnDir = (savedPosition - transform.position).normalized;
         if (returnDir.sqrMagnitude > 0.0001f)
@@ -553,6 +556,7 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
     {
         PlayAnimationByState(EnemyState.SpinAttack);
         yield return new WaitForSeconds(2.25f);
+        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
         PlayAnimationByState(EnemyState.Idle);
     }
 }
