@@ -64,6 +64,7 @@ public class BattleManager : MonoBehaviour
     public GameObject CharacterHPBack;
     public GameObject CharacterHPFront;
     public GameObject CharacterHPBarrier;
+    public GameObject CharacterHPBlank;
     public GameObject CharacterHPText;
     public GameObject EnemyHPPrefab;
     public BattleUIHP BattleUIHP;
@@ -215,6 +216,7 @@ public class BattleManager : MonoBehaviour
 public class BattleCharGroup
 {
     const int numFive = 5;
+    BattleManager battleManager;
 
     private List<BattleCharacter>  battleCharacters;
     private List<ArtifactData> artifacts;
@@ -223,15 +225,17 @@ public class BattleCharGroup
     public List<BattleCharacter> BattleCharacters => battleCharacters;
 
     public List<ArtifactData> Artifacts => artifacts;
-    public List<EngravingData> Engravings => engravings;
-    //public EngravingEffect[]   BattleEngravings => engravingEffects;    
+    public List<EngravingData> Engravings => engravings;  
 
     public GameObject[] CharacterPrefabs = new GameObject[numFive];
     public StageSaveData.CurrentFormationType CurrentFormationType;
 
+    public int[] BarrierAmounts = new int[numFive];
+
     [NonSerialized] public GameObject[]      CharacterHPBars  = new GameObject[numFive];
     [NonSerialized] public RectTransform[]   CharacterHPs     = new RectTransform[numFive];
     [NonSerialized] public RectTransform[]   CharacterBarriers= new RectTransform[numFive];
+    [NonSerialized] public RectTransform[]   CharacterBlank = new RectTransform[numFive];
     [NonSerialized] public TextMeshProUGUI[] CharacterHPTexts = new TextMeshProUGUI[numFive];
     [NonSerialized] public HorizontalLayoutGroup[] LayoutGroups = new HorizontalLayoutGroup[numFive];
 
@@ -242,9 +246,13 @@ public class BattleCharGroup
     public List<int> DeadIndex = new List<int>();
     public int DeadCount;
     private bool isAllDead => DeadCount == numFive ? true : false;
+    private int currentHitIndex;
+    private int currentHittedDamage;
 
     public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> engravings)
     {
+        battleManager = BattleManager.Instance;
+
         battleCharacters = characters; this.artifacts = artifacts; this.engravings = engravings;
 
         CurrentFormationType = StageManager.Instance.stageSaveData.currentFormationType;
@@ -265,34 +273,44 @@ public class BattleCharGroup
         BattleCharacters[index].Heal(amount);
     }
 
-    public void CharacterGetBarrier(int index, int amount)
+    public void CharacterGetBarrier(float effectRatio)
     {
-        float barrierRatio;
-        float hpRatio;
-        Vector3 vec = Vector3.one;
+        float amount = currentHittedDamage * effectRatio;
 
-        barrierRatio = amount / (battleCharacters[index].CurrentHP + amount);
-        hpRatio = battleCharacters[index].CurrentHP / (battleCharacters[index].CurrentHP + amount);
-
-        vec.x = barrierRatio;
-        CharacterBarriers[index].localScale = vec;
-
-        vec.x = hpRatio;
-        CharacterHPs[index].localScale = vec;
+        BarrierAmounts[currentHitIndex] = (int)amount;
+        battleManager.UIValueChanger.ChangeCharacterHp((HPEnumCharacter)currentHitIndex);
     }
 
-    public void CharacterHit(int index, int damage)
+    public void CharacterHit(int index, int amount)
     {
         LayoutGroups[index].childControlWidth = false;
+
+        if (BarrierAmounts[index] >= amount)
+        {
+            BarrierAmounts[index] = BarrierAmounts[index] - amount;
+        }
+        else
+        {
+            amount = amount - BarrierAmounts[index];
+            CharacterHPHit(index, amount);
+        }
+
+        battleManager.UIValueChanger.ChangeCharacterHp((HPEnumCharacter)index);
+    }
+
+    public void CharacterHPHit(int index, int damage)
+    {
+        currentHitIndex = index;
+        currentHittedDamage = damage;
         BattleCharacters[index].TakeDamage(damage);
-        BattleManager.Instance.ArtifactBuffs.ActionCallbackCharacterHit();
+        battleManager.ArtifactBuffs.ActionCallbackCharacterHit();
     }
 
     public void CharacterDead(int index)
     {
         DeadCount++;
         DeadIndex.Add(index);
-        BattleManager.Instance.ArtifactBuffs.ActionCallbackCharacterDie();
+        battleManager.ArtifactBuffs.ActionCallbackCharacterDie();
 
         if (FrontLine.Contains<int>(index))
         {
@@ -305,7 +323,7 @@ public class BattleCharGroup
 
         if (isAllDead)
         {
-            BattleManager.Instance.EndBattle(false);
+            battleManager.EndBattle(false);
         }
     }
 

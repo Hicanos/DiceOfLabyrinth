@@ -32,15 +32,25 @@ public class BattleUIValueChanger : MonoBehaviour
     /// <summary>
     /// 캐릭터의 체력바 비율과 텍스트를 변경하는 메서드입니다.
     /// </summary>
-    public void ChangeCharacterHpRatio(HPEnumCharacter hpEnum)
+    public void ChangeCharacterHp(HPEnumCharacter hpEnum)
     {
-        int maxHP = BattleManager.Instance.BattleGroup.BattleCharacters[(int)hpEnum].RegularHP;
-        int curHP = BattleManager.Instance.BattleGroup.BattleCharacters[(int)hpEnum].CurrentHP;
+        BattleCharGroup battleGroup = BattleManager.Instance.BattleGroup;
 
-        float ratio = (float)curHP / maxHP;
+        int maxHP = battleGroup.BattleCharacters[(int)hpEnum].RegularHP;
+        int curHP = battleGroup.BattleCharacters[(int)hpEnum].CurrentHP;
 
-        ChangeUIText(hpEnum, $"{curHP} / {maxHP}");
-        ChangeCharacterHpRatio(hpEnum, ratio);
+        string hpString;
+        if (battleGroup.BarrierAmounts[(int)hpEnum] > 0)
+        {
+            hpString = $"{curHP} / {maxHP} + ({battleGroup.BarrierAmounts[(int)hpEnum]})";
+        }
+        else
+        {
+            hpString = $"{curHP} / {maxHP}";
+        }
+
+        ChangeUIText(hpEnum, hpString);
+        ChangeCharacterHpRatio(hpEnum);
     }
 
     /// <summary>
@@ -68,9 +78,36 @@ public class BattleUIValueChanger : MonoBehaviour
     /// <summary>
     /// 캐릭터의 체력바 비율을 변경하는 메서드입니다.
     /// </summary>
-    public void ChangeCharacterHpRatio(HPEnumCharacter hpEnum, float value)
-    {
-        BattleManager.Instance.BattleGroup.CharacterHPs[(int)hpEnum].localScale = new Vector3(value, 1, 1);
+    public void ChangeCharacterHpRatio(HPEnumCharacter hpEnum)
+    {        
+        BattleCharGroup battleGroup = BattleManager.Instance.BattleGroup;
+        int index = (int)hpEnum;
+
+        int totalHP = battleGroup.BattleCharacters[index].RegularHP + battleGroup.BarrierAmounts[index];
+        int curHP = battleGroup.BattleCharacters[index].CurrentHP + battleGroup.BarrierAmounts[index];
+
+        float hpRatio;
+        float barrierRatio;
+        float blinkRatio;
+
+        if (totalHP >= battleGroup.BattleCharacters[index].RegularHP)
+        {
+            hpRatio = (float)battleGroup.BattleCharacters[index].CurrentHP / curHP;
+            barrierRatio = (float)battleGroup.BarrierAmounts[index] / curHP;
+            blinkRatio = 0;
+        }
+        else
+        {
+            hpRatio = (float)battleGroup.BattleCharacters[index].CurrentHP / totalHP;
+            barrierRatio = (float)battleGroup.BarrierAmounts[index] / totalHP;
+            blinkRatio = 1 - (hpRatio + barrierRatio);
+        }
+        
+        
+
+        battleGroup.CharacterHPs[index].localScale = new Vector3(hpRatio, 1, 1);
+        battleGroup.CharacterBarriers[index].localScale = new Vector3(barrierRatio, 1, 1);
+        battleGroup.CharacterBlank[index].localScale = new Vector3(blinkRatio, 1, 1);
     }
 
     /// <summary>

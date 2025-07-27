@@ -170,10 +170,11 @@ public class BattleSpawner : MonoBehaviour
 
             battleGroup.CharacterHPs[i] = Instantiate(battleManager.CharacterHPFront, layoutGroupTransform).GetComponent<RectTransform>();
             battleGroup.CharacterBarriers[i] = Instantiate(battleManager.CharacterHPBarrier, layoutGroupTransform).GetComponent<RectTransform>();
+            battleGroup.CharacterBlank[i] = Instantiate(battleManager.CharacterHPBlank, layoutGroupTransform).GetComponent<RectTransform>();
 
             battleGroup.CharacterHPTexts[i] = Instantiate(battleManager.CharacterHPText, go.transform).GetComponent<TextMeshProUGUI>();
 
-            battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+            battleManager.UIValueChanger.ChangeCharacterHp((HPEnumCharacter)i);
         }
     }
 
