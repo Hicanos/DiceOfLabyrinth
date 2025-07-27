@@ -149,7 +149,7 @@ public class BattleSpawner : MonoBehaviour
         {
             battleManager.BattleGroup.CharacterHPBars[i].SetActive(true);
         }
-        battleManager.Enemy.EnemyHPBar.SetActive(true);
+        battleManager.Enemy.EnemyHPBars.SetActive(true);
 
         battleManager.I_PlayerTurnState.Enter();
     }

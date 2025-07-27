@@ -99,8 +99,6 @@ public class BattleCharacterAttack : MonoBehaviour
         BattleEnemy enemy = (BattleEnemy)target;
         float ratio = (float)enemy.CurrentHP / enemy.MaxHP;
 
-        battleManager.UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
-
         if (battleManager.Enemy.IsDead)
         {
             isCharacterAttacking = false;

@@ -17,12 +17,15 @@ public class BattleUIHP : MonoBehaviour
 
     [Header("HP UI Scale Value")]
     [SerializeField] Vector3 CharacterHPVec;
+    [SerializeField] Vector3 CharacterPos;
     [SerializeField] Vector3 EnemyHPVec;
-    
+    [SerializeField] Vector3 EnemyPos;
+
     void Update()
     {
         if(BattleManager.Instance.isBattle && BattleManager.Instance.EnemyAttack.isEnemyAttacking)
         {
+            GetEnmeyHPRotation(BattleManager.Instance.Enemy);
             enemyHPBar.transform.rotation = enemyHPQuaternion;
         }
 
@@ -30,19 +33,14 @@ public class BattleUIHP : MonoBehaviour
         {
             //캐릭터 회전값에 따른 hp회전
         }
-    }
-
-    public void GetEnmeyHPRotation(BattleEnemy enemy)
-    {
-        enemyHPBar = enemy.EnemyHPBar;
-        enemyHPQuaternion = Quaternion.Euler(0, -enemy.Data.EnemySpawnRotation.y, 0);
-    }
+    }    
 
     public void SpawnCharacterHP()
     {
         BattleCharGroup battleGroup = BattleManager.Instance.BattleGroup;
         GameObject go;
         GameObject temp;
+        RectTransform rect;
         Transform layoutGroupTransform;
 
         for (int i = 0; i < 5; i++)
@@ -51,8 +49,12 @@ public class BattleUIHP : MonoBehaviour
             battleGroup.CharacterHPBars[i] = go;
 
             go = Instantiate(CharacterHPBack, battleGroup.CharacterHPBars[i].transform);
+            rect = go.GetComponent<RectTransform>();
+            rect.sizeDelta = CharacterHPVec;
+            rect.localPosition = CharacterPos;
             battleGroup.LayoutGroups[i] = go.GetComponentInChildren<HorizontalLayoutGroup>();
-            battleGroup.LayoutGroups[i].GetComponent<RectTransform>().sizeDelta = CharacterHPVec;
+            rect = battleGroup.LayoutGroups[i].GetComponent<RectTransform>();
+            rect.sizeDelta = CharacterHPVec;
             layoutGroupTransform = battleGroup.LayoutGroups[i].transform;
 
             battleGroup.CharacterHPs[i] = Instantiate(CharacterHPFront, layoutGroupTransform).GetComponent<RectTransform>();
@@ -72,14 +74,23 @@ public class BattleUIHP : MonoBehaviour
         BattleManager battleManager = BattleManager.Instance;
         BattleEnemy enemy = battleManager.Enemy;
         Transform layoutGroupTransform;
+        RectTransform rect;
         GameObject go;
+        GetEnmeyHPRotation(enemy);
 
         go = Instantiate(CharacterHPCanvas, enemy.EnemyPrefab.transform);
         enemy.EnemyHPBars = go;
 
         go = Instantiate(CharacterHPBack, enemy.EnemyHPBars.transform);
+        enemyHPBar = go;
+        rect = go.GetComponent<RectTransform>();
+        rect.sizeDelta = EnemyHPVec;
+        rect.localPosition = EnemyPos;
+        rect.rotation = enemyHPQuaternion;
+
         enemy.LayoutGroups = go.GetComponentInChildren<HorizontalLayoutGroup>();
-        enemy.LayoutGroups.GetComponent<RectTransform>().sizeDelta = EnemyHPVec;
+        rect = enemy.LayoutGroups.GetComponentInChildren<RectTransform>();
+        rect.sizeDelta = EnemyHPVec;
         layoutGroupTransform = enemy.LayoutGroups.transform;
 
         enemy.EnemyHPs = Instantiate(CharacterHPFront, layoutGroupTransform).GetComponent<RectTransform>();
@@ -90,6 +101,11 @@ public class BattleUIHP : MonoBehaviour
         go.GetComponent<RectTransform>().sizeDelta = EnemyHPVec;
         enemy.EnemyHPTexts = go.GetComponent<TextMeshProUGUI>();
 
-        BattleManager.Instance.UIValueChanger.ChangeEnemyHpRatio(HPEnumEnemy.enemy);
+        BattleManager.Instance.UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
+    }
+
+    public void GetEnmeyHPRotation(BattleEnemy enemy)
+    {
+        enemyHPQuaternion = Quaternion.Euler(0, -enemy.Data.EnemySpawnRotation.y, 0);
     }
 }

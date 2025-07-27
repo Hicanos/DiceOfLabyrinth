@@ -155,6 +155,6 @@ public class BattleUIValueChanger : MonoBehaviour
     /// </summary>
     public void ChangeUIText(HPEnumEnemy uiEnum, string value)
     {
-        BattleManager.Instance.Enemy.EnemyHPText.text = value;
+        BattleManager.Instance.Enemy.EnemyHPTexts.text = value;
     }
 }
