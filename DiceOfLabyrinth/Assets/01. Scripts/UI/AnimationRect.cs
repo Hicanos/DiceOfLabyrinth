@@ -33,32 +33,41 @@ namespace Helios.GUI {
         private Vector2[] originPosLeft;
         private Vector2[] originPosRight;
 
+        private bool originSaved = false;
         Vector3 scaleStart = new Vector3(0.0f, 0.0f, 0.0f);
 
 
 
 #if DOTWEEN
-
-    private void Awake()
+    private void SaveOriginPositions()
     {
-        // 원래 위치 저장 (시작 시)
-        originPosLeft = new Vector2[rectAnimLeft.Length];
-        for (int i = 0; i < rectAnimLeft.Length; i++)
+        if (originSaved) return;
+        originSaved = true;
+
+        if (rectAnimLeft != null)
         {
-            if (rectAnimLeft[i] != null)
-                originPosLeft[i] = rectAnimLeft[i].anchoredPosition;
+            originPosLeft = new Vector2[rectAnimLeft.Length];
+            for (int i = 0; i < rectAnimLeft.Length; i++)
+            {
+                if (rectAnimLeft[i] != null)
+                    originPosLeft[i] = rectAnimLeft[i].anchoredPosition;
+            }
         }
 
-        originPosRight = new Vector2[rectAnimRight.Length];
-        for (int i = 0; i < rectAnimRight.Length; i++)
+        if (rectAnimRight != null)
         {
-            if (rectAnimRight[i] != null)
-                originPosRight[i] = rectAnimRight[i].anchoredPosition;
+            originPosRight = new Vector2[rectAnimRight.Length];
+            for (int i = 0; i < rectAnimRight.Length; i++)
+            {
+                if (rectAnimRight[i] != null)
+                    originPosRight[i] = rectAnimRight[i].anchoredPosition;
+            }
         }
     }
 
     public void PlayAllIn()
     {
+        SaveOriginPositions();
         AnimScaleIn();
         AnimRightIn();
         AnimLeftIn();
@@ -75,6 +84,8 @@ namespace Helios.GUI {
     }
 
     public void AnimRightIn() {
+        if (originPosRight == null || originPosRight.Length == 0) return;
+
         for(int i = 0; i < rectAnimRight.Length; i++) {
             if(rectAnimRight[i] == null) continue;
             Vector2 target = originPosRight[i];
@@ -84,6 +95,7 @@ namespace Helios.GUI {
     }
 
     public void AnimLeftIn() {
+        if (originPosLeft == null || originPosLeft.Length == 0) return;
         for(int i = 0; i < rectAnimLeft.Length; i++) {
             if(rectAnimLeft[i] == null) continue;
             Vector2 target = originPosLeft[i];
@@ -169,6 +181,15 @@ namespace Helios.GUI {
             completedCount++;
             if (completedCount >= total)
             {
+                // 닫기 애니메이션 후 원래 위치로 복귀
+                for (int i = 0; i < rectAnimLeft.Length; i++)
+                    if (rectAnimLeft[i] != null)
+                        rectAnimLeft[i].anchoredPosition = originPosLeft[i];
+
+                for (int i = 0; i < rectAnimRight.Length; i++)
+                    if (rectAnimRight[i] != null)
+                        rectAnimRight[i].anchoredPosition = originPosRight[i];
+
                 onComplete?.Invoke(); // 전부 끝났을 때만 호출
             }
         };
