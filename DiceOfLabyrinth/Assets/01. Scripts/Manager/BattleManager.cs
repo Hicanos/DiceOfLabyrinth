@@ -35,6 +35,7 @@ public class BattleManager : MonoBehaviour
     EnterBattle enterBattle = new EnterBattle();
     public BattleSpawner BattleSpawner;
     public BattleUIValueChanger UIValueChanger;
+    public BattleUIHP BattleUIHP;
     //[SerializeField] BattleInput battleInput;
 
     public BattleEnemy Enemy;
@@ -59,15 +60,6 @@ public class BattleManager : MonoBehaviour
     public ArtifactBuffContainer ArtifactBuffs = new ArtifactBuffContainer();
     public ArtifactAdditionalStatus ArtifactAdditionalStatus;
     //public AdditionalValues ArtifactAdditionalValue = new AdditionalValues();
-    [Header("Character HP UIs")]
-    public GameObject CharacterHPCanvas;
-    public GameObject CharacterHPBack;
-    public GameObject CharacterHPFront;
-    public GameObject CharacterHPBarrier;
-    public GameObject CharacterHPBlank;
-    public GameObject CharacterHPText;
-    public GameObject EnemyHPPrefab;
-    public BattleUIHP BattleUIHP;
 
     [Header("Values")]
     public  int     BattleTurn;
@@ -230,7 +222,8 @@ public class BattleCharGroup
     public GameObject[] CharacterPrefabs = new GameObject[numFive];
     public StageSaveData.CurrentFormationType CurrentFormationType;
 
-    public int[] BarrierAmounts = new int[numFive];
+    private int[] barrierAmounts = new int[numFive];
+    public int[] BarrierAmounts => barrierAmounts;
 
     [NonSerialized] public GameObject[]      CharacterHPBars  = new GameObject[numFive];
     [NonSerialized] public RectTransform[]   CharacterHPs     = new RectTransform[numFive];
@@ -277,7 +270,7 @@ public class BattleCharGroup
     {
         float amount = currentHittedDamage * effectRatio;
 
-        BarrierAmounts[currentHitIndex] = (int)amount;
+        barrierAmounts[currentHitIndex] = (int)amount;
         battleManager.UIValueChanger.ChangeCharacterHp((HPEnumCharacter)currentHitIndex);
     }
 
@@ -285,13 +278,13 @@ public class BattleCharGroup
     {
         LayoutGroups[index].childControlWidth = false;
 
-        if (BarrierAmounts[index] >= amount)
+        if (barrierAmounts[index] >= amount)
         {
-            BarrierAmounts[index] = BarrierAmounts[index] - amount;
+            barrierAmounts[index] = barrierAmounts[index] - amount;
         }
         else
         {
-            amount = amount - BarrierAmounts[index];
+            amount = amount - barrierAmounts[index];
             CharacterHPHit(index, amount);
         }
 
@@ -353,6 +346,7 @@ public class BattleEnemy : IDamagable
     private int currentHP;
     private int currentAtk;
     private int currentDef;
+    private int currentBarrier;
     private bool isDead;
     public float DebuffAtk;
     public float DebuffDef;
@@ -362,6 +356,7 @@ public class BattleEnemy : IDamagable
     public int CurrentDef => currentDef;
     public int MaxHP => currentMaxHP;
     public bool IsDead => isDead;
+    public int CurrentBarrier => currentBarrier;
 
     public GameObject EnemyPrefab;
     public IEnemy iEnemy;
@@ -369,6 +364,13 @@ public class BattleEnemy : IDamagable
     public GameObject EnemyHPBar;
     public RectTransform EnemyHP;
     public TextMeshProUGUI EnemyHPText;
+
+    [NonSerialized] public GameObject EnemyHPBars;
+    [NonSerialized] public RectTransform EnemyHPs;
+    [NonSerialized] public RectTransform EnemyBarriers;
+    [NonSerialized] public RectTransform EnemyBlank;
+    [NonSerialized] public TextMeshProUGUI EnemyHPTexts;
+    [NonSerialized] public HorizontalLayoutGroup LayoutGroups;
 
     public SOEnemySkill currentSkill;
     public int currentSkill_Index;

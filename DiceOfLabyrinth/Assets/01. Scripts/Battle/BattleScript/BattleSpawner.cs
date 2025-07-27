@@ -156,26 +156,7 @@ public class BattleSpawner : MonoBehaviour
 
     private void LoadCharacterHP(BattleCharGroup battleGroup)
     {
-        GameObject go;
-        Transform layoutGroupTransform;
-
-        for (int i = 0; i < numFIve; i++)
-        {
-            go = Instantiate(battleManager.CharacterHPCanvas, battleGroup.CharacterPrefabs[i].transform);
-            battleGroup.CharacterHPBars[i] = go;
-
-            go = Instantiate(battleManager.CharacterHPBack, battleGroup.CharacterHPBars[i].transform);
-            battleGroup.LayoutGroups[i] = go.GetComponentInChildren<HorizontalLayoutGroup>();
-            layoutGroupTransform = battleGroup.LayoutGroups[i].transform;
-
-            battleGroup.CharacterHPs[i] = Instantiate(battleManager.CharacterHPFront, layoutGroupTransform).GetComponent<RectTransform>();
-            battleGroup.CharacterBarriers[i] = Instantiate(battleManager.CharacterHPBarrier, layoutGroupTransform).GetComponent<RectTransform>();
-            battleGroup.CharacterBlank[i] = Instantiate(battleManager.CharacterHPBlank, layoutGroupTransform).GetComponent<RectTransform>();
-
-            battleGroup.CharacterHPTexts[i] = Instantiate(battleManager.CharacterHPText, go.transform).GetComponent<TextMeshProUGUI>();
-
-            battleManager.UIValueChanger.ChangeCharacterHp((HPEnumCharacter)i);
-        }
+        battleManager.BattleUIHP.SpawnCharacterHP();
     }
 
     public void DeactiveCharacterHP(BattleCharGroup battleGroup)
@@ -230,18 +211,6 @@ public class BattleSpawner : MonoBehaviour
 
     private void LoadEnemyHP(BattleEnemy enemy)
     {
-        GameObject go = Instantiate(battleManager.EnemyHPPrefab, enemy.EnemyPrefab.transform);
-        RectTransform rect = go.GetComponent<RectTransform>();
-
-        Quaternion quaternion = Quaternion.identity;
-        quaternion = Quaternion.Euler(0, -enemy.Data.EnemySpawnRotation.y, 0);
-
-        rect.rotation = quaternion;
-
-        enemy.EnemyHPBar = go;
-        enemy.EnemyHP = go.GetComponentsInChildren<RectTransform>()[2];
-        enemy.EnemyHPText = go.GetComponentInChildren<TextMeshProUGUI>();
-        battleManager.UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
-        battleManager.BattleUIHP.GetEnmeyHPRotation(enemy);
+        BattleManager.Instance.BattleUIHP.SpawnMonsterHP();        
     }
 }
