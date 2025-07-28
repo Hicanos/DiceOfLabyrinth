@@ -19,7 +19,7 @@
             battleManager.EngravingBuffs.ReduceDuration();
         }
 
-        UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(true);
+        UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(true);
         string stageString = $"{StageManager.Instance.stageSaveData.currentPhaseIndex} - {battleManager.BattleTurn}";
         battleManager.CostSpendedInTurn = 0;
         ChangeDetailedTurnState(DetailedTurnState.Enter);
@@ -79,14 +79,4 @@
         }
         return num;
     }
-
-    //public void EffectEngravings(PlayerTurnState state)
-    //{
-    //    List<EngravingData> engravings = battleManager.BattleGroup.Engravings;
-
-    //    for (int i = 0; i < engravings.Count; i++)
-    //    {
-
-    //    }
-    //}
 }

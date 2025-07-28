@@ -74,7 +74,7 @@ public class BattleCharacterAttack : MonoBehaviour
             enumeratorDamage = DealDamage(battleManager.Enemy, damage);
             StartCoroutine(enumeratorDamage);
             battleManager.Enemy.iEnemy.TakeDamage();
-            UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(battleCharacters[i].CharNameKr, battleManager.Enemy.Data.EnemyName, damage, true);
+            UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(battleCharacters[i].CharNameKr, battleManager.Enemy.Data.EnemyName, damage, true);
 
             pastTime = 0;
             while (pastTime < destTime)
