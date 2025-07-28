@@ -1,4 +1,4 @@
-﻿public class BattleEnemyTurnState : IBattleTurnState
+﻿public class BattleStateEnemyTurn : IBattleTurnState
 {
     public void Enter()
     {

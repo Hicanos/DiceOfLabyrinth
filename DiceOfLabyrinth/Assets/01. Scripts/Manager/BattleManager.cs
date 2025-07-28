@@ -32,11 +32,9 @@ public class BattleManager : MonoBehaviour
     }
     #endregion
 
-    EnterBattle enterBattle = new EnterBattle();
     public BattleSpawner BattleSpawner;
     public BattleUIValueChanger UIValueChanger;
     public BattleUIHP BattleUIHP;
-    //[SerializeField] BattleInput battleInput;
 
     public BattleEnemy Enemy;
     public BattleCharGroup BattleGroup;
@@ -47,11 +45,11 @@ public class BattleManager : MonoBehaviour
     
     public BattleStateMachine StateMachine;
     public DetailedTurnState CurrentDetailedState;
+    public IBattleTurnState I_EnterBattleState;
     public IBattleTurnState I_PlayerTurnState;
     public IBattleTurnState I_EnemyTurnState;
-    public BattlePlayerTurnState BattlePlayerTurnState;
-    private IBattleTurnState currentBattleState;
-    public IBattleTurnState CurrentBattleState => currentBattleState;
+    public IBattleTurnState I_FinishBattleState;
+    public BattleStatePlayerTurn BattlePlayerTurnState;
 
     public EngravingBuffMaker EngravingBuffMaker = new EngravingBuffMaker();
     public EngravingBuffContainer EngravingBuffs = new EngravingBuffContainer();
@@ -60,64 +58,83 @@ public class BattleManager : MonoBehaviour
     public ArtifactBuffMaker ArtifactBuffMaker = new ArtifactBuffMaker();
     public ArtifactBuffContainer ArtifactBuffs = new ArtifactBuffContainer();
     public ArtifactAdditionalStatus ArtifactAdditionalStatus;
-    //public AdditionalValues ArtifactAdditionalValue = new AdditionalValues();
 
     [Header("Values")]
     public  int     BattleTurn;
     public  int     CostSpendedInTurn;
-    public  bool    isBattle;
+    public  bool    IsBattle;
     public  bool    IsBoss;
     public  bool    IsWon;
     private  readonly int maxCost = 12;
     private int     currentCost;
 
-    public int MaxCost => maxCost + (int)ArtifactAdditionalStatus.AdditionalStatus[(int)AdditionalStatusEnum.AdditionalMaxCost];
+    public int MaxCost => maxCost + (int)ArtifactAdditionalStatus.AdditionalMaxCost;
 
     void Start()
     {
-        I_PlayerTurnState = new BattlePlayerTurnState();
+        StateMachine = new BattleStateMachine();
 
-        BattlePlayerTurnState = (BattlePlayerTurnState)I_PlayerTurnState;
+        I_EnterBattleState  = new BattleStateEnterBattle();
+        I_PlayerTurnState   = new BattleStatePlayerTurn();
+        I_EnemyTurnState    = new BattleStateEnemyTurn();
+        I_FinishBattleState = new BattleStateFinishBattle();
 
-        I_EnemyTurnState = new BattleEnemyTurnState();
-
-        StateMachine = new BattleStateMachine(I_PlayerTurnState);
-        currentBattleState = I_PlayerTurnState;        
+        BattlePlayerTurnState = (BattleStatePlayerTurn)I_PlayerTurnState;
 
         UIManager.Instance.BattleUI.Setting();
-        DiceManager.Instance.DiceHolding.SettingForHolding();               
+        DiceManager.Instance.DiceHolding.SettingForHolding();
     }
     
     void Update()
     {
-        StateMachine.BattleUpdate();
-        BattleStateUpdate();
-
-        //if(isBattle) {ArtifactBuffs.ActionUpdate();}
-    }
-
-    private void BattleStateUpdate()
-    {
-        if(isBattle && currentBattleState != StateMachine.currentState)
+        if (IsBattle)
         {
-            currentBattleState = StateMachine.currentState;
-            StateMachine.ChangeState(currentBattleState);
+            StateMachine.BattleUpdate();
         }
     }
 
     public void StartBattle(BattleStartData data) //전투 시작시
-    {
-        IsWon = false;
+    {        
         GetStartData(data);
-        BattleStartValueSetting();
-        EngravingBuffMaker.MakeEngravingBuff();
-        ArtifactBuffMaker.MakeArtifactBuff();
-        InputManager.Instance.BattleInputStart();
-
+        
         ArtifactAdditionalStatus = new ArtifactAdditionalStatus();
         EngravingAdditionalStatus = new EngravingAdditionalStatus();
+        
+        StateMachine.ChangeState(I_EnterBattleState);
+    }
 
-        enterBattle.BattleStart();
+    public void EnterBattleSettings()
+    {
+        EngravingBuffMaker.MakeEngravingBuff();
+        ArtifactBuffMaker.MakeArtifactBuff();
+        BattleSpawner.SpawnCharacters();
+        BattleSpawner.SpawnEnemy();
+
+        BattleTurn = 0;
+        IsWon = false;
+        IsBattle = true;
+    }
+
+    public void FinishBattleSetting()
+    {
+        ArtifactBuffs.RemoveAllBuffs();
+        EngravingBuffs.RemoveAllBuffs();
+        ArtifactAdditionalStatus.ResetStatus();
+        EngravingAdditionalStatus.ResetStatus();
+
+        BattleSpawner.CharacterDeActive();
+        BattleSpawner.DeactiveCharacterHP(BattleGroup);
+
+        Destroy(Enemy.EnemyPrefab);
+
+        IsBattle = false;
+    }
+
+    private void ExitStageSetting()
+    {
+        BattleGroup = null;
+
+        DiceManager.Instance.DestroyDices();        
     }
 
     private void GetStartData(BattleStartData data) //start시 호출되도록
@@ -127,43 +144,43 @@ public class BattleManager : MonoBehaviour
         if (BattleGroup == null)
         {
             BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.engravings);
-        }        
+        }
     }
 
     public void EndBattle(bool isWon = true)
     {
+        StateMachine.ChangeState(I_FinishBattleState);
         BattleResultData data;
-        isBattle = false;
         IsWon = isWon;
-
-        EngravingBuffs.RemoveAllBuffs();
-        ArtifactBuffs.RemoveAllBuffs();
-        EngravingAdditionalStatus.ResetStatus();
-        ArtifactAdditionalStatus.ResetStatus();
-
-        BattleSpawner.DeactiveCharacterHP(BattleGroup);
-        DiceManager.Instance.ResetSetting();
-
-        BattleSpawner.CharacterDeActive();
-        Destroy(Enemy.EnemyPrefab);
+        
         //결과창 실행
         if (isWon)
         {
-            //for (int i = 0; i < BattleGroup.BattleEngravings.Length; i++)
-            //{
-            //    BattleGroup.BattleEngravings[i].GetEngravingEffectInBattleEnd();
-            //}
-
             data = new BattleResultData(true, BattleGroup.BattleCharacters);
+
+            if (Enemy.Data.Type == EnemyData.EnemyType.Guardian && Enemy.Data.Type == EnemyData.EnemyType.Lord)
+            {
+                ExitStageSetting();
+            }            
             
             StageManager.Instance.OnBattleResult(data);            
         }
         else
         {
             data = new BattleResultData(false, BattleGroup.BattleCharacters);
-
+            ExitStageSetting();
             StageManager.Instance.OnBattleResult(data);
         }
+    }    
+
+    public void EndPlayerTurn()
+    {
+        StateMachine.ChangeState(I_EnemyTurnState);
+    }
+
+    public void EndEnemyTurn()
+    {
+        StateMachine.ChangeState(I_PlayerTurnState);
     }
 
     /// <summary>
@@ -188,22 +205,8 @@ public class BattleManager : MonoBehaviour
         currentCost = cost;
         string st = $"{currentCost} / {MaxCost}";
         UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, st);
-        ArtifactBuffs.ActionCallbackSpendCost();
-    }
-
-    private void BattleStartValueSetting()
-    {
-        BattleTurn = 0;
-        isBattle = true;
-    }
-
-    public void ExitBattleSetting()
-    {
-        BattleGroup = null;
-        isBattle = false;
-        DiceManager.Instance.DestroyDices();
-        InputManager.Instance.BattleInputEnd();
-    }
+        ArtifactBuffs.ActionSpendCost();
+    }    
 }
 
 public class BattleCharGroup
@@ -300,7 +303,7 @@ public class BattleCharGroup
         currentHitIndex = index;
         currentHittedDamage = damage;
         BattleCharacters[index].TakeDamage(damage);
-        battleManager.ArtifactBuffs.ActionCallbackCharacterHit();
+        battleManager.ArtifactBuffs.ActionCharacterHit();
     }
 
     public void CharacterDead(int index)
@@ -308,7 +311,7 @@ public class BattleCharGroup
         DeadCount++;
         currentDeadIndex = index;
         DeadIndex.Add(index);
-        battleManager.ArtifactBuffs.ActionCallbackCharacterDie();
+        battleManager.ArtifactBuffs.ActionCharacterDie();
 
         if (FrontLine.Contains<int>(index))
         {
