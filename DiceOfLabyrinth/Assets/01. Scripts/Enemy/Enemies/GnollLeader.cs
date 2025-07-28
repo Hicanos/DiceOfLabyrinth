@@ -39,10 +39,10 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
     }
     private void Start()
     {
-        // 필요시 테스트용 스킬 호출 위치
+        //필요시 테스트용 스킬 호출 위치
         //UseActiveSkill(0, 1); // 오른손 공격
         //UseActiveSkill(1, 1); // 강력한 공격
-        //UseActiveSkill(3, 1); // 삼연속 공격
+        UseActiveSkill(3, 1); // 삼연속 공격
         //UseActiveSkill(4, 1);// 점프 공격
         //UseActiveSkill(5, 1); // 내려찍기 공격
         //UseActiveSkill(14, 1); // 회전 공격
@@ -326,7 +326,7 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
         transform.position = end;
         // 트리플 어택 애니메이션 실행
         PlayAnimationByState(EnemyState.TripleAttack);
-        float attackDuration = 4.16f; // 실제 애니메이션 길이로 조정
+        float attackDuration = 3f; // 실제 애니메이션 길이로 조정
         yield return new WaitForSeconds(attackDuration);
         // 원래 위치로 돌아가기 전, 세이브 포지션 방향으로 회전
         BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
@@ -558,6 +558,19 @@ public class GnollLeader : MonoBehaviour, IEnemy // 테스트에너미 클래스
         yield return new WaitForSeconds(2.25f);
         BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
         PlayAnimationByState(EnemyState.Idle);
+    }
+
+    public void AttackSound()
+    {
+        SoundManager.Instance.PlaySFX(SoundManager.SoundType.SFX_Hit_Sword);
+    }
+    public void SpinAttackSound()
+    {
+        SoundManager.Instance.PlaySFX(SoundManager.SoundType.SFX_Swing);
+    }
+    public void SlashDownSound()
+    {
+        SoundManager.Instance.PlaySFX(SoundManager.SoundType.SFX_Swing2);
     }
 }
 

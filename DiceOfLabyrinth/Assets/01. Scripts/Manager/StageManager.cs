@@ -597,6 +597,7 @@ public class StageManager : MonoBehaviour
         int randomIndex = Random.Range(0, normalEnemies.Count);
         stageSaveData.selectedEnemy = normalEnemies[randomIndex];
         var battleStartData = new BattleStartData(stageSaveData, normalManaStoneReward);
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_NormalEliteBattle);
         battleUIController.OpenBattlePanel();
         BattleManager.Instance.StartBattle(battleStartData);
     }
@@ -629,6 +630,7 @@ public class StageManager : MonoBehaviour
         int randomIndex = Random.Range(0, eliteEnemies.Count);
         stageSaveData.selectedEnemy = eliteEnemies[randomIndex];
         var battleStartData = new BattleStartData(stageSaveData, normalManaStoneReward);
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_NormalEliteBattle); // 배틀 배경음악 재생
         battleUIController.OpenBattlePanel();
         BattleManager.Instance.StartBattle(battleStartData);
     }
@@ -669,6 +671,7 @@ public class StageManager : MonoBehaviour
                 return;
             }
             selectedBoss = lordList[Random.Range(0, lordList.Count)];
+            SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_LordBattle); // 로드 배틀 배경음악 재생
         }
         else
         {
@@ -680,6 +683,8 @@ public class StageManager : MonoBehaviour
                 return;
             }
             selectedBoss = guardianList[Random.Range(0, guardianList.Count)];
+            SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_GuardianBattle); // 가디언 배틀 배경음악 재생
+
         }
 
         stageSaveData.selectedEnemy = selectedBoss;

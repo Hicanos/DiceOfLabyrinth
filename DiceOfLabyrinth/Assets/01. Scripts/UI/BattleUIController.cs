@@ -152,11 +152,16 @@ public class BattleUIController : MonoBehaviour
     }
     public void OnClickPerformed(InputAction.CallbackContext context)
     {
-        if (EventSystem.current.IsPointerOverGameObject())
-            return;
 #if UNITY_ANDROID || UNITY_IOS
-    if (Input.touchCount > 0 && EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
-        return;
+        if (Input.touchCount > 0 && EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+        {
+            return;
+        }
+#else
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
 #endif
         Vector2 pointerPos = pointerPositionAction.action.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(pointerPos);
@@ -206,6 +211,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
         // 선택된 스테이지 정보 업데이트
         //selectedChapterText.text = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].ChapterName;
         //chapterIcon.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].Image;
@@ -243,6 +249,7 @@ public class BattleUIController : MonoBehaviour
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
         selectEventPanel.SetActive(false);
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -528,6 +535,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
     }
 
     public void OpenBattlePanel()
@@ -609,6 +617,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
         OnClickSelectItemNumber(0); // 첫 번째 아이템을 선택한 것으로 초기화
     }
 
@@ -697,6 +706,7 @@ public class BattleUIController : MonoBehaviour
         {
             characterPlatform.SetActive(false); // 캐릭터 플랫폼 비활성화
         }
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
         OnClickSelectItemNumber(0); // 첫 번째 아이템을 선택한 것으로 초기화
     }
 
@@ -857,6 +867,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
     }
 
     public void OnClickSelectChoice(int selectIndex)
@@ -908,6 +919,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.SFX_Victory); // 승리 효과음 재생
     }
 
     public void OpenDefeatPanel() // 패배 패널을 여는 함수
@@ -929,6 +941,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.SFX_Defeat); // 패배 효과음 재생
     }
 
     public void OnClickVictoryNextButton() // 승리 패널에서 다음 버튼 클릭 시 호출되는 함수
@@ -960,7 +973,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        ShopPopup.Instance.StartShop();
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
     }
 
     public void OpenSelectEquipedArtifactPanel() // 아티팩트 장착 선택 패널을 여는 함수
@@ -982,5 +995,6 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
     }
 }

@@ -105,6 +105,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "GamePlay_Pointer_press",
+                    "type": "Button",
+                    "id": "1f87282a-1e7d-487b-80e1-cd8b8bc6bbf3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "InputButton",
                     "type": "Button",
                     "id": "76a67f69-6456-4c10-bd5b-1822b15f7190",
@@ -596,6 +605,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse;Joystick;XR;Touch;Gamepad",
                     "action": "GamePlay_Pointer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f7a0138a-4fab-4d59-8ce7-a6df12863f43",
+                    "path": "<Pointer>/position",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse;Joystick;XR;Touch;Gamepad",
+                    "action": "GamePlay_Pointer_press",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
