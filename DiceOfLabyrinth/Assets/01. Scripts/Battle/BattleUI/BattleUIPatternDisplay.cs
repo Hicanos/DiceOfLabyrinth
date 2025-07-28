@@ -19,11 +19,8 @@ public class BattleUIPatternDisplay : AbstractBattleButton
     {
         switch (state)
         {
-            case DetailedTurnState.BattleStart:
-                gameObject.SetActive(true);
-                descriptionPanel.gameObject.SetActive(false);
-                break;
             case DetailedTurnState.Enter:
+                descriptionPanel.SetActive(false);
                 StartCoroutine(BlinkUI());
                 break;
             case DetailedTurnState.Roll:
@@ -32,22 +29,21 @@ public class BattleUIPatternDisplay : AbstractBattleButton
             case DetailedTurnState.Attack:
                 button.interactable = true;
                 break;
-            case DetailedTurnState.BattleEnd:
-                descriptionPanel.gameObject.SetActive(true);
-                gameObject.SetActive(false);
-                break;
         }
     }
 
     public override void OnPush()
-    {
+    {        
         descriptionPanel.gameObject.SetActive(true);
     }
 
     IEnumerator BlinkUI()
     {
+        BattleManager battleManager = BattleManager.Instance;
+        button.interactable = false;
         Color color = image_PatternName.color;
         Color textColor = text_SkillDescription.color;
+        string skillName, skillDescription;
 
         for (float f = 1; f > 0.25f; f -= Time.deltaTime)
         {
@@ -59,8 +55,17 @@ public class BattleUIPatternDisplay : AbstractBattleButton
         }
 
         yield return new WaitForSeconds(0.15f);
-        BattleManager.Instance.EnemyPatternContainer.PrepareSkill();
-        text_SkillDescription.text = BattleManager.Instance.Enemy.currentSkill.SkillDescription;
+
+        battleManager.EnemyPatternContainer.PrepareSkill();
+        skillName = battleManager.EnemyPatternContainer.GetSkillNameText();
+        skillDescription = battleManager.EnemyPatternContainer.GetSkillDescriptionText();
+
+        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillName, $"{skillName} 준비중");
+        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillDescription, skillDescription);
+        
+
+        button.interactable = true;
+        text_SkillDescription.text = battleManager.Enemy.currentSkill.SkillDescription;
         yield return new WaitForSeconds(0.15f);
 
         for (float f = 0.25f; f <= 1; f += Time.deltaTime)

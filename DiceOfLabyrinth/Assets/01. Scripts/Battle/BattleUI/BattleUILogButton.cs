@@ -19,15 +19,7 @@ public class BattleUILogButton : AbstractBattleButton
 
     public override void OnOffButton(DetailedTurnState state)
     {
-        switch (state)
-        {
-            case DetailedTurnState.BattleStart:
-                gameObject.SetActive(true);
-                break;
-            case DetailedTurnState.BattleEnd:
-                gameObject.SetActive(false);
-                break;
-        }
+
     }
 
     public override void OnPush()

@@ -1,4 +1,6 @@
-﻿public interface IBattleTurnState
+﻿using UnityEngine.AI;
+
+public interface IBattleTurnState
 {
     void Enter();
     void BattleUpdate();
@@ -7,22 +9,21 @@
 
 public class BattleStateMachine
 {
-    public IBattleTurnState currentState;
+    public IBattleTurnState currentState;    
 
-    public BattleStateMachine(IBattleTurnState defaultState)
-    {
-        currentState = defaultState;
-    }
-    
     public void ChangeState(IBattleTurnState state)
     {
-        currentState.Exit();
+        if(currentState != null)
+        {
+            currentState.Exit();
+        }
         currentState = state;
         currentState.Enter();
     }
 
     public void BattleUpdate()
     {
+        if (BattleManager.Instance.IsBattle == false) return;
         currentState.BattleUpdate();
     }
 }

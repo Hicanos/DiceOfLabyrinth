@@ -17,9 +17,6 @@ public class BattleButtonRollDice : AbstractBattleButton
     {
         switch (state)
         {
-            case DetailedTurnState.BattleStart:
-                gameObject.SetActive(true);
-                break;
             case DetailedTurnState.Enter:
                 ChangeEndTurnToRoll();
                 rollButton.interactable = true;
@@ -47,9 +44,6 @@ public class BattleButtonRollDice : AbstractBattleButton
             case DetailedTurnState.EndTurn:
                 rollButton.interactable = false;
                 break;
-            case DetailedTurnState.BattleEnd:
-                gameObject.SetActive(false);
-                break;
         }
     }
 
@@ -71,7 +65,7 @@ public class BattleButtonRollDice : AbstractBattleButton
             rollButton.interactable = false;
 
             //BattleManager.Instance.BattlePlayerTurnState.AbstractButtonPushed();
-            BattleManager.Instance.BattlePlayerTurnState.EndPlayerTurn();
+            BattleManager.Instance.EndPlayerTurn();
         }
     }
 
