@@ -34,7 +34,7 @@ public class ItemManager
 
     // Addressable로 로드된 모든 아이템 SO
     private Dictionary<string, ItemSO> allItems = new Dictionary<string, ItemSO>();
-
+    public Dictionary<string, ItemSO> AllItems => allItems;
 
     private bool isLoaded = false;
 

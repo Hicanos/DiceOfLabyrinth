@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 using DG.Tweening;
+using System.Linq;
 
 public class SelectAdventureUIController : MonoBehaviour
 {
@@ -51,8 +52,6 @@ public class SelectAdventureUIController : MonoBehaviour
     [SerializeField] private TMP_Text beforeStaminaText; // 지불 전 스태미너를 보여주는 텍스트
     [SerializeField] private TMP_Text afterStaminaText; // 지불 후 스태미너를 보여주는 텍스트
     [SerializeField] private TMP_Text jewelCostText; // 지불 후 스태미너를 보여주는 텍스트
-
-
 
     public bool isDifficulty = false; // 챕터 난이도 선택 여부
 
@@ -302,20 +301,45 @@ public class SelectAdventureUIController : MonoBehaviour
     {
         int directCompleteExpReward = 0;
         int directCompleteGoldReward = 0;
-        int directCompleteJewelReward = 0;
+        int directCompletePotionReward = 0;
         UserDataManager.Instance.UseStamina(actualCost); // 스태미나 사용
         foreach (var stage in chapterData.chapterIndex[selectedChapterIndex].stageData.stageIndex)
         {
             directCompleteExpReward += stage.ExpReward; // 각 스테이지의 경험치 보상 합산
             directCompleteGoldReward += stage.GoldReward; // 각 스테이지의 골드 보상 합산
-            directCompleteJewelReward += stage.JewelReward; // 각 스테이지의 쥬얼 보상 합산
+            directCompletePotionReward += stage.PotionReward; // 각 스테이지의 포션 보상 합산
         }
         UserDataManager.Instance.AddExp(directCompleteExpReward * directCompleteMultiplier); // 경험치 보상 추가
         UserDataManager.Instance.AddGold(directCompleteGoldReward * directCompleteMultiplier); // 골드 보상 추가
-        UserDataManager.Instance.AddJewel(directCompleteJewelReward * directCompleteMultiplier); // 쥬얼 보상 추가
+        Dictionary<EXPpotion, int> potionResults = new();
+
+        int remainingExp = directCompletePotionReward * directCompleteMultiplier; // 포션 보상 경험치 총합
+
+        var potionList = ItemManager.Instance.AllItems.Values.OfType<EXPpotion>().OrderByDescending(p => p.ExpAmount).ToList();
+        foreach (var potion in potionList)
+        {
+            if (potion.ExpAmount <= 0) continue;
+
+            int count = remainingExp / potion.ExpAmount;
+            if (count > 0)
+            {
+                potionResults[potion] = count;
+                remainingExp %= potion.ExpAmount;
+            }
+        }
+
+        string potionRewardText = "";
+        foreach (var kvp in potionResults)
+        {
+            ItemManager.Instance.GetItem(kvp.Key.ItemID, kvp.Value);
+            potionRewardText += $"{kvp.Key.NameKr}: {kvp.Value}개\n"; // 포션 보상 텍스트 생성
+        }
 
         messagePopup.Open(
-        $"직접 완료가 완료되었습니다!\n경험치: {directCompleteExpReward * directCompleteMultiplier}\n골드: {directCompleteGoldReward * directCompleteMultiplier}\n쥬얼: {directCompleteJewelReward * directCompleteMultiplier}"
+        $"직접 완료가 완료되었습니다!\n" +
+        $"경험치: {directCompleteExpReward * directCompleteMultiplier}exp\n" +
+        $"골드: {directCompleteGoldReward * directCompleteMultiplier}골드\n" +
+        potionRewardText
         );
     }
 

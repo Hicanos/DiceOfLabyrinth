@@ -52,7 +52,7 @@ public class StageSaveData
     [Header("Stage Rewards")]
     public int savedExpReward; // 스테이지에서 획득한 경험치 보상, 스테이지 종료시 정산합니다.
     public int savedGoldReward; // 스테이지에서 획득한 골드 보상, 스테이지 종료시 정산합니다.
-    public int savedJewelReward; // 스테이지에서 획득한 보석 보상, 스테이지 종료시 정산합니다.
+    public int savedPotionReward; // 스테이지에서 획득한 보석 보상, 스테이지 종료시 정산합니다.
 
 
     public List<ChapterStates> chapterStates = new List<ChapterStates>();
@@ -69,7 +69,7 @@ public class StageSaveData
             equipedArtifacts[i] = null;
         savedExpReward = 0;
         savedGoldReward = 0;
-        savedJewelReward = 0;
+        savedPotionReward = 0;
         // 챕터 단위로만 초기화할 데이터가 있다면 여기에 추가
 
         ResetStageProgress(); // 스테이지 관련 데이터 일괄 초기화
@@ -423,7 +423,7 @@ public class StageManager : MonoBehaviour
         {
             stageSaveData.savedExpReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].ExpReward; // 경험치 보상 저장
             stageSaveData.savedGoldReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].GoldReward; // 골드 보상 저장
-            stageSaveData.savedJewelReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].JewelReward; // 보석 보상 저장
+            stageSaveData.savedPotionReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].PotionReward; // 포션 보상 저장
             stageSaveData.currentStageIndex = stageIndex + 1; // 다음 스테이지로 진행
             //StageManager.Instance.stageSaveData.chapterStates[StageManager.Instance.stageSaveData.currentChapterIndex].stageStates[stageIndex].isUnLocked = true; // 다음 스테이지 잠금 해제
             stageSaveData.ResetStageProgress(); // 스테이지 진행 상태 초기화
@@ -433,7 +433,7 @@ public class StageManager : MonoBehaviour
         {
             stageSaveData.savedExpReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].ExpReward; // 마지막 스테이지의 경험치 보상 저장
             stageSaveData.savedGoldReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].GoldReward; // 마지막 스테이지의 골드 보상 저장
-            stageSaveData.savedJewelReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].JewelReward; // 마지막 스테이지의 보석 보상 저장
+            stageSaveData.savedPotionReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].PotionReward; // 마지막 스테이지의 포션 보상 저장
             CompleteChapter(stageSaveData.currentChapterIndex); // 챕터 완료 로직 호출
         }
     }
@@ -441,7 +441,7 @@ public class StageManager : MonoBehaviour
     {
         stageSaveData.savedExpReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].ExpReward; // 경험치 보상 저장
         stageSaveData.savedGoldReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].GoldReward; // 골드 보상 저장
-        stageSaveData.savedJewelReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].JewelReward; // 보석 보상 저장
+        stageSaveData.savedPotionReward += chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageIndex].PotionReward; // 포션 보상 저장
         battleUIController.OpenDefeatPanel(); // 스테이지 패배 UI를 엽니다.
     }
 
@@ -452,17 +452,46 @@ public class StageManager : MonoBehaviour
             Debug.LogError($"Invalid chapter index: {chapterIndex}. Please provide a valid index.");
             return;
         }
-        messagePopup.Open("챕터 완료! 정산되는 재화:" +
-            $"\n경험치: {StageManager.Instance.stageSaveData.savedExpReward}" +
-            $"\n골드: {StageManager.Instance.stageSaveData.savedGoldReward}" +
-            $"\n보석: {StageManager.Instance.stageSaveData.savedJewelReward}"); // 챕터 완료 안내
+
         UserDataManager.Instance.AddExp(StageManager.Instance.stageSaveData.savedExpReward);
         UserDataManager.Instance.AddGold(StageManager.Instance.stageSaveData.savedGoldReward);
-        UserDataManager.Instance.AddJewel(StageManager.Instance.stageSaveData.savedJewelReward);
+        Dictionary<EXPpotion, int> potionResults = new();
+        var potionList =ItemManager.Instance.AllItems.Values.OfType<EXPpotion>().OrderByDescending(i => i.ExpAmount).ToList();
+        int remainingExp = StageManager.Instance.stageSaveData.savedExpReward;
+        foreach (var potion in potionList)
+        {
+            if (remainingExp <= 0) continue;
+            int count = remainingExp / potion.ExpAmount; // 남은 경험치를 해당 포션의 경험치로 나눈 몫
+            if (count > 0)
+            {
+                potionResults[potion] = count;
+                remainingExp %= potion.ExpAmount;
+            }
+        }
+        string potionRewardText = "";
+        foreach (var kvp in potionResults)
+        {
+            ItemManager.Instance.GetItem(kvp.Key.ItemID, kvp.Value);
+            potionRewardText += $"{kvp.Key.NameKr}: {kvp.Value}개\n"; // 포션 보상 텍스트 생성
+        }
+
+
 
         var states = StageManager.Instance.stageSaveData.chapterStates;
-        states[chapterIndex].isCompleted = true;
-        Debug.Log($"Chapter complete boolean: {states[chapterIndex].isCompleted}");
+        string jewelRewardText = "";
+        if (states[chapterIndex].isCompleted == false) // 최초 챕터 완료 시에만 필요한 로직
+        {
+            states[chapterIndex].isUnLocked = true; // 챕터 언락
+            int jewelReward = StageManager.Instance.chapterData.chapterIndex[chapterIndex].FirstClearJewelReward; // 챕터 첫 클리어 보석 보상
+            UserDataManager.Instance.AddJewel(jewelReward); // 보석 보상 추가
+            jewelRewardText = $"\n보석: {jewelReward}개"; // 보석 보상 텍스트 생성
+        }
+
+        messagePopup.Open("챕터 완료! 정산되는 재화:\n" +
+            $"경험치: {StageManager.Instance.stageSaveData.savedExpReward}\n" +
+            $"골드: {StageManager.Instance.stageSaveData.savedGoldReward}\n" +
+            potionRewardText + jewelRewardText
+            ); // 챕터 완료 안내
 
         int groupIndex = chapterIndex / 10;
         List<int> normalChapters = new List<int>();
@@ -509,11 +538,29 @@ public class StageManager : MonoBehaviour
         var states = StageManager.Instance.stageSaveData.chapterStates;
         UserDataManager.Instance.AddExp(StageManager.Instance.stageSaveData.savedExpReward); // 경험치 보상 추가
         UserDataManager.Instance.AddGold(StageManager.Instance.stageSaveData.savedGoldReward); // 골드 보상 추가
-        UserDataManager.Instance.AddJewel(StageManager.Instance.stageSaveData.savedJewelReward); // 보석 보상 추가
+        Dictionary<EXPpotion, int> potionResults = new();
+        var potionList = ItemManager.Instance.AllItems.Values.OfType<EXPpotion>().OrderByDescending(i => i.ExpAmount).ToList();
+        int remainingExp = StageManager.Instance.stageSaveData.savedExpReward;
+        foreach (var potion in potionList)
+        {
+            if (remainingExp <= 0) continue;
+            int count = remainingExp / potion.ExpAmount; // 남은 경험치를 해당 포션의 경험치로 나눈 몫
+            if (count > 0)
+            {
+                potionResults[potion] = count;
+                remainingExp %= potion.ExpAmount;
+            }
+        }
+        string potionRewardText = "";
+        foreach (var kvp in potionResults)
+        {
+            ItemManager.Instance.GetItem(kvp.Key.ItemID, kvp.Value);
+            potionRewardText += $"{kvp.Key.NameKr}: {kvp.Value}개\n"; // 포션 보상 텍스트 생성
+        }
         messagePopup.Open("정산되는 재화:" +
             $"\n경험치: {StageManager.Instance.stageSaveData.savedExpReward}" +
             $"\n골드: {StageManager.Instance.stageSaveData.savedGoldReward}" +
-            $"\n보석: {StageManager.Instance.stageSaveData.savedJewelReward}"); // 정산되는 재화 안내
+            $"\n{potionRewardText}"); // 챕터 완료 안내
         StageManager.Instance.stageSaveData.ResetToDefault(-1); // 챕터 종료 후 스테이지 데이터 초기화, -1은 현재 챕터가 셀렉트되지 않았음을 의미합니다.
     
     }
