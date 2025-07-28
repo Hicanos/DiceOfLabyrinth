@@ -3,10 +3,10 @@
 public class CharacterUIController : MonoBehaviour
 {
     [Header("Panels")]
-    [SerializeField] private GameObject characterListPanel;
+    [SerializeField] private GameObject characterPanel;
 
     private void OnEnable()
     {
-        characterListPanel.SetActive(true);
+        characterPanel.SetActive(true);
     }
 }
