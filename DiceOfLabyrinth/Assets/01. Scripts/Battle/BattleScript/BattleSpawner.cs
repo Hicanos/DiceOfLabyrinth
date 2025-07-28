@@ -10,8 +10,7 @@ public class BattleSpawner : MonoBehaviour
     bool isPreparing;
     bool isActive;
     const int numFIve = 5;
-    private Vector3 spawnDetach = Vector3.right * 12;
-    //private Vector3[] characterDestPos = new Vector3[5];
+    [SerializeField] Vector3 spawnDetach;    
     [SerializeField] List<FormationVector> formationVec;
     private Vector3[] curFormationVec;
 

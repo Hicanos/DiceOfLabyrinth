@@ -14,6 +14,7 @@ public class BattleUIHP : MonoBehaviour
     public GameObject CharacterHPBarrier;
     public GameObject CharacterHPBlank;
     public GameObject CharacterHPText;
+    [SerializeField] GameObject patternDisplayer;
 
     [Header("HP UI Scale Value")]
     [SerializeField] Vector3 CharacterHPVec;
@@ -81,6 +82,7 @@ public class BattleUIHP : MonoBehaviour
         go = Instantiate(CharacterHPCanvas, enemy.EnemyPrefab.transform);
         enemy.EnemyHPBars = go;
 
+        //Instantiate(patternDisplayer, enemy.EnemyHPBars.transform);
         go = Instantiate(CharacterHPBack, enemy.EnemyHPBars.transform);
         enemyHPBar = go;
         rect = go.GetComponent<RectTransform>();
