@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
+using System.Linq;
 
 [CreateAssetMenu(fileName = "StageData", menuName = "ScriptableObjects/Stages/StageData", order = 1)]
 public class StageData : ScriptableObject
@@ -10,6 +11,12 @@ public class StageData : ScriptableObject
     [SerializeField] private List<PlayerFormations> playerFormations;
     public List<StageInfo> StageIndex => stageIndex;
     public List<PlayerFormations> PlayerFormations => playerFormations;
+    public int DirectCompleteExpReward =>
+        stageIndex.Sum(stage => stage.ExpReward); // 모든 스테이지의 경험치 보상을 합산하여 반환
+    public int DirectCompleteGoldReward =>
+        stageIndex.Sum(stage => stage.GoldReward); // 모든 스테이지의 골드 보상을 합산하여 반환
+    public int DirectCompletePotionReward =>
+        stageIndex.Sum(stage => stage.PotionReward); // 모든 스테이지의 포션 보상을 합산하여 반환
 }
 
 [System.Serializable]
