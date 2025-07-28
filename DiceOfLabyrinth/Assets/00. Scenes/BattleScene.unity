@@ -2087,7 +2087,7 @@ MonoBehaviour:
   CurrentDetailedState: 0
   BattleTurn: 0
   CostSpendedInTurn: 0
-  isBattle: 0
+  IsBattle: 0
   IsBoss: 0
   IsWon: 0
 --- !u!1 &5666082356261757285
@@ -2103,7 +2103,6 @@ GameObject:
   - component: {fileID: 303490232559084238}
   - component: {fileID: 5666082356261757287}
   - component: {fileID: 5666082356261757288}
-  - component: {fileID: 5666082356261757286}
   m_Layer: 0
   m_Name: BattleManager
   m_TagString: Untagged
@@ -2111,18 +2110,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &5666082356261757286
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5666082356261757285}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ddc6cde1ee2d2e44a34a32ed37feb01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5666082356261757287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2135,6 +2122,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf97210c0d7ebfe4f9d22ee27adc7ca3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  formationVec:
+  - formationVec:
+    - {x: -1.03, y: -1.26, z: -4}
+    - {x: -2.79, y: -0.31, z: -3}
+    - {x: -3.25, y: -0.85, z: -3.666}
+    - {x: -3.6, y: -1.64, z: -4.322}
+    - {x: -3.93, y: -2.33, z: -5}
+  - formationVec:
+    - {x: -0.8, y: -0.78, z: -3.666}
+    - {x: -1.37, y: -2.08, z: -4.332}
+    - {x: -0.32, y: -0.35, z: -3}
+    - {x: -3.4, y: -1.14, z: -4}
+    - {x: -3.48, y: -2.05, z: -5}
+  - formationVec:
+    - {x: -0.61, y: -0.35, z: -3}
+    - {x: -1.13, y: -1.14, z: -4}
+    - {x: -1.49, y: -2.05, z: -5}
+    - {x: -3.17, y: -0.78, z: -3.666}
+    - {x: -3.74, y: -2.08, z: -4.332}
+  - formationVec:
+    - {x: -0.87, y: -0.31, z: -3}
+    - {x: -1.46, y: -0.85, z: -3.666}
+    - {x: -1.92, y: -1.64, z: -4.332}
+    - {x: -2.37, y: -2.33, z: -5}
+    - {x: -4.22, y: -1.26, z: -4}
   characterContainer: {fileID: 1968470673}
   enemyContainer: {fileID: 1415162113}
   diceContainer: {fileID: 1069492833}

@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using PredictedDice;
+using System;
 
 public class BattleSpawner : MonoBehaviour
 {
@@ -12,7 +11,9 @@ public class BattleSpawner : MonoBehaviour
     bool isActive;
     const int numFIve = 5;
     private Vector3 spawnDetach = Vector3.right * 12;
-    private Vector3[] characterDestPos = new Vector3[5];
+    //private Vector3[] characterDestPos = new Vector3[5];
+    [SerializeField] List<FormationVector> formationVec;
+    private Vector3[] curFormationVec;
 
     IEnumerator enumeratorSpawn;
 
@@ -24,7 +25,7 @@ public class BattleSpawner : MonoBehaviour
     [SerializeField] int fakeDiceLayer;
     public void SpawnCharacters()
     {
-        if (StageManager.Instance.stageSaveData.currentPhaseIndex == 1)
+        if (BattleManager.Instance.IsBattle == false)
         {
             CharacterSpawn();
         }
@@ -38,21 +39,19 @@ public class BattleSpawner : MonoBehaviour
     {
         isActive = false;
         battleManager = BattleManager.Instance;
-        StageManager stageManager = StageManager.Instance;
+
         List<BattleCharacter> battleCharacters = battleManager.BattleGroup.BattleCharacters;
 
         isPreparing = true;
-        int chapterIndex = stageManager.stageSaveData.currentChapterIndex;
-        int iFormation = ((int)stageManager.stageSaveData.currentFormationType);
-        List<PlayerPositions> positions = stageManager.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
+
+        curFormationVec = formationVec[(int)battleManager.BattleGroup.CurrentFormationType].formationVec;
 
         GameObject go;
         SpawnedCharacter spawnedCharacter;
 
         for (int i = 0; i < numFIve; i++)
         {
-            go = Instantiate(battleCharacters[i].CharacterData.charBattlePrefab, characterDestPos[i] - spawnDetach, Quaternion.identity, characterContainer);
-            characterDestPos[i] = positions[i].Position;
+            go = Instantiate(battleCharacters[i].CharacterData.charBattlePrefab, curFormationVec[i] - spawnDetach, Quaternion.identity, characterContainer);
 
             battleManager.BattleGroup.CharacterPrefabs[i] = go;
             spawnedCharacter = go.GetComponent<SpawnedCharacter>();
@@ -84,7 +83,7 @@ public class BattleSpawner : MonoBehaviour
         {
             go = battleManager.BattleGroup.CharacterPrefabs[i];
             go.SetActive(false);
-            go.transform.localPosition = characterDestPos[i] - spawnDetach;
+            go.transform.localPosition = curFormationVec[i] - spawnDetach;
         }
     }
 
@@ -98,7 +97,7 @@ public class BattleSpawner : MonoBehaviour
         {
             for (int i = 0; i < numFIve; i++)
             {
-                battleGroup.CharacterPrefabs[i].transform.localPosition = Vector3.Lerp(characterDestPos[i] - spawnDetach, characterDestPos[i], pastTime / destTime);
+                battleGroup.CharacterPrefabs[i].transform.localPosition = Vector3.Lerp(curFormationVec[i] - spawnDetach, curFormationVec[i], pastTime / destTime);
             }
 
             pastTime += Time.deltaTime;
@@ -128,7 +127,7 @@ public class BattleSpawner : MonoBehaviour
 
         for (int i = 0; i < numFIve; i++)
         {
-            battleGroup.CharacterPrefabs[i].transform.localPosition = characterDestPos[i];
+            battleGroup.CharacterPrefabs[i].transform.localPosition = curFormationVec[i];
         }
 
         if (!isActive)
@@ -151,7 +150,7 @@ public class BattleSpawner : MonoBehaviour
         }
         battleManager.Enemy.EnemyHPBars.SetActive(true);
 
-        battleManager.I_PlayerTurnState.Enter();
+        battleManager.StateMachine.ChangeState(battleManager.I_PlayerTurnState);
     }
 
     private void LoadCharacterHP(BattleCharGroup battleGroup)
@@ -213,4 +212,10 @@ public class BattleSpawner : MonoBehaviour
     {
         BattleManager.Instance.BattleUIHP.SpawnMonsterHP();        
     }
+}
+
+[Serializable]
+public class FormationVector
+{
+    public Vector3[] formationVec;
 }
