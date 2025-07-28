@@ -19,12 +19,7 @@ public class StageInfo
     [SerializeField] private string stageName;
     [SerializeField] private string description;
     [SerializeField] private Image backgroundImage;
-    [SerializeField] private int expReward;
-    [SerializeField] private int goldReward;
-    [SerializeField] private int jewelReward;
-    //[SerializeField] private BossPhaseData bossPhase;
-    //[SerializeField] private List<NormalPhaseData> normalPhases;
-    //[SerializeField] private List<ElitePhaseData> elitePhases;
+    [SerializeField] private int rewardValue;
     [SerializeField] private List<EnemyData> enemies;
     [SerializeField] private List<ChoiceOptions> choiceOptions;
     [SerializeField] private List<EngravingData> engravingList;
@@ -34,12 +29,9 @@ public class StageInfo
     public string StageName => stageName;
     public string Description => description;
     public Image BackgroundImage => backgroundImage;
-    public int ExpReward => expReward;
-    public int GoldReward => goldReward;
-    public int JewelReward => jewelReward;
-    //public List<NormalPhaseData> NormalPhases => normalPhases;
-    //public List<ElitePhaseData> ElitePhases => elitePhases;
-    //public BossPhaseData BossPhase => bossPhase;
+    public int ExpReward => rewardValue * 10; // 15배로 보정
+    public int GoldReward => rewardValue * 15; // 10배로 보정
+    public int PotionReward => rewardValue; // 포션 보상은 1배로 설정
     public List<EnemyData> Enemies => enemies;
     public List<ChoiceOptions> ChoiceOptions => choiceOptions;
 

@@ -232,7 +232,7 @@ public class SelectAdventureUIController : MonoBehaviour
     private void UpdateDirectCompleteMultiplierText() // 직접 완료 배수 텍스트 업데이트
     {
         directCompleteMultiplierText.text = $"{directCompleteMultiplier}";
-        int actualCost = chapterData.chapterIndex[selectedChapterIndex].DirectCompleteCost * directCompleteMultiplier; // 직접 완료 비용 계산
+        int actualCost = chapterData.chapterIndex[selectedChapterIndex].ChapterCost * directCompleteMultiplier; // 직접 완료 비용 계산
         actualCostText.text = $"{actualCost}"; // 실제 비용 텍스트 업데이트
     }
 
@@ -264,7 +264,7 @@ public class SelectAdventureUIController : MonoBehaviour
     }
     public void OnClickDirectCompliteButton()
     {
-        int actualCost = chapterData.chapterIndex[selectedChapterIndex].DirectCompleteCost * directCompleteMultiplier; // 직접 완료 비용 계산, 스태미나를 코스트로 사용합니다.
+        int actualCost = chapterData.chapterIndex[selectedChapterIndex].ChapterCost * directCompleteMultiplier; // 직접 완료 비용 계산, 스태미나를 코스트로 사용합니다.
         if (selectedChapterIndex < 0 || selectedChapterIndex >= chapterData.chapterIndex.Count) // 유효하지 않은 챕터 인덱스일 때
         {
             messagePopup.Open("선택한 챕터가 유효하지 않습니다. 다시 시도해 주세요.");
