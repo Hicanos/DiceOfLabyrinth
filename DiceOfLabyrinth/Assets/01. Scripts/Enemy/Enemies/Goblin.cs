@@ -227,6 +227,10 @@ public class Goblin : MonoBehaviour, IEnemy
     {
         SoundManager.Instance.PlaySFX(SoundManager.SoundType.SFX_Swing2);
     }
+    public void ScreamSound()
+    {
+               SoundManager.Instance.PlaySFX(SoundManager.SoundType.SFX_Scream);
+    }
 
     // -------------------- 플레이어 히트 메서드 --------------------
     public void HitPlayer()
