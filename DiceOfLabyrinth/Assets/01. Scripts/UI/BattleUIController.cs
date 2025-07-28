@@ -75,29 +75,29 @@ public class BattleUIController : MonoBehaviour
     {
         if (Keyboard.current == null) return; // Input System이 없으면 무시
 
-        if (StageManager.Instance != null &&
-            StageManager.Instance.stageSaveData != null &&
-            StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
-        {
-            if (Keyboard.current.f9Key.wasPressedThisFrame)
-            {
+        //if (StageManager.Instance != null &&
+        //    StageManager.Instance.stageSaveData != null &&
+        //    StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Battle)
+        //{
+        //    if (Keyboard.current.f9Key.wasPressedThisFrame)
+        //    {
 
-                BattleManager.Instance.BattleSpawner.CharacterDeActive();
-                Destroy(BattleManager.Instance.Enemy.EnemyPrefab);
-                var data = new BattleResultData(true, BattleManager.Instance.BattleGroup.BattleCharacters);
-                messagePopup.Open("디버그: 즉시 배틀 승리 처리");
-                StageManager.Instance.OnBattleResult(data);
-            }
-            if (Keyboard.current.f10Key.wasPressedThisFrame)
-            {
+        //        BattleManager.Instance.BattleSpawner.CharacterDeActive();
+        //        Destroy(BattleManager.Instance.Enemy.EnemyPrefab);
+        //        var data = new BattleResultData(true, BattleManager.Instance.BattleGroup.BattleCharacters);
+        //        messagePopup.Open("디버그: 즉시 배틀 승리 처리");
+        //        StageManager.Instance.OnBattleResult(data);
+        //    }
+        //    if (Keyboard.current.f10Key.wasPressedThisFrame)
+        //    {
 
-                BattleManager.Instance.BattleSpawner.CharacterDeActive();
-                Destroy(BattleManager.Instance.Enemy.EnemyPrefab);
-                messagePopup.Open("디버그: 즉시 패배 처리");
-                var defeatData = new BattleResultData(false, BattleManager.Instance.BattleGroup.BattleCharacters);
-                StageManager.Instance.OnBattleResult(defeatData);
-            }
-        }
+        //        BattleManager.Instance.BattleSpawner.CharacterDeActive();
+        //        Destroy(BattleManager.Instance.Enemy.EnemyPrefab);
+        //        messagePopup.Open("디버그: 즉시 패배 처리");
+        //        var defeatData = new BattleResultData(false, BattleManager.Instance.BattleGroup.BattleCharacters);
+        //        StageManager.Instance.OnBattleResult(defeatData);
+        //    }
+        //}
         if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
         {
             if (Keyboard.current.f11Key.wasPressedThisFrame && StageManager.Instance.stageSaveData.currentChapterIndex != -1)
@@ -115,29 +115,7 @@ public class BattleUIController : MonoBehaviour
         }
     }
 #endif
-    private void OnEnable()
-    {
-        // 기존에 생성된 플랫폼 오브젝트가 있다면 먼저 파괴
-        for (int i = 0; i < characterPlatforms.Length; i++)
-        {
-            if (characterPlatforms[i] != null)
-            {
-                Destroy(characterPlatforms[i]);
-                characterPlatforms[i] = null;
-            }
-        }
-
-        // 5개 생성 및 할당
-        for (int i = 0; i < characterPlatforms.Length; i++)
-        {
-            // 원하는 위치로 변경 가능
-            Vector3 spawnPos = Vector3.zero;
-            var platform = Instantiate(platformPrefab, spawnPos, Quaternion.identity);
-            platform.SetActive(false); // 생성 즉시 비활성화
-            characterPlatforms[i] = platform;
-            characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i; // 플랫폼 인덱스 설정
-        }
-    }
+    
     private void OnDisable()
     {
         for (int i = 0; i < characterPlatforms.Length; i++)
@@ -237,6 +215,26 @@ public class BattleUIController : MonoBehaviour
     }
     public void OpenTeamFormationPanel()
     {
+        // 플랫폼 초기화: 기존 플랫폼 제거 및 새로 생성
+        for (int i = 0; i < characterPlatforms.Length; i++)
+        {
+            if (characterPlatforms[i] != null)
+            {
+                Destroy(characterPlatforms[i]);
+                characterPlatforms[i] = null;
+            }
+        }
+        for (int i = 0; i < characterPlatforms.Length; i++)
+        {
+            Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                .stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
+
+            var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
+            platform.SetActive(false);
+            characterPlatforms[i] = platform;
+            characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i;
+            platform.transform.position = spawnPoint;
+        }
         RefreshTeamFormationButton(); // 팀 구성 버튼 상태 갱신
         RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
         //Debug.Log($"[TeamFormation] AcquiredCharacters Count: {CharacterManager.Instance.AcquiredCharacters.Count}");
@@ -257,7 +255,8 @@ public class BattleUIController : MonoBehaviour
         }
          shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        if (InventoryPopup.Instance != null)
+            InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         // characterButtons의 개수를 보유 캐릭터 수 만큼으로 설정하는 로직은 나중에 구현할 예정 현재는 7개로 사용
 
         int ownedCount = CharacterManager.Instance.OwnedCharacters.Count;
@@ -496,7 +495,10 @@ public class BattleUIController : MonoBehaviour
             }
 
             GameObject characterPlatform = characterPlatforms[i]; // 캐릭터 플랫폼 가져오기
-            characterPlatform.transform.position = spawnPoint; // 플랫폼 위치 설정
+            if (characterPlatform != null)
+            {
+                characterPlatform.transform.position = spawnPoint; // 플랫폼 위치 설정
+            }
         }
     }
     private void DeleteSpawnedCharacters() // 월드에 스폰된 캐릭터를 제거하는 함수
@@ -529,7 +531,8 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        if (InventoryPopup.Instance != null)
+            InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -553,7 +556,8 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        if (InventoryPopup.Instance != null)
+            InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -611,7 +615,8 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        if (InventoryPopup.Instance != null)
+            InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -701,10 +706,12 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        if (InventoryPopup.Instance != null)
+            InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
-            characterPlatform.SetActive(false); // 캐릭터 플랫폼 비활성화
+            if (characterPlatform != null)
+                characterPlatform.SetActive(false); // 캐릭터 플랫폼 비활성화
         }
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
         OnClickSelectItemNumber(0); // 첫 번째 아이템을 선택한 것으로 초기화
@@ -860,7 +867,8 @@ public class BattleUIController : MonoBehaviour
         selectItemPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        if (InventoryPopup.Instance != null)
+            InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         selectEventPanel.SetActive(true); // 선택지 이벤트 패널 활성화
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -913,7 +921,8 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        if (InventoryPopup.Instance != null)
+            InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -935,7 +944,8 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        if (InventoryPopup.Instance != null)
+            InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -967,7 +977,8 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(true);
         recoveryPopup.SetActive(false);
-        InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        if (InventoryPopup.Instance != null)
+            InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)

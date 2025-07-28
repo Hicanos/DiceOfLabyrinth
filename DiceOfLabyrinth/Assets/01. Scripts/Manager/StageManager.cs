@@ -232,7 +232,7 @@ public class StageManager : MonoBehaviour
                     battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.EliteEngravingReward); // 엘리트 각인 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.BossReward:
-                    battleUIController.OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.BossReward); // 보스 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
+                    battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.BossReward); // 보스 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.Standby:
                     battleUIController.OpenStagePanel(stageSaveData.currentPhaseIndex); // 스탠바이 상태에 해당하는 UI를 엽니다.
@@ -249,7 +249,6 @@ public class StageManager : MonoBehaviour
                 case StageSaveData.CurrentPhaseState.SelectChoice:
                     battleUIController.OpenSelectChoicePanel(); // 선택지 상태에 해당하는 UI를 엽니다.
                     return;
-
                 default:
                     messagePopup.Open($"Unknown choice state: {stageSaveData.currentPhaseState}\n" +
                         "로비로 돌아갑니다.");
