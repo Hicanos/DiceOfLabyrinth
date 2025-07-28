@@ -25,6 +25,7 @@ public struct DamageCondition
     [SerializeField] private DiceRankingEnum conditionRank;
     [SerializeField] private EffectTypeEnum effectType;
     [SerializeField] private float effectValue;
+    [SerializeField] private EffectLocationEnum effectLocation;
     [SerializeField] private int buffDuration;
 
     public ConditionTypeEnum ConditionType => conditionType;
@@ -32,6 +33,7 @@ public struct DamageCondition
     public DiceRankingEnum ConditionRank => conditionRank;
     public EffectTypeEnum EffectType => effectType;
     public float EffectValue => effectValue;
+    public EffectLocationEnum EffectLocation => effectLocation;
     public int BuffDuration => buffDuration;
     //public enum ConditionType
     //{

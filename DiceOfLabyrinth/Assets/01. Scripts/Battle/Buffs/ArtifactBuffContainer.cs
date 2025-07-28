@@ -7,6 +7,8 @@ public class ArtifactBuffContainer
     List<IBuff> buffsCallbackSpendCost = new List<IBuff>();
     List<IBuff> buffsCallbackCharacterHit = new List<IBuff>();
     List<IBuff> buffsCallbackCharacterDie = new List<IBuff>();
+    List<IBuff> buffsCallbackTurnEnter = new List<IBuff>();
+    List<IBuff> buffsCallbackCharacterAttack = new List<IBuff>();
 
     public void Action()
     {
@@ -22,23 +24,37 @@ public class ArtifactBuffContainer
             buff.Action();
         }
     }
-    public void ActionCallbackSpendCost()
+    public void ActionSpendCost()
     {
         foreach (var buff in buffsCallbackSpendCost)
         {
             buff.Action();
         }
     }
-    public void ActionCallbackCharacterHit()
+    public void ActionCharacterHit()
     {
         foreach (var buff in buffsCallbackCharacterHit)
         {
             buff.Action();
         }
     }
-    public void ActionCallbackCharacterDie()
+    public void ActionCharacterDie()
     {
         foreach (var buff in buffsCallbackCharacterDie)
+        {
+            buff.Action();
+        }
+    }
+    public void ActionCharacterAttack()
+    {
+        foreach (var buff in buffsCallbackCharacterAttack)
+        {
+            buff.Action();
+        }
+    }
+    public void ActionTurnEnter()
+    {
+        foreach (var buff in buffsCallbackTurnEnter)
         {
             buff.Action();
         }
@@ -72,6 +88,14 @@ public class ArtifactBuffContainer
     {
         buffsCallbackCharacterDie.Add(buff);
     }
+    public void AddbuffsCallbackCharacterAttack(IBuff buff)
+    {
+        buffsCallbackCharacterAttack.Add(buff);
+    }
+    public void AddbuffsCallbackTurnEnter(IBuff buff)
+    {
+        buffsCallbackTurnEnter.Add(buff);
+    }
 
     public void RemoveArtifactBuff(IBuff buff)
     {
@@ -93,6 +117,14 @@ public class ArtifactBuffContainer
     {
         buffsUpdate.Remove(buff);
     }
+    public void RemovebuffsCallbackCharacterAttack(IBuff buff)
+    {
+        buffsCallbackCharacterAttack.Remove(buff);
+    }
+    public void RemovebuffsCallbackTurnEnter(IBuff buff)
+    {
+        buffsCallbackTurnEnter.Remove(buff);
+    }
 
     public void RemoveAllBuffs()
     {
@@ -101,26 +133,29 @@ public class ArtifactBuffContainer
         buffsCallbackSpendCost.Clear();
         buffsCallbackCharacterHit.Clear();
         buffsCallbackCharacterDie.Clear();
+        buffsCallbackCharacterAttack.Clear();
+        buffsCallbackTurnEnter.Clear();
     }
 }
 
 public class ArtifactAdditionalStatus
 {
-    //AdditionalDamage;
-    //AdditionalElementDamage;
-    //AdditionalRoll;
-    //AdditionalSIgniture;
-    //AdditionalMaxCost;
-    //AdditionalStone;
-    //AdditionalAttack;
-
-    public float[] AdditionalStatus = new float[7];
+    public float AdditionalDamage;
+    public float AdditionalElementDamage;
+    public float AdditionalRoll;
+    public float AdditionalSIgniture;
+    public float AdditionalMaxCost;
+    public float AdditionalStone;
+    public float AdditionalAttack;
 
     public void ResetStatus()
     {
-        for(int i = 0; i < AdditionalStatus.Length; i++)
-        {
-            AdditionalStatus[i] = 0f;
-        }
+        AdditionalDamage = 0;
+        AdditionalElementDamage = 0;
+        AdditionalRoll = 0;
+        AdditionalSIgniture = 0; ;
+        AdditionalMaxCost = 0;
+        AdditionalStone = 0;
+        AdditionalAttack = 0;
     }
 }
