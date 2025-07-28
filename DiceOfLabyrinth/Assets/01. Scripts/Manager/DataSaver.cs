@@ -4,17 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using System.Threading.Tasks;
 
-/// <summary>
+// <summary>
 /// 모든 게임데이터를 저장하는 역할의 매니저
 /// json 파일로 저장함, 불러오는 건 Loader가 담당
 /// </summary>
 public class DataSaver
 {
-    // 싱글톤 패턴
     public static DataSaver Instance { get; private set; }
     static DataSaver()
     {
@@ -117,9 +113,9 @@ public class DataSaver
             currentFormationType = (int)saveData.currentFormationType;
             currentPhaseState = (int)saveData.currentPhaseState;
 
-            artifactNames = saveData.artifacts?.Select(a => a != null ? a.name : null).ToList() ?? new List<string>(new string[12]);
-            engravingNames = saveData.engravings?.Select(e => e != null ? e.name : null).ToList() ?? new List<string>(new string[3]);
-            equipedArtifactNames = saveData.equipedArtifacts?.Select(a => a != null ? a.name : null).ToList() ?? new List<string>(new string[4]);
+            artifactNames = saveData.artifacts?.Select(a => a != null ? a.ArtifactName : null).ToList() ?? new List<string>(new string[12]);
+            engravingNames = saveData.engravings?.Select(e => e != null ? e.EngravingName : null).ToList() ?? new List<string>(new string[3]);
+            equipedArtifactNames = saveData.equipedArtifacts?.Select(a => a != null ? a.ArtifactName : null).ToList() ?? new List<string>(new string[4]);
             entryCharacterIDs = saveData.entryCharacters?.Select(c => c != null ? c.name : null).ToList() ?? new List<string>(new string[5]);
             leaderCharacterID = saveData.leaderCharacter != null ? saveData.leaderCharacter.name : null;
             battleCharacters = saveData.battleCharacters?.Select(bc => new BattleCharacterData(bc)).ToList() ?? new List<BattleCharacterData>();
@@ -127,7 +123,7 @@ public class DataSaver
             chapterStates = saveData.chapterStates != null ? new List<ChapterStates>(saveData.chapterStates) : new List<ChapterStates>();
         }
 
-        // 역변환 메서드
+        // StageData → StageSaveData 변환 (string → SO 복원)
         public StageSaveData ToStageSaveData()
         {
             var saveData = new StageSaveData();
@@ -143,17 +139,103 @@ public class DataSaver
             saveData.currentFormationType = (StageSaveData.CurrentFormationType)currentFormationType;
             saveData.currentPhaseState = (StageSaveData.CurrentPhaseState)currentPhaseState;
 
-            saveData.artifacts = artifactNames.Select(name => ArtifactDataLoader.GetByName(name)).ToList();
-            saveData.engravings = engravingNames.Select(name => EngravingDataLoader.GetByName(name)).ToList();
-            saveData.equipedArtifacts = equipedArtifactNames.Select(name => ArtifactDataLoader.GetByName(name)).ToList();
-            saveData.entryCharacters = entryCharacterIDs.Select(id => CharacterSOLoader.GetByName(id)).ToList();
-            saveData.leaderCharacter = CharacterSOLoader.GetByName(leaderCharacterID);
-            // BattleCharacter 복원은 별도 로직 필요
-            // saveData.battleCharacters = battleCharacters.Select(bc => bc.ToBattleCharacter()).ToList();
-            saveData.selectedEnemy = EnemyDataLoader.GetByName(selectedEnemyID);
+            saveData.artifacts = artifactNames.Select(name => ArtifactManager.GetByName(name)).ToList();
+            saveData.engravings = engravingNames.Select(name => EngravingManager.GetByName(name)).ToList();
+            saveData.equipedArtifacts = equipedArtifactNames.Select(name => ArtifactManager.GetByName(name)).ToList();
+
+            // entryCharacters 복원 (CharacterSO)
+            saveData.entryCharacters = entryCharacterIDs
+                .Select(id => !string.IsNullOrEmpty(id) && CharacterManager.Instance.AllCharacters.ContainsKey(id)
+                    ? CharacterManager.Instance.AllCharacters[id]
+                    : null)
+                .ToList();
+
+            // leaderCharacter 복원 (CharacterSO)
+            saveData.leaderCharacter = !string.IsNullOrEmpty(leaderCharacterID) && CharacterManager.Instance.AllCharacters.ContainsKey(leaderCharacterID)
+                ? CharacterManager.Instance.AllCharacters[leaderCharacterID]
+                : null;
+
+            // battleCharacters 복원 (BattleCharacter)
+            saveData.battleCharacters.Clear();
+            foreach (var bcData in battleCharacters)
+            {
+                if (bcData == null || string.IsNullOrEmpty(bcData.charID)) continue;
+                var battleChar = CharacterManager.Instance.RegisterBattleCharacterData(bcData.charID);
+                battleChar.DataSetting(bcData);
+                saveData.battleCharacters.Add(battleChar);
+            }
+
+            // Enemy SO 복원
+            saveData.selectedEnemy = !string.IsNullOrEmpty(selectedEnemyID)
+                ? EnemyManager.GetByName(selectedEnemyID)
+                : null;
+
             saveData.chapterStates = new List<ChapterStates>(chapterStates);
             return saveData;
         }
+    }
+
+    public static void CopyStageSaveData(StageSaveData target, StageSaveData source)
+    {
+        if (target == null || source == null) return;
+
+        target.currentChapterIndex = source.currentChapterIndex;
+        target.currentStageIndex = source.currentStageIndex;
+        target.currentPhaseIndex = source.currentPhaseIndex;
+        target.currentFormationType = source.currentFormationType;
+        target.normalStageCompleteCount = source.normalStageCompleteCount;
+        target.eliteStageCompleteCount = source.eliteStageCompleteCount;
+        target.currentPhaseState = source.currentPhaseState;
+        target.manaStone = source.manaStone;
+        target.savedExpReward = source.savedExpReward;
+        target.savedGoldReward = source.savedGoldReward;
+        target.savedJewelReward = source.savedJewelReward;
+
+        while (target.artifacts.Count < source.artifacts.Count)
+            target.artifacts.Add(null);
+        while (target.artifacts.Count > source.artifacts.Count)
+            target.artifacts.RemoveAt(target.artifacts.Count - 1);
+        for (int i = 0; i < source.artifacts.Count; i++)
+            target.artifacts[i] = source.artifacts[i];
+
+        while (target.engravings.Count < source.engravings.Count)
+            target.engravings.Add(null);
+        while (target.engravings.Count > source.engravings.Count)
+            target.engravings.RemoveAt(target.engravings.Count - 1);
+        for (int i = 0; i < source.engravings.Count; i++)
+            target.engravings[i] = source.engravings[i];
+
+        while (target.equipedArtifacts.Count < source.equipedArtifacts.Count)
+            target.equipedArtifacts.Add(null);
+        while (target.equipedArtifacts.Count > source.equipedArtifacts.Count)
+            target.equipedArtifacts.RemoveAt(target.equipedArtifacts.Count - 1);
+        for (int i = 0; i < source.equipedArtifacts.Count; i++)
+            target.equipedArtifacts[i] = source.equipedArtifacts[i];
+
+        while (target.entryCharacters.Count < source.entryCharacters.Count)
+            target.entryCharacters.Add(null);
+        while (target.entryCharacters.Count > source.entryCharacters.Count)
+            target.entryCharacters.RemoveAt(target.entryCharacters.Count - 1);
+        for (int i = 0; i < source.entryCharacters.Count; i++)
+            target.entryCharacters[i] = source.entryCharacters[i];
+
+        target.leaderCharacter = source.leaderCharacter;
+
+        while (target.battleCharacters.Count < source.battleCharacters.Count)
+            target.battleCharacters.Add(null);
+        while (target.battleCharacters.Count > source.battleCharacters.Count)
+            target.battleCharacters.RemoveAt(target.battleCharacters.Count - 1);
+        for (int i = 0; i < source.battleCharacters.Count; i++)
+            target.battleCharacters[i] = source.battleCharacters[i];
+
+        target.selectedEnemy = source.selectedEnemy;
+
+        while (target.chapterStates.Count < source.chapterStates.Count)
+            target.chapterStates.Add(new ChapterStates());
+        while (target.chapterStates.Count > source.chapterStates.Count)
+            target.chapterStates.RemoveAt(target.chapterStates.Count - 1);
+        for (int i = 0; i < source.chapterStates.Count; i++)
+            target.chapterStates[i] = source.chapterStates[i];
     }
 
     [Serializable]
@@ -350,9 +432,6 @@ public class DataSaver
         Save();
     }
 
-    /// <summary>
-    /// 저장된 게임데이터 로드
-    /// </summary>
     public void Load()
     {
         string json = "";
@@ -362,20 +441,13 @@ public class DataSaver
             {
                 json = File.ReadAllText(SavePath);
                 SaveData = JsonConvert.DeserializeObject<GameSaveData>(json);
-
                 EnsureStageDataIntegrity();
-
                 Debug.Log($"stageData null? {SaveData.stageData == null}");
                 Debug.Log($"artifactNames null? {SaveData.stageData.artifactNames == null}");
                 Debug.Log($"engravingNames null? {SaveData.stageData.engravingNames == null}");
                 Debug.Log($"chapterStates null? {SaveData.stageData.chapterStates == null}");
+                // SO 복원은 GameManager에서 Addressables 로드 완료 후 호출
 
-                if (SaveData.stageData != null && StageManager.Instance != null)
-                    StageManager.Instance.stageSaveData = SaveData.stageData.ToStageSaveData();
-                
-#if UNITY_EDITOR
-                Debug.Log($"게임 데이터 로드됨: {SavePath}");
-#endif
             }
             else
             {
@@ -392,9 +464,7 @@ public class DataSaver
             SaveData = new GameSaveData();
             Save();
         }
-
-        CharacterManager.Instance.LoadAllCharactersAsync();
-        ItemManager.Instance.LoadAllItemSOs();
+        // SO 복원은 GameManager에서 Addressables 로드 완료 후 호출
     }
 
     private void EnsureStageDataIntegrity()
@@ -413,100 +483,5 @@ public class DataSaver
             SaveData.stageData.battleCharacters = new List<BattleCharacterData>();
         if (SaveData.stageData.chapterStates == null)
             SaveData.stageData.chapterStates = new List<ChapterStates>();
-    }
-}
-
-// 아래는 ScriptableObject를 이름으로 찾아주는 로더 예시(실제 구현 필요)
-public static class ArtifactDataLoader
-{
-    public static ArtifactData GetByName(string name)
-    {
-        if (string.IsNullOrEmpty(name)) return null;
-        // 동기 Addressables.LoadAsset은 지원하지 않으므로, 미리 캐싱하거나 비동기 사용 권장
-        return AddressableCache<ArtifactData>.GetOrLoad(name);
-    }
-
-    public static async Task<ArtifactData> GetByNameAsync(string name)
-    {
-        if (string.IsNullOrEmpty(name)) return null;
-        var handle = Addressables.LoadAssetAsync<ArtifactData>(name);
-        await handle.Task;
-        return handle.Status == AsyncOperationStatus.Succeeded ? handle.Result : null;
-    }
-}
-
-public static class EngravingDataLoader
-{
-    public static EngravingData GetByName(string name)
-    {
-        if (string.IsNullOrEmpty(name)) return null;
-        return AddressableCache<EngravingData>.GetOrLoad(name);
-    }
-
-    public static async Task<EngravingData> GetByNameAsync(string name)
-    {
-        if (string.IsNullOrEmpty(name)) return null;
-        var handle = Addressables.LoadAssetAsync<EngravingData>(name);
-        await handle.Task;
-        return handle.Status == AsyncOperationStatus.Succeeded ? handle.Result : null;
-    }
-}
-
-public static class CharacterSOLoader
-{
-    public static CharacterSO GetByName(string name)
-    {
-        if (string.IsNullOrEmpty(name)) return null;
-        return AddressableCache<CharacterSO>.GetOrLoad(name);
-    }
-
-    public static async Task<CharacterSO> GetByNameAsync(string name)
-    {
-        if (string.IsNullOrEmpty(name)) return null;
-        var handle = Addressables.LoadAssetAsync<CharacterSO>(name);
-        await handle.Task;
-        return handle.Status == AsyncOperationStatus.Succeeded ? handle.Result : null;
-    }
-}
-
-public static class EnemyDataLoader
-{
-    public static EnemyData GetByName(string name)
-    {
-        if (string.IsNullOrEmpty(name)) return null;
-        return AddressableCache<EnemyData>.GetOrLoad(name);
-    }
-
-    public static async Task<EnemyData> GetByNameAsync(string name)
-    {
-        if (string.IsNullOrEmpty(name)) return null;
-        var handle = Addressables.LoadAssetAsync<EnemyData>(name);
-        await handle.Task;
-        return handle.Status == AsyncOperationStatus.Succeeded ? handle.Result : null;
-    }
-}
-
-// Addressable 캐싱 유틸리티 (동기 접근을 위한 임시 캐시)
-public static class AddressableCache<T> where T : UnityEngine.Object
-{
-    private static Dictionary<string, T> cache = new Dictionary<string, T>();
-
-    public static T GetOrLoad(string key)
-    {
-        if (string.IsNullOrEmpty(key)) return null;
-        if (cache.TryGetValue(key, out var obj) && obj != null)
-            return obj;
-
-        // 동기 로드 불가: 실제 게임에서는 미리 로드하거나, 비동기 로드 후 캐싱 필요
-#if UNITY_EDITOR
-        Debug.LogWarning($"Addressable '{key}'을(를) 동기로 로드할 수 없습니다. 미리 캐싱하거나 비동기 로드를 사용하세요.");
-#endif
-        return null;
-    }
-
-    public static void Cache(string key, T obj)
-    {
-        if (!string.IsNullOrEmpty(key) && obj != null)
-            cache[key] = obj;
     }
 }
