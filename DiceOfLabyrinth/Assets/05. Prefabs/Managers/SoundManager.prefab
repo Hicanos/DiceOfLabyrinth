@@ -154,7 +154,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3628113862432905869}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -102.83693, y: -9.62985, z: -5.833169}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -177,18 +177,51 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmSource: {fileID: 7324392166700564052}
   sfxSource: {fileID: 1156290924094682200}
-  bgmVolume: 1
+  bgmVolume: 0
   sfxVolume: 1
   soundEntries:
-  - soundName: "\uB85C\uBE44BGM"
+  - soundName: "BGM\uB85C\uBE44"
     type: 1
     clip: {fileID: 8300000, guid: f9c3e754e92e916408ff121d9c697108, type: 3}
-  - soundName: "\uBC84\uD2BC \uD074\uB9AD1"
+  - soundName: "BGM \uD0C0\uC774\uD2C0"
+    type: 7
+    clip: {fileID: 8300000, guid: 3101b862562ed614990590a619c0329d, type: 3}
+  - soundName: "SFX UI\uD074\uB9AD"
     type: 0
-    clip: {fileID: 0}
-  - soundName: "SFX\uD0C0\uACA9\uC74C"
-    type: 8
-    clip: {fileID: 8300000, guid: 95bb9777acaa9194cbcdd9783cf7abec, type: 3}
+    clip: {fileID: 8300000, guid: 443e79381ab2fb5499e3ed4f0bb4a906, type: 3}
+  - soundName: "BGM \uB358\uC804"
+    type: 2
+    clip: {fileID: 8300000, guid: 14393e62a8be4a4448f184b28bfc1b8a, type: 3}
+  - soundName: "BGM \uC7A1\uBAB9\uBC30\uD2C0"
+    type: 3
+    clip: {fileID: 8300000, guid: 09f4d9cc4ba4a974499a8ea0a2bcddd8, type: 3}
+  - soundName: "BGM \uAC00\uB514\uC5B8"
+    type: 4
+    clip: {fileID: 8300000, guid: 95990f6271fc3954cabecfa3101a8976, type: 3}
+  - soundName: "BGM \uB85C\uB4DC"
+    type: 5
+    clip: {fileID: 8300000, guid: bd7a99ee671f5154284a03b5af23a737, type: 3}
+  - soundName: "SFX \uD0C0\uACA9\uC74C (\uCE7C)"
+    type: 9
+    clip: {fileID: 8300000, guid: d171d7abae8765a4a9e710097fde611e, type: 3}
+  - soundName: "SFX \uD0C0\uACA9\uC74C (\uC2A4\uC719)"
+    type: 10
+    clip: {fileID: 8300000, guid: 3754723a7e6c18a4a8be8829758f6b1d, type: 3}
+  - soundName: "SFX \uD0C0\uACA9\uC74C (\uC2A4\uC7192)"
+    type: 11
+    clip: {fileID: 8300000, guid: 06480642ace7f2e4a8c82bf2d7280d52, type: 3}
+  - soundName: "SFX \uB180 \uC6B8\uC74C\uC18C\uB9AC"
+    type: 13
+    clip: {fileID: 8300000, guid: 0329afc354c696240a437d080b3c6c14, type: 3}
+  - soundName: "SFX \uB454\uD0C1\uD55C \uD0C0\uACA9\uC74C (\uD0A5)"
+    type: 12
+    clip: {fileID: 8300000, guid: 12f53a2cc1acc484f887a38f1092a0cb, type: 3}
+  - soundName: "SFX \uD0C0\uACA9\uC74C (\uBABD\uB465\uC774)"
+    type: 12
+    clip: {fileID: 8300000, guid: 5d12e255bb88b1c48b97711e25909c28, type: 3}
+  - soundName: "SFX \uACE0\uBE14\uB9B0 \uBE44\uBA85"
+    type: 15
+    clip: {fileID: 8300000, guid: e3dec2637ed18564187d1e254b7b8b8d, type: 3}
 --- !u!1 &5934137281657434487
 GameObject:
   m_ObjectHideFlags: 0
