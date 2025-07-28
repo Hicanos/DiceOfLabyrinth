@@ -1,7 +1,6 @@
 ﻿public class BattlePlayerTurnState : IBattleTurnState
 {
     BattleManager battleManager = BattleManager.Instance;
-    public DetailedTurnState DetailedTurnState;
 
     public void Enter()
     {

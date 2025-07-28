@@ -212,10 +212,12 @@ public class ArtifactBuffMaker
     private void GetBarrierAction(ArtifactDetailData data)
     {
         BattleManager.Instance.BattleGroup.CharacterGetBarrier(data.EffectValue);
-        Debug.Log("방어막 아티펙트 활성");
     }
     private void CharacterReviveAction(ArtifactDetailData data)
     {
+        BattleCharGroup battleGroup = BattleManager.Instance.BattleGroup;
+
+        battleGroup.CharacterRevive(battleGroup.CurrentDeadIndex);
         Debug.Log("부활 아티펙트 활성");
     }
     #endregion

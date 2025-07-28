@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class BattleButtonSkill : AbstractBattleButton
@@ -42,6 +41,7 @@ public class BattleButtonSkill : AbstractBattleButton
     public override void OnPush()
     {
         Debug.Log(character.CharNameKr + " 스킬 사용");
+        BattleManager.Instance.SpendCost(3); //테스트용
     }
 
     private void GetIndex()

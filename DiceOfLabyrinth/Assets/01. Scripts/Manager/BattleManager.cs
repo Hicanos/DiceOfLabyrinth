@@ -51,6 +51,7 @@ public class BattleManager : MonoBehaviour
     public IBattleTurnState I_EnemyTurnState;
     public BattlePlayerTurnState BattlePlayerTurnState;
     private IBattleTurnState currentBattleState;
+    public IBattleTurnState CurrentBattleState => currentBattleState;
 
     public EngravingBuffMaker EngravingBuffMaker = new EngravingBuffMaker();
     public EngravingBuffContainer EngravingBuffs = new EngravingBuffContainer();
@@ -68,7 +69,7 @@ public class BattleManager : MonoBehaviour
     public  bool    IsBoss;
     public  bool    IsWon;
     private  readonly int maxCost = 12;
-    private int     currnetCost;
+    private int     currentCost;
 
     public int MaxCost => maxCost + (int)ArtifactAdditionalStatus.AdditionalStatus[(int)AdditionalStatusEnum.AdditionalMaxCost];
 
@@ -97,7 +98,7 @@ public class BattleManager : MonoBehaviour
 
     private void BattleStateUpdate()
     {
-        if(currentBattleState != StateMachine.currentState)
+        if(isBattle && currentBattleState != StateMachine.currentState)
         {
             currentBattleState = StateMachine.currentState;
             StateMachine.ChangeState(currentBattleState);
@@ -171,22 +172,22 @@ public class BattleManager : MonoBehaviour
     /// <param name="iNum"></param>
     public void GetCost(int iNum)
     {
-        int cost = currnetCost;
+        int cost = currentCost;
 
         cost = Mathf.Clamp(cost + iNum, 0, MaxCost);
-
-        currnetCost = cost;
-        UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, cost.ToString());
+        currentCost = cost;
+        string st = $"{currentCost} / {MaxCost}";
+        UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, st);
     }
 
     public void SpendCost(int iNum)
     {
-        int cost = currnetCost;
+        int cost = currentCost;
 
         cost = Mathf.Clamp(cost - iNum, 0, MaxCost);
-
-        currnetCost = cost;
-        UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, cost.ToString());
+        currentCost = cost;
+        string st = $"{currentCost} / {MaxCost}";
+        UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, st);
         ArtifactBuffs.ActionCallbackSpendCost();
     }
 
@@ -241,6 +242,8 @@ public class BattleCharGroup
     private bool isAllDead => DeadCount == numFive ? true : false;
     private int currentHitIndex;
     private int currentHittedDamage;
+    private int currentDeadIndex;
+    public int CurrentDeadIndex => currentDeadIndex;
 
     public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> engravings)
     {
@@ -289,6 +292,7 @@ public class BattleCharGroup
         }
 
         battleManager.UIValueChanger.ChangeCharacterHp((HPEnumCharacter)index);
+        LayoutGroups[index].childControlWidth = true;
     }
 
     public void CharacterHPHit(int index, int damage)
@@ -302,6 +306,7 @@ public class BattleCharGroup
     public void CharacterDead(int index)
     {
         DeadCount++;
+        currentDeadIndex = index;
         DeadIndex.Add(index);
         battleManager.ArtifactBuffs.ActionCallbackCharacterDie();
 
@@ -361,10 +366,6 @@ public class BattleEnemy : IDamagable
     public GameObject EnemyPrefab;
     public IEnemy iEnemy;
 
-    public GameObject EnemyHPBar;
-    public RectTransform EnemyHP;
-    public TextMeshProUGUI EnemyHPText;
-
     [NonSerialized] public GameObject EnemyHPBars;
     [NonSerialized] public RectTransform EnemyHPs;
     [NonSerialized] public RectTransform EnemyBarriers;
@@ -375,6 +376,8 @@ public class BattleEnemy : IDamagable
     public SOEnemySkill currentSkill;
     public int currentSkill_Index;
     public List<int> currentTargetIndex;
+
+    int currentHittedDamage;
 
     public BattleEnemy(EnemyData data)
     {
@@ -393,11 +396,35 @@ public class BattleEnemy : IDamagable
 
     public void TakeDamage(int damage)
     {
+        LayoutGroups.childControlWidth = false;
+
+        if (currentBarrier >= damage)
+        {
+            currentBarrier = currentBarrier - damage;
+        }
+        else
+        {
+            damage = damage - currentBarrier;
+            EnemyHPHit(damage);
+        }
+
+        BattleManager.Instance.UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
+        LayoutGroups.childControlWidth = true;
+    }
+
+    private void EnemyHPHit(int damage)
+    {
+        currentHittedDamage = damage;
+        DamageHP(damage);
+    }
+
+    private void DamageHP(int damage)
+    {
         currentHP = Mathf.Clamp(currentHP - damage, 0, currentMaxHP);
 
-        if(currentHP == 0)
+        if (currentHP == 0)
         {
             isDead = true;
         }
-    }    
+    }
 }

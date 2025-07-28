@@ -23,7 +23,7 @@ public class BattleUIHP : MonoBehaviour
 
     void Update()
     {
-        if(BattleManager.Instance.isBattle && BattleManager.Instance.EnemyAttack.isEnemyAttacking)
+        if(BattleManager.Instance.CurrentBattleState == BattleManager.Instance.I_EnemyTurnState)
         {
             GetEnmeyHPRotation(BattleManager.Instance.Enemy);
             enemyHPBar.transform.rotation = enemyHPQuaternion;

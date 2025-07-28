@@ -31,7 +31,6 @@ public class EngravingBuffMaker
             for (int j = 0; j < engravings[i].DamageConditions.Count; j++)
             {
                 condition = engravings[i].DamageConditions[j];
-                UnityEngine.Debug.Log("각인 할당");
                 buff = new EngravingBuff(GetConditionType(condition), condition, GetEffectType(condition));
                 BattleManager.Instance.EngravingBuffs.AddEngravingBuffs(buff);
             }

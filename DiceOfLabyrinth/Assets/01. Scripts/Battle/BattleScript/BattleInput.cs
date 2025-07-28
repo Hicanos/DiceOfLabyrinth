@@ -16,8 +16,7 @@ public class BattleInput : MonoBehaviour
         {
             battleCharacter = battleManager.BattleGroup.BattleCharacters[i];
 
-            battleCharacter.TakeDamage(1000);
-            battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
+            battleManager.BattleGroup.CharacterHit(i, 1000);            
             if (battleCharacter.IsDied) battleManager.BattleGroup.CharacterDead(i);
         }
     }
