@@ -78,7 +78,7 @@ public class DataSaver
         public int manaStone;
         public int savedExpReward;
         public int savedGoldReward;
-        public int savedJewelReward;
+        public int savedPotionReward;
 
         public int currentFormationType;
         public int currentPhaseState;
@@ -109,7 +109,7 @@ public class DataSaver
             manaStone = saveData.manaStone;
             savedExpReward = saveData.savedExpReward;
             savedGoldReward = saveData.savedGoldReward;
-            savedJewelReward = saveData.savedJewelReward;
+            savedPotionReward = saveData.savedPotionReward;
             currentFormationType = (int)saveData.currentFormationType;
             currentPhaseState = (int)saveData.currentPhaseState;
 
@@ -135,7 +135,7 @@ public class DataSaver
             saveData.manaStone = manaStone;
             saveData.savedExpReward = savedExpReward;
             saveData.savedGoldReward = savedGoldReward;
-            saveData.savedJewelReward = savedJewelReward;
+            saveData.savedPotionReward = savedPotionReward;
             saveData.currentFormationType = (StageSaveData.CurrentFormationType)currentFormationType;
             saveData.currentPhaseState = (StageSaveData.CurrentPhaseState)currentPhaseState;
 
@@ -196,7 +196,7 @@ public class DataSaver
         target.manaStone = source.manaStone;
         target.savedExpReward = source.savedExpReward;
         target.savedGoldReward = source.savedGoldReward;
-        target.savedJewelReward = source.savedJewelReward;
+        target.savedPotionReward = source.savedPotionReward;
 
         while (target.artifacts.Count < source.artifacts.Count)
             target.artifacts.Add(null);

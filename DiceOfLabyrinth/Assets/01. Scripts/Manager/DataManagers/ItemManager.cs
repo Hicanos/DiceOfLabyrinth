@@ -34,6 +34,7 @@ public class ItemManager
 
     // Addressable로 로드된 모든 아이템 SO
     private Dictionary<string, ItemSO> allItems = new Dictionary<string, ItemSO>();
+    public Dictionary<string, ItemSO> AllItems => allItems;
     // Addressables 핸들 캐싱 (릴리즈용)
     private List<AsyncOperationHandle<IList<ItemSO>>> handles = new List<AsyncOperationHandle<IList<ItemSO>>>();
 
