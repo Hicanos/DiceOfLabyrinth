@@ -192,16 +192,18 @@ public class SelectAdventureUIController : MonoBehaviour
             messagePopup.Open($"진행 중인 챕터({StageManager.Instance.chapterData.GetNameAndDifficulty(StageManager.Instance.stageSaveData.currentChapterIndex)})가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
             return;
         }
-        else // 진행 중이던 챕터를 다시 선택한 경우
+        else if (StageManager.Instance.stageSaveData.currentChapterIndex == chapterIndex) // 현재 진행 중인 챕터가 선택한 챕터와 같을 때
         {
-            selectChapterPanel.SetActive(false);
-            //costCalculationPanel.SetActive(false);
-            scarceStaminaPanel.SetActive(false);
+            
             {
                 // 코스트 지불 없이 바로 배틀 씬으로 이동할 수 있도록 처리합니다.
                 // 진행중이던 챕터를 다시 시작했다는 팝업을 띄우는 로직을 추가할 수 있습니다.
                 messagePopup.Open($"진행 중이던 챕터({StageManager.Instance.chapterData.GetNameAndDifficulty(StageManager.Instance.stageSaveData.currentChapterIndex)})를 다시 시작하시겠습니까?",
-                () => StageManager.Instance.RestoreStageState(), // 확인(Yes) 버튼 클릭 시
+                () => {
+                    selectChapterPanel.SetActive(false);
+                    scarceStaminaPanel.SetActive(false);
+                    StageManager.Instance.RestoreStageState();
+                }, // 확인(Yes) 버튼 클릭 시
                 () => messagePopup.Close() // 취소(No) 버튼 클릭 시
                 );
                 return;

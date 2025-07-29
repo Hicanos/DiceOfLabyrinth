@@ -544,8 +544,7 @@ public class BattleUIController : MonoBehaviour
     public void OpenBattlePanel()
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Battle; // 현재 페이즈 상태를 배틀 상태로 설정
-        StageManager.Instance.stageSaveData.currentPhaseIndex++; // 다음 페이즈로 이동
-
+        
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(false);

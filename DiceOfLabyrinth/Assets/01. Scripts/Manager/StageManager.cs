@@ -376,6 +376,7 @@ public class StageManager : MonoBehaviour
     {
         // 룸 클리어 로직을 구현합니다.
         var type = enemyData.Type; // 적의 타입을 가져옵니다.
+        StageManager.Instance.stageSaveData.currentPhaseIndex++;
         switch (type)
         {
             case EnemyData.EnemyType.Normal:
