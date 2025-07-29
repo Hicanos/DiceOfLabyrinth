@@ -358,10 +358,9 @@ public class DiceManager : MonoBehaviour
             Dice dice = diceGO.GetComponent<Dice>();
 
             dice.StopSimulation();
-            StopCoroutine(SortingAfterRoll());
-
-            BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.RollEnd);
+            StopCoroutine(SortingAfterRoll());            
         }
+        BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.RollEnd);
         BattleManager.Instance.GetCost(signitureAmount);
     }
 

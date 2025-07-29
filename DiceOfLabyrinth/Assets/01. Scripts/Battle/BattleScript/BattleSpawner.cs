@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using PredictedDice;
-using System;
 
 public class BattleSpawner : MonoBehaviour
 {
@@ -10,8 +10,10 @@ public class BattleSpawner : MonoBehaviour
     bool isPreparing;
     bool isActive;
     const int numFIve = 5;
-    [SerializeField] Vector3 spawnDetach;    
+    [SerializeField] Vector3 spawnDetach;
+    [SerializeField] float spawnDestTime;
     [SerializeField] List<FormationVector> formationVec;
+    [SerializeField] Vector3 enemyVec;
     private Vector3[] curFormationVec;
 
     IEnumerator enumeratorSpawn;
@@ -90,7 +92,7 @@ public class BattleSpawner : MonoBehaviour
     {
         BattleCharGroup battleGroup = battleManager.BattleGroup;
 
-        float pastTime = 0, destTime = 2.5f;
+        float pastTime = 0, destTime = spawnDestTime;
 
         while (pastTime < destTime)
         {
@@ -200,7 +202,7 @@ public class BattleSpawner : MonoBehaviour
         BattleEnemy enemy = battleManager.Enemy;
         GameObject enemyGO = enemy.Data.EnemyPrefab;
 
-        enemy.EnemyPrefab = Instantiate(enemyGO, new Vector3(3, -1, -4), enemy.Data.EnemySpawnRotation, enemyContainer);
+        enemy.EnemyPrefab = Instantiate(enemyGO, enemyVec, enemy.Data.EnemySpawnRotation, enemyContainer);
         enemy.iEnemy = enemy.EnemyPrefab.GetComponent<IEnemy>();
         enemy.iEnemy.Init();
 

@@ -49,23 +49,24 @@ public class BattleButtonRollDice : AbstractBattleButton
 
     public override void OnPush()
     {
-        DiceManager.Instance.DiceHolding.isCantFix = true;
+        BattleManager battleManager = BattleManager.Instance;
+        DiceManager diceManager = DiceManager.Instance;
+
+        diceManager.DiceHolding.isCantFix = true;
         if (isRollOver == false)
         {
-            DiceManager.Instance.RollDice();
+            diceManager.RollDice();
 
-            BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.Reroll, DiceManager.Instance.RollRemain.ToString());
-            DiceManager.Instance.DiceHolding.GetFixedList();
-
-            //BattleManager.Instance.BattlePlayerTurnState.AbstractButtonPushed();
-            BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.Roll);
+            battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.Reroll, diceManager.RollRemain.ToString());
+            diceManager.DiceHolding.GetFixedList();
+            
+            battleManager.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.Roll);
         }
         else
         {
             rollButton.interactable = false;
-
-            //BattleManager.Instance.BattlePlayerTurnState.AbstractButtonPushed();
-            BattleManager.Instance.EndPlayerTurn();
+            
+            battleManager.EndPlayerTurn();
         }
     }
 
