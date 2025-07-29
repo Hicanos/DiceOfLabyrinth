@@ -403,6 +403,7 @@ public class StageManager : MonoBehaviour
     {
         // 배틀 종료 후 아군 상태(체력 등) 반영
         stageSaveData.battleCharacters = result.battleCharacters;
+        stageSaveData.manaStone += result.manaStoneReward;
 
         if (result.isVictory)
         {
