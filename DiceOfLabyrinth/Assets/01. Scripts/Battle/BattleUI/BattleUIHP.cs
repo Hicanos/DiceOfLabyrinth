@@ -77,17 +77,21 @@ public class BattleUIHP : MonoBehaviour
         Transform layoutGroupTransform;
         RectTransform rect;
         GameObject go;
+        GameObject pD;
         GetEnmeyHPRotation(enemy);
 
         go = Instantiate(CharacterHPCanvas, enemy.EnemyPrefab.transform);
         enemy.EnemyHPBars = go;
 
-        //Instantiate(patternDisplayer, enemy.EnemyHPBars.transform);
+        pD = Instantiate(patternDisplayer, enemy.EnemyHPBars.transform);
         go = Instantiate(CharacterHPBack, enemy.EnemyHPBars.transform);
         enemyHPBar = go;
         rect = go.GetComponent<RectTransform>();
         rect.sizeDelta = EnemyHPVec;
         rect.localPosition = EnemyPos;
+        rect.rotation = enemyHPQuaternion;
+
+        rect = pD.GetComponent<RectTransform>();
         rect.rotation = enemyHPQuaternion;
 
         enemy.LayoutGroups = go.GetComponentInChildren<HorizontalLayoutGroup>();

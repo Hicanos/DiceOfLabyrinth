@@ -7,8 +7,19 @@ public class BattleUIPatternDisplay : AbstractBattleButton
 {
     [SerializeField] GameObject descriptionPanel;
     [SerializeField] Image image_PatternName;
+    [SerializeField] TextMeshProUGUI text_SkillName;
     [SerializeField] TextMeshProUGUI text_SkillDescription;
     [SerializeField] Button button;
+
+    private void OnEnable()
+    {
+        UIManager.Instance.BattleUI.Buttons.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        UIManager.Instance.BattleUI.Buttons.Remove(this);
+    }
 
     public override void Setting()
     {
@@ -20,6 +31,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
         switch (state)
         {
             case DetailedTurnState.Enter:
+                MakeTransparent();
                 descriptionPanel.SetActive(false);
                 StartCoroutine(BlinkUI());
                 break;
@@ -28,6 +40,10 @@ public class BattleUIPatternDisplay : AbstractBattleButton
                 break;
             case DetailedTurnState.Attack:
                 button.interactable = true;
+                break;
+            case DetailedTurnState.EndTurn:
+                MakeTransparent();
+                descriptionPanel.SetActive(false);
                 break;
         }
     }
@@ -60,10 +76,9 @@ public class BattleUIPatternDisplay : AbstractBattleButton
         skillName = battleManager.EnemyPatternContainer.GetSkillNameText();
         skillDescription = battleManager.EnemyPatternContainer.GetSkillDescriptionText();
 
-        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillName, $"{skillName} 준비중");
-        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillDescription, skillDescription);
+        text_SkillName.text = $"{skillName} 준비중";
+        text_SkillDescription.text =  skillDescription;
         
-
         button.interactable = true;
         text_SkillDescription.text = battleManager.Enemy.currentSkill.SkillDescription;
         yield return new WaitForSeconds(0.15f);
@@ -81,5 +96,21 @@ public class BattleUIPatternDisplay : AbstractBattleButton
     public void OnClickCloseDisplayer()
     {
         descriptionPanel.SetActive(false);
+    }
+
+    private void MakeTransparent()
+    {
+        Color color = image_PatternName.color;
+        if (color.a == 0)
+        {
+            color.a = 1;
+            text_SkillName.gameObject.SetActive(true);
+        }
+        else
+        {
+            color.a = 0;
+            text_SkillName.gameObject.SetActive(false);
+        }
+        image_PatternName.color = color;
     }
 }

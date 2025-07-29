@@ -3,8 +3,6 @@
 public enum BattleTextUIEnum
 { 
     Cost,
-    MonsterSkillName,
-    MonsterSkillDescription,
     Rank,
     Reroll
 }
