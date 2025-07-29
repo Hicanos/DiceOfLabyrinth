@@ -8,6 +8,7 @@ public class TitleUIController : MonoBehaviour
     [SerializeField] private CanvasGroup blackOverlay;
     [SerializeField] private GameObject companyLogoPanel;
     [SerializeField] private GameObject titlePanel;
+    [SerializeField] private GameObject publicUIController;
 
     [Header("Settings")]
     [SerializeField] private float fadeTime = 1.0f; // 화면이 다 어두워지는데 걸리는 시간
@@ -18,6 +19,7 @@ public class TitleUIController : MonoBehaviour
     private void Start()
     {
         // 초기 상태
+        publicUIController.SetActive(false);
         companyLogoPanel.SetActive(true);
         titlePanel.SetActive(false);
         blackOverlay.alpha = 0;
@@ -35,6 +37,7 @@ public class TitleUIController : MonoBehaviour
 
             // 타이틀 UI 활성화
             titlePanel.SetActive(true);
+            publicUIController.SetActive(true);
             canStart = true;
         });
     }
