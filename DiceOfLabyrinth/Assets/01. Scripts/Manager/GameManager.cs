@@ -54,6 +54,8 @@ public class GameManager : MonoBehaviour
         if (StageManager.Instance != null && DataSaver.Instance.SaveData.stageData != null)
         {
             StageManager.Instance.stageSaveData = DataSaver.Instance.SaveData.stageData.ToStageSaveData();
+
+            StageManager.Instance.InitializeStageStates(StageManager.Instance.chapterData);
         }
     }
 

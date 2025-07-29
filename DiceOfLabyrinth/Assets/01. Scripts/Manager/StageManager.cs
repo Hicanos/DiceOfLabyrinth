@@ -142,7 +142,6 @@ public class StageManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // 이 오브젝트를 씬 전환 시 파괴되지 않도록 설정
-            InitializeStageStates(chapterData);
         }
         else
         {
@@ -481,7 +480,7 @@ public class StageManager : MonoBehaviour
         string jewelRewardText = "";
         if (states[chapterIndex].isCompleted == false) // 최초 챕터 완료 시에만 필요한 로직
         {
-            states[chapterIndex].isUnLocked = true; // 챕터 언락
+            states[chapterIndex].isCompleted = true; // 챕터 언락
             int jewelReward = StageManager.Instance.chapterData.chapterIndex[chapterIndex].FirstClearJewelReward; // 챕터 첫 클리어 보석 보상
             UserDataManager.Instance.AddJewel(jewelReward); // 보석 보상 추가
             jewelRewardText = $"\n보석: {jewelReward}개"; // 보석 보상 텍스트 생성

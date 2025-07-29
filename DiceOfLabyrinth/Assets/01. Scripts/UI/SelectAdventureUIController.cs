@@ -90,9 +90,12 @@ public class SelectAdventureUIController : MonoBehaviour
             messagePopup.Open("선택한 챕터가 유효하지 않습니다. 다시 시도해 주세요.");
             return;
         }
+        if (StageManager.Instance.stageSaveData.chapterStates == null) // 챕터 상태가 초기화되지 않았을 때
+        {
+            StageManager.Instance.InitializeStageStates(StageManager.Instance.chapterData);
+        }
         if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked == false) // 챕터가 잠겨있을 때
         {
-            // 잠겨있는 챕터를 선택했을 때의 UI 처리를 합니다.
             return;
         }
         Debug.Log($"Selected chapter index: {chapterIndex}, Hard: {isDifficulty})");
