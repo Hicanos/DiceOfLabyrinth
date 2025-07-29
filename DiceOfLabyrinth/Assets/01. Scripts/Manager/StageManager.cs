@@ -225,10 +225,10 @@ public class StageManager : MonoBehaviour
                     battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.NormalReward); // 노멀 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.EliteArtifactReward:
-                    battleUIController.OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.EliteArtifactReward); // 엘리트 아티팩트 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
+                    battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.EliteArtifactReward); // 엘리트 아티팩트 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.EliteEngravingReward:
-                    battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.EliteEngravingReward); // 엘리트 각인 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
+                    battleUIController.OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.EliteEngravingReward); // 엘리트 각인 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
                     return;
                 case StageSaveData.CurrentPhaseState.BossReward:
                     battleUIController.OpenSelectArtifactPanel(StageSaveData.CurrentPhaseState.BossReward); // 보스 리워드 상태에 해당하는 아티팩트 선택 UI를 엽니다.
