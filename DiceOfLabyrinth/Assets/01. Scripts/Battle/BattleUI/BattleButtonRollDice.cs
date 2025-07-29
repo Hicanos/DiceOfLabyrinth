@@ -65,7 +65,8 @@ public class BattleButtonRollDice : AbstractBattleButton
         else
         {
             rollButton.interactable = false;
-            
+
+            battleManager.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.EndTurn);
             battleManager.EndPlayerTurn();
         }
     }

@@ -79,7 +79,7 @@ public class BattleEnemyAttack : MonoBehaviour
         {
             int randNum = GetRandomRange(1, 100);
 
-            if(randNum <= front)
+            if (frontIndex.Count != 0 && randNum <= front)
             {
                 int index = GetRandomRange(0, frontIndex.Count - 1);
                 

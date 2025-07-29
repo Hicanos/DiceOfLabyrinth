@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using System.Collections;
 
 public class BattleManager : MonoBehaviour
 {
@@ -67,7 +68,7 @@ public class BattleManager : MonoBehaviour
     public  bool    IsWon;
     private  readonly int maxCost = 12;
     private int     currentCost;
-
+    public  float   WaitSecondEndBattle;
     public int MaxCost => maxCost + (int)ArtifactAdditionalStatus.AdditionalMaxCost;
 
     void Start()
@@ -149,10 +150,17 @@ public class BattleManager : MonoBehaviour
 
     public void EndBattle(bool isWon = true)
     {
+        StartCoroutine(EndBattleCoroutine(isWon));
+    }
+
+    IEnumerator EndBattleCoroutine(bool isWon = true)
+    {
         StateMachine.ChangeState(I_FinishBattleState);
         BattleResultData data;
         IsWon = isWon;
-        
+
+        yield return new WaitForSeconds(WaitSecondEndBattle);
+
         //결과창 실행
         if (isWon)
         {
@@ -427,7 +435,15 @@ public class BattleEnemy : IDamagable
 
         if (currentHP == 0)
         {
-            isDead = true;
+            EnemyIsDead();            
         }
+    }
+
+    private void EnemyIsDead()
+    {
+        isDead = true;
+
+        BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.EndTurn);
+        BattleManager.Instance.EndBattle();
     }
 }

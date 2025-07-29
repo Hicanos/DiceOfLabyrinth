@@ -153,7 +153,7 @@ public class ArtifactAdditionalStatus
         AdditionalDamage = 0;
         AdditionalElementDamage = 0;
         AdditionalRoll = 0;
-        AdditionalSIgniture = 0; ;
+        AdditionalSIgniture = 0;
         AdditionalMaxCost = 0;
         AdditionalStone = 0;
         AdditionalAttack = 0;

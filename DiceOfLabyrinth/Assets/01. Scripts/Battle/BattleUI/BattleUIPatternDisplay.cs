@@ -31,7 +31,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
         switch (state)
         {
             case DetailedTurnState.Enter:
-                MakeTransparent();
+                ReturnColor();
                 descriptionPanel.SetActive(false);
                 StartCoroutine(BlinkUI());
                 break;
@@ -57,6 +57,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
     {
         BattleManager battleManager = BattleManager.Instance;
         button.interactable = false;
+        
         Color color = image_PatternName.color;
         Color textColor = text_SkillDescription.color;
         string skillName, skillDescription;
@@ -101,16 +102,20 @@ public class BattleUIPatternDisplay : AbstractBattleButton
     private void MakeTransparent()
     {
         Color color = image_PatternName.color;
-        if (color.a == 0)
-        {
-            color.a = 1;
-            text_SkillName.gameObject.SetActive(true);
-        }
-        else
-        {
-            color.a = 0;
-            text_SkillName.gameObject.SetActive(false);
-        }
+        
+        color.a = 0;
+        text_SkillName.gameObject.SetActive(false);
+        
+        image_PatternName.color = color;
+    }
+
+    private void ReturnColor()
+    {
+        Color color = image_PatternName.color;
+
+        color.a = 1;
+        text_SkillName.gameObject.SetActive(true);
+
         image_PatternName.color = color;
     }
 }

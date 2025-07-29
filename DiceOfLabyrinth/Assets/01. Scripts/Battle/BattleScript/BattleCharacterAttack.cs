@@ -10,8 +10,7 @@ public class BattleCharacterAttack : MonoBehaviour
     IEnumerator enumeratorDamage;
 
     [SerializeField] Vector3 attackPosition;
-    [SerializeField] float charAttackMoveTime;
-    [SerializeField] float waitSecondEnemyDie;
+    [SerializeField] float charAttackMoveTime;    
     [SerializeField] float waitSecondCharAttack;
 
     public bool isCharacterAttacking = false;
@@ -71,8 +70,7 @@ public class BattleCharacterAttack : MonoBehaviour
                 yield return null;
             }
 
-            enumeratorDamage = DealDamage(battleManager.Enemy, damage);
-            StartCoroutine(enumeratorDamage);
+            battleManager.Enemy.TakeDamage(damage);
             battleManager.Enemy.iEnemy.TakeDamage();
             UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(battleCharacters[i].CharNameKr, battleManager.Enemy.Data.EnemyName, damage, true);
 
@@ -91,21 +89,7 @@ public class BattleCharacterAttack : MonoBehaviour
         }
         isCharacterAttacking = false;
         BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.AttackEnd);
-    }
-
-    IEnumerator DealDamage(IDamagable target, int damage)
-    {
-        target.TakeDamage(damage);
-        BattleEnemy enemy = (BattleEnemy)target;
-        float ratio = (float)enemy.CurrentHP / enemy.MaxHP;
-
-        if (battleManager.Enemy.IsDead)
-        {
-            isCharacterAttacking = false;            
-            yield return new WaitForSeconds(waitSecondEnemyDie);
-            battleManager.EndBattle();
-        }
-    }
+    }    
 
     private float JudgeElementSuperiority(CharacterSO characterData, EnemyData enemyData)
     {

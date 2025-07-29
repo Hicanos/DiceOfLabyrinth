@@ -96,13 +96,13 @@ public class EngravingAdditionalStatus
     public EngravingAdditionalStatus()
     {
         AdditionalDamage = 1;
-        AdditionalRoll = 1;
+        AdditionalRoll = 0;
         AdditionalStone = 1;
     }
     public void ResetStatus()
     {
         AdditionalDamage = 1;
-        AdditionalRoll = 1;
+        AdditionalRoll = 0;
         AdditionalStone = 1;
     }
 }
