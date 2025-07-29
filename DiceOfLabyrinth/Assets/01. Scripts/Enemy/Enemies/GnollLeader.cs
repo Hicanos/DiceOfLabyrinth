@@ -145,8 +145,6 @@ public class GnollLeader : MonoBehaviour, IEnemy
 
         yield return MoveToDuringAnimation(targetPosition, 2f);
 
-        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
-
         yield return RotateTo(savedPosition);
 
         PlayAnimationByState(EnemyState.Run);

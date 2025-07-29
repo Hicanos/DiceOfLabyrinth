@@ -106,7 +106,6 @@ public class Goblin : MonoBehaviour, IEnemy
         yield return MoveTo(targetPosition, 0.8f);
         PlayAnimationByState(EnemyState.RightAttack);
         yield return WaitAnimation(1f);
-        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
         yield return RotateTo(savedPosition);
         PlayAnimationByState(EnemyState.Run);
         yield return MoveTo(savedPosition, 0.8f);
@@ -125,7 +124,6 @@ public class Goblin : MonoBehaviour, IEnemy
         yield return MoveTo(targetPosition, 0.8f);
         PlayAnimationByState(EnemyState.SlashDown);
         yield return WaitAnimation(1.5f);
-        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
         yield return RotateTo(savedPosition);
         PlayAnimationByState(EnemyState.Run);
         yield return MoveTo(savedPosition, 0.8f);
@@ -141,7 +139,6 @@ public class Goblin : MonoBehaviour, IEnemy
     {
         PlayAnimationByState(EnemyState.SpinAttack);
         yield return WaitAnimation(1f);
-        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
         PlayAnimationByState(EnemyState.Idle);
     }
 

@@ -95,7 +95,6 @@ public class Orc : MonoBehaviour
 
         // 4. 착지 모션
         PlayAnimationByState(EnemyState.Jump_Landing);
-        BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();
         yield return new WaitForSeconds(0.2f);
 
         // 5. 타겟 방향으로 회전 후 걷기
