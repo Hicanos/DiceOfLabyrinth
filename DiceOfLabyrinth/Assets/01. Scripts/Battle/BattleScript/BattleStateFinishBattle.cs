@@ -1,4 +1,6 @@
-﻿public class BattleStateFinishBattle : IBattleTurnState
+﻿using System.Collections.Generic;
+
+public class BattleStateFinishBattle : IBattleTurnState
 {
     public void BattleUpdate()
     {
@@ -23,9 +25,16 @@
 
     private void DeactiveAbstractButtons()
     {
-        foreach (AbstractBattleButton button in UIManager.Instance.BattleUI.Buttons)
+        BattleManager battleManager = BattleManager.Instance;
+        UIManager uIManager = UIManager.Instance;
+        List<AbstractBattleButton> buttons = uIManager.BattleUI.Buttons;
+        for (int i = buttons.Count -1; i >= 0; i--)
         {
-            button.DeactiveButton();
+            buttons[i].DeactiveButton();
         }
+        //foreach (AbstractBattleButton button in UIManager.Instance.BattleUI.Buttons)
+        //{
+        //    button.DeactiveButton();
+        //}
     }
 }

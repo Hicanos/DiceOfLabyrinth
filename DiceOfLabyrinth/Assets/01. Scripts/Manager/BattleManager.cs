@@ -154,12 +154,12 @@ public class BattleManager : MonoBehaviour
     }
 
     IEnumerator EndBattleCoroutine(bool isWon = true)
-    {
-        StateMachine.ChangeState(I_FinishBattleState);
+    {        
         BattleResultData data;
         IsWon = isWon;
 
         yield return new WaitForSeconds(WaitSecondEndBattle);
+        StateMachine.ChangeState(I_FinishBattleState);
 
         //결과창 실행
         if (isWon)

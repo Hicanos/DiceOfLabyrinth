@@ -15,6 +15,7 @@ public class BattleUIHP : MonoBehaviour
     public GameObject CharacterHPBlank;
     public GameObject CharacterHPText;
     [SerializeField] GameObject patternDisplayer;
+    public GameObject EnemyHPCanvas;
 
     [Header("HP UI Scale Value")]
     [SerializeField] Vector3 CharacterHPVec;
@@ -80,7 +81,7 @@ public class BattleUIHP : MonoBehaviour
         GameObject pD;
         GetEnmeyHPRotation(enemy);
 
-        go = Instantiate(CharacterHPCanvas, enemy.EnemyPrefab.transform);
+        go = Instantiate(EnemyHPCanvas, enemy.EnemyPrefab.transform);
         enemy.EnemyHPBars = go;
 
         pD = Instantiate(patternDisplayer, enemy.EnemyHPBars.transform);
