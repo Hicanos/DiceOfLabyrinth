@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -26,57 +28,50 @@ public class ItemManager
         }
     }
 
-
-
     // 보유 중인 아이템과, 해당 아이템의 개수를 저장하는 딕셔너리
     private Dictionary<string, int> ownedItems;
     public Dictionary<string, int> OwnedItems => ownedItems;
 
     // Addressable로 로드된 모든 아이템 SO
     private Dictionary<string, ItemSO> allItems = new Dictionary<string, ItemSO>();
-    public Dictionary<string, ItemSO> AllItems => allItems;
+    // Addressables 핸들 캐싱 (릴리즈용)
+    private List<AsyncOperationHandle<IList<ItemSO>>> handles = new List<AsyncOperationHandle<IList<ItemSO>>>();
 
     private bool isLoaded = false;
-
 
     //이니셜라이저
     private void Initialize()
     {
-        // Addressable에서 모든 아이템 SO를 비동기적으로 로드
         ownedItems = new Dictionary<string, int>();
-
-        //에디터에만 실행하는 디버그
+        allItems.Clear();
+        handles.Clear();
 #if UNITY_EDITOR
         Debug.Log("ItemManager 이니셜라이즈");
 #endif
     }
 
-
-    // 모든 아이템 데이터 로드
-
-
     // Addressable에서 모든 아이템 SO 비동기 로드, 아이템은 ItemSO 라벨
-    public void LoadAllItemSOs()
+    public async Task LoadAllItemSOs()
     {
-        // "ItemSO" 라벨이 붙은 모든 ItemSO를 비동기로 로드
-        Addressables.LoadAssetsAsync<ItemSO>("ItemSO", OnItemSOLoaded).Completed += handle =>
+        allItems.Clear();
+        handles.Clear();
+        var handle = Addressables.LoadAssetsAsync<ItemSO>("ItemSO", OnItemSOLoaded);
+        handles.Add(handle);
+        await handle.Task;
+        if (handle.Status == AsyncOperationStatus.Succeeded)
         {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                isLoaded = true;
-                // 모든 아이템 중 보유중인 아이템을 불러옴
-                LoadOwnedItemsFromData();
+            isLoaded = true;
+            LoadOwnedItemsFromData();
 #if UNITY_EDITOR
-                Debug.Log($"모든 아이템 로드됨. 보유 아이템 로드 시작 Count: {allItems.Count}");
+            Debug.Log($"모든 아이템 로드됨. 보유 아이템 로드 시작 Count: {allItems.Count}");
 #endif
-            }
-            else
-            {
+        }
+        else
+        {
 #if UNITY_EDITOR
-                Debug.LogError("Failed to load ItemSOs.");
+            Debug.LogError("Failed to load ItemSOs.");
 #endif
-            }
-        };
+        }
     }
 
     // 각 SO가 로드될 때마다 딕셔너리에 저장
@@ -89,7 +84,6 @@ public class ItemManager
     // Json 파일로부터 보유 중인 아이템을 불러오는 메서드
     public void LoadOwnedItemsFromData()
     {
-        // DataSaver에서 저장된 아이템 데이터를 불러와 ownedItems 딕셔너리에 추가
         ownedItems.Clear();
         foreach (var itemData in DataSaver.Instance.SaveData.items)
         {
@@ -106,25 +100,18 @@ public class ItemManager
     // 아이템ID 유효성 검사
     private bool IsValidItemID(string itemID)
     {
-        // 아이템ID가 null이거나 빈 문자열인 경우
         if (string.IsNullOrEmpty(itemID))
             return false;
-        // 아이템SO 딕셔너리에 해당 아이템ID가 존재하는지 확인
         return allItems.ContainsKey(itemID);
     }
-
 
     // 아이템 획득 메서드
     public void GetItem(string ItemID, int Count = 1)
     {
-        // 아이템SO의 ItemID가 유효한지 확인 (별도의 메서드 호출)
         if (!IsValidItemID(ItemID))
         {
-            // 유효하지 않은 아이템ID인 경우 예외 처리(보통 일어나면 안됨)
             return;
         }
-        // 유효한 아이템이라면 보유 중인 아이템 항목에 추가.
-        // 이미 존재한다면 개수만 증가시키고, 존재하지 않는다면 새로 추가
         if (ownedItems.ContainsKey(ItemID))
         {
             ownedItems[ItemID] += Count;
@@ -146,17 +133,14 @@ public class ItemManager
     {    
         if (!IsValidItemID(itemID))
         {
-            // 유효하지 않은 아이템ID인 경우 예외 처리
             return null;
         }
-        // 아이템ID가 유효한 경우, 해당 아이템SO를 반환
         if (allItems.TryGetValue(itemID, out ItemSO itemSO))
         {
             return itemSO;
         }
         else
         {
-            // 아이템SO가 존재하지 않는 경우 null 반환
             return null;
         }
     }
@@ -164,9 +148,6 @@ public class ItemManager
     // 가챠에서 중복 캐릭터를 얻었을 때 charID를 통해 돌파석(AscensionStone) 획득
     public void GetAscensionStone(string charID, int count = 1)
     {
-        // 아이템ID가 유효한지 확인
-        // charID를 가진 AscensionStone의 아이템 ID를 찾기
-        // AscensionStone의 SO에 존재하는 CharID와 매개변수 charID가 일치하는지 확인
         string itemID = null;
         foreach (var item in allItems.Values)
         {
@@ -179,21 +160,15 @@ public class ItemManager
 
         if (!IsValidItemID(itemID))
         {
-            // 유효하지 않은 아이템ID인 경우 예외 처리
             return;
         }
-        // 돌파석 획득
         GetItem(itemID, count);
     }
 
-
-
     // 하위는 각 아이템 종류별로 보유 중인 아이템 반환(인벤토리 필터 등)
 
-        // 보유중인 EXP 포션 딕셔너리
     public Dictionary<string, int> GetPotions()
     {
-        // 아이템들 중 EXPpotion으로 생성된 SO만 출력
         Dictionary<string, int> potions = new Dictionary<string, int>();
         foreach (var item in ownedItems)
         {
@@ -206,12 +181,8 @@ public class ItemManager
         return potions;
     }
 
-
-    // 보유 중인 아이템 중, 스킬 북 딕셔너리
-
     public Dictionary<string, int> GetSkillBooks()
     {
-        // 아이템들 중 SkillBook으로 생성된 SO만 출력
         Dictionary<string, int> skillBooks = new Dictionary<string, int>();
         foreach (var item in ownedItems)
         {
@@ -224,11 +195,8 @@ public class ItemManager
         return skillBooks;
     }
 
-
-    // 보유 중인 아이템 중, 돌파석(AscensionStone) 리스트
     public Dictionary<string, int> GetAscensionStones()
     {
-        // 아이템들 중 AscensionStone으로 생성된 SO만 출력
         Dictionary<string, int> ascensionStones = new Dictionary<string, int>();
         foreach (var item in ownedItems)
         {
@@ -240,8 +208,17 @@ public class ItemManager
         }
         return ascensionStones;
     }
-    
-    // 보유 중인 아이템을 아이템 ID 순서대로 정렬 (아이템ID: Item_(숫자) 형식)
 
-
+    // Addressables 릴리즈 메서드 추가
+    public void ReleaseAllItems()
+    {
+        foreach (var handle in handles)
+        {
+            if (handle.IsValid())
+                Addressables.Release(handle);
+        }
+        allItems.Clear();
+        handles.Clear();
+        isLoaded = false;
+    }
 }

@@ -5,20 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 
-/// <summary>
+// <summary>
 /// 모든 게임데이터를 저장하는 역할의 매니저
 /// json 파일로 저장함, 불러오는 건 Loader가 담당
 /// </summary>
 public class DataSaver
 {
-    // 저장1: 현재 유저의 재화정보, 레벨정보
-    // 저장2: 현재 플레이어가 획득한 캐릭터 정보(강화 여부포함)
-    // 저장3: 현재 플레이어가 클리어한 스테이지 정보
-    // 저장4: 현재 플레이어가 획득한 아이템 정보
-    
-    // 해당 클래스는 static으로 선언하여 사용
-    // 싱글톤 패턴추가(static)
-
     public static DataSaver Instance { get; private set; }
     static DataSaver()
     {
@@ -50,7 +42,6 @@ public class DataSaver
         // 캐릭터의 스킬 정보 - SkillData 리스트로 저장
         // public List<SkillData> Skills = new List<SkillData>(); // 각 캐릭터가 보유한 스킬 정보
 
-
         // 생성자
         public CharacterData() { }
         public CharacterData(string characterID, int level, int atk, int def, int hp, float critChance, float critDamage)
@@ -75,82 +66,234 @@ public class DataSaver
         public int Power; // 스킬 파워
     }
 
-    //[Serializable]
-    //public class StageData
-    //{
-    //    // StageSaveData의 모든 필드 복사
-    //    public int currentChapterIndex;
-    //    public int currentStageIndex;
-    //    public int currentPhaseIndex;
-    //    public int normalStageCompleteCount;
-    //    public int eliteStageCompleteCount;
-    //    public int manaStone;
-    //    public int savedExpReward;
-    //    public int savedGoldReward;
-    //    public int savedPotionReward;
+    [Serializable]
+    public class StageData
+    {
+        // StageSaveData의 모든 필드 복사 (ScriptableObject는 이름/ID만 저장)
+        public int currentChapterIndex;
+        public int currentStageIndex;
+        public int currentPhaseIndex;
+        public int normalStageCompleteCount;
+        public int eliteStageCompleteCount;
+        public int manaStone;
+        public int savedExpReward;
+        public int savedGoldReward;
+        public int savedJewelReward;
 
-    //    // enum, 리스트 등도 복사
-    //    public int currentFormationType;
-    //    public int currentPhaseState;
-    //    //public List<ArtifactData> artifacts = new List<ArtifactData>(12);
-    //    //public List<EngravingData> engravings = new List<EngravingData>(3);
-    //    //public List<ArtifactData> equipedArtifacts = new List<ArtifactData>(4);
-    //    //public List<CharacterSO> entryCharacters = new List<CharacterSO>(5);
-    //    //public CharacterSO leaderCharacter;
-    //    //public List<BattleCharacter> battleCharacters = new List<BattleCharacter>(5);
-    //    //public EnemyData selectedEnemy;
-    //    //public List<ChapterStates> chapterStates = new List<ChapterStates>();
+        public int currentFormationType;
+        public int currentPhaseState;
 
-    //    // 변환 생성자
-    //    public StageData(StageSaveData saveData)
-    //    {
-    //        currentChapterIndex = saveData.currentChapterIndex;
-    //        currentStageIndex = saveData.currentStageIndex;
-    //        currentPhaseIndex = saveData.currentPhaseIndex;
-    //        normalStageCompleteCount = saveData.normalStageCompleteCount;
-    //        eliteStageCompleteCount = saveData.eliteStageCompleteCount;
-    //        manaStone = saveData.manaStone;
-    //        savedExpReward = saveData.savedExpReward;
-    //        savedGoldReward = saveData.savedGoldReward;
-    //        savedPotionReward = saveData.savedPotionReward;
-    //        currentFormationType = (int)saveData.currentFormationType;
-    //        currentPhaseState = (int)saveData.currentPhaseState;
-    //        //artifacts = new List<ArtifactData>(saveData.artifacts);
-    //        //engravings = new List<EngravingData>(saveData.engravings);
-    //        //equipedArtifacts = new List<ArtifactData>(saveData.equipedArtifacts);
-    //        //entryCharacters = new List<CharacterSO>(saveData.entryCharacters);
-    //        //leaderCharacter = saveData.leaderCharacter;
-    //        //battleCharacters = new List<BattleCharacter>(saveData.battleCharacters);
-    //        //selectedEnemy = saveData.selectedEnemy;
-    //        //chapterStates = new List<ChapterStates>(saveData.chapterStates);
-    //    }
+        // ScriptableObject는 이름/ID만 저장
+        public List<string> artifactNames = new List<string>(12);
+        public List<string> engravingNames = new List<string>(3);
+        public List<string> equipedArtifactNames = new List<string>(4);
+        public List<string> entryCharacterIDs = new List<string>(5);
+        public string leaderCharacterID;
+        public List<BattleCharacterData> battleCharacters = new List<BattleCharacterData>(5);
+        public string selectedEnemyID;
+        public List<ChapterStates> chapterStates = new List<ChapterStates>();
 
-    //    // 역변환 메서드
-    //    public StageSaveData ToStageSaveData()
-    //    {
-    //        var saveData = new StageSaveData();
-    //        saveData.currentChapterIndex = currentChapterIndex;
-    //        saveData.currentStageIndex = currentStageIndex;
-    //        saveData.currentPhaseIndex = currentPhaseIndex;
-    //        saveData.normalStageCompleteCount = normalStageCompleteCount;
-    //        saveData.eliteStageCompleteCount = eliteStageCompleteCount;
-    //        saveData.manaStone = manaStone;
-    //        saveData.savedExpReward = savedExpReward;
-    //        saveData.savedGoldReward = savedGoldReward;
-    //        saveData.savedPotionReward = savedPotionReward;
-    //        //saveData.currentFormationType = (StageSaveData.CurrentFormationType)currentFormationType;
-    //        //saveData.currentPhaseState = (StageSaveData.CurrentPhaseState)currentPhaseState;
-    //        //saveData.artifacts = new List<ArtifactData>(artifacts);
-    //        //saveData.engravings = new List<EngravingData>(engravings);
-    //        //saveData.equipedArtifacts = new List<ArtifactData>(equipedArtifacts);
-    //        //saveData.entryCharacters = new List<CharacterSO>(entryCharacters);
-    //        //saveData.leaderCharacter = leaderCharacter;
-    //        //saveData.battleCharacters = new List<BattleCharacter>(battleCharacters);
-    //        //saveData.selectedEnemy = selectedEnemy;
-    //        //saveData.chapterStates = new List<ChapterStates>(chapterStates);
-    //        return saveData;
-    //    }
-    //}
+        // 역직렬화용 기본 생성자
+        public StageData() { }
+
+        // 변환 생성자(직렬화/역직렬화에는 사용하지 않음, 오직 코드 내 변환용)
+        public StageData(StageSaveData saveData)
+        {
+            if (saveData == null) return;
+
+            currentChapterIndex = saveData.currentChapterIndex;
+            currentStageIndex = saveData.currentStageIndex;
+            currentPhaseIndex = saveData.currentPhaseIndex;
+            normalStageCompleteCount = saveData.normalStageCompleteCount;
+            eliteStageCompleteCount = saveData.eliteStageCompleteCount;
+            manaStone = saveData.manaStone;
+            savedExpReward = saveData.savedExpReward;
+            savedGoldReward = saveData.savedGoldReward;
+            savedJewelReward = saveData.savedJewelReward;
+            currentFormationType = (int)saveData.currentFormationType;
+            currentPhaseState = (int)saveData.currentPhaseState;
+
+            artifactNames = saveData.artifacts?.Select(a => a != null ? a.ArtifactName : null).ToList() ?? new List<string>(new string[12]);
+            engravingNames = saveData.engravings?.Select(e => e != null ? e.EngravingName : null).ToList() ?? new List<string>(new string[3]);
+            equipedArtifactNames = saveData.equipedArtifacts?.Select(a => a != null ? a.ArtifactName : null).ToList() ?? new List<string>(new string[4]);
+            entryCharacterIDs = saveData.entryCharacters?.Select(c => c != null ? c.name : null).ToList() ?? new List<string>(new string[5]);
+            leaderCharacterID = saveData.leaderCharacter != null ? saveData.leaderCharacter.name : null;
+            battleCharacters = saveData.battleCharacters?.Select(bc => new BattleCharacterData(bc)).ToList() ?? new List<BattleCharacterData>();
+            selectedEnemyID = saveData.selectedEnemy != null ? saveData.selectedEnemy.name : null;
+            chapterStates = saveData.chapterStates != null ? new List<ChapterStates>(saveData.chapterStates) : new List<ChapterStates>();
+        }
+
+        // StageData → StageSaveData 변환 (string → SO 복원)
+        public StageSaveData ToStageSaveData()
+        {
+            var saveData = new StageSaveData();
+            saveData.currentChapterIndex = currentChapterIndex;
+            saveData.currentStageIndex = currentStageIndex;
+            saveData.currentPhaseIndex = currentPhaseIndex;
+            saveData.normalStageCompleteCount = normalStageCompleteCount;
+            saveData.eliteStageCompleteCount = eliteStageCompleteCount;
+            saveData.manaStone = manaStone;
+            saveData.savedExpReward = savedExpReward;
+            saveData.savedGoldReward = savedGoldReward;
+            saveData.savedJewelReward = savedJewelReward;
+            saveData.currentFormationType = (StageSaveData.CurrentFormationType)currentFormationType;
+            saveData.currentPhaseState = (StageSaveData.CurrentPhaseState)currentPhaseState;
+
+            // StaticDataManager를 통해 이름 기반 SO 복원 (null/빈 문자열 안전 처리)
+            saveData.artifacts = artifactNames
+                .Select(name => string.IsNullOrEmpty(name) ? null : StaticDataManager.Instance.GetArtifact(name))
+                .ToList();
+            saveData.engravings = engravingNames
+                .Select(name => string.IsNullOrEmpty(name) ? null : StaticDataManager.Instance.GetEngraving(name))
+                .ToList();
+            saveData.equipedArtifacts = equipedArtifactNames
+                .Select(name => string.IsNullOrEmpty(name) ? null : StaticDataManager.Instance.GetArtifact(name))
+                .ToList();
+
+            // entryCharacters 복원 (CharacterSO)
+            saveData.entryCharacters = entryCharacterIDs
+                .Select(id => !string.IsNullOrEmpty(id) && CharacterManager.Instance.AllCharacters.ContainsKey(id)
+                    ? CharacterManager.Instance.AllCharacters[id]
+                    : null)
+                .ToList();
+
+            // leaderCharacter 복원 (CharacterSO)
+            saveData.leaderCharacter = !string.IsNullOrEmpty(leaderCharacterID) && CharacterManager.Instance.AllCharacters.ContainsKey(leaderCharacterID)
+                ? CharacterManager.Instance.AllCharacters[leaderCharacterID]
+                : null;
+
+            // battleCharacters 복원 (BattleCharacter)
+            saveData.battleCharacters.Clear();
+            foreach (var bcData in battleCharacters)
+            {
+                if (bcData == null || string.IsNullOrEmpty(bcData.charID)) continue;
+                var battleChar = CharacterManager.Instance.RegisterBattleCharacterData(bcData.charID);
+                battleChar.DataSetting(bcData);
+                saveData.battleCharacters.Add(battleChar);
+            }
+
+            // Enemy SO 복원
+            saveData.selectedEnemy = !string.IsNullOrEmpty(selectedEnemyID)
+                ? StaticDataManager.Instance.GetEnemy(selectedEnemyID)
+                : null;
+
+            saveData.chapterStates = new List<ChapterStates>(chapterStates);
+            return saveData;
+        }
+    }
+
+    public static void CopyStageSaveData(StageSaveData target, StageSaveData source)
+    {
+        if (target == null || source == null) return;
+
+        target.currentChapterIndex = source.currentChapterIndex;
+        target.currentStageIndex = source.currentStageIndex;
+        target.currentPhaseIndex = source.currentPhaseIndex;
+        target.currentFormationType = source.currentFormationType;
+        target.normalStageCompleteCount = source.normalStageCompleteCount;
+        target.eliteStageCompleteCount = source.eliteStageCompleteCount;
+        target.currentPhaseState = source.currentPhaseState;
+        target.manaStone = source.manaStone;
+        target.savedExpReward = source.savedExpReward;
+        target.savedGoldReward = source.savedGoldReward;
+        target.savedJewelReward = source.savedJewelReward;
+
+        while (target.artifacts.Count < source.artifacts.Count)
+            target.artifacts.Add(null);
+        while (target.artifacts.Count > source.artifacts.Count)
+            target.artifacts.RemoveAt(target.artifacts.Count - 1);
+        for (int i = 0; i < source.artifacts.Count; i++)
+            target.artifacts[i] = source.artifacts[i];
+
+        while (target.engravings.Count < source.engravings.Count)
+            target.engravings.Add(null);
+        while (target.engravings.Count > source.engravings.Count)
+            target.engravings.RemoveAt(target.engravings.Count - 1);
+        for (int i = 0; i < source.engravings.Count; i++)
+            target.engravings[i] = source.engravings[i];
+
+        while (target.equipedArtifacts.Count < source.equipedArtifacts.Count)
+            target.equipedArtifacts.Add(null);
+        while (target.equipedArtifacts.Count > source.equipedArtifacts.Count)
+            target.equipedArtifacts.RemoveAt(target.equipedArtifacts.Count - 1);
+        for (int i = 0; i < source.equipedArtifacts.Count; i++)
+            target.equipedArtifacts[i] = source.equipedArtifacts[i];
+
+        while (target.entryCharacters.Count < source.entryCharacters.Count)
+            target.entryCharacters.Add(null);
+        while (target.entryCharacters.Count > source.entryCharacters.Count)
+            target.entryCharacters.RemoveAt(target.entryCharacters.Count - 1);
+        for (int i = 0; i < source.entryCharacters.Count; i++)
+            target.entryCharacters[i] = source.entryCharacters[i];
+
+        target.leaderCharacter = source.leaderCharacter;
+
+        while (target.battleCharacters.Count < source.battleCharacters.Count)
+            target.battleCharacters.Add(null);
+        while (target.battleCharacters.Count > source.battleCharacters.Count)
+            target.battleCharacters.RemoveAt(target.battleCharacters.Count - 1);
+        for (int i = 0; i < source.battleCharacters.Count; i++)
+            target.battleCharacters[i] = source.battleCharacters[i];
+
+        target.selectedEnemy = source.selectedEnemy;
+
+        while (target.chapterStates.Count < source.chapterStates.Count)
+            target.chapterStates.Add(new ChapterStates());
+        while (target.chapterStates.Count > source.chapterStates.Count)
+            target.chapterStates.RemoveAt(target.chapterStates.Count - 1);
+        for (int i = 0; i < source.chapterStates.Count; i++)
+            target.chapterStates[i] = source.chapterStates[i];
+    }
+
+    [Serializable]
+    public class BattleCharacterData
+    {
+        public string charID;
+        public int level;
+        public int currentHP; // 현재 체력
+        public int currentATK; // 현재 공격력
+        public int currentDEF; // 현재 방어력
+        public float currentCritChance; // 현재 치명타 확률
+        public float currentCritDamage; // 현재 치명타 피해량
+        public float currentPenetration; // 현재 관통력
+        public int regularHP;
+        public int regularATK;
+        public int regularDEF;
+        public float regularCritChance;
+        public float regularCritDamage;
+        public float regularPenetration;
+
+        // 역직렬화용 기본 생성자
+        public BattleCharacterData() { }
+
+        // 변환 생성자(직렬화/역직렬화에는 사용하지 않음, 오직 코드 내 변환용)
+        public BattleCharacterData(BattleCharacter bc)
+        {
+            if (bc == null) return;
+            charID = bc.CharID;
+            level = bc.Level;
+            currentHP = bc.CurrentHP;
+            currentATK = bc.CurrentATK;
+            currentDEF = bc.CurrentDEF;
+            currentCritChance = bc.CurrentCritChance;
+            currentCritDamage = bc.CurrentCritDamage;
+            currentPenetration = bc.CurrentPenetration;
+
+            regularHP = bc.RegularHP;
+            regularATK = bc.RegularATK;
+            regularDEF = bc.RegularDEF;
+            regularCritChance = bc.RegularCritChance;
+            regularCritDamage = bc.RegularCritDamage;
+            regularPenetration = bc.Penetration;
+        }
+
+        // BattleCharacterData를 BattleCharacter에 복원
+        public void LoadBattleCharacter(BattleCharacter bc, BattleCharacterData data)
+        {
+            bc.DataSetting(data);
+        }
+
+    }
 
     [Serializable]
     public class ItemData
@@ -178,7 +321,7 @@ public class DataSaver
         public UserData userData = new UserData();
         public List<CharacterData> characters = new List<CharacterData>();
         public List<ItemData> items = new List<ItemData>();
-        //public StageData stageData; // null로 두고, 저장 시점에만 생성
+        public StageData stageData;
     }
 
     private static readonly string SavePath = Path.Combine(Application.persistentDataPath, "save.json");
@@ -229,8 +372,8 @@ public class DataSaver
             SyncItemData();
 
             // StageSaveData → StageData 변환 및 저장
-            //if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
-            //    SaveData.stageData = new StageData(StageManager.Instance.stageSaveData);
+            if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
+                SaveData.stageData = new StageData(StageManager.Instance.stageSaveData);
 
             string json = JsonConvert.SerializeObject(SaveData, Formatting.Indented);
             File.WriteAllText(SavePath, json);
@@ -296,42 +439,56 @@ public class DataSaver
         Save();
     }
 
-    /// <summary>
-    /// 저장된 게임데이터 로드
-    /// </summary>
     public void Load()
     {
+        string json = "";
         try
         {
             if (File.Exists(SavePath))
             {
-                string json = File.ReadAllText(SavePath);
+                json = File.ReadAllText(SavePath);
                 SaveData = JsonConvert.DeserializeObject<GameSaveData>(json);
+                EnsureStageDataIntegrity();
+                Debug.Log($"stageData null? {SaveData.stageData == null}");
+                Debug.Log($"artifactNames null? {SaveData.stageData.artifactNames == null}");
+                Debug.Log($"engravingNames null? {SaveData.stageData.engravingNames == null}");
+                Debug.Log($"chapterStates null? {SaveData.stageData.chapterStates == null}");
+                // SO 복원은 GameManager에서 Addressables 로드 완료 후 호출
 
-                // StageData → StageSaveData 변환 및 복원
-                //if (SaveData.stageData != null && StageManager.Instance != null)
-                //    StageManager.Instance.stageSaveData = SaveData.stageData.ToStageSaveData();
-#if UNITY_EDITOR
-                Debug.Log($"게임 데이터 로드됨: {SavePath}");
-#endif
             }
             else
             {
                 SaveData = new GameSaveData();
-                Save(); // 초기화 후 새로 저장
+                Save();
 #if UNITY_EDITOR
                 Debug.Log("저장 파일이 없어 새 데이터로 초기화");
 #endif
             }
         }
-        catch (Exception ex) //Seserialize 과정에서 예외 발생 시
+        catch (Exception ex)
         {
-            Debug.LogError($"게임 데이터 불러오기 실패: {ex.Message}");
+            Debug.LogError($"게임 데이터 불러오기 실패: {ex.Message}\n{ex.StackTrace}\njson: {json}");
             SaveData = new GameSaveData();
-            Save(); // 초기화 후 새로 저장
+            Save();
         }
+        // SO 복원은 GameManager에서 Addressables 로드 완료 후 호출
+    }
 
-        CharacterManager.Instance.LoadAllCharactersAsync();
-        ItemManager.Instance.LoadAllItemSOs();
+    private void EnsureStageDataIntegrity()
+    {
+        if (SaveData.stageData == null)
+            SaveData.stageData = new StageData(new StageSaveData());
+        if (SaveData.stageData.artifactNames == null || SaveData.stageData.artifactNames.Count != 12)
+            SaveData.stageData.artifactNames = new List<string>(new string[12]);
+        if (SaveData.stageData.engravingNames == null || SaveData.stageData.engravingNames.Count != 3)
+            SaveData.stageData.engravingNames = new List<string>(new string[3]);
+        if (SaveData.stageData.equipedArtifactNames == null || SaveData.stageData.equipedArtifactNames.Count != 4)
+            SaveData.stageData.equipedArtifactNames = new List<string>(new string[4]);
+        if (SaveData.stageData.entryCharacterIDs == null || SaveData.stageData.entryCharacterIDs.Count != 5)
+            SaveData.stageData.entryCharacterIDs = new List<string>(new string[5]);
+        if (SaveData.stageData.battleCharacters == null)
+            SaveData.stageData.battleCharacters = new List<BattleCharacterData>();
+        if (SaveData.stageData.chapterStates == null)
+            SaveData.stageData.chapterStates = new List<ChapterStates>();
     }
 }
