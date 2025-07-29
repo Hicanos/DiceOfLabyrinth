@@ -52,6 +52,7 @@ public class BattleCharacterAttack : MonoBehaviour
         for (int i = 0; i < battleCharacters.Count; i++)
         {
             if (battleCharacters[i].IsDied) continue;
+            if (battleManager.BattleGroup.DeadIndex.Contains(i)) continue;
 
             characterAtk = battleCharacters[i].CurrentATK;
             penetration = battleCharacters[i].Penetration;

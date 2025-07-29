@@ -265,12 +265,24 @@ public class BattleCharGroup
         CurrentFormationType = StageManager.Instance.stageSaveData.currentFormationType;
         frontLineNum = (int)CurrentFormationType;
 
+        for(int i = 0; i < numFive; i++)
+        {
+            if (characters[i].CurrentHP == 0)
+            {
+                //characters[i].IsDied == true;
+                DeadIndex.Add(i);
+                DeadCount++;
+            }
+        }
+
         for (int i = 0; i < frontLineNum + 1; i++)
         {
+            if (DeadIndex.Contains(i)) continue;
             FrontLine.Add(i);
         }
         for (int i = frontLineNum + 1; i < numFive; i++)
         {
+            if (DeadIndex.Contains(i)) continue;
             BackLine.Add(i);
         }
     }
