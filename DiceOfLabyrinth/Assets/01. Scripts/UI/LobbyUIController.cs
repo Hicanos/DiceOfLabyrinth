@@ -15,4 +15,12 @@ public class LobbyUIController : MonoBehaviour
         lobbyPanel.SetActive(false);
         summonCharactersPanel.SetActive(true);
     }
+
+    public void OnClickAdventureButton()
+    {
+        if (SceneManagerEx.Instance != null)
+        {
+            SceneManagerEx.Instance.LoadScene("SelectAdventureScene");
+        }
+    }
 }

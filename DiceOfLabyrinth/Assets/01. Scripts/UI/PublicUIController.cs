@@ -97,4 +97,14 @@ public class PublicUIController : MonoBehaviour
                 break;
         }
     }
+
+    public void OnClickBackButton()
+    {
+        SceneManagerEx.Instance.LoadPreviousScene();
+    }
+
+    public void OnClickHomeButton()
+    {
+        SceneManagerEx.Instance.LoadScene("LobbyScene");
+    }
 }
