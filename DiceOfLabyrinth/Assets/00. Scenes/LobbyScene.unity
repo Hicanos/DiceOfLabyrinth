@@ -425,78 +425,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd468093a66d03442b3551fc6becbe0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ArtifactAddressableKeys:
-  - 01.Labyrinth Map Fragment
-  - 02.Drake's Claw
-  - 03.Rebel's Banner
-  - 04.Gladiator's Helm
-  - 05.Golden Skull
-  - 06.Sealed Mirror
-  - 07.Everfrost Shard
-  - 08.Silver Candelabrum
-  - 09.Codex of the Order
-  - 10.Lantern of the Lost
-  - 11.Cursed Doll
-  - 12.Spirit Ring
-  - 13.Heretic's Mask
-  - 14.Unknown Magic Scroll
-  - 15.Ancient Rune
-  - 16.Spellbreaker Relic
-  - 17.Shield of Ancient Rituals
-  - 18.Archmage's Cloak
-  - 19.Skull King's Key
-  - 20.Sunsgem
-  - 21.Crossbow of Judgment
-  - 22.Crown of the Sovereign
-  - 23.Devil's Eyepatch
-  - 24.Elven Runeblade
-  - 25.Ahlan's Orb
-  - 26.Tome of the Sealed Demon
-  - 27.Leandro's Pocket Dimension
-  - 28.Demigod's Maul
-  - 29.Worldtree Bow
-  - 30.Dragon's Eye
-  EngravingAddressableKeys:
-  - 01.Heavenly Kings
-  - 02.Expansion
-  - 03.Giant Legion
-  - 04.Basic Training
-  - "05.Trickster\u2019s Hand"
-  - 06.Twin Tactics
-  - 07.Rewind
-  - 08.OneTurnKill
-  EnemyAddressableKeys:
-  - EnemyData
-  - Enemy_Normal_Goblin
-  - Enemy_Normal_Gnoll
-  - Enemy_Normal_Fixie
-  - Enemy_Lord_OrcLord
-  - Enemy_Lord_GnollLeader
-  - Enemy_Guardion_BloodyGnoll
-  - Enemy_Guardian_OrcGuardian
-  - Enemy_Guardian_Golem
-  - Enemy_Elite_Treant
-  - Enemy_Elite_Orge
-  - Enemy_Elite_Orc
-  - Enemy_Elite_BloodyGoblin
-  ItemAddressableKeys:
-  - AkaneStone
-  - CharlotteStone
-  - EryshaStone
-  - IrienStone
-  - JaysilanStone
-  - KaliaStone
-  - KrugerStone
-  - MilenaStone
-  - NiyaStone
-  - RukshanStone
-  - LowExpPotion
-  - MiddleExpPotion
-  - HighExpPotion
-  - RoyalExpPotion
-  - LowSkillBook
-  - MiddleSkillBook
-  - HighSkillBook
 --- !u!4 &66405877
 Transform:
   m_ObjectHideFlags: 0
@@ -7299,6 +7227,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1426212497}
   m_CullTransparentMesh: 1
+--- !u!1001 &1444023329
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6567173490701841016, guid: 6c78c525bd3d2df4ab6aa95f593f4cab, type: 3}
+      propertyPath: m_Name
+      value: DataManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010168277442681118, guid: 6c78c525bd3d2df4ab6aa95f593f4cab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1544
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010168277442681118, guid: 6c78c525bd3d2df4ab6aa95f593f4cab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 720
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010168277442681118, guid: 6c78c525bd3d2df4ab6aa95f593f4cab, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010168277442681118, guid: 6c78c525bd3d2df4ab6aa95f593f4cab, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010168277442681118, guid: 6c78c525bd3d2df4ab6aa95f593f4cab, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010168277442681118, guid: 6c78c525bd3d2df4ab6aa95f593f4cab, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010168277442681118, guid: 6c78c525bd3d2df4ab6aa95f593f4cab, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010168277442681118, guid: 6c78c525bd3d2df4ab6aa95f593f4cab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010168277442681118, guid: 6c78c525bd3d2df4ab6aa95f593f4cab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010168277442681118, guid: 6c78c525bd3d2df4ab6aa95f593f4cab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6c78c525bd3d2df4ab6aa95f593f4cab, type: 3}
 --- !u!1 &1470146883 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3189806966674976365, guid: 786f1ae627efa72458cb0f283302381d, type: 3}
@@ -8306,17 +8291,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1664805648}
   m_CullTransparentMesh: 1
---- !u!114 &1701159404 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3473550945568343056, guid: 7361384692583a142b714b5eefa49269, type: 3}
-  m_PrefabInstance: {fileID: 149190178138241971}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c2eb3d42320eb643ba3d3c18b61f51a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1703794548
 GameObject:
   m_ObjectHideFlags: 0
@@ -8595,17 +8569,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1757314578}
   m_CullTransparentMesh: 1
---- !u!114 &1758219763 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 509190488387787462, guid: 7361384692583a142b714b5eefa49269, type: 3}
-  m_PrefabInstance: {fileID: 149190178138241971}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1774299541
 GameObject:
   m_ObjectHideFlags: 0
@@ -9972,17 +9935,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2117468853}
   m_CullTransparentMesh: 1
---- !u!114 &2129200143 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2259079059979660917, guid: 7361384692583a142b714b5eefa49269, type: 3}
-  m_PrefabInstance: {fileID: 149190178138241971}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!222 &1823007660897455
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -27033,11 +26985,8 @@ MonoBehaviour:
   char3: {fileID: 142576865}
   char4: {fileID: 1731836422}
   char5: {fileID: 1644754400}
-  patternDisplayer: {fileID: 1701159404}
   battleLog: {fileID: 149190178138241972}
   cost: {fileID: 123271267}
-  monsterSkillName: {fileID: 1758219763}
-  monsterSkillDescription: {fileID: 2129200143}
   rank: {fileID: 1056666486}
   reRoll: {fileID: 630491180}
 --- !u!114 &4236877237436704168
@@ -48961,3 +48910,4 @@ SceneRoots:
   - {fileID: 429771458}
   - {fileID: 66405877}
   - {fileID: 4259983706865342015}
+  - {fileID: 1444023329}
