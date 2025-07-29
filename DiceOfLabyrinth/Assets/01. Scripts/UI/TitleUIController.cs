@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class IntroManager : MonoBehaviour
+public class TitleUIController : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private CanvasGroup blackOverlay;
