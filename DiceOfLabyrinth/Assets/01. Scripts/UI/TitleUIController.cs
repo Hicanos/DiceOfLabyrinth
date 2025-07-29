@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,10 +10,12 @@ public class TitleUIController : MonoBehaviour
     [SerializeField] private GameObject companyLogoPanel;
     [SerializeField] private GameObject titlePanel;
     [SerializeField] private GameObject publicUIController;
+    [SerializeField] private TextMeshProUGUI tapToStartText;
 
     [Header("Settings")]
     [SerializeField] private float fadeTime = 1.0f; // 화면이 다 어두워지는데 걸리는 시간
     [SerializeField] private float waitTime = 1.0f; // 얼마나 기다렸다 어두워지기 시작할지
+    [SerializeField] private float blinkTime = 0.5f; // 텍스트 깜빡임 속도
 
     private bool canStart = false;
 
@@ -38,6 +41,14 @@ public class TitleUIController : MonoBehaviour
             // 타이틀 UI 활성화
             titlePanel.SetActive(true);
             publicUIController.SetActive(true);
+
+            // 텍스트 깜빡임 시작
+            if (tapToStartText != null)
+            {
+                tapToStartText.alpha = 1f;
+                tapToStartText.DOFade(0f, blinkTime).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
+            }
+
             canStart = true;
         });
     }
