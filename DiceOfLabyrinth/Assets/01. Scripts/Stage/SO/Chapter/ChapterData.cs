@@ -21,7 +21,7 @@ public class ChapterInfo
     [SerializeField] private string description;
     [SerializeField] private Sprite sprite;
     [SerializeField] private int chapterCost;
-    [SerializeField] private int directCompleteCost;
+    [SerializeField] private int firstClearJewelReward; // 챕터를 처음 클리어했을 때 주는 보석 보상
     [SerializeField] private bool defaultIsUnLocked; // 챕터가 기본적으로 잠금 해제되어 있는지 여부
     [SerializeField] private bool defaultIsCompleted; // 챕터가 기본적으로 완료되어 있는지 여부
 
@@ -31,7 +31,7 @@ public class ChapterInfo
     public string Description => description;
     public Sprite Sprite => sprite;
     public int ChapterCost => chapterCost;
-    public int DirectCompleteCost => directCompleteCost;
+    public int FirstClearJewelReward => firstClearJewelReward;
     public bool DefaultIsUnLocked => defaultIsUnLocked; // 챕터가 기본적으로 잠금 해제되어 있는지 여부
     public bool DefaultIsCompleted => defaultIsCompleted; // 챕터가 기본적으로 완료되어 있는지 여부
 }

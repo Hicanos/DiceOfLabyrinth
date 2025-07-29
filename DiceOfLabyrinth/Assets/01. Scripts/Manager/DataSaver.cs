@@ -87,7 +87,7 @@ public class DataSaver
     //    public int manaStone;
     //    public int savedExpReward;
     //    public int savedGoldReward;
-    //    public int savedJewelReward;
+    //    public int savedPotionReward;
 
     //    // enum, 리스트 등도 복사
     //    public int currentFormationType;
@@ -112,7 +112,7 @@ public class DataSaver
     //        manaStone = saveData.manaStone;
     //        savedExpReward = saveData.savedExpReward;
     //        savedGoldReward = saveData.savedGoldReward;
-    //        savedJewelReward = saveData.savedJewelReward;
+    //        savedPotionReward = saveData.savedPotionReward;
     //        currentFormationType = (int)saveData.currentFormationType;
     //        currentPhaseState = (int)saveData.currentPhaseState;
     //        //artifacts = new List<ArtifactData>(saveData.artifacts);
@@ -137,7 +137,7 @@ public class DataSaver
     //        saveData.manaStone = manaStone;
     //        saveData.savedExpReward = savedExpReward;
     //        saveData.savedGoldReward = savedGoldReward;
-    //        saveData.savedJewelReward = savedJewelReward;
+    //        saveData.savedPotionReward = savedPotionReward;
     //        //saveData.currentFormationType = (StageSaveData.CurrentFormationType)currentFormationType;
     //        //saveData.currentPhaseState = (StageSaveData.CurrentPhaseState)currentPhaseState;
     //        //saveData.artifacts = new List<ArtifactData>(artifacts);

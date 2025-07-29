@@ -32,6 +32,10 @@ public class SoundManager : MonoBehaviour
         SFX_Hit_Sword, // 타격음
         SFX_Swing, // 공격음
         SFX_Swing2, // 공격음2
+        SFX_Hit_Heavy, // 강타음
+        SFX_Growl, // 적 울음소리(예: 놀 울음)
+        SFX_Hit_Mace, // 몽둥이 타격음
+        SFX_Scream, // 비명(예: 고블린 비명)
     }
 
     private void Awake()
