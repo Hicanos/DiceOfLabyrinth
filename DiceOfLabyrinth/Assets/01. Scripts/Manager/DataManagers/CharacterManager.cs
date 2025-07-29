@@ -182,4 +182,23 @@ public class CharacterManager
         return battleChar;
     }
 
+    /// <summary>  
+    /// 디폴트 캐릭터(Char_0~ Char_4) 획득
+    /// </summary>
+    
+    public void AcquireDefaultCharacters()
+    {
+        if(OwnedCharacters.Count > 0)
+        {
+            return; // 이미 캐릭터가 있다면 중복 획득 방지
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            string charID = "Char_" + i.ToString();
+            AcquireCharacter(charID);
+            Debug.Log($"획득한 캐릭터 ID: {charID}");
+        }
+    }
+
 }

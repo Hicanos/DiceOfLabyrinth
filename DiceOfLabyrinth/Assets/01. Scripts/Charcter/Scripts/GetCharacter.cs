@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class GetCharacter : MonoBehaviour
@@ -16,46 +17,36 @@ public class GetCharacter : MonoBehaviour
 
     public void GetCharacters()
     {
-        // 캐릭터 획득 (수정 전)
-        // 1. 이미 보유한 캐릭터 ID 집합
-        var ownedCharIDs = new HashSet<string>(
-            CharacterManager.Instance.OwnedCharacters.Select(c => c.CharacterData.charID)
-        );
-
-        // 2. 아직 보유하지 않은 캐릭터만 후보로 추출
-        var candidates = CharacterManager.Instance.AllCharacters.Values
-            .Where(so => !ownedCharIDs.Contains(so.charID))
-            .ToList();
-
-        // 3. 후보가 5명 미만이면 모두, 아니면 5명만 랜덤으로 선택
-        int count = Mathf.Min(5, candidates.Count);
-        // 4. 랜덤 셔플
-        for (int i = 0; i < candidates.Count; i++)
-        {
-            int j = Random.Range(i, candidates.Count);
-            var temp = candidates[i];
-            candidates[i] = candidates[j];
-            candidates[j] = temp;
-        }
-        // 5. 획득 처리
-        for (int i = 0; i < count; i++)
-        {
-            var so = candidates[i];
-            CharacterManager.Instance.AcquireCharacter(so.charID);
-            Debug.Log($"획득한 캐릭터: {so.nameKr} ({so.charID})");
-        }
+        CharacterManager.Instance.AcquireDefaultCharacters();
     }
 
 
     // SSR ID, SR ID, R ID 배열
 
+    // SSR 캐릭터 ID 리스트 (char_0~char_4)
     [Header("소환 등급 별 ID")]
-    [SerializeField] private List<string> SSRCharacterIDs; // SSR 캐릭터 ID 리스트 (char_0~char_4)
-    [SerializeField] private List<string> SSRItemIds; // SSR 아이템 ID 리스트
-    [SerializeField] private List<string> SRCharacterIDs; // SR 캐릭터 ID 리스트
-    [SerializeField] private List<string> SRItemIds; // SR 아이템 ID 리스트
-    [SerializeField] private List<string> RCharacterIDs; // R 캐릭터 ID 리스트
-    [SerializeField] private List<string> RItemIds; // R 아이템 ID 리스트
+    [SerializeField] private List<string> SSRCharacterIDs = new List<string>
+    {
+        "Char_0", "Char_1", "Char_2", "Char_3", "Char_4"
+    };
+
+    [SerializeField]
+    private List<string> SSRItemIds = new List<string>
+    {
+        "Item_3", "Item_7"
+    };
+    // SSR 아이템 ID 리스트
+    [SerializeField] private List<string> SRCharacterIDs; // SR 캐릭터 ID 리스트, 현재는 Null
+    [SerializeField]
+    private List<string> SRItemIds = new List<string>
+    {
+        "Item_2","Item_6"
+    }; // SR 아이템 ID 리스트
+    [SerializeField] private List<string> RCharacterIDs; // R 캐릭터 ID 리스트, 현재 Null
+    [SerializeField] private List<string> RItemIds = new List<string>
+    {
+        "Item_1","Item_5"
+    }; // R 아이템 ID 리스트
 
 
     // 소환 버튼
@@ -63,52 +54,79 @@ public class GetCharacter : MonoBehaviour
     public void GatchaSingle()
     {
         // 1회 소환 로직+ UI 업데이트도 포함
+        Gatcha();
     }
 
     // 10연차
     public void GatchaTen()
     {
         // 10연차 소환 로직 구현 + UI 업데이트도 포함
-
+        int count = 0; 
+        for (int i = 0; i < 10; i++)
+        {
+            count++;
+            Gatcha();
+        }
 
     }
-
-    public void Gatcha()
-    {
-        // 소환 자체 함수 (1회면 1회소환 1회면 10회 소환)
-    }
-
 
     // 확률 계산 함수 - Random.Range를 사용하여 확률에 따라 캐릭터 또는 아이템 획득
-    public void CalculateProbability()
+    public void Gatcha()
     {
         // 0~100 사이의 랜덤 값 생성
         float randomValue = Random.Range(0f, 100f);
+        Debug.Log($"뽑기 확률: {randomValue}");
 
         // 확률에 따라 캐릭터 또는 아이템 획득
         if (randomValue < 2) // SSR 캐릭터 획득 확률 2%
-        {
-            Debug.Log($"뽑기 확률: {randomValue}");
+        {                        
             Debug.Log("SSR! 보상 획득");
+            //여기서도 확률로 SSR or SSR 아이템
+            // 1.25:1 (캐릭터 1.25, 아이템 1)
+            float randomItemValue = Random.Range(0f, 2.25f);
 
-            // SSR 캐릭터 뽑기 확률과 
-            // SSR 캐릭터 획득 로직 추가
+            if(randomItemValue < 1.25f)
+            {
+                Debug.Log("SSR 캐릭터 획득!");
+                // SSR 캐릭터 5명 중 1개 획득
+                string randomCharID = SSRCharacterIDs[Random.Range(0, SSRCharacterIDs.Count)];
+                ResultCharacters(randomCharID);
+
+                Debug.Log($"획득한 SSR 캐릭터 ID: {randomCharID}");
+            }
+            else
+            {
+                Debug.Log("SSR 아이템 획득!");
+                // SSR 아이템 2개 중 1개 획득
+                string randomItemID = SSRItemIds[Random.Range(0, SSRItemIds.Count)];
+                Resulttems(randomItemID, Random.Range(5, 11)); // 5~10개 획득
+                Debug.Log($"획득한 SSR 아이템 ID: {randomItemID}");
+            }
         }
         else if (randomValue < 20) // SR 캐릭터 획득 확률 18%
         {
             Debug.Log("SR 보상 획득");
-            // SR 캐릭터 획득 로직 추가
+            // 현재 SR캐릭터 없음, Item획득
+            string randomItemID = SRItemIds[Random.Range(0, SRItemIds.Count)];
+            Resulttems(randomItemID, Random.Range(5, 11)); // 5~10개 획득
+            Debug.Log($"획득한 SR 아이템 ID: {randomItemID}");
+
+
         }
         else // R 캐릭터 획득 확률 80%
         {
             Debug.Log("R 보상 획득!");
             // R 캐릭터 획득 로직 추가
+            // 현재 R 캐릭터 없음, Item획득
+            string randomItemID = RItemIds[Random.Range(0, RItemIds.Count)];
+            Resulttems(randomItemID, Random.Range(5, 11)); // 5~10개 획득
+            Debug.Log($"획득한 R 아이템 ID: {randomItemID}");
         }
     }
 
 
     // 캐릭터 획득 함수
-    public void GetCharacterss(string CharID)
+    public void ResultCharacters(string CharID)
     {
         // 만약 획득한 캐릭터가 이미 보유한 캐릭터라면 돌파석 획득 - CharacterManager에서 처리함
         if (CharacterManager.Instance.IsLoaded == false)
@@ -143,7 +161,7 @@ public class GetCharacter : MonoBehaviour
 
     // 아이템 획득 함수(임시)
 
-    public void GetItems(string itemID, int count)
+    public void Resulttems(string itemID, int count)
     {
         ItemManager.Instance.GetItem(itemID, count);
     }
