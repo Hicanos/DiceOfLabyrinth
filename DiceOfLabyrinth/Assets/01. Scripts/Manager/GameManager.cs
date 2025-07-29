@@ -1,19 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 게임 전체의 데이터 로드, 복구, 릴리즈를 총괄하는 매니저
+/// - 모든 SO/데이터를 StaticDataManager에서 관리
+/// - 데이터 복구는 SO 로드 완료 후에만 진행
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
-            //게임 데이터 로드
-            LoadGame();
         }
         else
         {
@@ -21,50 +24,74 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // 게임 저장, 로드, 게임 종료, 전면 초기화 등
+    /// <summary>
+    /// 게임 시작 시점에 모든 SO/데이터를 StaticDataManager에서 관리 후 복구
+    /// </summary>
+    private IEnumerator Start()
+    {
 
+        // StageManager.Instance가 생성될 때까지 대기
+        while (StageManager.Instance == null)
+            yield return null;
+
+        // 캐릭터 SO 로드 대기
+        yield return CharacterManager.Instance.LoadAllCharactersAsync();
+
+        // 아이템 SO 로드 대기
+        yield return ItemManager.Instance.LoadAllItemSOs();
+
+
+        // SO 데이터 복구
+        RestoreGameData();
+        Debug.Log("게임 데이터 로드 및 SO 복구 완료");
+    }
+
+    private void RestoreGameData()
+    {
+        DataSaver.Instance.Load();
+        CharacterManager.Instance.LoadOwnedCharactersFromData();
+        ItemManager.Instance.LoadOwnedItemsFromData();
+        if (StageManager.Instance != null && DataSaver.Instance.SaveData.stageData != null)
+        {
+            StageManager.Instance.stageSaveData = DataSaver.Instance.SaveData.stageData.ToStageSaveData();
+
+            StageManager.Instance.InitializeStageStates(StageManager.Instance.chapterData);
+        }
+    }
+
+    /// <summary>
+    /// 게임 저장
+    /// </summary>
     private void SaveGame()
     {
-        // DataSaver에서 저장로직 가져올 것
         DataSaver.Instance.Save();
     }
 
-    private void Start()
-    {
-        // 불러온 모든 캐릭터의 Json데이터를 실제 LobbyCharacter에 할당
-        // UI에 존재한s LobbyCharacter에 Awake에서 불러온 데이터를 집어넣음.
-    }
-
-    public void LoadGame()
-    {
-        // 게임 로드 로직 구현
-        DataSaver.Instance.Load();
-        Debug.Log("게임 로드됨");
-    }
-
+    /// <summary>
+    /// 게임 종료
+    /// </summary>
     public void ExitGame()
     {
-        // 게임 종료 로직 구현
-        // 현재까지 진행된 게임 상태를 저장하고, 게임을 종료함.
         SaveGame();
         Debug.Log("게임 종료됨");
         Application.Quit();
     }
 
+    /// <summary>
+    /// 게임 초기화
+    /// </summary>
     public void ResetGame()
     {
-        // 게임 초기화 로직 구현
+        SaveGame();
         Debug.Log("게임 초기화됨");
-        // 예: 모든 데이터 초기화, 씬 재시작 등
-        // 모든 매니저를 초기 상태로 되돌림( 클리어한 스테이지, 획득한 캐릭터, 강화된 캐릭터 등)
-        // 저장된 데이터도 삭제함
-        
+        // 추가: 데이터 파일 삭제, 씬 재시작 등
     }
 
-    // 애플리케이션 종료(강제 종료) 시 자동으로 게임 저장
+    /// <summary>
+    /// 애플리케이션 종료 시 자동 저장
+    /// </summary>
     private void OnApplicationQuit()
     {
         SaveGame();
     }
-
 }

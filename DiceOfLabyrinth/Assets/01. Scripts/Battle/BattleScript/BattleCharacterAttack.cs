@@ -10,8 +10,7 @@ public class BattleCharacterAttack : MonoBehaviour
     IEnumerator enumeratorDamage;
 
     [SerializeField] Vector3 attackPosition;
-    [SerializeField] float charAttackMoveTime;
-    [SerializeField] float waitSecondEnemyDie;
+    [SerializeField] float charAttackMoveTime;    
     [SerializeField] float waitSecondCharAttack;
 
     public bool isCharacterAttacking = false;
@@ -22,7 +21,7 @@ public class BattleCharacterAttack : MonoBehaviour
     {
         isCharacterAttacking = true;
         battleManager = BattleManager.Instance;
-        
+
         enumeratorAttack = CharacterAttackCoroutine(diceWeighting);
         StartCoroutine(enumeratorAttack);
     }
@@ -53,6 +52,7 @@ public class BattleCharacterAttack : MonoBehaviour
         for (int i = 0; i < battleCharacters.Count; i++)
         {
             if (battleCharacters[i].IsDied) continue;
+            if (battleManager.BattleGroup.DeadIndex.Contains(i)) continue;
 
             characterAtk = battleCharacters[i].CurrentATK;
             penetration = battleCharacters[i].Penetration;
@@ -71,10 +71,9 @@ public class BattleCharacterAttack : MonoBehaviour
                 yield return null;
             }
 
-            enumeratorDamage = DealDamage(battleManager.Enemy, damage);
-            StartCoroutine(enumeratorDamage);
+            battleManager.Enemy.TakeDamage(damage);
             battleManager.Enemy.iEnemy.TakeDamage();
-            UIManager.Instance.BattleUI.BattleUILog.MakeBattleLog(battleCharacters[i].CharNameKr, battleManager.Enemy.Data.EnemyName, damage, true);
+            UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(battleCharacters[i].CharNameKr, battleManager.Enemy.Data.EnemyName, damage, true);
 
             pastTime = 0;
             while (pastTime < destTime)
@@ -91,24 +90,7 @@ public class BattleCharacterAttack : MonoBehaviour
         }
         isCharacterAttacking = false;
         BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.AttackEnd);
-    }
-
-    IEnumerator DealDamage(IDamagable target, int damage)
-    {
-        target.TakeDamage(damage);
-        BattleEnemy enemy = (BattleEnemy)target;
-        float ratio = (float)enemy.CurrentHP / enemy.MaxHP;
-
-        battleManager.UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
-
-        if (battleManager.Enemy.IsDead)
-        {
-            isCharacterAttacking = false;
-            battleManager.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.BattleEnd);
-            yield return new WaitForSeconds(waitSecondEnemyDie);
-            battleManager.EndBattle();
-        }
-    }
+    }    
 
     private float JudgeElementSuperiority(CharacterSO characterData, EnemyData enemyData)
     {
@@ -134,10 +116,12 @@ public class BattleCharacterAttack : MonoBehaviour
     private int CalculateDamage(int characterAtk, int monsterDef, float penetration, float elementDamage, float diceWeighting)
     {
         //{공격력 - 방어력 * (1-방어력 관통률)} * (1 + 버프 + 아티팩트 + 속성 + 패시브) * (족보별 계수 * 각인 계수)
-        float engravingAddAtk = battleManager.EngravingAdditionalStatus.AdditionalStatus[(int)EffectTypeEnum.AdditionalDamage];
+        float engravingAddAtk = battleManager.EngravingAdditionalStatus.AdditionalDamage;
+        float additionalElementDamage = battleManager.ArtifactAdditionalStatus.AdditionalElementDamage;
+        float artifactAddAtk = battleManager.ArtifactAdditionalStatus.AdditionalDamage;
 
-        float damage = (characterAtk - monsterDef * (1- penetration)) * (1 + elementDamage) * ((int)diceWeighting * engravingAddAtk);
-        Debug.Log(engravingAddAtk);
+        float damage = (characterAtk - monsterDef * (1- penetration)) * (1 + artifactAddAtk + elementDamage + additionalElementDamage) * ((int)diceWeighting * engravingAddAtk);
+        Debug.Log($"Engrving :  + {engravingAddAtk}\nArtifact :  + {artifactAddAtk}\nElement :  + {additionalElementDamage}");
         damage = Mathf.Clamp(damage, 0, damage);
         return (int)damage;
     }

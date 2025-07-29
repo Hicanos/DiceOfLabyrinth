@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using PredictedDice;
 
 public class BattleSpawner : MonoBehaviour
@@ -10,8 +10,11 @@ public class BattleSpawner : MonoBehaviour
     bool isPreparing;
     bool isActive;
     const int numFIve = 5;
-    private Vector3 spawnDetach = Vector3.right * 12;
-    private Vector3[] characterDestPos = new Vector3[5];
+    [SerializeField] Vector3 spawnDetach;
+    [SerializeField] float spawnDestTime;
+    [SerializeField] List<FormationVector> formationVec;
+    [SerializeField] Vector3 enemyVec;
+    private Vector3[] curFormationVec;
 
     IEnumerator enumeratorSpawn;
 
@@ -23,7 +26,7 @@ public class BattleSpawner : MonoBehaviour
     [SerializeField] int fakeDiceLayer;
     public void SpawnCharacters()
     {
-        if (StageManager.Instance.stageSaveData.currentPhaseIndex == 1)
+        if (BattleManager.Instance.IsBattle == false)
         {
             CharacterSpawn();
         }
@@ -37,21 +40,19 @@ public class BattleSpawner : MonoBehaviour
     {
         isActive = false;
         battleManager = BattleManager.Instance;
-        StageManager stageManager = StageManager.Instance;
+
         List<BattleCharacter> battleCharacters = battleManager.BattleGroup.BattleCharacters;
 
         isPreparing = true;
-        int chapterIndex = stageManager.stageSaveData.currentChapterIndex;
-        int iFormation = ((int)stageManager.stageSaveData.currentFormationType);
-        List<PlayerPositions> positions = stageManager.chapterData.chapterIndex[chapterIndex].stageData.PlayerFormations[iFormation].PlayerPositions;
+
+        curFormationVec = formationVec[(int)battleManager.BattleGroup.CurrentFormationType].formationVec;
 
         GameObject go;
         SpawnedCharacter spawnedCharacter;
 
         for (int i = 0; i < numFIve; i++)
         {
-            go = Instantiate(battleCharacters[i].CharacterData.charBattlePrefab, characterDestPos[i] - spawnDetach, Quaternion.identity, characterContainer);
-            characterDestPos[i] = positions[i].Position;
+            go = Instantiate(battleCharacters[i].CharacterData.charBattlePrefab, curFormationVec[i] - spawnDetach, Quaternion.identity, characterContainer);
 
             battleManager.BattleGroup.CharacterPrefabs[i] = go;
             spawnedCharacter = go.GetComponent<SpawnedCharacter>();
@@ -83,7 +84,7 @@ public class BattleSpawner : MonoBehaviour
         {
             go = battleManager.BattleGroup.CharacterPrefabs[i];
             go.SetActive(false);
-            go.transform.localPosition = characterDestPos[i] - spawnDetach;
+            go.transform.localPosition = curFormationVec[i] - spawnDetach;
         }
     }
 
@@ -91,13 +92,13 @@ public class BattleSpawner : MonoBehaviour
     {
         BattleCharGroup battleGroup = battleManager.BattleGroup;
 
-        float pastTime = 0, destTime = 2.5f;
+        float pastTime = 0, destTime = spawnDestTime;
 
         while (pastTime < destTime)
         {
             for (int i = 0; i < numFIve; i++)
             {
-                battleGroup.CharacterPrefabs[i].transform.localPosition = Vector3.Lerp(characterDestPos[i] - spawnDetach, characterDestPos[i], pastTime / destTime);
+                battleGroup.CharacterPrefabs[i].transform.localPosition = Vector3.Lerp(curFormationVec[i] - spawnDetach, curFormationVec[i], pastTime / destTime);
             }
 
             pastTime += Time.deltaTime;
@@ -127,7 +128,7 @@ public class BattleSpawner : MonoBehaviour
 
         for (int i = 0; i < numFIve; i++)
         {
-            battleGroup.CharacterPrefabs[i].transform.localPosition = characterDestPos[i];
+            battleGroup.CharacterPrefabs[i].transform.localPosition = curFormationVec[i];
         }
 
         if (!isActive)
@@ -148,29 +149,21 @@ public class BattleSpawner : MonoBehaviour
         {
             battleManager.BattleGroup.CharacterHPBars[i].SetActive(true);
         }
-        battleManager.Enemy.EnemyHPBar.SetActive(true);
+        battleManager.Enemy.EnemyHPBars.SetActive(true);
 
-        battleManager.I_PlayerTurnState.Enter();
+        battleManager.StateMachine.ChangeState(battleManager.I_PlayerTurnState);
     }
 
     private void LoadCharacterHP(BattleCharGroup battleGroup)
     {
-        GameObject go;
-        for (int i = 0; i < numFIve; i++)
-        {
-            go = Instantiate(battleManager.CharacterHPPrefab, battleGroup.CharacterPrefabs[i].transform);
-            battleGroup.CharacterHPBars[i] = go;
-
-            battleGroup.CharacterHPs[i] = go.GetComponentsInChildren<RectTransform>()[3];
-            battleGroup.CharacterHPTexts[i] = go.GetComponentInChildren<TextMeshProUGUI>();
-            battleManager.UIValueChanger.ChangeCharacterHpRatio((HPEnumCharacter)i);
-        }
+        battleManager.BattleUIHP.SpawnCharacterHP();
     }
 
     public void DeactiveCharacterHP(BattleCharGroup battleGroup)
     {
         for (int i = 0; i < numFIve; i++)
         {
+            battleGroup.LayoutGroups[i].childControlWidth = true;
             battleGroup.CharacterHPs[i].gameObject.SetActive(false);
         }
     }
@@ -209,7 +202,7 @@ public class BattleSpawner : MonoBehaviour
         BattleEnemy enemy = battleManager.Enemy;
         GameObject enemyGO = enemy.Data.EnemyPrefab;
 
-        enemy.EnemyPrefab = Instantiate(enemyGO, new Vector3(3, -1, -4), enemy.Data.EnemySpawnRotation, enemyContainer);
+        enemy.EnemyPrefab = Instantiate(enemyGO, enemyVec, enemy.Data.EnemySpawnRotation, enemyContainer);
         enemy.iEnemy = enemy.EnemyPrefab.GetComponent<IEnemy>();
         enemy.iEnemy.Init();
 
@@ -218,18 +211,12 @@ public class BattleSpawner : MonoBehaviour
 
     private void LoadEnemyHP(BattleEnemy enemy)
     {
-        GameObject go = Instantiate(battleManager.EnemyHPPrefab, enemy.EnemyPrefab.transform);
-        RectTransform rect = go.GetComponent<RectTransform>();
-
-        Quaternion quaternion = Quaternion.identity;
-        quaternion = Quaternion.Euler(0, -enemy.Data.EnemySpawnRotation.y, 0);
-
-        rect.rotation = quaternion;
-
-        enemy.EnemyHPBar = go;
-        enemy.EnemyHP = go.GetComponentsInChildren<RectTransform>()[2];
-        enemy.EnemyHPText = go.GetComponentInChildren<TextMeshProUGUI>();
-        battleManager.UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
-        battleManager.BattleUIHP.GetEnmeyHPRotation(enemy);
+        BattleManager.Instance.BattleUIHP.SpawnMonsterHP();        
     }
+}
+
+[Serializable]
+public class FormationVector
+{
+    public Vector3[] formationVec;
 }

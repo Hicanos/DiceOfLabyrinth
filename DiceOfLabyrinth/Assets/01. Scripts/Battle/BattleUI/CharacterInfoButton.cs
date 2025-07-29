@@ -7,14 +7,16 @@ public class CharacterInfoButton : AbstractBattleButton
 
     private void OnEnable()
     {
+        UIManager uIManager = UIManager.Instance;
         index = staticIndex;
         staticIndex++;
-        UIManager.Instance.BattleUI.Buttons.Add(this);
+        uIManager.BattleUI.Buttons.Add(this);
     }
 
     private void OnDisable()
     {
-        UIManager.Instance.BattleUI.Buttons.Remove(this);
+        UIManager uIManager = UIManager.Instance;
+        uIManager.BattleUI.Buttons.Remove(this);
     }
 
     public override void Setting()

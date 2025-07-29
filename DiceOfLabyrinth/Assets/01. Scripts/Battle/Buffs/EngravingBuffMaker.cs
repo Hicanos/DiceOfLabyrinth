@@ -17,25 +17,34 @@ public enum EffectTypeEnum
     AdditionalStone
 }
 
+public enum EffectLocationEnum
+{
+    CharacterAttack,
+    TurnEnter,
+    TurnEnd
+}
+
 public class EngravingBuffMaker
-{    
-    EngravingBuffContainer engravingBuffs = new EngravingBuffContainer();
-    
+{        
     public void MakeEngravingBuff()
     {
         List<EngravingData> engravings = BattleManager.Instance.BattleGroup.Engravings;
+        Action<IBuff> addBuffAction;
         DamageCondition condition;
         IBuff buff;
+
         for (int i = 0; i < engravings.Count; i++)
         {
-            if (engravings[i] == null) continue;
+            if (engravings[i] == null) return;
 
             for (int j = 0; j < engravings[i].DamageConditions.Count; j++)
             {
                 condition = engravings[i].DamageConditions[j];
 
-                buff = new EngravingBuff(GetConditionType(condition), condition, GetEffectType(condition));
-                engravingBuffs.AddEngravingBuffs(buff);
+                buff = new EngravingBuff(GetConditionType(condition), condition, GetEffectAction(condition));
+
+                addBuffAction = GetEffectLocation(condition);
+                addBuffAction?.Invoke(buff);
             }
         }
     }
@@ -96,16 +105,46 @@ public class EngravingBuffMaker
     }
     #endregion
 
-    public DetailedTurnState GetEffectType(DamageCondition condition)
+    public Action<DamageCondition> GetEffectAction(DamageCondition condition)
     {
         switch (condition.EffectType)
         {
             case EffectTypeEnum.AdditionalDamage:
-                return DetailedTurnState.Attack;
+                return AdditionalDamageAction;
+            case EffectTypeEnum.AdditionalRoll:
+                return AdditionalRollAction;
             case EffectTypeEnum.AdditionalStone:
-                return DetailedTurnState.BattleEnd;
+                return AdditionalStone;
             default:
-                return DetailedTurnState.Enter;
+                return null;
         }
-    }    
+    }
+
+    private void AdditionalDamageAction(DamageCondition condition)
+    {
+        BattleManager.Instance.EngravingAdditionalStatus.AdditionalDamage += condition.EffectValue;
+    }
+    private void AdditionalRollAction(DamageCondition condition)
+    {
+        BattleManager.Instance.EngravingAdditionalStatus.AdditionalRoll += condition.EffectValue;
+    }
+    private void AdditionalStone(DamageCondition condition)
+    {
+        BattleManager.Instance.EngravingAdditionalStatus.AdditionalStone += condition.EffectValue;
+    }
+
+    private Action<IBuff> GetEffectLocation(DamageCondition condition)
+    {
+        switch (condition.EffectLocation)
+        {
+            case EffectLocationEnum.CharacterAttack:
+                return BattleManager.Instance.EngravingBuffs.AddBuffsCallbackCharacterAttack;
+            case EffectLocationEnum.TurnEnter:
+                return BattleManager.Instance.EngravingBuffs.AddBuffsCallbackTurnEnter;
+            case EffectLocationEnum.TurnEnd:
+                return BattleManager.Instance.EngravingBuffs.AddBuffsCallbackTurnEnd;
+            default:
+                return null;
+        }
+    }
 }

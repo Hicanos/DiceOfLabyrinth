@@ -3,19 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using System.Collections;
 
 public class InventoryPopup : MonoBehaviour
 {
     //[SerializeField] private AnimationRect animationRect;
 
+    [SerializeField] private MessagePopup messagePopup;
+
     [Header("InventoryPopup")]
     [SerializeField] private GameObject inventoryPopup;
     [SerializeField] private GameObject setEffectDescriptionPopup;
     [SerializeField] private GameObject setEffectPopupBg;
+    public GameObject blockInputBg;
 
     [Header("ArtifactSlots")]
     [SerializeField] private GameObject[] artifactIcon = new GameObject[12];
     [SerializeField] private GameObject[] artifactRarity = new GameObject[12];
+    private int selectedArtifactSlotIndex = 0; // 선택된 아티팩트 슬롯 인덱스
 
     [Header("EquipedArtifactSlots")]
     [SerializeField] private GameObject[] equipedArtifactIcon = new GameObject[4];
@@ -153,7 +158,8 @@ public class InventoryPopup : MonoBehaviour
                 engravingIcon[i].SetActive(true);
                 engravingIcon[i].GetComponent<UnityEngine.UI.Image>().sprite = engraving.Icon;
                 engravingBg[i].SetActive(true);
-                engravingBg[i].GetComponent<UnityEngine.UI.Image>().sprite = engraving.BgSprite;
+                //engravingBg[i].GetComponent<UnityEngine.UI.Image>().sprite = engraving.BgSprite;
+
             }
             else
             {
@@ -166,6 +172,7 @@ public class InventoryPopup : MonoBehaviour
     public void OnClickArtifactSlot(int slotIndex)
     {
         ArtifactDescriptionRefresh(slotIndex);
+        selectedArtifactSlotIndex = slotIndex; // 선택된 슬롯 인덱스 업데이트
     }
 
     private void ArtifactDescriptionRefresh(int slotIndex)
@@ -310,5 +317,66 @@ public class InventoryPopup : MonoBehaviour
     {
         setEffectDescriptionPopup.SetActive(false);
         setEffectPopupBg.SetActive(false); 
-    }                                             
+    }
+
+    public void OnClickSelectEquipedArtifactButton()
+    {
+        if (StageManager.Instance.stageSaveData.artifacts[selectedArtifactSlotIndex] == null)
+        {
+            messagePopup.Open("선택된 아티팩트가 없습니다. 아티팩트를 장착하지 않고 넘어가시겠습니까?",
+                () => StageManager.Instance.StageComplete(StageManager.Instance.stageSaveData.currentStageIndex),
+                () => messagePopup.Close()
+            );
+        }
+        else
+        {
+            messagePopup.Open($"선택된 아티팩트: {StageManager.Instance.stageSaveData.artifacts[selectedArtifactSlotIndex].ArtifactName}\n해당 아티팩트를 장착하시겠습니까?",
+                () => ArtifactEquipment(StageManager.Instance.stageSaveData.artifacts[selectedArtifactSlotIndex], StageManager.Instance.stageSaveData.currentStageIndex),
+                () => messagePopup.Close()
+            );
+        }
+    }
+
+    private void ArtifactEquipment(ArtifactData selectedArtifact, int stageIndex)
+    {
+        if (selectedArtifact == null)
+        {
+            Debug.LogError("Selected artifact is null.");
+            return;
+        }
+        StartCoroutine(ArtifactEquipmentCoroutine(selectedArtifact, stageIndex));
+    }
+
+    // 코루틴을 사용하여 아티팩트 장착 처리
+
+    private IEnumerator ArtifactEquipmentCoroutine(ArtifactData selectedArtifact, int stageIndex)
+    {
+        // 아티팩트 장착 처리
+        blockInputBg.SetActive(true); // 입력 막기
+        var rockIcon = equipedArtifactRockIcon[stageIndex];
+        if (rockIcon.GetComponent<CanvasGroup>() == null)
+        {
+            rockIcon.AddComponent<CanvasGroup>();
+        }
+        float t = 0;
+        float duration = 2; // 애니메이션 지속 시간
+        while (t < duration)
+        {
+            rockIcon.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(1f, 0f, t / duration);
+            t += Time.deltaTime;
+            yield return null;
+        }
+        rockIcon.GetComponent<CanvasGroup>().alpha = 0f; // 애니메이션이 끝나면 알파를 0으로 설정
+        rockIcon.SetActive(false);
+        rockIcon.GetComponent<CanvasGroup>().alpha = 1f; // 다음 사용을 위해 알파를 1로 초기화
+
+        // 선택된 아티팩트를 장착
+        StageManager.Instance.stageSaveData.equipedArtifacts[stageIndex] = selectedArtifact;
+        //리스페시를 통해 장착된 아티팩트 슬롯을 업데이트
+        EquipedArtifactSlotRefresh();
+        //2초 후에 스테이지 컴플리트를 실행
+        yield return new WaitForSeconds(2f);
+        StageManager.Instance.StageComplete(stageIndex);
+        blockInputBg.SetActive(false); // 입력 막기 해제
+    }
 }

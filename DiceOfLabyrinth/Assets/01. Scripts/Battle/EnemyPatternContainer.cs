@@ -4,6 +4,8 @@ using System.Collections.Generic;
 public class EnemyPatternContainer : MonoBehaviour
 {
     [SerializeField] SOEnemySkill[] enemySkillDatas;
+    private string skillName;
+    private string skillDescription;
 
     public void PrepareSkill()
     {
@@ -19,7 +21,17 @@ public class EnemyPatternContainer : MonoBehaviour
         battleManager.Enemy.currentSkill = skill;
         battleManager.Enemy.currentSkill_Index = skill_Index;
 
-        battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillName, $"{skill.SkillName} 준비중");
-        battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.MonsterSkillDescription, skill.SkillDescription);
+        skillName = skill.SkillName;
+        skillDescription = skill.SkillDescription;        
+    }
+
+    public string GetSkillNameText()
+    {
+        return skillName;
+    }
+
+    public string GetSkillDescriptionText()
+    {
+        return skillDescription;
     }
 }

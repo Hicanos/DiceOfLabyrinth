@@ -3,7 +3,6 @@
 public interface IBuff
 {
     public void Action();
-    public void CallBack();
     public void ReduceDuration();
 }
 
@@ -11,43 +10,53 @@ public class EngravingBuff : IBuff
 {
     public Func<DamageCondition, bool> JudgeCondition;
     public DamageCondition Condition;
-    public DetailedTurnState EffectTime;
     public EffectTypeEnum EffectType;
     public float EffectValue;
-    public int BuffDuration;
+    public int MaxBuffDuration;
+    private int buffDuration;
+    private Action<DamageCondition> effectAction;
+    public bool isActive;
 
-    public EngravingBuff(Func<DamageCondition, bool> jungeCondition, DamageCondition condition, DetailedTurnState effectTime)
+    public EngravingBuff(Func<DamageCondition, bool> jungeCondition, DamageCondition condition, Action<DamageCondition> effectAction)
     {
         JudgeCondition = jungeCondition;
-        EffectTime = effectTime;
         Condition = condition;
         EffectType = condition.EffectType;
         EffectValue = condition.EffectValue;
-        BuffDuration = condition.BuffDuration;
+        MaxBuffDuration = condition.BuffDuration;
+        buffDuration = MaxBuffDuration;
+        this.effectAction = effectAction;
     }
 
     public void Action()
     {
-        if (BattleManager.Instance.CurrentDetailedState != EffectTime) return;
-
         if (JudgeCondition != null && JudgeCondition(Condition))
         {
-            BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] += EffectValue;
+            isActive = true;
+            buffDuration = MaxBuffDuration;
+            effectAction?.Invoke(Condition);
         }
-    }
-
-    public void CallBack()
-    {
-
     }
 
     public void ReduceDuration()
     {
-        BuffDuration--;
+        buffDuration--;
 
-        if (BuffDuration == 0)
-        {
-            BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] -= EffectValue;
+        if (buffDuration == 0 && isActive)
+        {            
+            switch (EffectType)
+            {
+                case EffectTypeEnum.AdditionalDamage:
+                    BattleManager.Instance.EngravingAdditionalStatus.AdditionalDamage -= EffectValue;
+                    break;
+                case EffectTypeEnum.AdditionalRoll:
+                    BattleManager.Instance.EngravingAdditionalStatus.AdditionalRoll -= EffectValue;
+                    break;
+                case EffectTypeEnum.AdditionalStone:
+                    BattleManager.Instance.EngravingAdditionalStatus.AdditionalStone -= EffectValue;
+                    break;
+            }
+            isActive = false;
         }
     }
 }

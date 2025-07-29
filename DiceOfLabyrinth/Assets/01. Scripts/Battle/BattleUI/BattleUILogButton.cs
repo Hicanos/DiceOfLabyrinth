@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class BattleUILogButton : AbstractBattleButton
 {
-    [SerializeField] RectTransform log;
-    [SerializeField] float destTime;
+    [SerializeField] RectTransform scrollView;    
+    [SerializeField] float destTime;    
     bool isOff = true;
     float currentRatio;
 
@@ -18,15 +19,7 @@ public class BattleUILogButton : AbstractBattleButton
 
     public override void OnOffButton(DetailedTurnState state)
     {
-        switch (state)
-        {
-            case DetailedTurnState.BattleStart:
-                gameObject.SetActive(true);
-                break;
-            case DetailedTurnState.BattleEnd:
-                gameObject.SetActive(false);
-                break;
-        }
+
     }
 
     public override void OnPush()
@@ -69,7 +62,7 @@ public class BattleUILogButton : AbstractBattleButton
             scale.y = ratio;
             currentRatio = ratio;
 
-            log.localScale = scale;
+            scrollView.localScale = scale;
 
             pastTime += Time.deltaTime;
             yield return null;
@@ -88,10 +81,10 @@ public class BattleUILogButton : AbstractBattleButton
             scale.y = ratio;
             currentRatio = ratio;
 
-            log.localScale = scale;
+            scrollView.localScale = scale;
 
             pastTime -= Time.deltaTime;
             yield return null;
         }
-    }    
+    }
 }

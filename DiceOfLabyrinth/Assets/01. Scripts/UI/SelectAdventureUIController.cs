@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 using DG.Tweening;
+using System.Linq;
 
 public class SelectAdventureUIController : MonoBehaviour
 {
@@ -52,8 +53,10 @@ public class SelectAdventureUIController : MonoBehaviour
     [SerializeField] private TMP_Text afterStaminaText; // 지불 후 스태미너를 보여주는 텍스트
     [SerializeField] private TMP_Text jewelCostText; // 지불 후 스태미너를 보여주는 텍스트
 
-
-
+    [Header("즉시 완료 리워드")]
+    [SerializeField] private TMP_Text directCompletePotionRewardText;
+    [SerializeField] private TMP_Text directCompleteExpRewardText;
+    [SerializeField] private TMP_Text directCompleteGoldRewardText;
     public bool isDifficulty = false; // 챕터 난이도 선택 여부
 
     private void OnEnable()
@@ -87,9 +90,12 @@ public class SelectAdventureUIController : MonoBehaviour
             messagePopup.Open("선택한 챕터가 유효하지 않습니다. 다시 시도해 주세요.");
             return;
         }
+        if (StageManager.Instance.stageSaveData.chapterStates == null) // 챕터 상태가 초기화되지 않았을 때
+        {
+            StageManager.Instance.InitializeStageStates(StageManager.Instance.chapterData);
+        }
         if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked == false) // 챕터가 잠겨있을 때
         {
-            // 잠겨있는 챕터를 선택했을 때의 UI 처리를 합니다.
             return;
         }
         Debug.Log($"Selected chapter index: {chapterIndex}, Hard: {isDifficulty})");
@@ -173,7 +179,7 @@ public class SelectAdventureUIController : MonoBehaviour
             if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isCompleted)
             {
                 messagePopup.Open(
-                $"해당 챕터()는 이미 완료되었습니다. 다시 시작하시겠습니까?.",
+                $"해당 챕터는 이미 완료되었습니다. 다시 시작하시겠습니까?.",
                  () => EnterDungeon(), // 확인(Yes) 버튼 클릭 시 입장
                  () => messagePopup.Close() // 취소(No) 버튼 클릭 시
             );
@@ -183,20 +189,21 @@ public class SelectAdventureUIController : MonoBehaviour
         }
         else if (chapterIndex != StageManager.Instance.stageSaveData.currentChapterIndex) // 현재 챕터와 선택한 챕터가 다를 때엔 이전 챕터의 종료를 먼저 하라는 팝업을 띄워야 합니다.
         {
-            messagePopup.Open($"진행 중인 챕터가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
+            messagePopup.Open($"진행 중인 챕터({StageManager.Instance.chapterData.GetNameAndDifficulty(StageManager.Instance.stageSaveData.currentChapterIndex)})가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
             return;
         }
-        else // 진행 중이던 챕터를 다시 선택한 경우
+        else if (StageManager.Instance.stageSaveData.currentChapterIndex == chapterIndex) // 현재 진행 중인 챕터가 선택한 챕터와 같을 때
         {
-            selectChapterPanel.SetActive(false);
-            //costCalculationPanel.SetActive(false);
-            scarceStaminaPanel.SetActive(false);
+            
             {
                 // 코스트 지불 없이 바로 배틀 씬으로 이동할 수 있도록 처리합니다.
-                Debug.Log($"진행 중이던 챕터를 다시 선택했습니다. 코스트 계산 패널을 열지 않습니다.");
                 // 진행중이던 챕터를 다시 시작했다는 팝업을 띄우는 로직을 추가할 수 있습니다.
-                messagePopup.Open($"진행 중이던 챕터를 다시 선택했습니다. 배틀 씬으로 이동하시겠습니까?",
-                () => StageManager.Instance.RestoreStageState(), // 확인(Yes) 버튼 클릭 시
+                messagePopup.Open($"진행 중이던 챕터({StageManager.Instance.chapterData.GetNameAndDifficulty(StageManager.Instance.stageSaveData.currentChapterIndex)})를 다시 시작하시겠습니까?",
+                () => {
+                    selectChapterPanel.SetActive(false);
+                    scarceStaminaPanel.SetActive(false);
+                    StageManager.Instance.RestoreStageState();
+                }, // 확인(Yes) 버튼 클릭 시
                 () => messagePopup.Close() // 취소(No) 버튼 클릭 시
                 );
                 return;
@@ -233,12 +240,24 @@ public class SelectAdventureUIController : MonoBehaviour
     private void UpdateDirectCompleteMultiplierText() // 직접 완료 배수 텍스트 업데이트
     {
         directCompleteMultiplierText.text = $"{directCompleteMultiplier}";
-        int actualCost = chapterData.chapterIndex[selectedChapterIndex].DirectCompleteCost * directCompleteMultiplier; // 직접 완료 비용 계산
+        int actualCost = chapterData.chapterIndex[selectedChapterIndex].ChapterCost * directCompleteMultiplier; // 직접 완료 비용 계산
         actualCostText.text = $"{actualCost}"; // 실제 비용 텍스트 업데이트
+        int directCompleteExpReward = chapterData.chapterIndex[selectedChapterIndex].stageData.DirectCompleteExpReward; // 직접 완료 경험치 보상
+        int directCompleteGoldReward = chapterData.chapterIndex[selectedChapterIndex].stageData.DirectCompleteGoldReward; // 직접 완료 골드 보상
+        int directCompletePotionReward = chapterData.chapterIndex[selectedChapterIndex].stageData.DirectCompletePotionReward; // 직접 완료 포션 보상
+        directCompletePotionRewardText.text = $"{directCompletePotionReward * directCompleteMultiplier}"; // 포션 보상 텍스트 업데이트
+        directCompleteExpRewardText.text = $"{directCompleteExpReward * directCompleteMultiplier}"; // 경험치 보상 텍스트 업데이트
+        directCompleteGoldRewardText.text = $"{directCompleteGoldReward * directCompleteMultiplier}"; // 골드 보상 텍스트 업데이트
     }
 
     public void OnClickMultiplePlusButton() // 직접 완료 배수 증가 버튼
     {
+        if (!StageManager.Instance.stageSaveData.chapterStates[selectedChapterIndex].isCompleted || 
+            StageManager.Instance.stageSaveData.chapterStates[selectedChapterIndex] == null)
+        {
+            OnClickMultipleMinButton();
+            return; // 완료되지 않은 챕터를 선택했을 때는 1배수로 설정합니다.
+        }
         if (directCompleteMultiplier < 5) // 최대 배수는 5로 설정
         {
             directCompleteMultiplier++;
@@ -247,6 +266,12 @@ public class SelectAdventureUIController : MonoBehaviour
     }
     public void OnClickMultipleMinusButton() // 직접 완료 배수 감소 버튼
     {
+        if (!StageManager.Instance.stageSaveData.chapterStates[selectedChapterIndex].isCompleted || 
+            StageManager.Instance.stageSaveData.chapterStates[selectedChapterIndex] == null)
+        {
+            OnClickMultipleMaxButton();
+            return; // 완료되지 않은 챕터를 선택했을 때는 1배수로 설정합니다.
+        }
         if (directCompleteMultiplier > 1) // 최소 배수는 1로 설정
         {
             directCompleteMultiplier--;
@@ -255,6 +280,12 @@ public class SelectAdventureUIController : MonoBehaviour
     }
     public void OnClickMultipleMaxButton()
     {
+        if (!StageManager.Instance.stageSaveData.chapterStates[selectedChapterIndex].isCompleted || 
+            StageManager.Instance.stageSaveData.chapterStates[selectedChapterIndex] == null)
+        {
+            OnClickMultipleMinButton();
+            return; // 완료되지 않은 챕터를 선택했을 때는 1배수로 설정합니다.
+        }
         directCompleteMultiplier = 5; // 최대 배수로 설정
         UpdateDirectCompleteMultiplierText();
     }
@@ -265,7 +296,7 @@ public class SelectAdventureUIController : MonoBehaviour
     }
     public void OnClickDirectCompliteButton()
     {
-        int actualCost = chapterData.chapterIndex[selectedChapterIndex].DirectCompleteCost * directCompleteMultiplier; // 직접 완료 비용 계산, 스태미나를 코스트로 사용합니다.
+        int actualCost = chapterData.chapterIndex[selectedChapterIndex].ChapterCost * directCompleteMultiplier; // 직접 완료 비용 계산, 스태미나를 코스트로 사용합니다.
         if (selectedChapterIndex < 0 || selectedChapterIndex >= chapterData.chapterIndex.Count) // 유효하지 않은 챕터 인덱스일 때
         {
             messagePopup.Open("선택한 챕터가 유효하지 않습니다. 다시 시도해 주세요.");
@@ -277,7 +308,7 @@ public class SelectAdventureUIController : MonoBehaviour
         }
         else if (StageManager.Instance.stageSaveData.currentChapterIndex != -1) // 현재 진행 중인 챕터가 있을 때
         {
-            messagePopup.Open($"진행 중인 챕터가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
+            messagePopup.Open($"진행 중인 챕터({StageManager.Instance.chapterData.GetNameAndDifficulty(StageManager.Instance.stageSaveData.currentChapterIndex)})가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
         }
         else if (UserDataManager.Instance.userdata.stamina < actualCost) // 스태미나가 부족할 때
         {
@@ -301,22 +332,42 @@ public class SelectAdventureUIController : MonoBehaviour
 
     private void DirectComplite(int actualCost)
     {
-        int directCompleteExpReward = 0;
-        int directCompleteGoldReward = 0;
-        int directCompleteJewelReward = 0;
+        var stage = chapterData.chapterIndex[selectedChapterIndex].stageData;
+        int directCompleteExpReward = stage.DirectCompleteExpReward;
+        int directCompleteGoldReward = stage.DirectCompleteGoldReward;
+        int directCompletePotionReward = stage.DirectCompletePotionReward;
         UserDataManager.Instance.UseStamina(actualCost); // 스태미나 사용
-        foreach (var stage in chapterData.chapterIndex[selectedChapterIndex].stageData.stageIndex)
-        {
-            directCompleteExpReward += stage.ExpReward; // 각 스테이지의 경험치 보상 합산
-            directCompleteGoldReward += stage.GoldReward; // 각 스테이지의 골드 보상 합산
-            directCompleteJewelReward += stage.JewelReward; // 각 스테이지의 쥬얼 보상 합산
-        }
         UserDataManager.Instance.AddExp(directCompleteExpReward * directCompleteMultiplier); // 경험치 보상 추가
         UserDataManager.Instance.AddGold(directCompleteGoldReward * directCompleteMultiplier); // 골드 보상 추가
-        UserDataManager.Instance.AddJewel(directCompleteJewelReward * directCompleteMultiplier); // 쥬얼 보상 추가
+        Dictionary<EXPpotion, int> potionResults = new();
+
+        int remainingExp = directCompletePotionReward * directCompleteMultiplier; // 포션 보상 경험치 총합
+
+        var potionList = ItemManager.Instance.AllItems.Values.OfType<EXPpotion>().OrderByDescending(p => p.ExpAmount).ToList();
+        foreach (var potion in potionList)
+        {
+            if (potion.ExpAmount <= 0) continue;
+
+            int count = remainingExp / potion.ExpAmount;
+            if (count > 0)
+            {
+                potionResults[potion] = count;
+                remainingExp %= potion.ExpAmount;
+            }
+        }
+
+        string potionRewardText = "";
+        foreach (var kvp in potionResults)
+        {
+            ItemManager.Instance.GetItem(kvp.Key.ItemID, kvp.Value);
+            potionRewardText += $"{kvp.Key.NameKr}: {kvp.Value}개\n"; // 포션 보상 텍스트 생성
+        }
 
         messagePopup.Open(
-        $"직접 완료가 완료되었습니다!\n경험치: {directCompleteExpReward * directCompleteMultiplier}\n골드: {directCompleteGoldReward * directCompleteMultiplier}\n쥬얼: {directCompleteJewelReward * directCompleteMultiplier}"
+        $"직접 완료가 완료되었습니다!\n" +
+        $"경험치: {directCompleteExpReward * directCompleteMultiplier}exp\n" +
+        $"골드: {directCompleteGoldReward * directCompleteMultiplier}골드\n" +
+        potionRewardText
         );
     }
 
@@ -399,6 +450,12 @@ public class SelectAdventureUIController : MonoBehaviour
         //}
         chapterIconSelected.sprite = chapterData.chapterIndex[selectedChapterIndex].Sprite;
         selectedChapterDescriptionText.text = selectedChapter.Description;
+        int expReward = chapterData.chapterIndex[chapterIndex].stageData.DirectCompleteExpReward;
+        int goldReward = chapterData.chapterIndex[chapterIndex].stageData.DirectCompleteGoldReward;
+        int potionReward = chapterData.chapterIndex[chapterIndex].stageData.DirectCompletePotionReward;
+        directCompletePotionRewardText.text = $"{potionReward * directCompleteMultiplier}";
+        directCompleteExpRewardText.text = $"{expReward * directCompleteMultiplier}";
+        directCompleteGoldRewardText.text = $"{goldReward * directCompleteMultiplier}";
     }
 
     private void UpdateStaminaUI() // 스태미나 부족 UI를 업데이트

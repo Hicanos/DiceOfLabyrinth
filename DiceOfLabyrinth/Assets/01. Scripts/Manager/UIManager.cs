@@ -35,6 +35,7 @@ public class UIManager : MonoBehaviour
     {
         HudMode hudmode = scene.name switch
         {
+            "TitleScene" => HudMode.Title,
             "LobbyScene" => HudMode.Lobby,
             "SelectAdventureScene" => HudMode.SelectAdventure,
             "CharacterScene" => HudMode.Character,

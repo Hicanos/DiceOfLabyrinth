@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor.Experimental;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,6 +39,7 @@ public class ShopPopup : MonoBehaviour
     [SerializeField] private List<ArtifactData> selectableArtifacts = new List<ArtifactData>(6); // 상점에서 선택 가능한 아티팩트 목록
     //[SerializeField] private List<ArtifactData> exceptedArtifacts = new List<ArtifactData>(); // 상점에서 제외할 아티팩트 목록//현재는 사용하지 않음
     [SerializeField] private List<GameObject> shopArtifactViewers = new List<GameObject>(6); // 상점 아티팩트 뷰어 목록
+    private int[] artifactPurchasePrices = new int[6]; // 상점 아티팩트 구매 가격 목록
 
     [Header("ShopArtifactViewers")]
     [SerializeField] private TMP_Text[] shopArtifactViewerNameText = new TMP_Text[6];
@@ -68,10 +70,14 @@ public class ShopPopup : MonoBehaviour
 
     private void OnEnable()
     {
+        if (StageManager.Instance.stageSaveData.currentChapterIndex == -1)
+        {
+            gameObject.SetActive(false); // 챕터가 선택되지 않은 경우 상점 패널 비활성화
+            return;
+        }
         // 상점 패널이 활성화될 때 초기화
         StartShop();
-        animationRect.AnimLeftIn();
-        animationRect.AnimRightIn();
+        animationRect.PlayAllIn();
     }
 
     public void StartShop()
@@ -122,6 +128,7 @@ public class ShopPopup : MonoBehaviour
         {
             int randomIndex = Random.Range(0, shopInventoryArtifacts.Count);
             selectableArtifacts.Add(shopInventoryArtifacts[randomIndex]);
+            artifactPurchasePrices[i] = (int)(selectableArtifacts[i].PurchasePrice * Random.Range(0.75f, 1.25f));
             shopInventoryArtifacts.RemoveAt(randomIndex);
         }
         // 선택된 아티팩트로 상점 뷰어 갱신
@@ -132,7 +139,7 @@ public class ShopPopup : MonoBehaviour
                 ArtifactData artifact = selectableArtifacts[i];
                 shopArtifactViewers[i].SetActive(true);
                 shopArtifactViewerNameText[i].text = artifact.ArtifactName;
-                purchasePriceText[i].text = $"{artifact.PurchasePrice}";
+                purchasePriceText[i].text = $"{artifactPurchasePrices[i]}"; // 구매 가격 표시
                 shopArtifactViewerIcons[i].GetComponent<UnityEngine.UI.Image>().sprite = artifact.Icon;
                 shopArtifactViewerRarities[i].GetComponent<UnityEngine.UI.Image>().sprite = artifact.RaritySprite;
             }
@@ -198,14 +205,14 @@ public class ShopPopup : MonoBehaviour
             shopArtifactNameText.text = "";
             shopArtifactSetEffectText.text = "";
             shopArtifactDescriptionText.text = "";
-            shopArtifactPurchasePriceText.text = "0"; // 초기화
+            shopArtifactPurchasePriceText.text = "9999"; // 초기화
             return; // 선택한 슬롯에 아티팩트가 없으면 리턴
         }
         shopArtifactNameText.text = artifactInSlot.ArtifactName;
         shopArtifactSetEffectText.text = string.Join(" ", artifactInSlot.SetEffectData.ConvertAll(setEffect => $"#{setEffect.EffectName}"));
         shopArtifactDescriptionText.text = artifactInSlot.Description;
-        shopArtifactPurchasePriceText.text = $"{artifactInSlot.PurchasePrice}"; // 구매 가격 표시
-        if (StageManager.Instance.stageSaveData.manaStone < artifactInSlot.PurchasePrice)
+        shopArtifactPurchasePriceText.text = $"{artifactPurchasePrices[slotIndex]}"; // 구매 가격 표시
+        if (StageManager.Instance.stageSaveData.manaStone < artifactPurchasePrices[slotIndex])
         {
             shopArtifactPurchasePriceText.color = Color.red; // 마석이 부족하면 빨간색으로 표시
         }

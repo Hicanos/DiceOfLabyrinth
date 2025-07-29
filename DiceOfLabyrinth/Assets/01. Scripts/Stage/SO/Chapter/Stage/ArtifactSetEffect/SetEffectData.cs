@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 [CreateAssetMenu(fileName = "NewSetEffectData", menuName = "SetEffect/SetEffectData")]
 public class SetEffectData : ScriptableObject

@@ -276,7 +276,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackPosition: {x: 1.25, y: -0.97, z: -4}
   charAttackMoveTime: 0.4
-  waitSecondEnemyDie: 4
   waitSecondCharAttack: 0.3
   isCharacterAttacking: 0
 --- !u!4 &562530838
@@ -1540,6 +1539,7 @@ MonoBehaviour:
   RollDiceSynced: {fileID: 630142358}
   DiceBoard: {fileID: 1058215125}
   IsRolling: 0
+  DiceRankBefore: 0
   DiceRank: 0
 --- !u!4 &1531840405
 Transform:
@@ -2079,15 +2079,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BattleSpawner: {fileID: 5666082356261757287}
   UIValueChanger: {fileID: 303490232559084238}
+  BattleUIHP: {fileID: 5666082356261757288}
   CharacterAttack: {fileID: 562530837}
   EnemyAttack: {fileID: 562530836}
   EnemyPatternContainer: {fileID: 562530839}
-  CharacterHPPrefab: {fileID: 8686863719124662963, guid: 83f53905d4392be41becafab42e5a40f, type: 3}
-  EnemyHPPrefab: {fileID: 8686863719124662963, guid: 1d56b95780a60b042839dab99b38bde7, type: 3}
-  BattleUIHP: {fileID: 5666082356261757288}
-  CurrentPlayerState: 0
+  CurrentDetailedState: 0
   BattleTurn: 0
-  isBattle: 0
+  CostSpendedInTurn: 0
+  IsBattle: 0
+  IsBoss: 0
+  IsWon: 0
+  WaitSecondEndBattle: 4
 --- !u!1 &5666082356261757285
 GameObject:
   m_ObjectHideFlags: 0
@@ -2101,7 +2103,6 @@ GameObject:
   - component: {fileID: 303490232559084238}
   - component: {fileID: 5666082356261757287}
   - component: {fileID: 5666082356261757288}
-  - component: {fileID: 5666082356261757286}
   m_Layer: 0
   m_Name: BattleManager
   m_TagString: Untagged
@@ -2109,18 +2110,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &5666082356261757286
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5666082356261757285}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ddc6cde1ee2d2e44a34a32ed37feb01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5666082356261757287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2133,6 +2122,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf97210c0d7ebfe4f9d22ee27adc7ca3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnDetach: {x: 12, y: 0, z: 0}
+  spawnDestTime: 2.5
+  formationVec:
+  - formationVec:
+    - {x: -1.03, y: -1.26, z: -4}
+    - {x: -2.79, y: -0.31, z: -3}
+    - {x: -3.25, y: -0.85, z: -3.666}
+    - {x: -3.6, y: -1.64, z: -4.322}
+    - {x: -3.93, y: -2.33, z: -5}
+  - formationVec:
+    - {x: -0.8, y: -0.78, z: -3.666}
+    - {x: -1.37, y: -2.08, z: -4.332}
+    - {x: -3.2, y: -0.35, z: -3}
+    - {x: -3.4, y: -1.14, z: -4}
+    - {x: -3.48, y: -2.05, z: -5}
+  - formationVec:
+    - {x: -0.61, y: -0.35, z: -3}
+    - {x: -1.13, y: -1.14, z: -4}
+    - {x: -1.49, y: -2.05, z: -5}
+    - {x: -3.17, y: -0.78, z: -3.666}
+    - {x: -3.74, y: -2.08, z: -4.332}
+  - formationVec:
+    - {x: -0.87, y: -0.31, z: -3}
+    - {x: -1.46, y: -0.85, z: -3.666}
+    - {x: -1.92, y: -1.64, z: -4.332}
+    - {x: -2.37, y: -2.33, z: -5}
+    - {x: -4.22, y: -1.26, z: -4}
+  enemyVec: {x: 3, y: -1, z: -4}
   characterContainer: {fileID: 1968470673}
   enemyContainer: {fileID: 1415162113}
   diceContainer: {fileID: 1069492833}
@@ -2151,6 +2168,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 276a9e92ef295a34dbc2f9997dba1caa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CharacterHPCanvas: {fileID: 8686863719124662963, guid: 83f53905d4392be41becafab42e5a40f, type: 3}
+  CharacterHPBack: {fileID: 8354483439385447502, guid: ebb824e45e808d64f874846d530d11b7, type: 3}
+  CharacterHPFront: {fileID: 3948877890493290502, guid: 9320c032d44178449804c1567c00f173, type: 3}
+  CharacterHPBarrier: {fileID: 7665564408766802699, guid: 0241db6c810aca548932b46422951dc3, type: 3}
+  CharacterHPBlank: {fileID: 7665564408766802699, guid: 6693422b38f1b0242b8df6ec3f7b588f, type: 3}
+  CharacterHPText: {fileID: 5269274774389542425, guid: 6a6d209b2f7935b4aa9ec07bff538df9, type: 3}
+  patternDisplayer: {fileID: 2668447528982283134, guid: e1810d81c53e879419094a2620186b8f, type: 3}
+  EnemyHPCanvas: {fileID: 8686863719124662963, guid: 02efbaf44be074446a33acdbbd29da33, type: 3}
+  CharacterHPVec: {x: 2.73, y: 0.55, z: 0}
+  CharacterPos: {x: 0, y: 3.8, z: 0}
+  EnemyHPVec: {x: 2.68, y: 0.37, z: 0}
+  EnemyPos: {x: 0, y: 2.46, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

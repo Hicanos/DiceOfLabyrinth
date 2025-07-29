@@ -52,19 +52,22 @@ public class DiceManager : MonoBehaviour
     public GameObject DiceBoard;
 
     private int signitureAmount;
+    private List<int> signitureIndex = new List<int>();
+    private int sumOfDiceNum;
+
     public int SignitureAmount => signitureAmount;
+    public List<int> SignitureIndex => signitureIndex;
+    public int SumOfDiceNum => sumOfDiceNum;
 
     public IEnumerator DiceRollCoroutine;
 
     private int[] diceResult;
-    public int[] DiceResult => diceResult;
-
     private int[] diceResultCount;
-    public int[] DiceResultCount => diceResultCount;
-
-    int[] defaultDiceResultCount;
-
+    private int[] defaultDiceResultCount;
     private List<int> fixedDiceList;
+
+    public int[] DiceResult => diceResult;
+    public int[] DiceResultCount => diceResultCount;
     public List<int> FixedDiceList => fixedDiceList;
 
     const int maxDiceNum = 6;
@@ -75,7 +78,7 @@ public class DiceManager : MonoBehaviour
 
     private int rollCount = 0;
     private readonly int maxRollCount = 3;
-    public int RollRemain => maxRollCount + (int)BattleManager.Instance.EngravingAdditionalStatus.AdditionalRoll - rollCount;
+    public int RollRemain => maxRollCount + (int)BattleManager.Instance.EngravingAdditionalStatus.AdditionalRoll + (int)BattleManager.Instance.ArtifactAdditionalStatus.AdditionalRoll - rollCount;
 
     //public bool isSkipped = false;
     public bool IsRolling = false;
@@ -144,6 +147,8 @@ public class DiceManager : MonoBehaviour
     private void SettingForRoll()
     {
         signitureAmount = 0;
+        signitureIndex.Clear();
+        sumOfDiceNum = 0;
         DiceHolding.isCantFix = true;
 
         //Ground.SetActive(true);
@@ -172,6 +177,8 @@ public class DiceManager : MonoBehaviour
 
         for (int i = 0; i < diceResult.Length; i++)
         {
+            sumOfDiceNum += diceResult[i];
+
             if (fixedDiceList.Contains<int>(i))
             {
                 diceResultCount[diceResult[i] - 1]++;
@@ -193,11 +200,12 @@ public class DiceManager : MonoBehaviour
             if (signitureArr[i] == diceResult[i])
             {
                 signitureAmount++;
+                signitureIndex.Add(i);
             }
         }
     }
 
-    public IEnumerator SortingAfterRoll() //디버그를 위한 임시 public
+    IEnumerator SortingAfterRoll()
     {
         rollCount++;
         List<Dice> diceList = new List<Dice>();
@@ -350,10 +358,9 @@ public class DiceManager : MonoBehaviour
             Dice dice = diceGO.GetComponent<Dice>();
 
             dice.StopSimulation();
-            StopCoroutine(SortingAfterRoll());
-
-            BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.RollEnd);
+            StopCoroutine(SortingAfterRoll());            
         }
+        BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.RollEnd);
         BattleManager.Instance.GetCost(signitureAmount);
     }
 

@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Bson;
 using TMPro;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
@@ -39,6 +38,11 @@ public class RecoveryPopup : MonoBehaviour
     }
     private void OnEnable()
     {
+        if (StageManager.Instance.stageSaveData.currentChapterIndex == -1)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
         StartRecoveryPopup();
     }
 

@@ -2,11 +2,35 @@
 
 public class EngravingBuffContainer
 {
-    private List<IBuff> Buffs = new List<IBuff>();
+    private List<IBuff> buffs = new List<IBuff>();
+    private List<IBuff> buffsCallbackCharacterAttack = new List<IBuff>();
+    private List<IBuff> buffsCallbackTurnEnter = new List<IBuff>();
+    private List<IBuff> buffsCallbackTurnEnd = new List<IBuff>();
 
     public void Action()
     {
-        foreach (var buff in Buffs)
+        foreach (var buff in buffs)
+        {
+            buff.Action();
+        }
+    }
+    public void ActionCharacterAttack()
+    {
+        foreach (var buff in buffsCallbackCharacterAttack)
+        {
+            buff.Action();
+        }
+    }
+    public void ActionTurnEnter()
+    {
+        foreach (var buff in buffsCallbackTurnEnter)
+        {
+            buff.Action();
+        }
+    }
+    public void ActionTurnEnd()
+    {
+        foreach (var buff in buffsCallbackTurnEnd)
         {
             buff.Action();
         }
@@ -14,7 +38,7 @@ public class EngravingBuffContainer
 
     public void ReduceDuration()
     {
-        foreach(var buff in Buffs)
+        foreach(var buff in buffs)
         {
             buff.ReduceDuration();
         }
@@ -22,12 +46,44 @@ public class EngravingBuffContainer
 
     public void AddEngravingBuffs(IBuff buff)
     {
-        Buffs.Add(buff);
+        buffs.Add(buff);
+    }
+    public void AddBuffsCallbackCharacterAttack(IBuff buff)
+    {
+        buffsCallbackCharacterAttack.Add(buff);
+    }
+    public void AddBuffsCallbackTurnEnd(IBuff buff)
+    {
+        buffsCallbackTurnEnd.Add(buff);
+    }
+    public void AddBuffsCallbackTurnEnter(IBuff buff)
+    {
+        buffsCallbackTurnEnter.Add(buff);
     }
 
     public void RemoveEngravingBuffs(IBuff buff)
     {
-        Buffs.Remove(buff);
+        buffs.Remove(buff);
+    }
+    public void RemoveBuffsCallbackCharacterAttack(IBuff buff)
+    {
+        buffsCallbackCharacterAttack.Remove(buff);
+    }
+    public void RemoveBuffsCallbackTurnEnd(IBuff buff)
+    {
+        buffsCallbackTurnEnd.Remove(buff);
+    }
+    public void RemoveBuffsCallbackTurnEnter(IBuff buff)
+    {
+        buffsCallbackTurnEnter.Remove(buff);
+    }
+
+    public void RemoveAllBuffs()
+    {
+        buffs.Clear();
+        buffsCallbackCharacterAttack.Clear();
+        buffsCallbackTurnEnd.Clear();
+        buffsCallbackTurnEnter.Clear();
     }
 }
 
@@ -37,5 +93,16 @@ public class EngravingAdditionalStatus
     public float AdditionalRoll;
     public float AdditionalStone;
 
-    public float[] AdditionalStatus = new float[3];
+    public EngravingAdditionalStatus()
+    {
+        AdditionalDamage = 1;
+        AdditionalRoll = 0;
+        AdditionalStone = 1;
+    }
+    public void ResetStatus()
+    {
+        AdditionalDamage = 1;
+        AdditionalRoll = 0;
+        AdditionalStone = 1;
+    }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 public enum HudMode
 {
     None,
+    Title,
     Lobby,
     Character,
     SelectAdventure,
@@ -56,6 +57,15 @@ public class PublicUIController : MonoBehaviour
 
         switch (mode)
         {
+            case HudMode.Title:
+                stamina.SetActive(false);
+                gold.SetActive(false);
+                jewel.SetActive(false);
+                settingButton.SetActive(true);
+                homeButton.SetActive(false);
+                sceneBackButton.SetActive(false);
+                break;
+
             case HudMode.Lobby:
                 stamina.SetActive(true);
                 gold.SetActive(true);
@@ -96,5 +106,15 @@ public class PublicUIController : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public void OnClickBackButton()
+    {
+        SceneManagerEx.Instance.LoadPreviousScene();
+    }
+
+    public void OnClickHomeButton()
+    {
+        SceneManagerEx.Instance.LoadScene("LobbyScene");
     }
 }

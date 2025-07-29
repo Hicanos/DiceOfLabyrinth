@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class BattleButtonSkill : AbstractBattleButton
@@ -18,9 +17,6 @@ public class BattleButtonSkill : AbstractBattleButton
     {
         switch (state)
         {
-            case DetailedTurnState.BattleStart:
-                gameObject.transform.parent.gameObject.SetActive(true);
-                break;
             case DetailedTurnState.Enter:
                 button.interactable = true;
                 break;
@@ -33,15 +29,13 @@ public class BattleButtonSkill : AbstractBattleButton
             case DetailedTurnState.EndTurn:
                 button.interactable = false;
                 break;
-            case DetailedTurnState.BattleEnd:
-                gameObject.transform.parent.gameObject.SetActive(false);
-                break;
         }
     }
 
     public override void OnPush()
     {
         Debug.Log(character.CharNameKr + " 스킬 사용");
+        BattleManager.Instance.SpendCost(3); //테스트용
     }
 
     private void GetIndex()

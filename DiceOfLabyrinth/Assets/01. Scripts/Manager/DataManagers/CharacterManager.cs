@@ -2,13 +2,14 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using System.Threading.Tasks;
 
 /// <summary>
 /// 모든 캐릭터 데이터와 유저가 획득한 캐릭터를 관리하는 매니저 (MonoBehaviour 미상속)
 /// </summary>
 public class CharacterManager
 {
-    // 싱글톤 인스턴스
     private static CharacterManager instance;
     public static CharacterManager Instance
     {
@@ -23,38 +24,44 @@ public class CharacterManager
         }
     }
 
-    // 모든 캐릭터 데이터 (Key: charID, Value: CharacterSO)
     public Dictionary<string, CharacterSO> AllCharacters { get; private set; } = new Dictionary<string, CharacterSO>();
-
-    // 보유한 캐릭터 데이터 (LobbyCharacter 리스트)
     public List<LobbyCharacter> OwnedCharacters { get; private set; } = new List<LobbyCharacter>();
-
-    // BattleCharacter 관리용 컬렉션
     public Dictionary<string, BattleCharacter> BattleCharacters { get; private set; } = new Dictionary<string, BattleCharacter>();
-
-
-    // Addressable 로드 완료 여부
+    private List<AsyncOperationHandle<IList<CharacterSO>>> handles = new List<AsyncOperationHandle<IList<CharacterSO>>>();
     public bool IsLoaded { get; private set; } = false;
 
-    // 초기화(최초 Instance 접근 시 1회만 호출)
     private void Initialize()
-    {        
-
+    {
+        OwnedCharacters.Clear();
+        BattleCharacters.Clear();
+        AllCharacters.Clear();
+        handles.Clear();
     }
 
     // Addressable로 등록된 캐릭터 SO들을 비동기로 로드
-    public void LoadAllCharactersAsync(System.Action onLoaded = null)
+    public async Task LoadAllCharactersAsync()
     {
-        Addressables.LoadAssetsAsync<CharacterSO>("CharacterSO", null).Completed += handle =>
+        handles.Clear();
+        var handle = Addressables.LoadAssetsAsync<CharacterSO>("CharacterSO", null);
+        handles.Add(handle);
+        await handle.Task;
+        AllCharacters = handle.Result.ToDictionary(c => c.charID, c => c);
+        IsLoaded = true;
+        LoadOwnedCharactersFromData();
+    }
+
+    public void ReleaseAllCharacters()
+    {
+        foreach (var handle in handles)
         {
-            AllCharacters = handle.Result.ToDictionary(c => c.charID, c => c);
-            IsLoaded = true;
-            LoadOwnedCharactersFromData();
-            onLoaded?.Invoke();
-        };
-#if UNITY_EDITOR
-        Debug.Log($"캐릭터 데이터 로드 시작됨: {AllCharacters.Count}개");
-#endif
+            if (handle.IsValid())
+                Addressables.Release(handle);
+        }
+        AllCharacters.Clear();
+        OwnedCharacters.Clear();
+        BattleCharacters.Clear();
+        handles.Clear();
+        IsLoaded = false;
     }
 
     /// <summary>
@@ -88,9 +95,7 @@ public class CharacterManager
     /// </summary>
     public void AcquireCharacter(string charID)
     {
-        if (OwnedCharacters.Any(c => c.CharacterData.charID == charID))
-            return;
-
+        
         if (AllCharacters.TryGetValue(charID, out var so))
         {
             var lobbyChar = new LobbyCharacter();
@@ -175,6 +180,25 @@ public class CharacterManager
     {
         BattleCharacters.TryGetValue(charID, out var battleChar);
         return battleChar;
+    }
+
+    /// <summary>  
+    /// 디폴트 캐릭터(Char_0~ Char_4) 획득
+    /// </summary>
+    
+    public void AcquireDefaultCharacters()
+    {
+        if(OwnedCharacters.Count > 0)
+        {
+            return; // 이미 캐릭터가 있다면 중복 획득 방지
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            string charID = "Char_" + i.ToString();
+            AcquireCharacter(charID);
+            Debug.Log($"획득한 캐릭터 ID: {charID}");
+        }
     }
 
 }

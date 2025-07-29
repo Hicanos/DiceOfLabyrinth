@@ -1,49 +1,44 @@
 ﻿using System;
 
-public class ArtifactBuff : IBuff
+public class ArtifactBuffUpdate : IBuff
 {
-    public Func<DamageCondition, bool> JudgeCondition;
-    public ArtifactEffectData Condition;
-    public ArtifactEffectTypeEnum EffectType;
+    ArtifactDetailData Data;
+    public Func<ArtifactDetailData, bool> JudgeCondition;
+    public Action<ArtifactDetailData> EffectAction;
 
-    public DetailedTurnState EffectTime;
-    public float EffectValue;
     public int BuffDuration;
+    public int BuffUseCount;
+    public bool isActiveThisTurn;
 
-    public ArtifactBuff(Func<DamageCondition, bool> jungeCondition, ArtifactEffectData effectData, DetailedTurnState effectTime)
+    public ArtifactBuffUpdate(ArtifactDetailData data, Func<ArtifactDetailData, bool> judgeCondition, Action<ArtifactDetailData> effectAction)
     {
-        JudgeCondition = jungeCondition;
-        EffectTime = effectTime;
-        Condition = effectData;
-
-        EffectValue = effectData.Value;
-
-        //EffectType = ;
-        BuffDuration = 0;
+        Data = data;
+        JudgeCondition = judgeCondition;
+        EffectAction = effectAction;
+        BuffUseCount = 1;
     }
 
     public void Action()
     {
-        if (BattleManager.Instance.CurrentDetailedState != EffectTime) return;
+        if (JudgeCondition(Data) == false) return;
+        if (isActiveThisTurn) return;
+        if (BuffUseCount == 0) return;
 
-        //if (JudgeCondition != null && JudgeCondition(Condition))
-        //{
-        //    BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] += EffectValue;
-        //}
-    }
+        isActiveThisTurn = true;
 
-    public void CallBack()
-    {
-
+        EffectAction(Data);
+        ReduceUseCount();
     }
 
     public void ReduceDuration()
     {
-        BuffDuration--;
+        if (isActiveThisTurn == false) return;
 
-        if (BuffDuration == 0)
-        {
-            BattleManager.Instance.EngravingAdditionalStatus.AdditionalStatus[(int)EffectType] -= EffectValue;
-        }
+        BuffDuration--;
+    }
+
+    private void ReduceUseCount()
+    {
+        BuffUseCount--;
     }
 }

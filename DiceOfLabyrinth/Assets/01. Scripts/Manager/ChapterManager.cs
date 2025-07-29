@@ -52,7 +52,7 @@ public class ChapterManager : MonoBehaviour
     //    }
     //    UserDataManager.Instance.AddExp(StageManager.Instance.stageSaveData.savedExpReward);
     //    UserDataManager.Instance.AddGold(StageManager.Instance.stageSaveData.savedGoldReward);
-    //    UserDataManager.Instance.AddJewel(StageManager.Instance.stageSaveData.savedJewelReward);
+    //    UserDataManager.Instance.AddJewel(StageManager.Instance.stageSaveData.savedPotionReward);
 
     //    var states = StageManager.Instance.stageSaveData.chapterStates;
     //    states[chapterIndex].isCompleted = true;

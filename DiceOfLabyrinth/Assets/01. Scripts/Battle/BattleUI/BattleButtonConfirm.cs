@@ -33,9 +33,6 @@ public class BattleButtonConfirm : AbstractBattleButton
                 backBoard.SetActive(false);
                 confirmButton.interactable = false;
                 break;
-            case DetailedTurnState.BattleEnd:
-                gameObject.SetActive(false);
-                break;
         }
     }
 

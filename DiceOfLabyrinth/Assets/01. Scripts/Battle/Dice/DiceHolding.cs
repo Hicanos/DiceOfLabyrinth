@@ -43,7 +43,7 @@ public class DiceHolding : MonoBehaviour
     public void SelectDice(Vector2 vec)
     {
         if(isCantFix) return;
-        if (battleManager.isBattle == false) return;
+        if (battleManager.IsBattle == false) return;
         DiceMy dice;
 
         Ray ray = diceCamera.ScreenPointToRay(vec);
@@ -169,7 +169,7 @@ public class DiceHolding : MonoBehaviour
 
     public void SkipRolling(Vector2 vec)
     {
-        if (battleManager.isBattle == false || diceManager.IsRolling == false) return;
+        if (battleManager.IsBattle == false || diceManager.IsRolling == false) return;
         StopCoroutine(diceManager.DiceRollCoroutine);        
         Ray ray = diceCamera.ScreenPointToRay(vec);
 

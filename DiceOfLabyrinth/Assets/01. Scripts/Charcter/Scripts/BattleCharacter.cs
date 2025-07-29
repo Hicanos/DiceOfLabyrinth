@@ -1,5 +1,16 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
+using UnityEngine;
+using static DataSaver;
+
+public enum StatType
+{
+    HP,
+    ATK,
+    DEF,
+    CritChance,
+    CritDamage,
+    Penetration
+}
 
 /// <summary>
 /// 배틀(전투)에서 사용되는 캐릭터 정보 및 기능
@@ -8,26 +19,20 @@ using System;
 [System.Serializable]
 public class BattleCharacter : IDamagable
 {
-    /*
-     * var battleData = CharacterManager.Instance.RegisterBattleCharacterData("charID");
-     */
-
-
     // 캐릭터의 고유 데이터
     public string CharID { get; private set; }
     public CharacterSO CharacterData { get; private set; }
 
-    // LobbyCharacter 데이터 참조 (전투 시작 시 복사)
-    public int Level { get; private set; }
+    // Regular: 현재 최대값(버프 등 포함)
+    public int RegularHP { get; private set; }
     public int RegularATK { get; private set; }
     public int RegularDEF { get; private set; }
-    public int RegularHP { get; private set; }
-    public float CritChance { get; private set; }
-    public float CritDamage { get; private set; }
-    public float Penetration { get; private set; } // 관통력
+    public float RegularCritChance { get; private set; }
+    public float RegularCritDamage { get; private set; }
+    public float Penetration { get; private set; }
+    public int Level { get; private set; }
 
-    [Header("배틀 상태")]
-    // 전투 중 실시간 변동 데이터
+    // Current: 실시간 값(버프 등 적용)
     public string CharNameKr;
     public string CharNameEn;
     public int CurrentHP;
@@ -37,7 +42,7 @@ public class BattleCharacter : IDamagable
     public float CurrentCritDamage;
     public float CurrentPenetration;
 
-    [Header("처음 저장되는 기본 값")]
+    // initial: 초기값(Lobby 기준) 1층>2층으로 넘어갈 때 한 번 리셋하고, 진입시 보유한 아티팩트를 다시 계산
     private int initialHP;
     private int initialATK;
     private int initialDEF;
@@ -62,10 +67,6 @@ public class BattleCharacter : IDamagable
         SetCharID(charID);
     }
 
-
-    /// <summary>
-    /// 외부에서 CharacterSO만 세팅하면 자동으로 LobbyCharacter를 찾아 초기화
-    /// </summary>
     public void SetCharacterSO(CharacterSO so)
     {
         CharacterData = so;
@@ -73,9 +74,6 @@ public class BattleCharacter : IDamagable
         InitializeFromLobbyAuto();
     }
 
-    /// <summary>
-    /// 외부에서 charID만 세팅해도 자동으로 LobbyCharacter를 찾아 초기화
-    /// </summary>
     public void SetCharID(string charID)
     {
         CharID = charID;
@@ -84,7 +82,7 @@ public class BattleCharacter : IDamagable
     }
 
     /// <summary>
-    /// CharacterSO/charID를 기반으로 자동으로 LobbyCharacter를 찾아 초기화
+    /// CharacterSO/charID를 기반으로 자동으로 LobbyCharacter를 찾아 초기화 (시작시 1회 한정)
     /// </summary>
     private void InitializeFromLobbyAuto()
     {
@@ -95,30 +93,29 @@ public class BattleCharacter : IDamagable
             lobbyChar = CharacterManager.Instance.GetLobbyCharacterByID(CharID);
 
         if (lobbyChar == null)
-        {
-            // MonoBehaviour가 아니므로 Debug.LogError 대신 예외 처리
             throw new InvalidOperationException($"BattleCharacter: 해당하는 LobbyCharacter를 찾을 수 없습니다. (charID: {CharID})");
-        }
 
-        // LobbyCharacter의 모든 주요 데이터를 복사
-        Level = lobbyChar.Level;
-        RegularATK = lobbyChar.RegularATK;
-        RegularDEF = lobbyChar.RegularDEF;
-        RegularHP = lobbyChar.RegularHP;
-        CritChance = lobbyChar.CritChance;
-        CritDamage = lobbyChar.CritDamage;
-        CharacterData = lobbyChar.CharacterData;
-        Penetration = CharacterData.penetration; // 관통력은 배틀에서만 성장하므로 CharacterSO에서 가져옴
+        // 초기값 저장 (Lobby 기준)
+        initialLevel = lobbyChar.Level;
+        initialATK = lobbyChar.RegularATK;
+        initialDEF = lobbyChar.RegularDEF;
+        initialHP = lobbyChar.RegularHP;
+        initialCritChance = lobbyChar.CritChance;
+        initialCritDamage = lobbyChar.CritDamage;
+        initialPenetration = lobbyChar.CharacterData.penetration;
 
-        // 초기값 저장
-        initialATK = RegularATK;
-        initialDEF = RegularDEF;
-        initialHP = RegularHP;
-        initialCritChance = CritChance;
-        initialCritDamage = CritDamage;
-        initialLevel = Level;
+        // Regular: 현재 최대값(버프 등 포함, 초기엔 Lobby 기준)
+        CharNameKr = CharacterData.nameKr; // 캐릭터 이름 설정
+        CharNameEn = CharacterData.nameEn; // 캐릭터 영어 이름 설정
+        Level = initialLevel;
+        RegularATK = initialATK;
+        RegularDEF = initialDEF;
+        RegularHP = initialHP;
+        RegularCritChance = initialCritChance;
+        RegularCritDamage = initialCritDamage;
+        Penetration = initialPenetration;
 
-        // 전투용 데이터 초기화
+        // Current: 실시간 값(버프 등 적용)
         ResetBattleData();
         IsDied = false;
     }
@@ -128,18 +125,80 @@ public class BattleCharacter : IDamagable
     /// </summary>
     public void ResetBattleData()
     {
-        CharNameKr = CharacterData.nameKr; // 캐릭터 이름 설정
-        CharNameEn = CharacterData.nameEn; // 캐릭터 영어 이름 설정
-        CurrentHP = initialHP;
-        CurrentATK = initialATK;
-        CurrentDEF = initialDEF;
-        CurrentCritChance = initialCritChance;
-        CurrentCritDamage = initialCritDamage;
-        CurrentPenetration = initialPenetration;
+        CurrentHP = RegularHP;
+        CurrentATK = RegularATK;
+        CurrentDEF = RegularDEF;
+        CurrentCritChance = RegularCritChance;
+        CurrentCritDamage = RegularCritDamage;
+        CurrentPenetration = Penetration;
     }
 
-    public void ApplyATK(int amount) => CurrentATK += amount;
-    public void ApplyDEF(int amount) => CurrentDEF += amount;
+    // 공통 계산 메서드
+    private int Result(int baseValue, float buffPercent)
+    {
+        return Mathf.RoundToInt(baseValue * (1f + buffPercent));
+    }
+
+    private float Result(float baseValue, float buffPercent)
+    {
+        return baseValue * (1f + buffPercent);
+    }
+
+    /// <summary>
+    /// Regular(최대값) 갱신: Artifact/Engraving 등 외부 요인에 의해 단일 항목만 처리
+    /// StatType과 buffPercent만 넘기면 됨
+    /// </summary>
+    public void ApplyRegularBuff(StatType statType, float buffPercent)
+    {
+        switch (statType)
+        {
+            case StatType.HP:
+                RegularHP = Result(initialHP, buffPercent);
+                if (CurrentHP > RegularHP)
+                    CurrentHP = RegularHP;
+                OnHPChanged?.Invoke(CurrentHP);
+                break;
+            case StatType.ATK:
+                RegularATK = Result(initialATK, buffPercent);
+                break;
+            case StatType.DEF:
+                RegularDEF = Result(initialDEF, buffPercent);
+                break;
+            case StatType.CritChance:
+                RegularCritChance = Result(initialCritChance, buffPercent);
+                break;
+            case StatType.CritDamage:
+                RegularCritDamage = Result(initialCritDamage, buffPercent);
+                break;
+            case StatType.Penetration:
+                Penetration = Result(initialPenetration, buffPercent);
+                break;
+        }
+    }
+
+    public void DataSetting(BattleCharacterData data)
+    {
+        //배틀 캐릭터를 DataSaver에서 Regular 값을 세팅할 수 있도록 해주는 메서드
+        // 전달받은 데이터로 Regular 값 세팅
+        RegularHP = data.regularHP;
+        RegularATK = data.regularATK;
+        RegularDEF = data.regularDEF;
+        RegularCritChance = data.regularCritChance;
+        RegularCritDamage = data.regularCritDamage;
+        Penetration = data.regularPenetration;
+        Level = data.level;
+
+        CurrentHP = data.currentHP;
+        CurrentATK = data.currentATK;
+        CurrentDEF = data.currentDEF;
+        CurrentCritChance = data.currentCritChance;
+        CurrentCritDamage = data.currentCritDamage;
+        CurrentPenetration = data.currentPenetration;
+
+        OnHPChanged?.Invoke(CurrentHP);
+    }
+
+
 
     public void TakeDamage(int damage)
     {
@@ -147,21 +206,20 @@ public class BattleCharacter : IDamagable
         if (CurrentHP < 0)
         {
             CurrentHP = 0;
-            // 캐릭터 사망 처리
             IsDied = true;
-            OnDied?.Invoke(); // 사망 이벤트 호출
+            OnDied?.Invoke();
         }
-        OnHPChanged?.Invoke(CurrentHP); // HP 변경 이벤트 호출
+        OnHPChanged?.Invoke(CurrentHP);
     }
 
     public void Heal(int amount)
     {
         CurrentHP += amount;
-        if (CurrentHP > initialHP)
+        if (CurrentHP > RegularHP)
         {
-            CurrentHP = initialHP; // 최대 HP 초과 방지
+            CurrentHP = RegularHP;
         }
-        OnHPChanged?.Invoke(CurrentHP); // HP 변경 이벤트 호출
+        OnHPChanged?.Invoke(CurrentHP);
     }
 
     public int AttackDamage() => CurrentATK;
@@ -171,10 +229,10 @@ public class BattleCharacter : IDamagable
         if (IsDied)
         {
             IsDied = false;
-            CurrentHP = initialHP; // 부활 시 최대 HP로 회복
-            ResetBattleData(); // 배틀 데이터 초기화
-            OnRevived?.Invoke(); // 부활 이벤트 호출
-            OnHPChanged?.Invoke(CurrentHP); // HP 변경 이벤트 호출
+            CurrentHP = RegularHP;
+            ResetBattleData();
+            OnRevived?.Invoke();
+            OnHPChanged?.Invoke(CurrentHP);
         }
     }
 }

@@ -23,7 +23,7 @@ public class BattleUI : MonoBehaviour
     [SerializeField] AbstractBattleButton char3;
     [SerializeField] AbstractBattleButton char4;
     [SerializeField] AbstractBattleButton char5;
-    [SerializeField] AbstractBattleButton patternDisplayer;
+    [SerializeField] AbstractBattleButton characters;
     [SerializeField] AbstractBattleButton battleLog;
 
     public AbstractBattleButton Roll => roll;
@@ -31,8 +31,6 @@ public class BattleUI : MonoBehaviour
 
     [Header("Texts For Value Changer")]
     [SerializeField] TextMeshProUGUI cost;
-    [SerializeField] TextMeshProUGUI monsterSkillName;
-    [SerializeField] TextMeshProUGUI monsterSkillDescription;
     [SerializeField] TextMeshProUGUI rank;
     [SerializeField] TextMeshProUGUI reRoll;
 
@@ -47,15 +45,13 @@ public class BattleUI : MonoBehaviour
         Buttons.Add(char3);
         Buttons.Add(char4);
         Buttons.Add(char5);
-        Buttons.Add(patternDisplayer);
+        Buttons.Add(characters);
         Buttons.Add(battleLog);
 
-        texts = new TextMeshProUGUI[5];
+        texts = new TextMeshProUGUI[3];
         texts[0] = cost;
-        texts[1] = monsterSkillName;
-        texts[2] = monsterSkillDescription;
-        texts[3] = rank;
-        texts[4] = reRoll;
+        texts[1] = rank;
+        texts[2] = reRoll;
     }
 
     /// <summary>
