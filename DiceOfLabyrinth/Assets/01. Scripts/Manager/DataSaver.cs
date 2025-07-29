@@ -139,9 +139,16 @@ public class DataSaver
             saveData.currentFormationType = (StageSaveData.CurrentFormationType)currentFormationType;
             saveData.currentPhaseState = (StageSaveData.CurrentPhaseState)currentPhaseState;
 
-            saveData.artifacts = artifactNames.Select(name => ArtifactManager.GetByName(name)).ToList();
-            saveData.engravings = engravingNames.Select(name => EngravingManager.GetByName(name)).ToList();
-            saveData.equipedArtifacts = equipedArtifactNames.Select(name => ArtifactManager.GetByName(name)).ToList();
+            // StaticDataManager를 통해 이름 기반 SO 복원 (null/빈 문자열 안전 처리)
+            saveData.artifacts = artifactNames
+                .Select(name => string.IsNullOrEmpty(name) ? null : StaticDataManager.Instance.GetArtifact(name))
+                .ToList();
+            saveData.engravings = engravingNames
+                .Select(name => string.IsNullOrEmpty(name) ? null : StaticDataManager.Instance.GetEngraving(name))
+                .ToList();
+            saveData.equipedArtifacts = equipedArtifactNames
+                .Select(name => string.IsNullOrEmpty(name) ? null : StaticDataManager.Instance.GetArtifact(name))
+                .ToList();
 
             // entryCharacters 복원 (CharacterSO)
             saveData.entryCharacters = entryCharacterIDs
@@ -167,7 +174,7 @@ public class DataSaver
 
             // Enemy SO 복원
             saveData.selectedEnemy = !string.IsNullOrEmpty(selectedEnemyID)
-                ? EnemyManager.GetByName(selectedEnemyID)
+                ? StaticDataManager.Instance.GetEnemy(selectedEnemyID)
                 : null;
 
             saveData.chapterStates = new List<ChapterStates>(chapterStates);
