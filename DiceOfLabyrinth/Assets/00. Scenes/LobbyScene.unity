@@ -3421,6 +3421,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 458302707587911060}
     m_Modifications:
+    - target: {fileID: 291305239722598723, guid: 5b26abd9ff0edef4cb1ffd05835a704b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 318030782537744659, guid: 5b26abd9ff0edef4cb1ffd05835a704b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -3586,6 +3590,10 @@ PrefabInstance:
       value: -45
       objectReference: {fileID: 0}
     - target: {fileID: 2178769977468278178, guid: 5b26abd9ff0edef4cb1ffd05835a704b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2329617402617871210, guid: 5b26abd9ff0edef4cb1ffd05835a704b, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -4244,6 +4252,10 @@ PrefabInstance:
     - target: {fileID: 7625395165254627722, guid: 5b26abd9ff0edef4cb1ffd05835a704b, type: 3}
       propertyPath: m_Name
       value: Panel - Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 7625395165254627722, guid: 5b26abd9ff0edef4cb1ffd05835a704b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7723263887394070898, guid: 5b26abd9ff0edef4cb1ffd05835a704b, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6555,7 +6567,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1167878370}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4217001684443335111}
+        m_TargetAssemblyTypeName: LobbyUIController, Assembly-CSharp
+        m_MethodName: OnClickSummonCharacters
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1299331839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6972,6 +6996,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1349595310 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2178769977468278178, guid: 5b26abd9ff0edef4cb1ffd05835a704b, type: 3}
+  m_PrefabInstance: {fileID: 718771802}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1353259426 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3853240689608898719, guid: 7361384692583a142b714b5eefa49269, type: 3}
@@ -7119,6 +7148,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1372253163}
   m_CullTransparentMesh: 1
+--- !u!1 &1407811615 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8150913030897104860, guid: 5b26abd9ff0edef4cb1ffd05835a704b, type: 3}
+  m_PrefabInstance: {fileID: 718771802}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1426212497
 GameObject:
   m_ObjectHideFlags: 0
@@ -16796,6 +16830,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterPanel: {fileID: 1230919483}
+  characterListPopup: {fileID: 1349595310}
+  characterInfoPopup: {fileID: 1407811615}
+  unownedCharacters: []
 --- !u!1 &1802356849489348699
 GameObject:
   m_ObjectHideFlags: 0
@@ -25100,7 +25137,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &3751385149893364400
 GameObject:
   m_ObjectHideFlags: 0
@@ -26958,6 +26995,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11c2a55142b78424296bacc3a9448328, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lobbyPanel: {fileID: 6812229772117300573}
+  summonCharactersPanel: {fileID: 5483549565571743493}
 --- !u!222 &4226434098083203777
 CanvasRenderer:
   m_ObjectHideFlags: 0
