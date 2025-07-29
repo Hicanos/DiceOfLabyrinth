@@ -267,7 +267,7 @@ public class BattleCharGroup
 
         for(int i = 0; i < numFive; i++)
         {
-            if (characters[i].CurrentHP == 0)
+            if (battleCharacters[i].CurrentHP == 0)
             {
                 //characters[i].IsDied == true;
                 DeadIndex.Add(i);

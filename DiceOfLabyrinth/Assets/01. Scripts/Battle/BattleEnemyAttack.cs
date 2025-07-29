@@ -43,7 +43,7 @@ public class BattleEnemyAttack : MonoBehaviour
         yield return new WaitForSeconds(tempWaitAttackAnimEnd);
 
         BattleManager.Instance.EndEnemyTurn();
-    }    
+    }
 
     public void EnemyAttackTest()
     {
