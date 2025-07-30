@@ -64,7 +64,7 @@ public class BattleCharacter : IDamagable
     public float SkillValueA;
     public float BuffProbabilityA;
     public float BuffValueA;
-    public ActiveSO ActiveSkill => CharacterData?.activeSO;
+    public ActiveSO ActiveSkill;
 
 
     [Header("패시브 스킬 데이터")]
@@ -73,7 +73,7 @@ public class BattleCharacter : IDamagable
     public float SkillValueB;
     public float BuffProbabilityB;
     public float BuffValueB;
-    public PassiveSO PassiveSkill => CharacterData?.passiveSO;
+    public PassiveSO PassiveSkill;
 
 
 
@@ -136,12 +136,13 @@ public class BattleCharacter : IDamagable
         Penetration = initialPenetration;
 
         // 스킬 동기화
+        ActiveSkill = lobbyChar.ActiveSkill;
         SkillLevelA = lobbyChar.SkillLevelA;
         SkillValueA = lobbyChar.SkillValueA;
         BuffProbabilityA = lobbyChar.BuffProbabilityA;
         BuffValueA = lobbyChar.BuffValueA;
 
-
+        PassiveSkill = lobbyChar.PassiveSkill;
         SkillLevelB = lobbyChar.SkillLevelB;
         SkillValueB = lobbyChar.SkillValueB;
         BuffProbabilityB = lobbyChar.BuffProbabilityB;
@@ -276,6 +277,10 @@ public class BattleCharacter : IDamagable
         {
             SkillController.SkillUse(this, ActiveSkill, allAllies, enemy);
         }
+        else
+        {
+            Debug.Log($"스킬이 안보인다 카더라");
+        }            
     }
 
     public void UsePassiveSkill(List<BattleCharacter> allAllies, BattleEnemy enemy)

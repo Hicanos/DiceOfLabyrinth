@@ -55,6 +55,33 @@ public class SkillController
     // 각 SkillRule별 처리 (예시)
     private static void UseCostSkill(BattleCharacter user, SkillSO skill, List<IDamagable> targets)
     {
+        // 코스트 소모
+        // 여기 왔다는 것 = ActiveSkill이므로 코스트가 존재함
+        // skillSO가 ActiveSO 경우에만 코스트를 소모
+
+        if (skill is ActiveSO activeSO)
+        {
+            BattleManager.Instance.SpendCost(activeSO.SkillCost);
+        }        
+
+        if (skill.IsAttacking)
+        {
+            foreach (var target in targets)
+            {
+                int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
+                target.TakeDamage(damage);
+                Debug.Log($"{user.CharNameKr}이(가) {target}에게 {damage}의 피해를 주었습니다. 차후 추가타의 형식으로 구현(boolean)");
+            }
+        }
+        else
+        {
+            // 버프 적용 로직 등
+            ApplyBuff(user, skill, targets);
+        }
+    }
+
+    private static void UseSumOverSkill(BattleCharacter user, SkillSO skill, List<IDamagable> targets)
+    {
         if (skill.IsAttacking)
         {
             foreach (var target in targets)
@@ -70,39 +97,54 @@ public class SkillController
         }
     }
 
-    private static void UseSumOverSkill(BattleCharacter user, SkillSO skill, List<IDamagable> targets)
-    {
-        foreach (var target in targets)
-        {
-            int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
-            target.TakeDamage(damage);
-        }
-    }
-
     private static void UseUniqueSignitureSkill(BattleCharacter user, SkillSO skill, List<IDamagable> targets)
     {
-        foreach (var target in targets)
+        if (skill.IsAttacking)
         {
-            int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
-            target.TakeDamage(damage);
+            foreach (var target in targets)
+            {
+                int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
+                target.TakeDamage(damage);
+            }
+        }
+        else
+        {
+            // 버프 적용 로직 등
+            ApplyBuff(user, skill, targets);
         }
     }
 
     private static void UseDeckMaidSkill(BattleCharacter user, SkillSO skill, List<IDamagable> targets)
     {
-        foreach (var target in targets)
+        if (skill.IsAttacking)
         {
-            int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
-            target.TakeDamage(damage);
+            foreach (var target in targets)
+            {
+                int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
+                target.TakeDamage(damage);
+            }
+        }
+        else
+        {
+            // 버프 적용 로직 등
+            ApplyBuff(user, skill, targets);
         }
     }
 
     private static void UseTeamSignitureDeckMaidSkill(BattleCharacter user, SkillSO skill, List<IDamagable> targets)
     {
-        foreach (var target in targets)
+        if (skill.IsAttacking)
         {
-            int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
-            target.TakeDamage(damage);
+            foreach (var target in targets)
+            {
+                int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
+                target.TakeDamage(damage);
+            }
+        }
+        else
+        {
+            // 버프 적용 로직 등
+            ApplyBuff(user, skill, targets);
         }
     }
 
@@ -112,7 +154,6 @@ public class SkillController
         // 버프 적용 로직
         // SkillSO의 BuffID에 따라 BuffData에서 버프 정보를 가져와 적용
 
-
-
+        Debug.Log($"{user.CharNameKr}이(가) {skill.SkillNameKr} 스킬을 사용하여 버프/디버프를 적용했습니다.");
     }
 }
