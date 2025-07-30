@@ -30,8 +30,8 @@ public class SoundManager : MonoBehaviour
         BGM_GuardianBattle, // 가디언 전투 배경음악
         BGM_LordBattle, // 보스 전투 배경음악
         BGM_Title,// 타이틀 배경음악
-        SFX_Victory,// 전투 승리 배경음악
-        SFX_Defeat, // 전투 패배 배경음악
+        BGM_Victory,// 전투 승리 배경음악
+        BGM_Defeat, // 전투 패배 배경음악
         SFX_Hit_Sword, // 타격음
         SFX_Swing, // 공격음
         SFX_Swing2, // 공격음2
