@@ -28,6 +28,8 @@
 
     public void ChangeDetailedTurnState(DetailedTurnState state)
     {
+        UIManager.Instance.BattleUI.BattleTutorial.StartTutorial(state);
+
         battleManager.CurrentDetailedState = state;
         battleManager.ArtifactBuffs.Action();
         useBuff.UseBuffs(state);
