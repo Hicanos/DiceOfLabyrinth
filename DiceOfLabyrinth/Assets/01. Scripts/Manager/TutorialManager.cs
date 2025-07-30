@@ -1,9 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using NUnit.Compatibility;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using NUnit.Compatibility;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -28,6 +29,8 @@ public class TutorialManager : MonoBehaviour
     [Header("Tutorial Data")]
     [SerializeField] private List<LobbyTutorial> lobbyTutorials;
 
+    private Coroutine nextTextBlinkCoroutine;
+
     public void Awake()
     {
         if (Instance == null)
@@ -45,6 +48,50 @@ public class TutorialManager : MonoBehaviour
             lobbyTutorials[i].Show(); // Show all tutorials initially
         }
         tutorialPopup.SetActive(false); // Hide tutorial popup initially
+    }
+    public void OnEnable()
+    {
+        StartNextTextBlink();
+    }
+    public void OnDisable()
+    {
+        StopNextTextBlink();
+    }
+    private void StartNextTextBlink()
+    {
+        if (nextTextBlinkCoroutine != null)
+            StopCoroutine(nextTextBlinkCoroutine);
+        nextTextBlinkCoroutine = StartCoroutine(BlinkNextText());
+    }
+    private void StopNextTextBlink()
+    {
+        if (nextTextBlinkCoroutine != null)
+        {
+            StopCoroutine(nextTextBlinkCoroutine);
+            nextTextBlinkCoroutine = null;
+        }
+        if (nextText != null)
+        {
+            var color = nextText.color;
+            color.a = 1f;
+            nextText.color = color;
+        }
+    }
+
+    private IEnumerator BlinkNextText()
+    {
+        while (true)
+        {
+            float t = Mathf.PingPong(Time.time, 1f); // 0~1 반복
+            float alpha = Mathf.Lerp(0.5f, 1f, t);   // 0.5~1 선형보간
+            if (nextText != null)
+            {
+                var color = nextText.color;
+                color.a = alpha;
+                nextText.color = color;
+            }
+            yield return null;
+        }
     }
     public void StartLobbyTutorial()
     {

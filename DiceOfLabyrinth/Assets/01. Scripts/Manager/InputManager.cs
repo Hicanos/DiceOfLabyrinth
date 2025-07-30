@@ -83,26 +83,21 @@ public class InputManager : MonoBehaviour
     }
     public void OnUIClick(InputAction.CallbackContext context)
     {
-        if (!context.performed)
-            return;
-
-        Vector2 pointerPos = Mouse.current.position.ReadValue();
-
-        PointerEventData pointer = new PointerEventData(EventSystem.current)
-        {
-            position = pointerPos
-        };
-
-        var results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointer, results);
-
-        foreach (var hit in results)
-        {
-            if (hit.gameObject.TryGetComponent<Button>(out var btn))
+        
+            Vector2 pointerPos = Mouse.current != null ? Mouse.current.position.ReadValue() : Vector2.zero;
+            PointerEventData pointerData = new PointerEventData(EventSystem.current)
             {
-                SoundManager.Instance.PlaySFX(SoundType.UIClick);
-                break;
+                position = pointerPos
+            };
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointerData, results);
+            foreach (var result in results)
+            {
+                if (result.gameObject.GetComponent<Button>() != null)
+                {
+                    SoundManager.Instance.PlaySFX(SoundType.UIClick);
+                    break;
+                }
             }
         }
-    }
 }
