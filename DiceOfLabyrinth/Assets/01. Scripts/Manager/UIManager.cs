@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     [field: SerializeField]
     public PublicUIController publicUIController { get; private set; }
     public BattleUI BattleUI;
+    public MessagePopup messagePopup;
     private void Awake()
     {
         if (Instance == null)
@@ -29,6 +30,14 @@ public class UIManager : MonoBehaviour
             SceneManager.sceneLoaded -= OnSceneLoaded;
             Instance = null;
         }
+    }
+
+    public void SetHudMode(HudMode mode)
+    {
+        if (publicUIController == null) return;
+
+        publicUIController.ApplyMode(mode);
+        publicUIController.Refresh();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

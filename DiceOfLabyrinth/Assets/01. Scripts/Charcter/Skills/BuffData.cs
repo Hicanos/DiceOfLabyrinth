@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 [Serializable]
@@ -31,11 +32,6 @@ public class BuffData
     public DesignEnums.BuffType BuffType;
 
     /// <summary>
-    /// Buff_Amount
-    /// </summary>
-    public bool GetBuffAmount;
-
-    /// <summary>
     /// Buff_Category
     /// </summary>
     public DesignEnums.BuffCategory BuffCategory;
@@ -46,26 +42,16 @@ public class BuffData
     public string EffectDescription;
 
     /// <summary>
-    /// Buff_ValueS
+    /// Buff_Value
     /// </summary>
-    public float ValueS;
-
-    /// <summary>
-    /// Buff_ValueM
-    /// </summary>
-    public float ValueM;
-
-    /// <summary>
-    /// Buff_ValueL
-    /// </summary>
-    public float ValueL;
+    public float Value;
 
     /// <summary>
     /// Buff_Maxtack
     /// </summary>
     public int Stack;
-}
 
+}
 public class BuffDataLoader
 {
     public List<BuffData> ItemsList { get; private set; }

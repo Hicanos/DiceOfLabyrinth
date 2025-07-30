@@ -1,9 +1,13 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BattleUIHP : MonoBehaviour
 {
+    const int numFIve = 5;
+
+    Quaternion[] playerHPRotation = new Quaternion[numFIve];
     Quaternion enemyHPQuaternion;
     GameObject enemyHPBar;
 
@@ -23,7 +27,7 @@ public class BattleUIHP : MonoBehaviour
     [SerializeField] Vector3 EnemyHPVec;
     [SerializeField] Vector3 EnemyPos;
 
-    void Update()
+    void LateUpdate()
     {
         if(BattleManager.Instance.StateMachine.currentState == BattleManager.Instance.I_EnemyTurnState)
         {
@@ -34,6 +38,7 @@ public class BattleUIHP : MonoBehaviour
         if(BattleManager.Instance.CharacterAttack.isCharacterAttacking)
         {
             //캐릭터 회전값에 따른 hp회전
+            GetPlayerHPRotation();
         }
     }    
 
@@ -111,8 +116,23 @@ public class BattleUIHP : MonoBehaviour
         BattleManager.Instance.UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
     }
 
-    public void GetEnmeyHPRotation(BattleEnemy enemy)
+    private void GetEnmeyHPRotation(BattleEnemy enemy)
     {
         enemyHPQuaternion = Quaternion.Euler(0, -enemy.Data.EnemySpawnRotation.y, 0);
+    }
+
+    private void GetPlayerHPRotation()
+    {
+        BattleManager battleManager = BattleManager.Instance;
+        BattleCharGroup battleGroup = battleManager.BattleGroup;
+        List<BattleCharacter> characters = battleGroup.BattleCharacters;
+
+        float rotationY;
+
+        for(int i = 0; i < numFIve; i++)
+        {
+            rotationY = battleGroup.CharacterPrefabs[i].transform.rotation.y;
+            playerHPRotation[i] = Quaternion.Euler(0, -rotationY, 0);
+        }
     }
 }

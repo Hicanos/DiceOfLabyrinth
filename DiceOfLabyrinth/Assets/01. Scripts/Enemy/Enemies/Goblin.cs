@@ -53,33 +53,14 @@ public class Goblin : MonoBehaviour, IEnemy
         savedPosition = transform.position;
         savedRotation = transform.rotation;
     }
-
     private Vector3 GetTargetPositionByIndex(int index)
     {
-        var stageSaveData = StageManager.Instance?.stageSaveData;
-        var chapterData = StageManager.Instance?.chapterData;
+        var playerPos = BattleManager.Instance?.BattleSpawner?.formationVec;
+        int playerFormation = (int)BattleManager.Instance?.BattleGroup?.CurrentFormationType;
 
-        int chapterIdx = stageSaveData.currentChapterIndex;
-        int stageIdx = stageSaveData.currentStageIndex;
-        int formationIdx = (int)stageSaveData.currentFormationType;
-
-        if (chapterData == null ||
-            chapterData.chapterIndex == null ||
-            chapterIdx < 0 || chapterIdx >= chapterData.chapterIndex.Count)
+        if (playerPos == null || playerFormation < 0 || playerFormation >= playerPos.Count)
             return new Vector3(-1, -1, -4);
-
-        var chapter = chapterData.chapterIndex[chapterIdx];
-        if (chapter.stageData == null ||
-            chapter.stageData.PlayerFormations == null ||
-            formationIdx < 0 || formationIdx >= chapter.stageData.PlayerFormations.Count)
-            return new Vector3(-1, -1, -4);
-
-        var formation = chapter.stageData.PlayerFormations[formationIdx];
-        if (formation.PlayerPositions == null ||
-            index < 0 || index >= formation.PlayerPositions.Count)
-            return new Vector3(-1, -1, -4);
-
-        return formation.PlayerPositions[index].Position;
+        return playerPos[playerFormation].formationVec[index];
     }
 
     public void UseActiveSkill(int skillIndex, int targetIndex)

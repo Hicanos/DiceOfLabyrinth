@@ -1,4 +1,6 @@
-﻿public static class DesignEnums
+using System;
+
+public static class DesignEnums
 {
     public enum ClassTypes
     {
@@ -31,18 +33,13 @@
         SumOver = 1,
         UniqueSigniture = 2,
         DeckMaid = 3,
+        TeamSignitureDeckMaid = 4,
     }
     public enum BuffType
     {
         Buff = 0,
         Debuff = 1,
-    }
-    public enum BuffAmount
-    {
-        Small = 0,
-        Medium = 1,
-        Large = 2,
-        None = 3,
+        CC = 2,
     }
     public enum BuffCategory
     {
@@ -59,5 +56,6 @@
         Paralysis = 10,
         Silence = 11,
         Shield = 12,
+        Taunted = 13,
     }
 }

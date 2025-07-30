@@ -459,6 +459,7 @@ public class DataSaver
             else
             {
                 SaveData = new GameSaveData();
+                CharacterManager.Instance.AcquireDefaultCharacters();
                 Save();
 #if UNITY_EDITOR
                 Debug.Log("저장 파일이 없어 새 데이터로 초기화");
@@ -469,6 +470,7 @@ public class DataSaver
         {
             Debug.LogError($"게임 데이터 불러오기 실패: {ex.Message}\n{ex.StackTrace}\njson: {json}");
             SaveData = new GameSaveData();
+            CharacterManager.Instance.AcquireDefaultCharacters();
             Save();
         }
         // SO 복원은 GameManager에서 Addressables 로드 완료 후 호출

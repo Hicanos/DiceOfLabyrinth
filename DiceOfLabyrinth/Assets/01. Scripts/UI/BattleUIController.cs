@@ -209,7 +209,6 @@ public class BattleUIController : MonoBehaviour
         else
         {
             StageManager.Instance.stageSaveData.currentStageIndex = stageIndex; // 현재 스테이지 인덱스 설정
-            StageManager.Instance.stageSaveData.currentPhaseIndex = -1; // 초기 페이즈 인덱스 설정
             OpenTeamFormationPanel(); // 팀 구성 패널 열기
         }
     }
@@ -432,13 +431,22 @@ public class BattleUIController : MonoBehaviour
     {
         for (int i = 0; i < characterPlatforms.Length; i++)
         {
-            if (characterPlatforms[i] != null)
+            // 플랫폼이 null이면 즉시 생성
+            if (characterPlatforms[i] == null)
             {
-                var platformRenderer = characterPlatforms[i].GetComponent<Renderer>();
-                if (platformRenderer != null)
-                {
-                    platformRenderer.material.color = (i == selectedIndex) ? platformSelectedColor : platformDefaultColor; // 선택된 플랫폼은 선택 색상, 나머지는 기본 색상
-                }
+                Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                    .stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
+                var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
+                platform.SetActive(false);
+                characterPlatforms[i] = platform;
+                characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i;
+                platform.transform.position = spawnPoint;
+            }
+
+            var platformRenderer = characterPlatforms[i].GetComponent<Renderer>();
+            if (platformRenderer != null)
+            {
+                platformRenderer.material.color = (i == selectedIndex) ? platformSelectedColor : platformDefaultColor;
             }
         }
     }
@@ -464,10 +472,10 @@ public class BattleUIController : MonoBehaviour
                 StageManager.Instance.stageSaveData.entryCharacters[i] = null;
             }
             DeleteSpawnedCharacters(); // 월드에 스폰된 캐릭터 제거
-            switch (StageManager.Instance.stageSaveData.currentPhaseIndex)
+            switch (StageManager.Instance.stageSaveData.currentPhaseState)
             {
-                case -1: // 페이즈가 설정되지 않은 경우
-                    StageManager.Instance.stageSaveData.currentPhaseIndex = 0; // 첫 번째 페이즈로 설정
+                case StageSaveData.CurrentPhaseState.TeamSelect:
+                    StageManager.Instance.stageSaveData.currentPhaseIndex = 0; // 첫 번째 페이즈로 시작
                     OpenSelectEngravingPanel(StageSaveData.CurrentPhaseState.StartReward); // 시작 시 각인 선택 패널 열기
                     break;
                 default:
@@ -493,12 +501,16 @@ public class BattleUIController : MonoBehaviour
                 GameObject battleCharacterObject = StageManager.Instance.stageSaveData.entryCharacters[i].charBattlePrefab;
                 GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity); // 스폰 포인트에 캐릭터 스폰
             }
-
             GameObject characterPlatform = characterPlatforms[i]; // 캐릭터 플랫폼 가져오기
-            if (characterPlatform != null)
+            if (characterPlatform == null)
             {
-                characterPlatform.transform.position = spawnPoint; // 플랫폼 위치 설정
+                var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
+                platform.SetActive(false);
+                characterPlatform = platform;
+                characterPlatform.GetComponent<PlatformClickRelay>().platformIndex = i;
+                platform.transform.position = spawnPoint;
             }
+            characterPlatform.transform.position = spawnPoint; // 플랫폼 위치 설정
         }
     }
     private void DeleteSpawnedCharacters() // 월드에 스폰된 캐릭터를 제거하는 함수
@@ -516,7 +528,21 @@ public class BattleUIController : MonoBehaviour
         {
             teamFormationIcons[i].color = (SelectedTeamFormation)i == selectedTeamFormation ? Color.yellow : Color.white; // 선택된 팀 구성은 노란색, 나머지는 흰색으로 표시
         }
-        RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
+        for (int i = 0; i < characterPlatforms.Length; i++)
+        {
+            // 플랫폼이 null이면 즉시 생성
+            if (characterPlatforms[i] == null)
+            {
+                Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                    .stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
+                var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
+                platform.SetActive(false);
+                characterPlatforms[i] = platform;
+                characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i;
+                platform.transform.position = spawnPoint;
+            }
+            RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
+        }
     }
     public void OpenStagePanel(int phaseIndex) // 스테이지 패널을 여는 함수
     {
@@ -927,7 +953,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        SoundManager.Instance.PlayBGM(SoundManager.SoundType.SFX_Victory); // 승리 효과음 재생
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Victory); // 승리 효과음 재생
     }
 
     public void OpenDefeatPanel() // 패배 패널을 여는 함수
@@ -950,7 +976,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        SoundManager.Instance.PlayBGM(SoundManager.SoundType.SFX_Defeat); // 패배 효과음 재생
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Defeat); // 패배 효과음 재생
     }
 
     public void OnClickVictoryNextButton() // 승리 패널에서 다음 버튼 클릭 시 호출되는 함수

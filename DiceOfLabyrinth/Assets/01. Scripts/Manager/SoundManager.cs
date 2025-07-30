@@ -15,6 +15,9 @@ public class SoundManager : MonoBehaviour
     [Range(0f, 1f)] public float bgmVolume = 1f;
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
+    private Dictionary<SoundType, float> lastPlayedTime = new Dictionary<SoundType, float>();
+    private float defaultSfxCooldown = 0.1f; // 중복 방지 쿨타임 (초 단위)
+
     [SerializeField] private List<SoundEntry> soundEntries;
     public List<SoundEntry> SoundEntries => soundEntries;
 
@@ -27,8 +30,8 @@ public class SoundManager : MonoBehaviour
         BGM_GuardianBattle, // 가디언 전투 배경음악
         BGM_LordBattle, // 보스 전투 배경음악
         BGM_Title,// 타이틀 배경음악
-        SFX_Victory,// 전투 승리 배경음악
-        SFX_Defeat, // 전투 패배 배경음악
+        BGM_Victory,// 전투 승리 배경음악
+        BGM_Defeat, // 전투 패배 배경음악
         SFX_Hit_Sword, // 타격음
         SFX_Swing, // 공격음
         SFX_Swing2, // 공격음2
@@ -43,6 +46,11 @@ public class SoundManager : MonoBehaviour
         if (Instance == null)
         { 
             Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject); // 이미 인스턴스가 존재하면 중복 생성 방지
+            return;
         }
         soundDict = new Dictionary<SoundType, AudioClip>();
         foreach (var entry in soundEntries)
@@ -79,6 +87,23 @@ public class SoundManager : MonoBehaviour
         if (soundDict.TryGetValue(type, out var clip))
         {
             sfxSource.PlayOneShot(clip);
+        }
+    }
+    public void PlaySFX(SoundType type, float customCooldown = -1f)
+    {
+        float cooldown = customCooldown > 0 ? customCooldown : defaultSfxCooldown;
+
+        float lastTime;
+        if (lastPlayedTime.TryGetValue(type, out lastTime))
+        {
+            if (Time.unscaledTime - lastTime < cooldown)
+                return; // 아직 쿨타임이 지나지 않음
+        }
+
+        if (soundDict.TryGetValue(type, out var clip))
+        {
+            sfxSource.PlayOneShot(clip, sfxVolume);
+            lastPlayedTime[type] = Time.unscaledTime;
         }
     }
     public void SetBGMVolume(float volume) // 배경음악 볼륨 설정
