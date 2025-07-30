@@ -2,23 +2,30 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using NUnit.Compatibility;
+using UnityEngine.SceneManagement;
 
 public class TutorialManager : MonoBehaviour
 {
     static public TutorialManager Instance { get; private set; }
-    [SerializeField] private bool isTutorialCompleted = false; // 튜토리얼이 완료되면 이 매니저를 파괴해도 됩니다.
+
+    [Header("Tutorial Completion Flags")]
+    [SerializeField] private bool isLobbyTutorialCompleted = false;
+    [SerializeField] private bool isGameTutorialCompleted = false;
+    [Header("Tutorial Popup")]
+    [SerializeField] private GameObject tutorialPopup;
 
     [Header("UI References")]
-    [SerializeField, TextArea] private TMP_Text tutorialText;
+    [SerializeField] private TMP_Text tutorialText;
     [SerializeField] private GameObject tutorialBg;
     [SerializeField] private TMP_Text nextText;
+    [SerializeField] private GameObject lobbyBg;
 
     [Header("Tutorial Settings")]
     [SerializeField, Range(0, 5)] private int lobbyTutorialSteps;
     [SerializeField, Range(0, 5)] private int gameTutorialSteps;
 
-    [SerializeField] private RectTransform messageContainer;
-
+    [Header("Tutorial Data")]
     [SerializeField] private List<LobbyTutorial> lobbyTutorials;
 
     public void Awake()
@@ -28,33 +35,123 @@ public class TutorialManager : MonoBehaviour
             Instance = this;
         }
     }
-}
-
-[System.Serializable]
-public class LobbyTutorial
-{
-    public string description;
-    public GameObject button;
-    public void Show()
+    public void Start()
     {
-        if (button != null)
+        // 초기화
+        lobbyBg.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f); // 기본 배경색 설정
+        tutorialBg.SetActive(false); // Hide tutorial background initially
+        for (int i = 0; i < lobbyTutorials.Count; i++)
         {
-            if(button.GetComponent<CanvasGroup>() == null)
+            lobbyTutorials[i].Show(); // Show all tutorials initially
+        }
+        tutorialPopup.SetActive(false); // Hide tutorial popup initially
+    }
+    public void StartLobbyTutorial()
+    {
+        if ("LobbyScene" != SceneManager.GetActiveScene().name)
+        {
+            return;
+        }
+        tutorialPopup.SetActive(true);
+        if (isLobbyTutorialCompleted)
+        {
+            lobbyBg.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f); // Reset background color
+            tutorialBg.SetActive(false);
+            return;
+        }
+        lobbyBg.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.5f); // Set semi-transparent background
+        tutorialBg.SetActive(true);
+        ShowLobbyTutorial(0);
+    }
+    public void ShowLobbyTutorial(int step)
+    {
+        if (step < 0 || step >= lobbyTutorials.Count)
+        {
+            Debug.LogError("Invalid tutorial step index: " + step);
+            return;
+        }
+        LobbyTutorial currentTutorial = lobbyTutorials[step];
+        tutorialText.text = currentTutorial.description;
+        for (int i = 0; i < lobbyTutorials.Count; i++)
+        {
+            if (i == step)
             {
-                button.AddComponent<CanvasGroup>();
+                lobbyTutorials[i].Show();
             }
-            button.GetComponent<CanvasGroup>().alpha = 1f;
+            else
+            {
+                lobbyTutorials[i].Hide();
+            }
         }
     }
-    public void Hide()
+    public void OnClickNextButton()
     {
-        if (button != null)
+        if ("LobbyScene" == SceneManager.GetActiveScene().name)
         {
-            if(button.GetComponent<CanvasGroup>() == null)
+            if (lobbyTutorialSteps <= 4)
             {
-                button.AddComponent<CanvasGroup>();
+                lobbyTutorialSteps++;
+                ShowLobbyTutorial(lobbyTutorialSteps);
             }
-            button.GetComponent<CanvasGroup>().alpha = 0.5f;
+            else
+            {
+                EndLobbyTutorial();
+            }
+        }
+    }
+    public void OnClickSkipButton()
+    {
+        UIManager.Instance.messagePopup.Open("튜토리얼을 건너 뛰겠습니까?",
+            () =>
+            {
+                EndLobbyTutorial();
+            },
+            () =>
+            {
+                UIManager.Instance.messagePopup.Close();
+            });
+    }
+    public void EndLobbyTutorial()
+    {
+        isLobbyTutorialCompleted = true;
+        tutorialBg.SetActive(false);
+        lobbyBg.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f); // Reset background color
+        if ("LobbyScene" == SceneManager.GetActiveScene().name)
+        {
+            for (int i = 0; i < lobbyTutorials.Count; i++)
+            {
+                lobbyTutorials[i].Show();
+            }
+        }
+        tutorialPopup.SetActive(false); // Hide tutorial popup
+    }
+
+    [System.Serializable]
+    class LobbyTutorial
+    {
+        [TextArea] public string description;
+        public GameObject button;
+        public void Show()
+        {
+            if (button != null)
+            {
+                if (button.GetComponent<CanvasGroup>() == null)
+                {
+                    button.AddComponent<CanvasGroup>();
+                }
+                button.GetComponent<CanvasGroup>().alpha = 1f;
+            }
+        }
+        public void Hide()
+        {
+            if (button != null)
+            {
+                if (button.GetComponent<CanvasGroup>() == null)
+                {
+                    button.AddComponent<CanvasGroup>();
+                }
+                button.GetComponent<CanvasGroup>().alpha = 0.2f;
+            }
         }
     }
 }
