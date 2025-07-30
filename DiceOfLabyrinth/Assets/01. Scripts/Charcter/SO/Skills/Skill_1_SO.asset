@@ -18,17 +18,19 @@ MonoBehaviour:
   SkillType: 0
   SkillRule: 0
   SkillTarget: 1
-  SkillDescription: "\uCE90\uB9AD\uD130 \uACF5\uACA9\uB825 * {SkillValue} \uAC12
-    \uB9CC\uD07C \uC801\uC5D0\uAC8C \uD53C\uD574 \uBC0F \uD654\uC0C11\uC744 {Buff_Probability}%
-    \uD655\uB960\uB85C \uC801\uC6A9"
+  SkillDescription: "\uCE90\uB9AD\uD130 \uACF5\uACA9\uB825 * {Skill_Value} \uAC12
+    \uB9CC\uD07C \uC801\uC5D0\uAC8C \uD53C\uD574 + \uD654\uC0C1 \uB514\uBC84\uD504
+    {Buff_Probability}% \uD655\uB960\uB85C \uC801\uC6A9"
   SkillIcon: {fileID: 21300000, guid: 437c553712a82fd488120815234b2c5a, type: 3}
+  SkillValue: 3.5
+  PlusSkillValue: 0.5
+  BuffValue: 0.1
+  PlusBuffValue: 0.1
+  BuffProbability: 45
+  PlusBuffProbability: 10
+  BuffTurn: 2
+  CoolTime: 1
   SkillCost: 4
   BuffIDs:
-  - Buff_13
+  - Buff_14
   - None
-  BuffAmounts: 0100000003000000
-  BuffProbability: 75
-  BuffTurn: 2
-  SkillValue: 3.5
-  PlusValue: 0.5
-  CoolTime: 1

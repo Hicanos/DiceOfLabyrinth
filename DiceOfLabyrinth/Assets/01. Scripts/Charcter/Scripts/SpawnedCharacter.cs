@@ -48,6 +48,13 @@ public class SpawnedCharacter : MonoBehaviour
         Animator.SetTrigger("Attack"); // 공격 애니메이션 트리거 설정
     }
 
+    public void SkillAttack()
+    {
+        // 스킬 사용 시 애니메이션 조정
+        Attack(); // 기본 공격 애니메이션
+
+    }
+
     public void GetDamage()
     {        
         Animator.SetTrigger("HasAttacked");
