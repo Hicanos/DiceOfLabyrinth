@@ -15,6 +15,9 @@ public class SoundManager : MonoBehaviour
     [Range(0f, 1f)] public float bgmVolume = 1f;
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
+    private Dictionary<SoundType, float> lastPlayedTime = new Dictionary<SoundType, float>();
+    private float defaultSfxCooldown = 0.1f; // 중복 방지 쿨타임 (초 단위)
+
     [SerializeField] private List<SoundEntry> soundEntries;
     public List<SoundEntry> SoundEntries => soundEntries;
 
@@ -84,6 +87,23 @@ public class SoundManager : MonoBehaviour
         if (soundDict.TryGetValue(type, out var clip))
         {
             sfxSource.PlayOneShot(clip);
+        }
+    }
+    public void PlaySFX(SoundType type, float customCooldown = -1f)
+    {
+        float cooldown = customCooldown > 0 ? customCooldown : defaultSfxCooldown;
+
+        float lastTime;
+        if (lastPlayedTime.TryGetValue(type, out lastTime))
+        {
+            if (Time.unscaledTime - lastTime < cooldown)
+                return; // 아직 쿨타임이 지나지 않음
+        }
+
+        if (soundDict.TryGetValue(type, out var clip))
+        {
+            sfxSource.PlayOneShot(clip, sfxVolume);
+            lastPlayedTime[type] = Time.unscaledTime;
         }
     }
     public void SetBGMVolume(float volume) // 배경음악 볼륨 설정

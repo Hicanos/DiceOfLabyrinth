@@ -11,8 +11,8 @@ public class TutorialManager : MonoBehaviour
     static public TutorialManager Instance { get; private set; }
 
     [Header("Tutorial Completion Flags")]
-    [SerializeField] private bool isLobbyTutorialCompleted = false;
-    [SerializeField] private bool isGameTutorialCompleted = false;
+    public bool isLobbyTutorialCompleted = false;
+    public bool isGameTutorialCompleted = false;
     [Header("Tutorial Popup")]
     [SerializeField] private GameObject tutorialPopup;
 
@@ -21,6 +21,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private GameObject tutorialBg;
     [SerializeField] private TMP_Text nextText;
     [SerializeField] private GameObject lobbyBg;
+    [SerializeField] private GameObject[] lobbyTutorialImage = new GameObject[2];
 
     [Header("Tutorial Settings")]
     [SerializeField, Range(0, 5)] private int lobbyTutorialSteps;
@@ -48,6 +49,8 @@ public class TutorialManager : MonoBehaviour
             lobbyTutorials[i].Show(); // Show all tutorials initially
         }
         tutorialPopup.SetActive(false); // Hide tutorial popup initially
+        lobbyTutorialImage[0].SetActive(false); // Hide first tutorial image initially
+        lobbyTutorialImage[1].SetActive(false); // Hide second tutorial image initially
     }
     public void OnEnable()
     {
@@ -95,7 +98,7 @@ public class TutorialManager : MonoBehaviour
     }
     public void StartLobbyTutorial()
     {
-        if ("LobbyScene" != SceneManager.GetActiveScene().name)
+        if ("LobbyScene" != SceneManager.GetActiveScene().name||isLobbyTutorialCompleted)
         {
             return;
         }
@@ -106,8 +109,9 @@ public class TutorialManager : MonoBehaviour
             tutorialBg.SetActive(false);
             return;
         }
-        lobbyBg.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.5f); // Set semi-transparent background
+        lobbyBg.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.3f); // Set semi-transparent background
         tutorialBg.SetActive(true);
+        lobbyTutorialSteps = 0; // Reset tutorial steps
         ShowLobbyTutorial(0);
     }
     public void ShowLobbyTutorial(int step)
@@ -119,6 +123,18 @@ public class TutorialManager : MonoBehaviour
         }
         LobbyTutorial currentTutorial = lobbyTutorials[step];
         tutorialText.text = currentTutorial.description;
+        for (int i = 0; i < 2; i++)
+        {
+                if (currentTutorial.sprites[i] != null)
+                {
+                    lobbyTutorialImage[i].GetComponent<Image>().sprite = currentTutorial.sprites[i];
+                lobbyTutorialImage[i].SetActive(true);
+                }
+                else
+                {
+                lobbyTutorialImage[i].SetActive(false);
+                }
+        }
         for (int i = 0; i < lobbyTutorials.Count; i++)
         {
             if (i == step)
@@ -178,6 +194,8 @@ public class TutorialManager : MonoBehaviour
     {
         [TextArea] public string description;
         public GameObject button;
+        // 첨부 이미지 리스트
+        public Sprite[] sprites = new Sprite[2];
         public void Show()
         {
             if (button != null)

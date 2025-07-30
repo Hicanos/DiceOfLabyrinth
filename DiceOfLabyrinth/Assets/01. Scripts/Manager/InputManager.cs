@@ -83,8 +83,9 @@ public class InputManager : MonoBehaviour
     }
     public void OnUIClick(InputAction.CallbackContext context)
     {
-        
-            Vector2 pointerPos = Mouse.current != null ? Mouse.current.position.ReadValue() : Vector2.zero;
+        if (context.phase == InputActionPhase.Performed)
+        {
+            Vector2 pointerPos = Pointer.current != null ? Pointer.current.position.ReadValue() : Vector2.zero;
             PointerEventData pointerData = new PointerEventData(EventSystem.current)
             {
                 position = pointerPos
@@ -95,9 +96,10 @@ public class InputManager : MonoBehaviour
             {
                 if (result.gameObject.GetComponent<Button>() != null)
                 {
-                    SoundManager.Instance.PlaySFX(SoundType.UIClick);
+                    SoundManager.Instance.PlaySFX(SoundType.UIClick, 0.5f);
                     break;
                 }
             }
         }
+    }
 }
