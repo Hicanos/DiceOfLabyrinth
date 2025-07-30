@@ -4,6 +4,7 @@ public class LobbyUIController : MonoBehaviour
 {
     [Header("UI Elements")]
     [SerializeField] private GameObject lobbyPanel;
+    [SerializeField] private GameObject charactersPanel;
     [SerializeField] private GameObject summonCharactersPanel;
     [SerializeField] private GameObject inventoryPanel;
 
@@ -16,6 +17,8 @@ public class LobbyUIController : MonoBehaviour
     {
         lobbyPanel.SetActive(false);
         summonCharactersPanel.SetActive(true);
+
+        UIManager.Instance.SetHudMode(HudMode.Summon);
     }
 
     public void OnClickInventoryButton()
@@ -38,14 +41,8 @@ public class LobbyUIController : MonoBehaviour
     {
         lobbyPanel.SetActive(true);
         inventoryPanel.SetActive(false);
+        summonCharactersPanel.SetActive(false);
 
         UIManager.Instance.SetHudMode(HudMode.Lobby);
-    }
-
-    public void ReturnToLobby()
-    {
-        lobbyPanel.SetActive(true);
-        inventoryPanel.SetActive(false);
-        summonCharactersPanel.SetActive(false);
     }
 }

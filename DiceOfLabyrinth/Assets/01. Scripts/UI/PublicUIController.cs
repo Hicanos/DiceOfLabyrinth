@@ -6,7 +6,8 @@ public enum HudMode
     None,
     Title,
     Lobby,
-    Inventory,
+    Inventory,// 로비씬의 가방
+    Summon, // 로비씬의 소환
     Character,
     SelectAdventure,
     Battle,
@@ -77,6 +78,15 @@ public class PublicUIController : MonoBehaviour
                 break;
 
             case HudMode.Inventory: // 로비씬의 가방
+                stamina.SetActive(false);
+                gold.SetActive(true);
+                jewel.SetActive(true);
+                settingButton.SetActive(true);
+                homeButton.SetActive(false);
+                sceneBackButton.SetActive(false);
+                break;
+
+            case HudMode.Summon: // 로비씬의 소환
                 stamina.SetActive(false);
                 gold.SetActive(true);
                 jewel.SetActive(true);
