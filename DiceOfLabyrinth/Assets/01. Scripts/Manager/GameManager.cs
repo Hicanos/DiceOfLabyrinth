@@ -74,6 +74,8 @@ public class GameManager : MonoBehaviour
     {
         SaveGame();
         Debug.Log("게임 종료됨");
+        ItemManager.Instance.ReleaseAllItems();
+        CharacterManager.Instance.ReleaseAllCharacters();
         Application.Quit();
     }
 
@@ -93,5 +95,8 @@ public class GameManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         SaveGame();
+        // 아이템, 캐릭터 릴리즈
+        ItemManager.Instance.ReleaseAllItems();
+        CharacterManager.Instance.ReleaseAllCharacters();
     }
 }
