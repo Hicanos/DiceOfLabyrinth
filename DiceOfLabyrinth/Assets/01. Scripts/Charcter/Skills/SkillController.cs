@@ -88,6 +88,7 @@ public class SkillController
             {
                 int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
                 target.TakeDamage(damage);
+                Debug.Log($"{user.CharNameKr}이(가) {target}에게 {damage}의 피해를 주었습니다. 차후 추가타의 형식으로 구현(boolean)");
             }
         }
         else
@@ -105,6 +106,7 @@ public class SkillController
             {
                 int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
                 target.TakeDamage(damage);
+                Debug.Log($"{user.CharNameKr}이(가) {target}에게 {damage}의 피해를 주었습니다. 차후 추가타의 형식으로 구현(boolean)");
             }
         }
         else
@@ -122,6 +124,7 @@ public class SkillController
             {
                 int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
                 target.TakeDamage(damage);
+                Debug.Log($"{user.CharNameKr}이(가) {target}에게 {damage}의 피해를 주었습니다. 차후 추가타의 형식으로 구현(boolean)");
             }
         }
         else
@@ -139,6 +142,7 @@ public class SkillController
             {
                 int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
                 target.TakeDamage(damage);
+                Debug.Log($"{user.CharNameKr}이(가) {target}에게 {damage}의 피해를 주었습니다. 차후 추가타의 형식으로 구현(boolean)");
             }
         }
         else
