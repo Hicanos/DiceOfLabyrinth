@@ -16,6 +16,10 @@ public class LobbyCharacter : Character
     public float CritChance; // 치명타 확률
     public float CritDamage; // 치명타 피해량
 
+    // 로비에서 상승시킨 스킬 데이터
+    [Header("스킬 데이터")]
+    public int SkillLevel; // 스킬의 현재 레벨
+
 
     // 로비 캐릭터 데이터
     public override void Initialize(CharacterSO so, int level = 1)

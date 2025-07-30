@@ -50,7 +50,7 @@ public class SkillSOGenerator : EditorWindow
         foreach (var data in wrapper.Items)
         {
             SkillSO so;
-            if (data.SkillType == 0) // Active
+            if ((int)data.SkillType == 0) // Active
                 so = ScriptableObject.CreateInstance<ActiveSO>();
             else // Passive
                 so = ScriptableObject.CreateInstance<PassiveSO>();
@@ -58,35 +58,31 @@ public class SkillSOGenerator : EditorWindow
             so.SkillID = data.SkillID;
             so.SkillNameKr = data.NameKr;
             so.SkillNameEn = data.NameEn;
-            so.SkillType = (DesignEnums.SkillType)data.SkillType;
+            so.SkillType = data.SkillType;
             so.SkillRule = data.SkillRule;
             so.SkillTarget = data.Target;
             so.SkillDescription = data.SkillDescription;
+            so.SkillIcon = !string.IsNullOrEmpty(data.SkillIcon) ? AssetDatabase.LoadAssetAtPath<Sprite>(data.SkillIcon) : null;
 
-            // 아이콘 경로가 있으면 할당
-            if (!string.IsNullOrEmpty(data.SkillIcon))
-                so.SkillIcon = AssetDatabase.LoadAssetAtPath<Sprite>(data.SkillIcon);
+            // 수치 필드 매핑
+            so.SkillValue = data.SkillValue;
+            so.PlusSkillValue = data.PlusSkillValue;
+            so.BuffValue = data.BuffValue;
+            so.PlusBuffValue = data.PlusBuffValue;
+            so.BuffProbability = data.BuffProbability;
+            so.PlusBuffProbability = data.PlusBuffProbability;
+            so.BuffTurn = data.BuffTurn;
+            so.CoolTime = data.CoolTime;
 
             // ActiveSO/PassiveSO 개별 필드 할당
             if (so is ActiveSO active)
             {
                 active.SkillCost = data.SkillCost;
                 active.BuffIDs = new[] { data.BuffID, data.BuffID_2 };
-                active.BuffAmounts = new[] { (DesignEnums.BuffAmount)data.BuffAmount, (DesignEnums.BuffAmount)data.BuffAmount2 };
-                active.BuffProbability = data.BuffProbability;
-                active.BuffTurn = data.BuffTurn;
-                active.SkillValue = data.SkillValue;
-                active.PlusValue = data.PlusValue;
-                active.CoolTime = data.CoolTime;
             }
             else if (so is PassiveSO passive)
             {
                 passive.BuffIDs = new[] { data.BuffID, data.BuffID_2 };
-                passive.BuffAmounts = new[] { (DesignEnums.BuffAmount)data.BuffAmount, (DesignEnums.BuffAmount)data.BuffAmount2 };
-                passive.BuffTurn = data.BuffTurn;
-                passive.SkillValue = data.SkillValue;
-                passive.PlusValue = data.PlusValue;
-                passive.CoolTime = data.CoolTime;
             }
 
             string assetPath = $"{soOutputPath}{so.SkillID}_SO.asset";
@@ -105,30 +101,6 @@ public class SkillSOGenerator : EditorWindow
     [System.Serializable]
     private class SkillDataListWrapper
     {
-        public List<SkillDataForSO> Items;
-    }
-
-    [System.Serializable]
-    private class SkillDataForSO
-    {
-        public int Key;
-        public string SkillID;
-        public string NameKr;
-        public string NameEn;
-        public int SkillType;
-        public int SkillCost;
-        public DesignEnums.SkillTarget Target;
-        public DesignEnums.SkillRule SkillRule;
-        public string SkillDescription;
-        public string BuffID;
-        public string BuffID_2;
-        public int BuffAmount;
-        public int BuffAmount2;
-        public int BuffProbability;
-        public int BuffTurn;
-        public float SkillValue;
-        public float PlusValue;
-        public int CoolTime;
-        public string SkillIcon;
+        public List<SkillData> Items;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 [Serializable]
@@ -61,14 +62,24 @@ public class SkillData
     public string BuffID_2;
 
     /// <summary>
-    /// BuffAmount
+    /// Skill_Value
     /// </summary>
-    public DesignEnums.BuffAmount BuffAmount;
+    public float SkillValue;
 
     /// <summary>
-    /// BuffAmount2
+    /// Plus_Skill_Value
     /// </summary>
-    public DesignEnums.BuffAmount BuffAmount2;
+    public float PlusSkillValue;
+
+    /// <summary>
+    /// Buff_Value
+    /// </summary>
+    public float BuffValue;
+
+    /// <summary>
+    /// Plus_Buff_Value
+    /// </summary>
+    public float PlusBuffValue;
 
     /// <summary>
     /// Buff_Probability(%)
@@ -76,19 +87,14 @@ public class SkillData
     public int BuffProbability;
 
     /// <summary>
+    /// Buff_Probability(%)
+    /// </summary>
+    public int PlusBuffProbability;
+
+    /// <summary>
     /// Buff_Turn
     /// </summary>
     public int BuffTurn;
-
-    /// <summary>
-    /// Skill_Value
-    /// </summary>
-    public float SkillValue;
-
-    /// <summary>
-    /// Skill_PlusValue
-    /// </summary>
-    public float PlusValue;
 
     /// <summary>
     /// Skill_Cool
