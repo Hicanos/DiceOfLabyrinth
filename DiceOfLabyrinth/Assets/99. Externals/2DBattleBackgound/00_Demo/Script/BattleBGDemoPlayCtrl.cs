@@ -29,7 +29,7 @@
 //        private int BGImageCount = 0;//Number of images per theme
 //        public int BGImageStep = 1;//Number of images skipped
 //        public int BGImageMax = 4;//Maximum number of background images per theme
-//        public bool _IsShowFullImage;//Show all background images
+//        public bool _IsShowFullImage;//Blinking all background images
 
 //#if UNITY_EDITOR
 //        // Start is called before the first frame update

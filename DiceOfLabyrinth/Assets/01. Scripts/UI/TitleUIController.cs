@@ -53,6 +53,7 @@ public class TitleUIController : MonoBehaviour
 
             DOVirtual.DelayedCall(clickDelay, () => titleButton.interactable = true);
         });
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Title);
     }
 
     public void OnClickTitleButton()

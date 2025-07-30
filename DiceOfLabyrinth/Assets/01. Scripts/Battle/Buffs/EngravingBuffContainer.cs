@@ -42,6 +42,18 @@ public class EngravingBuffContainer
         {
             buff.ReduceDuration();
         }
+        foreach (var buff in buffsCallbackCharacterAttack)
+        {
+            buff.ReduceDuration();
+        }
+        foreach (var buff in buffsCallbackTurnEnter)
+        {
+            buff.ReduceDuration();
+        }
+        foreach (var buff in buffsCallbackTurnEnd)
+        {
+            buff.ReduceDuration();
+        }
     }
 
     public void AddEngravingBuffs(IBuff buff)

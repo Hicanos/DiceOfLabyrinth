@@ -61,6 +61,7 @@ public class BattleManager : MonoBehaviour
     public ArtifactAdditionalStatus ArtifactAdditionalStatus;
 
     [Header("Values")]
+    public bool     isTutorialOver;
     public  int     BattleTurn;
     public  int     CostSpendedInTurn;
     public  bool    IsBattle;
@@ -84,6 +85,8 @@ public class BattleManager : MonoBehaviour
 
         UIManager.Instance.BattleUI.Setting();
         DiceManager.Instance.DiceHolding.SettingForHolding();
+        
+        UIManager.Instance.BattleUI.BattleTutorial.LoadData();
     }
     
     void Update()
