@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6847279992244347043
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3936315499889764674}
+  - component: {fileID: 1893715061527650307}
+  m_Layer: 0
+  m_Name: TutorialManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3936315499889764674
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6847279992244347043}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1893715061527650307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6847279992244347043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 461706a64e7905843a5ca6c1ce59a8bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isLobbyTutorialCompleted: 0
+  isGameTutorialCompleted: 0
+  tutorialPopup: {fileID: 0}
+  tutorialText: {fileID: 0}
+  tutorialBg: {fileID: 0}
+  nextText: {fileID: 0}
+  lobbyTutorialImage:
+  - {fileID: 0}
+  - {fileID: 0}
+  lobbyTutorialSteps: 0
+  gameTutorialSteps: 0
+  lobbyTutorials:
+  - description: "\uBC18\uAC11\uC2B5\uB2C8\uB2E4 \uC601\uC8FC\uB2D8 \uC800\uB294
+      \uC601\uC8FC\uB2D8\uC740 \uBCF4\uC88C\uD558\uB294 \uC5D0\uB9AC\uC0E4\uB77C\uACE0
+      \uD569\uB2C8\uB2E4. \r\n\uD604\uC7AC \uBBF8\uAD81 \uB3C4\uC2DC\uC758 \uAC00\uC7A5
+      \uD575\uC2EC \uBAA9\uD45C\uC778 \uC548\uC804 \uD655\uBCF4\uB97C \uC704\uD574
+      \r\n\uC9C0\uC18D\uC801\uC73C\uB85C \uBBF8\uAD81 \uD0D0\uC0AC\uB97C \uD558\uC154\uC57C\uD574\uC694.\r\n"
+    button: {fileID: 0}
+    sprites:
+    - {fileID: 0}
+    - {fileID: 0}
+  - description: "\uBA3C\uC800 \uC601\uC6C5 \uBC84\uD2BC\uC744 \uB204\uB974\uBA74
+      \uBCF4\uC720\uD55C \uC601\uC6C5 \uB9AC\uC2A4\uD2B8\uC640 \uC0C1\uC138 \uC815\uBCF4\uB97C
+      \uBCFC \uC218 \uC788\uC5B4\uC694."
+    button: {fileID: 0}
+    sprites:
+    - {fileID: 21300000, guid: a070056eaa539394c9160ad654efab6e, type: 3}
+    - {fileID: 21300000, guid: a070056eaa539394c9160ad654efab6e, type: 3}
+  - description: "\uAC00\uBC29\uC5D0\uC11C\uB294 \uD68D\uB4DD\uD55C \uC544\uC774\uD15C
+      \uB9AC\uC2A4\uD2B8\uB97C \uD655\uC778\uD560 \uC218 \uC788\uC5B4\uC694."
+    button: {fileID: 0}
+    sprites:
+    - {fileID: 21300000, guid: a070056eaa539394c9160ad654efab6e, type: 3}
+    - {fileID: 0}
+  - description: "\uC0C1\uC810\uC5D0\uC11C \uC5EC\uB7EC \uC0C1\uD488\uC744 \uAD6C\uB9E4\uD558\uC5EC
+      \uC800\uC5D0\uAC8C \uD22C\uC790\uD574\uC8FC\uC2E0\uB2E4\uBA74 \uD6C4\uD68C\uD558\uC9C0
+      \uC54A\uC744 \uAC70\uC5D0\uC694!\v(\uAC1C\uBC1C \uC911)\r\n"
+    button: {fileID: 0}
+    sprites:
+    - {fileID: 0}
+    - {fileID: 0}
+  - description: "\uBAA8\uC9D1\uC744 \uD1B5\uD574\uC11C \uB2E4\uB978 \uC601\uC6C5\uC744
+      \uB9CC\uB098\uBCF4\uAC70\uB098 \uC544\uC774\uD15C\uC744 \uD68D\uB4DD\uD560
+      \uC218 \uC788\uC744\uAC70\uC5D0\uC694.\v(\uAC1C\uBC1C \uC911)\r\n\r\n"
+    button: {fileID: 0}
+    sprites:
+    - {fileID: 0}
+    - {fileID: 0}
+  - description: "\uC900\uBE44\uB418\uC168\uC8E0? \uC774\uC81C \uBAA8\uD5D8\uC744
+      \uB5A0\uB098 \uBCFC\uAE4C\uC694? "
+    button: {fileID: 0}
+    sprites:
+    - {fileID: 0}
+    - {fileID: 0}

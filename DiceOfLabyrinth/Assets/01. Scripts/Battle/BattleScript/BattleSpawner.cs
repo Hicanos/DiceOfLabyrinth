@@ -12,7 +12,7 @@ public class BattleSpawner : MonoBehaviour
     const int numFIve = 5;
     [SerializeField] Vector3 spawnDetach;
     [SerializeField] float spawnDestTime;
-    [SerializeField] List<FormationVector> formationVec;
+    public List<FormationVector> formationVec;
     [SerializeField] Vector3 enemyVec;
     private Vector3[] curFormationVec;
 
