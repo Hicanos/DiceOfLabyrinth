@@ -20,7 +20,6 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private TMP_Text tutorialText;
     [SerializeField] private GameObject tutorialBg;
     [SerializeField] private TMP_Text nextText;
-    [SerializeField] private GameObject lobbyBg;
     [SerializeField] private GameObject[] lobbyTutorialImage = new GameObject[2];
 
     [Header("Tutorial Settings")]
@@ -42,15 +41,14 @@ public class TutorialManager : MonoBehaviour
     public void Start()
     {
         // 초기화
-        lobbyBg.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f); // 기본 배경색 설정
-        tutorialBg.SetActive(false); // Hide tutorial background initially
+        tutorialBg.SetActive(false);
         for (int i = 0; i < lobbyTutorials.Count; i++)
         {
-            lobbyTutorials[i].Show(); // Show all tutorials initially
+            lobbyTutorials[i].Hide();
         }
-        tutorialPopup.SetActive(false); // Hide tutorial popup initially
-        lobbyTutorialImage[0].SetActive(false); // Hide first tutorial image initially
-        lobbyTutorialImage[1].SetActive(false); // Hide second tutorial image initially
+        tutorialPopup.SetActive(false);
+        lobbyTutorialImage[0].SetActive(false); 
+        lobbyTutorialImage[1].SetActive(false);
     }
     public void OnEnable()
     {
@@ -105,11 +103,9 @@ public class TutorialManager : MonoBehaviour
         tutorialPopup.SetActive(true);
         if (isLobbyTutorialCompleted)
         {
-            lobbyBg.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f); // Reset background color
             tutorialBg.SetActive(false);
             return;
         }
-        lobbyBg.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.3f); // Set semi-transparent background
         tutorialBg.SetActive(true);
         lobbyTutorialSteps = 0; // Reset tutorial steps
         ShowLobbyTutorial(0);
@@ -139,7 +135,7 @@ public class TutorialManager : MonoBehaviour
         {
             if (i == step)
             {
-                lobbyTutorials[i].Show();
+                lobbyTutorials[i].Blinking();
             }
             else
             {
@@ -178,7 +174,6 @@ public class TutorialManager : MonoBehaviour
     {
         isLobbyTutorialCompleted = true;
         tutorialBg.SetActive(false);
-        lobbyBg.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f); // Reset background color
         if ("LobbyScene" == SceneManager.GetActiveScene().name)
         {
             for (int i = 0; i < lobbyTutorials.Count; i++)
@@ -194,9 +189,10 @@ public class TutorialManager : MonoBehaviour
     {
         [TextArea] public string description;
         public GameObject button;
+        public Coroutine blinkCoroutine;
         // 첨부 이미지 리스트
         public Sprite[] sprites = new Sprite[2];
-        public void Show()
+        public void Blinking()
         {
             if (button != null)
             {
@@ -204,9 +200,24 @@ public class TutorialManager : MonoBehaviour
                 {
                     button.AddComponent<CanvasGroup>();
                 }
-                button.GetComponent<CanvasGroup>().alpha = 1f;
+                blinkCoroutine = TutorialManager.Instance.StartCoroutine(BlinkButton());
             }
         }
+        private IEnumerator BlinkButton()
+        {
+            CanvasGroup canvasGroup = button.GetComponent<CanvasGroup>();
+            while (true)
+            {
+                float t = Mathf.PingPong(Time.time, 1f); // 0~1 반복
+                float alpha = Mathf.Lerp(0.2f, 1f, t);   // 0.2~1 선형보간
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = alpha;
+                }
+                yield return null;
+            }
+        }
+
         public void Hide()
         {
             if (button != null)
@@ -215,7 +226,24 @@ public class TutorialManager : MonoBehaviour
                 {
                     button.AddComponent<CanvasGroup>();
                 }
-                button.GetComponent<CanvasGroup>().alpha = 0.2f;
+                if (blinkCoroutine != null)
+                {
+                    TutorialManager.Instance.StopCoroutine(blinkCoroutine);
+                    blinkCoroutine = null;
+                }
+            button.GetComponent<CanvasGroup>().alpha = 0.2f;
+            }
+        }
+        public void Show()
+        {
+            if (blinkCoroutine != null)
+            {
+                TutorialManager.Instance.StopCoroutine(blinkCoroutine);
+                blinkCoroutine = null;
+            }
+            if (button != null && button.GetComponent<CanvasGroup>() != null)
+            {
+                button.GetComponent<CanvasGroup>().alpha = 1f; // Reset alpha to fully visible
             }
         }
     }
