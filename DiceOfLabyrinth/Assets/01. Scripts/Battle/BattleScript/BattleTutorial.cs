@@ -78,7 +78,6 @@ public class BattleTutorial : MonoBehaviour
     {
         if (index == currentIndex)
         {
-            Debug.Log(2);
             return;
         }
 
