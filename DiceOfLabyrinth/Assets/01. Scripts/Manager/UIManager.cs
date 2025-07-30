@@ -31,6 +31,14 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void SetHudMode(HudMode mode)
+    {
+        if (publicUIController == null) return;
+
+        publicUIController.ApplyMode(mode);
+        publicUIController.Refresh();
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         HudMode hudmode = scene.name switch
