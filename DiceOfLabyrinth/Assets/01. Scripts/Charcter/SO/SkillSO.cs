@@ -28,4 +28,5 @@ public class SkillSO : ScriptableObject
     public int PlusBuffProbability;
     public int BuffTurn;
     public int CoolTime;
+    public bool IsAttacking; // 해당 스킬이 공격(대미지 부여)스킬인지 여부
 }

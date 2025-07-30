@@ -73,6 +73,7 @@ public class SkillSOGenerator : EditorWindow
             so.PlusBuffProbability = data.PlusBuffProbability;
             so.BuffTurn = data.BuffTurn;
             so.CoolTime = data.CoolTime;
+            so.IsAttacking = data.IsAttacking;
 
             // ActiveSO/PassiveSO 개별 필드 할당
             if (so is ActiveSO active)

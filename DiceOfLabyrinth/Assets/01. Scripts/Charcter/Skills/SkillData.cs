@@ -106,6 +106,8 @@ public class SkillData
     /// </summary>
     public string SkillIcon;
 
+    public bool IsAttacking;
+
 }
 public class SkillDataLoader
 {

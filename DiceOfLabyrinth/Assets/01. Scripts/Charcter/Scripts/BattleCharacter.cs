@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using static DataSaver;
 
@@ -57,6 +58,25 @@ public class BattleCharacter : IDamagable
     public event Action OnDied;
     public event Action OnRevived;
 
+    [Header("액티브 스킬 데이터")]
+    // LobbyCharacter를 확인하고, 해당 데이터와 연동
+    public int SkillLevelA = 1;
+    public float SkillValueA;
+    public float BuffProbabilityA;
+    public float BuffValueA;
+    public ActiveSO ActiveSkill => CharacterData?.activeSO;
+
+
+    [Header("패시브 스킬 데이터")]
+    // LobbyCharacter를 확인하고, 해당 데이터와 연동
+    public int SkillLevelB = 1;
+    public float SkillValueB;
+    public float BuffProbabilityB;
+    public float BuffValueB;
+    public PassiveSO PassiveSkill => CharacterData?.passiveSO;
+
+
+
     public BattleCharacter(CharacterSO so)
     {
         SetCharacterSO(so);
@@ -114,6 +134,18 @@ public class BattleCharacter : IDamagable
         RegularCritChance = initialCritChance;
         RegularCritDamage = initialCritDamage;
         Penetration = initialPenetration;
+
+        // 스킬 동기화
+        SkillLevelA = lobbyChar.SkillLevelA;
+        SkillValueA = lobbyChar.SkillValueA;
+        BuffProbabilityA = lobbyChar.BuffProbabilityA;
+        BuffValueA = lobbyChar.BuffValueA;
+
+
+        SkillLevelB = lobbyChar.SkillLevelB;
+        SkillValueB = lobbyChar.SkillValueB;
+        BuffProbabilityB = lobbyChar.BuffProbabilityB;
+        BuffValueB = lobbyChar.BuffValueB;
 
         // Current: 실시간 값(버프 등 적용)
         ResetBattleData();
@@ -233,6 +265,24 @@ public class BattleCharacter : IDamagable
             ResetBattleData();
             OnRevived?.Invoke();
             OnHPChanged?.Invoke(CurrentHP);
+        }
+    }
+
+    // 스킬 사용 메서드
+    // 에너미 데이터는 BattleCharacter가 아님
+    public void UseActiveSkill(List<BattleCharacter> allAllies, BattleEnemy enemy)
+    {
+        if (ActiveSkill != null)
+        {
+            SkillController.SkillUse(this, ActiveSkill, allAllies, enemy);
+        }
+    }
+
+    public void UsePassiveSkill(List<BattleCharacter> allAllies, BattleEnemy enemy)
+    {
+        if (PassiveSkill != null)
+        {
+            SkillController.SkillUse(this, PassiveSkill, allAllies, enemy);
         }
     }
 }
