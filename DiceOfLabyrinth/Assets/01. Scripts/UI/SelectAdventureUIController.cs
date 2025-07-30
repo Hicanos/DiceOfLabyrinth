@@ -204,7 +204,18 @@ public class SelectAdventureUIController : MonoBehaviour
                     scarceStaminaPanel.SetActive(false);
                     StageManager.Instance.RestoreStageState();
                 }, // 확인(Yes) 버튼 클릭 시
-                () => messagePopup.Close() // 취소(No) 버튼 클릭 시
+                () =>
+                {
+                    messagePopup.Close(); // 취소(No) 버튼 클릭 시
+                    messagePopup.Open("진행 중이던 챕터를 정산하시겠습니까? \n" +
+                        "정산을 하게 되면 현재 진행 중인 챕터의 상태가 초기화됩니다. \n" +
+                        "정산 후에는 다시 진행할 수 없습니다.",
+                        () => {
+                            StageManager.Instance.EndChapterEarly(chapterIndex); // 현재 진행 중인 챕터를 정산합니다.
+                        }, // 확인(Yes) 버튼 클릭 시
+                        () => messagePopup.Close() // 취소(No) 버튼 클릭 시
+                    );
+                }
                 );
                 return;
             }
