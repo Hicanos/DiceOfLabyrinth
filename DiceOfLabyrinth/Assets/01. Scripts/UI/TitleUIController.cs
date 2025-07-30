@@ -51,6 +51,7 @@ public class TitleUIController : MonoBehaviour
 
             canStart = true;
         });
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Title);
     }
 
     private void Update()
