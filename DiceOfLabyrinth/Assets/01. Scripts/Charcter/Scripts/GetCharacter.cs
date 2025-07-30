@@ -92,7 +92,6 @@ public class GetCharacter : MonoBehaviour
                 string randomCharID = SSRCharacterIDs[Random.Range(0, SSRCharacterIDs.Count)];
                 ResultCharacters(randomCharID);
 
-                Debug.Log($"획득한 SSR 캐릭터 ID: {randomCharID}");
             }
             else
             {
@@ -146,11 +145,14 @@ public class GetCharacter : MonoBehaviour
         {
             // 이미 보유한 캐릭터는 같은 charID를 가진 Ascension Stone 획득
             ItemManager.Instance.GetAscensionStone(CharID);
+            Debug.Log($"이미 보유한 캐릭터로 돌파석 획득: {CharID}");
             return;
             
         }
         
         CharacterManager.Instance.AcquireCharacter(CharID);
+
+        Debug.Log($"획득한 SSR 캐릭터 ID: {CharID}");
     }
 
     private bool DuplicateCharacterCheck(string charID)
