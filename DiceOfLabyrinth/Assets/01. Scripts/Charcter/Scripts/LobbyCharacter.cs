@@ -10,22 +10,30 @@ public class LobbyCharacter : Character
     public int CurrentExp = 0;
 
     // Regular 속성을 BattleCharacter에서 가져감
-    public int RegularATK; // (아무런 보정이 없는) 공격력
-    public int RegularDEF; // (아무런 보정이 없는) 방어력
-    public int RegularHP; // (아무런 보정이 없는) 체력
-    public float CritChance; // 치명타 확률
-    public float CritDamage; // 치명타 피해량
+    public int RegularATK;
+    public int RegularDEF;
+    public int RegularHP;
+    public float CritChance;
+    public float CritDamage;
 
-    // 로비에서 상승시킨 스킬 데이터
-    [Header("스킬 데이터")]
-    public int SkillLevel; // 스킬의 현재 레벨
+    // 스킬 레벨 및 효과 (SkillSO 기반)
+    [Header("액티브스킬 데이터")]
+    public int SkillLevelA = 1;
+    public ActiveSO ActiveSkill => CharacterData?.activeSO;
+    public float SkillValueA => ActiveSkill == null ? 0 : ActiveSkill.SkillValue + (SkillLevelA - 1) * ActiveSkill.PlusSkillValue;
+    public float BuffProbabilityA => ActiveSkill == null ? 0 : ActiveSkill.BuffProbability + (SkillLevelA - 1) * ActiveSkill.PlusBuffProbability;
+    public float BuffValueA => ActiveSkill == null ? 0 : ActiveSkill.BuffValue + (SkillLevelA - 1) * ActiveSkill.PlusBuffValue;
 
+    [Header("패시브스킬 데이터")]
+    public int SkillLevelB = 1;
+    public PassiveSO PassiveSkill => CharacterData?.passiveSO;
+    public float SkillValueB => PassiveSkill == null ? 0 : PassiveSkill.SkillValue + (SkillLevelB - 1) * PassiveSkill.PlusSkillValue;
+    public float BuffProbabilityB => PassiveSkill == null ? 0 : PassiveSkill.BuffProbability + (SkillLevelB - 1) * PassiveSkill.PlusBuffProbability;
+    public float BuffValueB => PassiveSkill == null ? 0 : PassiveSkill.BuffValue + (SkillLevelB - 1) * PassiveSkill.PlusBuffValue;
 
-    // 로비 캐릭터 데이터
     public override void Initialize(CharacterSO so, int level = 1)
     {
         base.Initialize(so, level);
-        // 로비 캐릭터의 기본 능력치 설정, 이후 레벨업 시 추가된 능력치는 계속 반영
         RegularATK = GetATK();
         RegularDEF = GetDEF();
         RegularHP = GetMaxHP();
@@ -33,49 +41,52 @@ public class LobbyCharacter : Character
         CritDamage = CharacterData.critDamage;
     }
 
-
-    // 경험치 수식은 현재 레벨 N에서 N+1로 넘어갈 때, 필요한 경험치는 250×(N+1)
-
-    // 다음 레벨로 넘어가기 위한 경험치 계산
     public int GetExpToNextLevel()
     {
         return 250 * (Level + 1);
     }
 
-    /// <summary>
-    /// 경험치 추가 및 레벨업 처리
-    /// </summary>
     public void AddExp(int exp)
     {
-        GetExpToNextLevel();
         CurrentExp += exp;
-        // 레벨업 조건 및 처리 로직 추가 가능
-        // 현재 최대레벨 제거됨
         while (CurrentExp >= GetExpToNextLevel())
         {
             CurrentExp -= GetExpToNextLevel();
             LevelUP();
         }
-        // 변동된 값(CurrentExp) 저장
         DataSaver.Instance.SaveCharacter(this);
     }
 
-
     private void LevelUP()
     {
-
         Level++;
-        // 레벨이 올라가면 올라간만큼 기본 능력치 증가함
-        GetMaxHP();
         RegularATK = GetATK();
         RegularDEF = GetDEF();
         RegularHP = GetMaxHP();
-
     }
 
-    /// <summary>
-    /// 외부 강화 수치 포함 최대 HP
-    /// </summary>
+    public bool TryUpgradeSkillA()
+    {
+        if (SkillUpgradeChecker.CanUpgradeSkill(SkillLevelA))
+        {
+            SkillLevelA++;
+            DataSaver.Instance.SaveCharacter(this);
+            return true;
+        }
+        return false;
+    }
+
+    public bool TryUpgradeSkillB()
+    {
+        if (SkillUpgradeChecker.CanUpgradeSkill(SkillLevelB))
+        {
+            SkillLevelB++;
+            DataSaver.Instance.SaveCharacter(this);
+            return true;
+        }
+        return false;
+    }
+
     public override int GetMaxHP()
     {
         return base.GetMaxHP();
