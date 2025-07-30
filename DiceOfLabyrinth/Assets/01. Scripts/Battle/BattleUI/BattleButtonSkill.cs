@@ -35,7 +35,7 @@ public class BattleButtonSkill : AbstractBattleButton
     public override void OnPush()
     {
         Debug.Log(character.CharNameKr + " 스킬 사용");
-        BattleManager.Instance.SpendCost(3); //테스트용
+        character.UseActiveSkill(BattleManager.Instance.BattleGroup.BattleCharacters, BattleManager.Instance.Enemy);       
     }
 
     private void GetIndex()
