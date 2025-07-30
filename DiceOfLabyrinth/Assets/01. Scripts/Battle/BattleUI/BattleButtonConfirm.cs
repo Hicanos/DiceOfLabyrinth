@@ -44,7 +44,7 @@ public class BattleButtonConfirm : AbstractBattleButton
         diceManager.DiceHolding.isCantFix = true;
         diceManager.DiceBattle.GetDiceWeighting();
         BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.Rank, diceManager.DiceRank.ToString()); //일단 이름만
-        UIManager.Instance.BattleUI.BattleTutorial.StartTutorial(2);
+        UIManager.Instance.BattleUI.BattleTutorial.StartTutorial();
     }
 
     public void OnPushFinal()

@@ -27,9 +27,10 @@ public class BattleTutorial : MonoBehaviour
         TutorialData.Texts = loadTutorialData.GetTexts();
         textMaxIndex = TutorialData.Texts[0].Length;
     }
-    public void StartTutorial(int index)
+    public void StartTutorial()
     {
         if (BattleManager.Instance.isTutorialOver) return;
+        int index = currentIndex + 1;
         ActiveTutorialText(index);
     }
     public void StartTutorial(DetailedTurnState state)
