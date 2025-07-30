@@ -27,33 +27,48 @@ public class BattleTutorial : MonoBehaviour
         TutorialData.Texts = loadTutorialData.GetTexts();
         textMaxIndex = TutorialData.Texts[0].Length;
     }
-    public void StartTutorial()
-    {
-        if (BattleManager.Instance.isTutorialOver) return;
-        int index = currentIndex + 1;
-        ActiveTutorialText(index);
-    }
-    public void StartTutorial(DetailedTurnState state)
+    
+    public void StartTutorial(int iNum = -1)
     {
         if (BattleManager.Instance.isTutorialOver) return;
         int index;
 
-        if (state == DetailedTurnState.Enter)
+        switch (iNum)
         {
-            if (currentIndex == 3) { index = 4; }
-            else index = 0;
-        }
-        else if (state == DetailedTurnState.RollEnd)
-        {
-            index = 1;
-        }
-        else if (state == DetailedTurnState.AttackEnd)
-        {
-            index = 3;
-        }
-        else
-        {
-            return;
+            case (int)DetailedTurnState.Enter:                
+                index = 0;
+                if(currentIndex == 3)
+                {
+                    index = 4;
+                }
+                else if (currentIndex >= index)
+                {
+                    return;
+                }
+                break;
+            case (int)DetailedTurnState.RollEnd:
+                index = 1;
+                if (currentIndex >= index)
+                {
+                    return;
+                }
+                break;
+            case (int)DetailedTurnState.AttackEnd:
+                index = 3;
+                if (currentIndex >= index)
+                {
+                    return;
+                }
+                break;
+            case -1:
+                index = 2;
+                if (currentIndex >= index)
+                {
+                    return;
+                }
+                break;
+            default:
+                return;
         }
 
         ActiveTutorialText(index);
@@ -61,7 +76,11 @@ public class BattleTutorial : MonoBehaviour
 
     private void ActiveTutorialText(int index)
     {
-        if (index == currentIndex) return;
+        if (index == currentIndex)
+        {
+            Debug.Log(2);
+            return;
+        }
 
         currentIndex = index;
         tutorialBoard.SetActive(true);
@@ -184,7 +203,6 @@ public class LoadTutorialData
     {
         JToken isOver = root["IsTutorialOver"];
 
-        Debug.Log((bool)isOver);
         BattleManager.Instance.isTutorialOver = (bool)isOver;
     }
 
