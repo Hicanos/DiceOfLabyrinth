@@ -11,16 +11,6 @@ public class BattleUIPatternDisplay : AbstractBattleButton
     [SerializeField] TextMeshProUGUI text_SkillDescription;
     [SerializeField] Button button;
 
-    private void OnEnable()
-    {
-        UIManager.Instance.BattleUI.Buttons.Add(this);
-    }
-
-    private void OnDisable()
-    {
-        UIManager.Instance.BattleUI.Buttons.Remove(this);
-    }
-
     public override void Setting()
     {
 
