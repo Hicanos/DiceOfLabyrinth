@@ -25,7 +25,11 @@ public class StageInfo
     // 스테이지 정보 필드들
     [SerializeField] private string stageName;
     [SerializeField] private string description;
-    [SerializeField] private Image backgroundImage;
+    [SerializeField] private Sprite teamSelect;
+    [SerializeField] private Sprite worldMapBackground;
+    [SerializeField] private Sprite room12Background;
+    [SerializeField] private Sprite room34Background;
+    [SerializeField] private Sprite bossRoomBackground;
     [SerializeField] private int rewardValue;
     [SerializeField] private List<EnemyData> enemies;
     [SerializeField] private List<ChoiceOptions> choiceOptions;
@@ -35,7 +39,11 @@ public class StageInfo
     // 읽기 전용 프로퍼티들
     public string StageName => stageName;
     public string Description => description;
-    public Image BackgroundImage => backgroundImage;
+    public Sprite TeamSelect => teamSelect;
+    public Sprite WorldMapBackground => worldMapBackground;
+    public Sprite Room12Background => room12Background;
+    public Sprite Room34Background => room34Background;
+    public Sprite BossRoomBackground => bossRoomBackground;
     public int ExpReward => rewardValue * 10; // 15배로 보정
     public int GoldReward => rewardValue * 15; // 10배로 보정
     public int PotionReward => rewardValue; // 포션 보상은 1배로 설정

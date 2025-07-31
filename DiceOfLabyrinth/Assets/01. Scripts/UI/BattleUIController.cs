@@ -41,7 +41,6 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private GameObject defeatPanel;
     [SerializeField] private GameObject selectItemPanel;
     [SerializeField] private GameObject selectEventPanel;
-    [SerializeField] private GameObject selectArtifactPanel;
 
     [Header("Popup")]
     [SerializeField] private GameObject shopPopup;
@@ -72,6 +71,11 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private Color platformDefaultColor; // 플랫폼 기본 색상
     [SerializeField] private Color platformSelectedColor; // 플랫폼 선택 시 색상
     private int selectedPlatformIndex = -1; // 선택된 플랫폼 인덱스
+
+    [Header("BgSprites")]
+    [SerializeField] private GameObject backgroundSprite;
+    [SerializeField] private GameObject worldMap;
+
 #if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
     private void Update()
     {
@@ -128,6 +132,7 @@ public class BattleUIController : MonoBehaviour
                 AssignPlatformsFromScene(); // 씬에서 플랫폼 할당
             }
         }
+
     }
 
     private void AssignPlatformsFromScene()
@@ -136,6 +141,26 @@ public class BattleUIController : MonoBehaviour
         for (int i = 0; i < characterPlatforms.Length; i++)
         {
             characterPlatforms[i] = relays.FirstOrDefault(p => p.platformIndex == i)?.gameObject;
+        }
+    }
+    public void SetBackgroundSprite(Sprite sprite)
+    {
+        if (backgroundSprite == null)
+        {
+            GameObject bgObject = GameObject.FindWithTag("Background");
+            if (bgObject != null)
+            {
+                backgroundSprite = bgObject;
+            }
+        }
+
+        if (backgroundSprite != null)
+        {
+            var meshRenderer = backgroundSprite.GetComponent<MeshRenderer>();
+            if (meshRenderer != null && sprite != null)
+            {
+                meshRenderer.material.mainTexture = sprite.texture;
+            }
         }
     }
     public void OnClickPerformed(InputAction.CallbackContext context)
@@ -257,6 +282,9 @@ public class BattleUIController : MonoBehaviour
         recoveryPopup.SetActive(false);
         if (InventoryPopup.Instance != null)
             InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        SetBackgroundSprite(chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.
+            stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground);
+
         // characterButtons의 개수를 보유 캐릭터 수 만큼으로 설정하는 로직은 나중에 구현할 예정 현재는 7개로 사용
 
         int ownedCount = CharacterManager.Instance.OwnedCharacters.Count;

@@ -207,6 +207,7 @@ public class StageManager : MonoBehaviour
         }
         else if (stageSaveData.currentStageIndex == -1 || stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.None) // 던전 선택 상태
         {
+            battleUIController.RefreshManaStoneViewer();
             battleUIController.OpenSelectDungeonPanel(); // 스테이지 선택 UI를 엽니다.
             return;
         }
@@ -646,6 +647,7 @@ public class StageManager : MonoBehaviour
         stageSaveData.selectedEnemy = normalEnemies[randomIndex];
         var battleStartData = new BattleStartData(stageSaveData, normalManaStoneReward);
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_NormalEliteBattle);
+        RefreshRoomBg();
         battleUIController.OpenBattlePanel();
         BattleManager.Instance.StartBattle(battleStartData);
     }
@@ -679,6 +681,7 @@ public class StageManager : MonoBehaviour
         stageSaveData.selectedEnemy = eliteEnemies[randomIndex];
         var battleStartData = new BattleStartData(stageSaveData, normalManaStoneReward);
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_NormalEliteBattle); // 배틀 배경음악 재생
+        RefreshRoomBg();
         battleUIController.OpenBattlePanel();
         BattleManager.Instance.StartBattle(battleStartData);
     }
@@ -737,7 +740,29 @@ public class StageManager : MonoBehaviour
 
         stageSaveData.selectedEnemy = selectedBoss;
         var battleStartData = new BattleStartData(stageSaveData, 0);
+        RefreshRoomBg();
         battleUIController.OpenBattlePanel();
         BattleManager.Instance.StartBattle(battleStartData);
+    }
+
+    private void RefreshRoomBg()
+    {
+        // 배틀 씬에서 룸 배경을 갱신하는 로직을 구현합니다.
+        // 예시로, 현재 스테이지 인덱스에 따라 배경을 변경할 수 있습니다.
+        if (stageSaveData.currentPhaseIndex <= 1)
+        {
+            // 노멀 룸 배경
+            battleUIController.SetBackgroundSprite(chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].Room12Background);
+        }
+        else if (stageSaveData.currentPhaseIndex == 2 || stageSaveData.currentPhaseIndex == 3)
+        {
+            // 엘리트 룸 배경
+            battleUIController.SetBackgroundSprite(chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].Room34Background);
+        }
+        else if (stageSaveData.currentPhaseIndex >= 4)
+        {
+            // 보스 룸 배경
+            battleUIController.SetBackgroundSprite(chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].BossRoomBackground);
+        }
     }
 }

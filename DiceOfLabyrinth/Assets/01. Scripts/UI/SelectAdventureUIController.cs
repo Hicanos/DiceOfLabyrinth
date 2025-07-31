@@ -76,7 +76,6 @@ public class SelectAdventureUIController : MonoBehaviour
         selectChapterPanel.SetActive(true);
         scarceStaminaPanel.SetActive(false);
         DifficultyToggleRefresh(); // 초기 난이도 토글 상태 설정
-        OnClickChapterButton(0); // 초기 챕터 버튼 클릭 이벤트 호출, 첫 번째 챕터를 선택합니다.
         OnClickMultipleMinButton(); // 직접 완료 배수 초기화
     }
 
@@ -149,9 +148,8 @@ public class SelectAdventureUIController : MonoBehaviour
     private void RefreshChapterButton()
     {
 
-        for(int i = 0; i < 5; i++) // 챕터 버튼 텍스트 업데이트
+        for (int i = 0; i < 5; i++) // 챕터 버튼 텍스트 업데이트
         {
-            
             int chapterIndex = i * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0); // 현재 그룹 번호와 난이도에 따라 챕터 인덱스 계산
             if (chapterIndex < chapterData.chapterIndex.Count) // 유효한 챕터 인덱스일 때
             {
@@ -172,20 +170,29 @@ public class SelectAdventureUIController : MonoBehaviour
     }
     private void RefreshChapterButton(int index)
     {
-        RefreshChapterButton(); // 챕터 버튼 텍스트 업데이트
-        for (int i = 0; i < 5; i++) // 챕터 버튼 색상 업데이트
+        if (index < 0 || index >= chapterButtonsImages.Count)
         {
-            if(i == index) // 선택된 챕터 버튼
-            {
-                chapterButtonsImages[i].color = selectedButtonColor; // 선택된 버튼 색상
-                chapterTexts[i].color = selectedButtonTextColor; // 선택된 버튼 색상
-            }
-            else // 선택되지 않은 챕터 버튼
-            {
-                chapterButtonsImages[i].color = unselectedButtonColor; // 선택되지 않은 버튼 색상
-                chapterTexts[i].color = unselectedButtonTextColor; // 선택되지 않은 버튼 색상
-            }
+            return;
         }
+        RefreshChapterButton(); // 챕터 버튼 텍스트 업데이트
+        int chapterIndex = index * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0); // 현재 그룹 번호와 난이도에 따라 챕터 인덱스 계산
+        if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked == false)
+        {
+            return;
+        }
+        for (int i = 0; i < 5; i++) // 챕터 버튼 색상 업데이트
+            {
+                if (i == index) // 선택된 챕터 버튼
+                {
+                    chapterButtonsImages[i].color = selectedButtonColor; // 선택된 버튼 색상
+                    chapterTexts[i].color = selectedButtonTextColor; // 선택된 버튼 색상
+                }
+                else // 선택되지 않은 챕터 버튼
+                {
+                    chapterButtonsImages[i].color = unselectedButtonColor; // 선택되지 않은 버튼 색상
+                    chapterTexts[i].color = unselectedButtonTextColor; // 선택되지 않은 버튼 색상
+                }
+            }
     }
 
     public void OnClickStartButton() // 코스트 지불 UI의 시작 버튼
