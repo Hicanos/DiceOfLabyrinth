@@ -21,7 +21,9 @@ public class DataSaver
     [Serializable]
     public class UserData
     {
-        //유저의 레벨, 재화 정보 보관
+        // 튜토리얼 클리어 여부
+        public bool isLobbyTutorialCompleted = false;
+        // TutorialManager의 값을 저장/로드
     }
 
     [Serializable]
@@ -371,6 +373,12 @@ public class DataSaver
             SyncCharacterData();
             SyncItemData();
 
+            // TutorialManager 튜토리얼 완료 여부 동기화
+            if (TutorialManager.Instance != null)
+            {
+                SaveData.userData.isLobbyTutorialCompleted = TutorialManager.Instance.isLobbyTutorialCompleted;
+            }
+
             // StageSaveData → StageData 변환 및 저장
             if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
                 SaveData.stageData = new StageData(StageManager.Instance.stageSaveData);
@@ -455,11 +463,15 @@ public class DataSaver
                 Debug.Log($"chapterStates null? {SaveData.stageData.chapterStates == null}");
                 // SO 복원은 GameManager에서 Addressables 로드 완료 후 호출
 
+                // 튜토리얼 완료 여부를 TutorialManager에 반영
+                if (TutorialManager.Instance != null)
+                {
+                    TutorialManager.Instance.isLobbyTutorialCompleted = SaveData.userData.isLobbyTutorialCompleted;
+                }
             }
             else
             {
                 SaveData = new GameSaveData();
-                CharacterManager.Instance.AcquireDefaultCharacters();
                 Save();
 #if UNITY_EDITOR
                 Debug.Log("저장 파일이 없어 새 데이터로 초기화");
@@ -470,7 +482,6 @@ public class DataSaver
         {
             Debug.LogError($"게임 데이터 불러오기 실패: {ex.Message}\n{ex.StackTrace}\njson: {json}");
             SaveData = new GameSaveData();
-            CharacterManager.Instance.AcquireDefaultCharacters();
             Save();
         }
         // SO 복원은 GameManager에서 Addressables 로드 완료 후 호출

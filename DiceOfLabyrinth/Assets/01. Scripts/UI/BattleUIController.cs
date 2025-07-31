@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -45,6 +46,7 @@ public class BattleUIController : MonoBehaviour
     [Header("Popup")]
     [SerializeField] private GameObject shopPopup;
     [SerializeField] private GameObject recoveryPopup; // 회복 팝업
+    [SerializeField] private TMP_Text manaStoneText; // 마나스톤 갯수를 표시할 텍스트
 
     [Header("Item Choice Icons")]
     [SerializeField] private GameObject[] itemChoiceIcon = new GameObject[3]; // 아이템 선택 아이콘을 위한 배열
@@ -116,18 +118,18 @@ public class BattleUIController : MonoBehaviour
     }
 #endif
     
-    private void OnDisable()
-    {
-        for (int i = 0; i < characterPlatforms.Length; i++)
-        {
-            if (characterPlatforms[i] != null)
-            {
-                Destroy(characterPlatforms[i]);
-                characterPlatforms[i] = null;
-            }
-        }
-        selectedPlatformIndex = -1; // 초기 선택된 플랫폼 인덱스 설정
-    }
+    //private void OnDisable()
+    //{
+    //    for (int i = 0; i < characterPlatforms.Length; i++)
+    //    {
+    //        if (characterPlatforms[i] != null)
+    //        {
+    //            Destroy(characterPlatforms[i]);
+    //            characterPlatforms[i] = null;
+    //        }
+    //    }
+    //    selectedPlatformIndex = -1; // 초기 선택된 플랫폼 인덱스 설정
+    //}
     public void OnClickPerformed(InputAction.CallbackContext context)
     {
 #if UNITY_ANDROID || UNITY_IOS
@@ -161,6 +163,17 @@ public class BattleUIController : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+    public void RefreshManaStoneViewer()
+    {
+        if (manaStoneText != null)
+        {
+            manaStoneText.text = StageManager.Instance.stageSaveData.manaStone.ToString(); // 현재 마나스톤 갯수를 표시
+        }
+        else
+        {
+            Debug.LogWarning("ManaStoneText가 설정되지 않았습니다.");
         }
     }
     private void OnPlatformClicked(int platformIndex)
@@ -831,23 +844,30 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickStageNextButton() // 스테이지 패널에서 다음 버튼 클릭 시 호출되는 함수
     {
-        if (StageManager.Instance.stageSaveData.currentPhaseIndex < 4) // 페이즈4 까지는 선택지 패널을 열고 그 후 배틀 룸 입장
+        if(StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Standby) // 현재 페이즈 상태가 대기 상태일 때
         {
-            OpenSelectChoicePanel(); // 선택지 이벤트 패널 열기
+            if (StageManager.Instance.stageSaveData.currentPhaseIndex < 4) // 페이즈0-3 까지는 선택지 패널을 열고 그 후 배틀 룸 입장
+            {
+                OpenSelectChoicePanel(); // 선택지 이벤트 패널 열기
+            }
+            else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 4) // 페이즈 4는 선택지 대신 상점을 염
+            {
+                OpenShopPopup(); // 상점 패널 열기
+            }
+            else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5) // 페이즈 5는 보스 룸
+            {
+                messagePopup.Open("보스가 등장했습니다! 입장할래?",
+                () => StageManager.Instance.selectBossEnemy(),
+                () => messagePopup.Close());
+            }
+            else // 페이즈 인덱스가 범위를 벗어난 경우
+            {
+                messagePopup.Open("잘못된 페이즈 인덱스입니다. 다시 시도해 주세요.");
+            }
         }
-        else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 4) // 페이즈 5는 선택지 대신 상점을 염
+        else if (StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.EquipmentArtifact)
         {
-            OpenShopPopup(); // 상점 패널 열기
-        }
-        else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5) // 페이즈 6은 보스 룸
-        {
-            messagePopup.Open("보스가 등장했습니다! 입장할래?",
-            () => StageManager.Instance.selectBossEnemy(),
-            () => messagePopup.Close());
-        }
-        else // 페이즈 인덱스가 범위를 벗어난 경우
-        {
-            messagePopup.Open("잘못된 페이즈 인덱스입니다. 다시 시도해 주세요.");
+            InventoryPopup.Instance.OnClickInventoryButton();
         }
     }
 
@@ -953,7 +973,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Victory); // 승리 효과음 재생
+        SoundManager.Instance.PlayOneShotBGM(SoundManager.SoundType.BGM_Victory); // 승리 효과음 재생
     }
 
     public void OpenDefeatPanel() // 패배 패널을 여는 함수
@@ -976,7 +996,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Defeat); // 패배 효과음 재생
+        SoundManager.Instance.PlayOneShotBGM(SoundManager.SoundType.BGM_Defeat); // 패배 효과음 재생
     }
 
     public void OnClickVictoryNextButton() // 승리 패널에서 다음 버튼 클릭 시 호출되는 함수
@@ -1017,7 +1037,7 @@ public class BattleUIController : MonoBehaviour
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.EquipmentArtifact; // 현재 페이즈 상태를 "EquipmentArtifact"로 설정
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
-        stagePanel.SetActive(false);
+        stagePanel.SetActive(true);
         battlePanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
@@ -1025,12 +1045,12 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        InventoryPopup.Instance.OnClickInventoryButton(); // 인벤토리 팝업 열기
+
         foreach (var characterPlatform in characterPlatforms)
-        {
-            if (characterPlatform != null)
-                characterPlatform.SetActive(false);
-        }
+            {
+                if (characterPlatform != null)
+                    characterPlatform.SetActive(false);
+            }
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
     }
 }

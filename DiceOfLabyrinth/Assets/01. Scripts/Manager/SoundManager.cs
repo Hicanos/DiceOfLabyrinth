@@ -82,10 +82,21 @@ public class SoundManager : MonoBehaviour
         bgmSource.Stop();
     }
 
+    public void PlayOneShotBGM(SoundType type) // 배경음악을 한 번만 재생
+    {
+        if (soundDict.TryGetValue(type, out var clip))
+        {
+            bgmSource.clip = clip;
+            bgmSource.volume = bgmVolume;
+            bgmSource.PlayOneShot(clip, bgmVolume);
+        }
+    }
     public void PlaySFX(SoundType type) // SFX 재생
     {
         if (soundDict.TryGetValue(type, out var clip))
         {
+            sfxSource.clip = clip;
+            sfxSource.volume = sfxVolume;
             sfxSource.PlayOneShot(clip);
         }
     }

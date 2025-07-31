@@ -200,7 +200,7 @@ public class StageManager : MonoBehaviour
             Debug.LogError("현재의 스테이지 인덱스가 유효하지 않습니다. 스테이지 데이터를 확인해주세요.");
             return;
         }
-        else if (stageSaveData.currentPhaseIndex < 0 || stageSaveData.currentPhaseIndex > 4) // 페이즈 인덱스가 0~4 범위를 벗어나는 경우
+        else if (stageSaveData.currentPhaseIndex < 0 || stageSaveData.currentPhaseIndex > 5) // 페이즈 인덱스가 0~5 범위를 벗어나는 경우
         {
             Debug.LogError("현재의 페이즈 인덱스가 유효하지 않습니다. 페이즈 데이터를 확인해주세요.");
             return;
@@ -211,7 +211,7 @@ public class StageManager : MonoBehaviour
             return;
         }
         else if (stageSaveData.currentPhaseIndex >= 0 || stageSaveData.currentPhaseIndex <= 4) // 현재 선택지 상태가 비어있지 않은 경우
-                                                                                               // "StartReward", "NormalReward", "SelectChoice", "EliteArtifactReward", "EliteEngravingReward", "BossReward", "Shop" , "TeamSelect",  "Standby", "Battle" 중 하나
+            battleUIController.RefreshManaStoneViewer();                                                                                     // "StartReward", "NormalReward", "SelectChoice", "EliteArtifactReward", "EliteEngravingReward", "BossReward", "Shop" , "TeamSelect",  "Standby", "Battle" 중 하나
         {
             switch (stageSaveData.currentPhaseState)
             {
@@ -404,6 +404,7 @@ public class StageManager : MonoBehaviour
         // 배틀 종료 후 아군 상태(체력 등) 반영
         stageSaveData.battleCharacters = result.battleCharacters;
         stageSaveData.manaStone += result.manaStoneReward;
+        battleUIController.RefreshManaStoneViewer(); // 마나 스톤 뷰어를 갱신합니다.
 
         if (result.isVictory)
         {
