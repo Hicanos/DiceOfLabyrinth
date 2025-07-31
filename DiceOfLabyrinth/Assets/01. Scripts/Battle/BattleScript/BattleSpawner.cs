@@ -26,7 +26,7 @@ public class BattleSpawner : MonoBehaviour
     [SerializeField] int fakeDiceLayer;
     public void SpawnCharacters()
     {
-        if (BattleManager.Instance.IsBattle == false)
+        if (BattleManager.Instance.InBattleStage == false)
         {
             CharacterSpawn();
         }
@@ -178,6 +178,7 @@ public class BattleSpawner : MonoBehaviour
 
     private void SpawnDice(List<BattleCharacter> character)
     {
+        Debug.Log("스폰 다이스");
         GameObject go;
         GameObject dice;
         GameObject fakeDice;
@@ -197,6 +198,15 @@ public class BattleSpawner : MonoBehaviour
         }        
     }
 
+    public void DestroyDices()
+    {
+        Debug.Log("주사위 파괴");
+        for (int i = diceContainer.childCount - 1; i >= 0; i--)
+        {
+            Destroy(diceContainer.GetChild(i).gameObject);
+            Destroy(fakeDiceContainer.GetChild(i).gameObject);
+        }
+    }
     public void SpawnEnemy()
     {
         BattleEnemy enemy = battleManager.Enemy;

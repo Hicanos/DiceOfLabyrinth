@@ -363,13 +363,4 @@ public class DiceManager : MonoBehaviour
         BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.RollEnd);
         BattleManager.Instance.GetCost(signitureAmount);
     }
-
-    public void DestroyDices()
-    {
-        for(int i = 0; i < Dices.Length; i++)
-        {
-            Destroy(Dices[i]);
-            Destroy(FakeDices[i]);
-        }
-    }
 }
