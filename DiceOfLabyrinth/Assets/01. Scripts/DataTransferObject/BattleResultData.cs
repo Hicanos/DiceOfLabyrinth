@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
 [System.Serializable]
 public class BattleResultData // Data Transfer Object (DTO) for battle result data
 {
@@ -7,15 +7,10 @@ public class BattleResultData // Data Transfer Object (DTO) for battle result da
     public List<BattleCharacter> battleCharacters;
     public int manaStoneReward;
 
-    public BattleResultData(bool isVictory, List<BattleCharacter> battleCharacters)
+    public BattleResultData(bool isVictory, List<BattleCharacter> battleCharacters, int manaStoneReward)
     {
         this.isVictory = isVictory;
         this.battleCharacters = battleCharacters;
+        this.manaStoneReward = manaStoneReward;
     }
-    //public BattleResultData(bool isVictory, List<BattleCharacter> battleCharacters, int manaStoneReward)
-    //{
-    //    this.isVictory = isVictory;
-    //    this.battleCharacters = battleCharacters;
-    //    this.manaStoneReward = manaStoneReward;
-    //}
 }

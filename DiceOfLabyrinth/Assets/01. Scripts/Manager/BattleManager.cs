@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using System.Collections;
 
 public class BattleManager : MonoBehaviour
 {
@@ -71,6 +71,7 @@ public class BattleManager : MonoBehaviour
     private int     currentCost;
     public  float   WaitSecondEndBattle;
     public int MaxCost => maxCost + (int)ArtifactAdditionalStatus.AdditionalMaxCost;
+    private int manastoneAmount;
 
     void Start()
     {
@@ -85,8 +86,6 @@ public class BattleManager : MonoBehaviour
 
         UIManager.Instance.BattleUI.Setting();
         DiceManager.Instance.DiceHolding.SettingForHolding();
-        
-        UIManager.Instance.BattleUI.BattleTutorial.LoadData();
     }
     
     void Update()
@@ -100,7 +99,8 @@ public class BattleManager : MonoBehaviour
     public void StartBattle(BattleStartData data) //전투 시작시
     {        
         GetStartData(data);
-        
+        UIManager.Instance.BattleUI.BattleTutorial.LoadData();
+
         ArtifactAdditionalStatus = new ArtifactAdditionalStatus();
         EngravingAdditionalStatus = new EngravingAdditionalStatus();
         
@@ -149,6 +149,7 @@ public class BattleManager : MonoBehaviour
         {
             BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.engravings);
         }
+        manastoneAmount = data.manaStone;
     }
 
     public void EndBattle(bool isWon = true)
@@ -164,10 +165,11 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(WaitSecondEndBattle);
         StateMachine.ChangeState(I_FinishBattleState);
 
+        manastoneAmount = (int)((manastoneAmount + ArtifactAdditionalStatus.AdditionalStone) * EngravingAdditionalStatus.AdditionalStone);
         //결과창 실행
         if (isWon)
         {
-            data = new BattleResultData(true, BattleGroup.BattleCharacters);
+            data = new BattleResultData(true, BattleGroup.BattleCharacters, manastoneAmount);
 
             if (Enemy.Data.Type == EnemyData.EnemyType.Guardian && Enemy.Data.Type == EnemyData.EnemyType.Lord)
             {
@@ -178,7 +180,7 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            data = new BattleResultData(false, BattleGroup.BattleCharacters);
+            data = new BattleResultData(false, BattleGroup.BattleCharacters, manastoneAmount);
             ExitStageSetting();
             StageManager.Instance.OnBattleResult(data);
         }
