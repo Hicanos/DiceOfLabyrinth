@@ -119,7 +119,7 @@ public class Goblin : MonoBehaviour, IEnemy
     private IEnumerator SpinAttackRoutine()
     {
         PlayAnimationByState(EnemyState.SpinAttack);
-        yield return WaitAnimation(1f);
+        yield return WaitAnimation(2f);
         PlayAnimationByState(EnemyState.Idle);
     }
 
@@ -174,7 +174,7 @@ public class Goblin : MonoBehaviour, IEnemy
     private IEnumerator HitRoutine()
     {
         PlayAnimationByState(EnemyState.Hit);
-        float hitDuration = 0.7f;
+        float hitDuration = 1.3f;
         yield return new WaitForSeconds(hitDuration);
         if (IsDead)
             PlayAnimationByState(EnemyState.Dead);
@@ -214,7 +214,7 @@ public class Goblin : MonoBehaviour, IEnemy
     public void HitPlayer()
     {
         if (BattleManager.Instance == null || BattleManager.Instance.EnemyAttack == null)
-        {
+        {            
             return;
         }
         BattleManager.Instance.EnemyAttack.EnemyAttackDealDamage();

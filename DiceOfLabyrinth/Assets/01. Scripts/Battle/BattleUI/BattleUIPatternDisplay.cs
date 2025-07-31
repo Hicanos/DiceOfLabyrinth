@@ -21,7 +21,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
         switch (state)
         {
             case DetailedTurnState.Enter:
-                ReturnColor();
+                gameObject.SetActive(true);
                 descriptionPanel.SetActive(false);
                 StartCoroutine(BlinkUI());
                 break;
@@ -32,7 +32,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
                 button.interactable = true;
                 break;
             case DetailedTurnState.EndTurn:
-                MakeTransparent();
+                gameObject.SetActive(false);
                 descriptionPanel.SetActive(false);
                 break;
         }

@@ -84,8 +84,13 @@ public class BattleCharacterAttack : MonoBehaviour
 
                 yield return null;
             }
-            if (battleManager.Enemy.IsDead) StopAttackCoroutine();
+            characterPrefabs[i].transform.position = firstPosition;
 
+            if (battleManager.Enemy.IsDead)
+            {
+                isCharacterAttacking = false;
+                StopAttackCoroutine();
+            }
             yield return new WaitForSeconds(waitSecondCharAttack);
         }
         isCharacterAttacking = false;
