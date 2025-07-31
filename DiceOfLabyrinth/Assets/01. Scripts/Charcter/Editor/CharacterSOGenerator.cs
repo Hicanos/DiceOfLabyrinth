@@ -136,6 +136,30 @@ public class CharacterSOGenerator : EditorWindow
                 so.Standing = AssetDatabase.LoadAssetAtPath<Sprite>(data.StandingPath);
             }
 
+            // 스킬 ID를 통해 액티브 및 패시브 스킬 SO를 할당 - 스킬 아이디에 맞는 SkillSO를 찾아서 할당 (ActiveSO와 PassiveSO는 SkillSO를 상속받음)
+            // Addressable은 사용하지 않고, SO를 직접 할당
+            // 모든 SkillSO의 경로 "Assets/01. Scripts/Charcter/SO/Skills"에 저장되어있음
+            // 스킬 형식(Active,Passive공용) : Skill_1_SO, Skill_2_SO, ...
+
+            if (!string.IsNullOrEmpty(so.activeSkillID))
+            {
+                string activeSkillPath = $"Assets/01. Scripts/Charcter/SO/Skills/{so.activeSkillID}_SO.asset";
+                so.activeSO = AssetDatabase.LoadAssetAtPath<ActiveSO>(activeSkillPath);
+                if (so.activeSO == null)
+                {
+                    Debug.LogWarning($"액티브 스킬 SO를 찾을 수 없습니다: {activeSkillPath}");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(so.passiveSkillID))
+            {
+                string passiveSkillPath = $"Assets/01. Scripts/Charcter/SO/Skills/{so.passiveSkillID}_SO.asset";
+                so.passiveSO = AssetDatabase.LoadAssetAtPath<PassiveSO>(passiveSkillPath);
+                if (so.passiveSO == null)
+                {
+                    Debug.LogWarning($"패시브 스킬 SO를 찾을 수 없습니다: {passiveSkillPath}");
+                }
+            }
 
             // DiceDataLoader를 통해 Dice 데이터 로드
             DiceDataLoader diceLoader = new DiceDataLoader(); // 기본 경로 사용
@@ -177,30 +201,7 @@ public class CharacterSOGenerator : EditorWindow
                 entry.SetLabel("CharacterSO", true);
             }
 
-            // 스킬 ID를 통해 액티브 및 패시브 스킬 SO를 할당 - 스킬 아이디에 맞는 SkillSO를 찾아서 할당 (ActiveSO와 PassiveSO는 SkillSO를 상속받음)
-            // Addressable은 사용하지 않고, SO를 직접 할당
-            // 모든 SkillSO의 경로 "Assets/01. Scripts/Charcter/SO/Skills"에 저장되어있음
-            // 스킬 형식(Active,Passive공용) : Skill_1_SO, Skill_2_SO, ...
-
-            if (!string.IsNullOrEmpty(so.activeSkillID))
-            {
-                string activeSkillPath = $"Assets/01. Scripts/Charcter/SO/Skills/{so.activeSkillID}_SO.asset";
-                so.activeSO = AssetDatabase.LoadAssetAtPath<ActiveSO>(activeSkillPath);
-                if (so.activeSO == null)
-                {
-                    Debug.LogWarning($"액티브 스킬 SO를 찾을 수 없습니다: {activeSkillPath}");
-                }
-            }
-
-            if (!string.IsNullOrEmpty(so.passiveSkillID))
-            {
-                string passiveSkillPath = $"Assets/01. Scripts/Charcter/SO/Skills/{so.passiveSkillID}_SO.asset";
-                so.passiveSO = AssetDatabase.LoadAssetAtPath<PassiveSO>(passiveSkillPath);
-                if (so.passiveSO == null)
-                {
-                    Debug.LogWarning($"패시브 스킬 SO를 찾을 수 없습니다: {passiveSkillPath}");
-                }
-            }
+            
 
             // 에셋 저장 및 데이터베이스 갱신
             AssetDatabase.SaveAssets();
