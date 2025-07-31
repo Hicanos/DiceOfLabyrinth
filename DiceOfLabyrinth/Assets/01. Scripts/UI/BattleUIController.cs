@@ -117,19 +117,27 @@ public class BattleUIController : MonoBehaviour
         }
     }
 #endif
-    
-    //private void OnDisable()
-    //{
-    //    for (int i = 0; i < characterPlatforms.Length; i++)
-    //    {
-    //        if (characterPlatforms[i] != null)
-    //        {
-    //            Destroy(characterPlatforms[i]);
-    //            characterPlatforms[i] = null;
-    //        }
-    //    }
-    //    selectedPlatformIndex = -1; // 초기 선택된 플랫폼 인덱스 설정
-    //}
+
+    private void OnEnable()
+    {
+        RefreshManaStoneViewer(); // 마나스톤 갯수 초기화
+        foreach (var platform in characterPlatforms)
+        {
+            if (platform != null)
+            {
+                AssignPlatformsFromScene(); // 씬에서 플랫폼 할당
+            }
+        }
+    }
+
+    private void AssignPlatformsFromScene()
+    {
+        var relays = FindObjectsByType<PlatformClickRelay>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < characterPlatforms.Length; i++)
+        {
+            characterPlatforms[i] = relays.FirstOrDefault(p => p.platformIndex == i)?.gameObject;
+        }
+    }
     public void OnClickPerformed(InputAction.CallbackContext context)
     {
 #if UNITY_ANDROID || UNITY_IOS
@@ -227,26 +235,6 @@ public class BattleUIController : MonoBehaviour
     }
     public void OpenTeamFormationPanel()
     {
-        // 플랫폼 초기화: 기존 플랫폼 제거 및 새로 생성
-        for (int i = 0; i < characterPlatforms.Length; i++)
-        {
-            if (characterPlatforms[i] != null)
-            {
-                Destroy(characterPlatforms[i]);
-                characterPlatforms[i] = null;
-            }
-        }
-        for (int i = 0; i < characterPlatforms.Length; i++)
-        {
-            Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
-                .stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
-
-            var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
-            platform.SetActive(false);
-            characterPlatforms[i] = platform;
-            characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i;
-            platform.transform.position = spawnPoint;
-        }
         RefreshTeamFormationButton(); // 팀 구성 버튼 상태 갱신
         RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
         //Debug.Log($"[TeamFormation] AcquiredCharacters Count: {CharacterManager.Instance.AcquiredCharacters.Count}");
@@ -444,18 +432,6 @@ public class BattleUIController : MonoBehaviour
     {
         for (int i = 0; i < characterPlatforms.Length; i++)
         {
-            // 플랫폼이 null이면 즉시 생성
-            if (characterPlatforms[i] == null)
-            {
-                Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
-                    .stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
-                var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
-                platform.SetActive(false);
-                characterPlatforms[i] = platform;
-                characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i;
-                platform.transform.position = spawnPoint;
-            }
-
             var platformRenderer = characterPlatforms[i].GetComponent<Renderer>();
             if (platformRenderer != null)
             {
@@ -507,23 +483,22 @@ public class BattleUIController : MonoBehaviour
         DeleteSpawnedCharacters(); // 기존에 스폰된 캐릭터 제거
         for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++)
         {
-            Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.PlayerFormations[formationIndex].PlayerPositions[i].Position;
+            Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                .stageData.PlayerFormations[formationIndex].PlayerPositions[i].Position;
+
+            // 캐릭터 스폰
             if (StageManager.Instance.stageSaveData.entryCharacters[i] != null)
             {
-                // 캐릭터를 월드에 스폰하는 로직, 스테이지 데이터에 스폰 포지션이 있으며 스폰 포지션과 같은 인덱스의 엔트리 캐릭터를 스폰
                 GameObject battleCharacterObject = StageManager.Instance.stageSaveData.entryCharacters[i].charBattlePrefab;
-                GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity); // 스폰 포인트에 캐릭터 스폰
+                GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity);
             }
-            GameObject characterPlatform = characterPlatforms[i]; // 캐릭터 플랫폼 가져오기
-            if (characterPlatform == null)
+
+            // 플랫폼 위치 이동 (생성 X)
+            GameObject characterPlatform = characterPlatforms[i];
+            if (characterPlatform != null)
             {
-                var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
-                platform.SetActive(false);
-                characterPlatform = platform;
-                characterPlatform.GetComponent<PlatformClickRelay>().platformIndex = i;
-                platform.transform.position = spawnPoint;
+                characterPlatform.transform.position = spawnPoint;
             }
-            characterPlatform.transform.position = spawnPoint; // 플랫폼 위치 설정
         }
     }
     private void DeleteSpawnedCharacters() // 월드에 스폰된 캐릭터를 제거하는 함수
@@ -543,16 +518,26 @@ public class BattleUIController : MonoBehaviour
         }
         for (int i = 0; i < characterPlatforms.Length; i++)
         {
-            // 플랫폼이 null이면 즉시 생성
+            // 플랫폼이 null이면 월드에서 먼저 찾아보고, 없으면 즉시 생성
             if (characterPlatforms[i] == null)
             {
-                Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                // 월드에서 플랫폼을 찾기
+                characterPlatforms[i] = FindObjectsByType<PlatformClickRelay>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                    .Where(p => p.platformIndex == i)
+                    .Select(p => p.gameObject)
+                    .FirstOrDefault();
+
+                // 플랫폼이 null이면 즉시 생성
+                if (characterPlatforms[i] == null)
+                {
+                    Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
                     .stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
-                var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
-                platform.SetActive(false);
-                characterPlatforms[i] = platform;
-                characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i;
-                platform.transform.position = spawnPoint;
+                    var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
+                    platform.SetActive(false);
+                    characterPlatforms[i] = platform;
+                    characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i;
+                    platform.transform.position = spawnPoint;
+                }
             }
             RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
         }
