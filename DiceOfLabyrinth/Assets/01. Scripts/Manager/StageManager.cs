@@ -211,7 +211,7 @@ public class StageManager : MonoBehaviour
             return;
         }
         else if (stageSaveData.currentPhaseIndex >= 0 || stageSaveData.currentPhaseIndex <= 4) // 현재 선택지 상태가 비어있지 않은 경우
-                                                                                               // "StartReward", "NormalReward", "SelectChoice", "EliteArtifactReward", "EliteEngravingReward", "BossReward", "Shop" , "TeamSelect",  "Standby", "Battle" 중 하나
+            battleUIController.RefreshManaStoneViewer();                                                                                     // "StartReward", "NormalReward", "SelectChoice", "EliteArtifactReward", "EliteEngravingReward", "BossReward", "Shop" , "TeamSelect",  "Standby", "Battle" 중 하나
         {
             switch (stageSaveData.currentPhaseState)
             {

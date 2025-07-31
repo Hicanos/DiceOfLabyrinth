@@ -45,6 +45,7 @@ public class BattleUIController : MonoBehaviour
     [Header("Popup")]
     [SerializeField] private GameObject shopPopup;
     [SerializeField] private GameObject recoveryPopup; // 회복 팝업
+    [SerializeField] private TMP_Text manaStoneText; // 마나스톤 갯수를 표시할 텍스트
 
     [Header("Item Choice Icons")]
     [SerializeField] private GameObject[] itemChoiceIcon = new GameObject[3]; // 아이템 선택 아이콘을 위한 배열
@@ -116,18 +117,18 @@ public class BattleUIController : MonoBehaviour
     }
 #endif
     
-    private void OnDisable()
-    {
-        for (int i = 0; i < characterPlatforms.Length; i++)
-        {
-            if (characterPlatforms[i] != null)
-            {
-                Destroy(characterPlatforms[i]);
-                characterPlatforms[i] = null;
-            }
-        }
-        selectedPlatformIndex = -1; // 초기 선택된 플랫폼 인덱스 설정
-    }
+    //private void OnDisable()
+    //{
+    //    for (int i = 0; i < characterPlatforms.Length; i++)
+    //    {
+    //        if (characterPlatforms[i] != null)
+    //        {
+    //            Destroy(characterPlatforms[i]);
+    //            characterPlatforms[i] = null;
+    //        }
+    //    }
+    //    selectedPlatformIndex = -1; // 초기 선택된 플랫폼 인덱스 설정
+    //}
     public void OnClickPerformed(InputAction.CallbackContext context)
     {
 #if UNITY_ANDROID || UNITY_IOS
@@ -161,6 +162,17 @@ public class BattleUIController : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+    public void RefreshManaStoneViewer()
+    {
+        if (manaStoneText != null)
+        {
+            manaStoneText.text = StageManager.Instance.stageSaveData.manaStone.ToString(); // 현재 마나스톤 갯수를 표시
+        }
+        else
+        {
+            Debug.LogWarning("ManaStoneText가 설정되지 않았습니다.");
         }
     }
     private void OnPlatformClicked(int platformIndex)
