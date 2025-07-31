@@ -1,10 +1,11 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class BattleManager : MonoBehaviour
 {
@@ -65,6 +66,8 @@ public class BattleManager : MonoBehaviour
     public  int     BattleTurn;
     public  int     CostSpendedInTurn;
     public  bool    IsBattle;
+    public  bool    InBattleStage;
+    public  bool    IsStageClear;
     public  bool    IsBoss;
     public  bool    IsWon;
     private  readonly int maxCost = 12;
@@ -117,6 +120,8 @@ public class BattleManager : MonoBehaviour
         BattleTurn = 0;
         IsWon = false;
         IsBattle = true;
+        InBattleStage = true;
+        IsStageClear = false;
     }
 
     public void FinishBattleSetting()
@@ -136,9 +141,11 @@ public class BattleManager : MonoBehaviour
 
     private void ExitStageSetting()
     {
+        Debug.Log("익시트 스테이지");
         BattleGroup = null;
+        InBattleStage = false;
 
-        DiceManager.Instance.DestroyDices();        
+        BattleSpawner.DestroyDices();
     }
 
     private void GetStartData(BattleStartData data) //start시 호출되도록
@@ -171,7 +178,7 @@ public class BattleManager : MonoBehaviour
         {
             data = new BattleResultData(true, BattleGroup.BattleCharacters, manastoneAmount);
 
-            if (Enemy.Data.Type == EnemyData.EnemyType.Guardian && Enemy.Data.Type == EnemyData.EnemyType.Lord)
+            if (IsStageClear)
             {
                 ExitStageSetting();
             }            
@@ -459,6 +466,11 @@ public class BattleEnemy : IDamagable
     private void EnemyIsDead()
     {
         isDead = true;
+
+        if(Data.Type == EnemyData.EnemyType.Guardian || Data.Type == EnemyData.EnemyType.Lord)
+        {
+            BattleManager.Instance.IsStageClear = true;
+        }
 
         BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.EndTurn);
         BattleManager.Instance.EndBattle();
