@@ -12,7 +12,7 @@
 
 public class DiceBattle
 {
-    public float[] damageWightTable;    
+    public float[] DamageWeightTable;    
 
     public void GetDiceWeighting()
     {
@@ -21,7 +21,7 @@ public class DiceBattle
 
     public float GetDamageWeighting() //족보별계수
     {        
-        return damageWightTable[(int)DiceManager.Instance.DiceRank];
+        return DamageWeightTable[(int)DiceManager.Instance.DiceRank];
     }
 
     private DiceRankingEnum DiceRankingJudgement(int[] diceResultCount)

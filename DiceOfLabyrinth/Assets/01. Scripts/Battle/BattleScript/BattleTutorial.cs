@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.IO;
 
 public class BattleTutorial : MonoBehaviour
 {    
@@ -33,7 +33,7 @@ public class BattleTutorial : MonoBehaviour
         loadTutorialData = new LoadTutorialData();
         loadTutorialData.LoadData();
 
-        if (BattleManager.Instance.isTutorialOver) return;
+        if (BattleManager.Instance.IsTutorialOver) return;
         
         datas = loadTutorialData.GetData();
         DataForSave.Data = datas;
@@ -52,7 +52,7 @@ public class BattleTutorial : MonoBehaviour
     
     public void StartTutorial(int iNum = -1)
     {
-        if (BattleManager.Instance.isTutorialOver) return;
+        if (BattleManager.Instance.IsTutorialOver) return;
 
         switch (iNum)
         {
@@ -103,8 +103,7 @@ public class BattleTutorial : MonoBehaviour
 
         if (currentDataIndex == -1)
         {
-            Debug.Log(1);
-            BattleManager.Instance.isTutorialOver = true;
+            BattleManager.Instance.IsTutorialOver = true;
             DataForSave.IsTutorialOver = true;
             loadTutorialData.SaveData();
 
@@ -216,7 +215,7 @@ public class LoadTutorialData
 
         JToken isOver = root["IsTutorialOver"];
 
-        BattleManager.Instance.isTutorialOver = (bool)isOver;
+        BattleManager.Instance.IsTutorialOver = (bool)isOver;
         isTutorialOver = (bool)isOver;
     }
 
@@ -225,7 +224,7 @@ public class LoadTutorialData
         if (isTutorialOver)
         {
             Debug.Log("배틀 튜토리얼이 종료되어 데이터 받아오지 않음");
-            BattleManager.Instance.isTutorialOver = true;
+            BattleManager.Instance.IsTutorialOver = true;
             return null;
         }
 

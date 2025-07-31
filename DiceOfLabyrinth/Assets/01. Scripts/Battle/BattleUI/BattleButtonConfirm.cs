@@ -43,7 +43,10 @@ public class BattleButtonConfirm : AbstractBattleButton
         diceManager.DiceHolding.FixAllDIce();
         diceManager.DiceHolding.isCantFix = true;
         diceManager.DiceBattle.GetDiceWeighting();
-        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.Rank, diceManager.DiceRank.ToString()); //일단 이름만
+
+        DiceRankingEnum diceRank = diceManager.DiceRank;
+        string st = $"{diceRank}\nX{diceManager.DiceBattle.DamageWeightTable[(int)diceRank]}";
+        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.Rank, st); //일단 이름만
         BattleManager.Instance.BattleTutorial.StartTutorial();
     }
 

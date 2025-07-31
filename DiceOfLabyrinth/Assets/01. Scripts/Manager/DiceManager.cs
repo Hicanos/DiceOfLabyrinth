@@ -175,6 +175,17 @@ public class DiceManager : MonoBehaviour
         int randNum;
         int resultNum;
 
+        if (BattleManager.Instance.IsTutorialOver == false)
+        {
+            int iNum1 = Random.Range(1, 4);
+            int iNum2 = Random.Range(4, 7);
+
+            diceResult = new int[] { iNum1, iNum1, iNum2, iNum2, iNum2 };
+            diceResultCount[iNum1-1] += 2;
+            diceResultCount[iNum2-1] += 3;
+            return;
+        }
+
         for (int i = 0; i < diceResult.Length; i++)
         {
             sumOfDiceNum += diceResult[i];
@@ -346,7 +357,7 @@ public class DiceManager : MonoBehaviour
         loadScript.LoadDiceJson();
 
         dicePos = loadScript.GetPoses().ToArray();
-        DiceBattle.damageWightTable = loadScript.GetWeighting().ToArray();
+        DiceBattle.DamageWeightTable = loadScript.GetWeighting().ToArray();
         rotationVectors = loadScript.GetVectorCodes().ToArray();
         rolldiceDefaultPosition = loadScript.GetDiceDefaultPosition();
     }
