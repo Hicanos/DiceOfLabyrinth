@@ -12,7 +12,7 @@ public class InventoryPopup : MonoBehaviour
     [SerializeField] private MessagePopup messagePopup;
 
     [Header("InventoryPopup")]
-    [SerializeField] private GameObject inventoryPopup;
+    public GameObject inventoryPopup;
     [SerializeField] private GameObject setEffectDescriptionPopup;
     [SerializeField] private GameObject setEffectPopupBg;
     public GameObject blockInputBg;
@@ -25,7 +25,7 @@ public class InventoryPopup : MonoBehaviour
     [Header("EquipedArtifactSlots")]
     [SerializeField] private GameObject[] equipedArtifactIcon = new GameObject[4];
     [SerializeField] private GameObject[] equipedArtifactRarity = new GameObject[4];
-    [SerializeField] private GameObject[] equipedArtifactRockIcon = new GameObject[4];
+    public GameObject[] equipedArtifactRockIcon = new GameObject[4];
 
 
     [Header("EngravingSlots")]
@@ -101,12 +101,13 @@ public class InventoryPopup : MonoBehaviour
         setEffectPopupBg.SetActive(false);
     }
 
-    private void Refresh()
+    public void Refresh()
     {
         ArtifactSlotRefresh();
         EquipedArtifactSlotRefresh();
         EngravingSlotRefresh();
         SetEffectViewerRefresh();
+        StageManager.Instance.battleUIController.RefreshManaStoneViewer(); // 마석 뷰어 갱신
     }
     private void ArtifactSlotRefresh()// 아티팩트 슬롯 리프레시
     {
@@ -188,6 +189,7 @@ public class InventoryPopup : MonoBehaviour
             itemIcon.GetComponent<UnityEngine.UI.Image>().sprite = artifactInSlot.Icon;
             itemRarity.GetComponent<UnityEngine.UI.Image>().sprite = artifactInSlot.RaritySprite;
             itemIcon.SetActive(true);
+            itemRarity.SetActive(true);
             itemNameText.text = artifactInSlot.ArtifactName;
             itemTypeText.text = setEffectText;
             itemDescriptionText.text = artifactInSlot.Description;
@@ -196,6 +198,7 @@ public class InventoryPopup : MonoBehaviour
         else
         {
             itemIcon.SetActive(false);
+            itemRarity.SetActive(false);
             itemNameText.text = "";
             itemTypeText.text = "";
             itemDescriptionText.text = "";
@@ -220,6 +223,7 @@ public class InventoryPopup : MonoBehaviour
             itemIcon.GetComponent<UnityEngine.UI.Image>().sprite = artifactInSlot.Icon;
             itemRarity.GetComponent<UnityEngine.UI.Image>().sprite = artifactInSlot.RaritySprite;
             itemIcon.SetActive(true);
+            itemRarity.SetActive(true);
             itemNameText.text = artifactInSlot.ArtifactName;
             itemTypeText.text = setEffectText;
             itemDescriptionText.text = artifactInSlot.Description;
@@ -228,6 +232,7 @@ public class InventoryPopup : MonoBehaviour
         else
         {
             itemIcon.SetActive(false);
+            itemRarity.SetActive(false);
             itemNameText.text = "";
             itemTypeText.text = "";
             itemDescriptionText.text = "";
@@ -247,6 +252,7 @@ public class InventoryPopup : MonoBehaviour
             itemIcon.GetComponent<UnityEngine.UI.Image>().sprite = EngravingInSlot.Icon;
             itemRarity.GetComponent<UnityEngine.UI.Image>().sprite = EngravingInSlot.BgSprite;
             itemIcon.SetActive(true);
+            itemRarity.SetActive(true);
             itemNameText.text = EngravingInSlot.EngravingName;
             itemTypeText.text = "";
             itemDescriptionText.text = EngravingInSlot.Description;
@@ -255,6 +261,7 @@ public class InventoryPopup : MonoBehaviour
         else
         {
             itemIcon.SetActive(false);
+            itemRarity.SetActive(false);
             itemNameText.text = "";
             itemTypeText.text = "";
             itemDescriptionText.text = "";
@@ -353,26 +360,30 @@ public class InventoryPopup : MonoBehaviour
     {
         // 아티팩트 장착 처리
         blockInputBg.SetActive(true); // 입력 막기
-        var rockIcon = equipedArtifactRockIcon[stageIndex];
-        if (rockIcon.GetComponent<CanvasGroup>() == null)
+        for (int i = 0; i < 12; i++)
         {
-            rockIcon.AddComponent<CanvasGroup>();
+            if (StageManager.Instance.stageSaveData.artifacts[i] != null)
+            {
+                float t = 0;
+                float duration = 0.2f; // 애니메이션 지속 시간
+                while (t < duration)
+                {
+                    t += Time.deltaTime;
+                    float alpha = Mathf.Lerp(1f, 0f, t / duration);
+                    artifactIcon[i].GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f, alpha);
+                    artifactRarity[i].GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f, alpha);
+                    yield return null;
+                }
+                artifactIcon[i].SetActive(false);
+                artifactRarity[i].SetActive(false);
+                artifactIcon[i].GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f, 1f);// 다음 사용을 위해 초기화
+                artifactRarity[i].GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f, 1f);// 초기화
+            }
         }
-        float t = 0;
-        float duration = 2; // 애니메이션 지속 시간
-        while (t < duration)
-        {
-            rockIcon.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(1f, 0f, t / duration);
-            t += Time.deltaTime;
-            yield return null;
-        }
-        rockIcon.GetComponent<CanvasGroup>().alpha = 0f; // 애니메이션이 끝나면 알파를 0으로 설정
-        rockIcon.SetActive(false);
-        rockIcon.GetComponent<CanvasGroup>().alpha = 1f; // 다음 사용을 위해 알파를 1로 초기화
 
         // 선택된 아티팩트를 장착
         StageManager.Instance.stageSaveData.equipedArtifacts[stageIndex] = selectedArtifact;
-        //리스페시를 통해 장착된 아티팩트 슬롯을 업데이트
+        //리프레시를 통해 장착된 아티팩트 슬롯을 업데이트
         EquipedArtifactSlotRefresh();
         //2초 후에 스테이지 컴플리트를 실행
         yield return new WaitForSeconds(2f);
