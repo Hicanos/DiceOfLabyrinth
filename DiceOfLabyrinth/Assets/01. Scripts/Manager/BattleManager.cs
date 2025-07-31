@@ -37,6 +37,7 @@ public class BattleManager : MonoBehaviour
     public BattleSpawner BattleSpawner;
     public BattleUIValueChanger UIValueChanger;
     public BattleUIHP BattleUIHP;
+    public BattleTutorial BattleTutorial;
 
     public BattleEnemy Enemy;
     public BattleCharGroup BattleGroup;
@@ -102,7 +103,7 @@ public class BattleManager : MonoBehaviour
     public void StartBattle(BattleStartData data) //전투 시작시
     {        
         GetStartData(data);
-        UIManager.Instance.BattleUI.BattleTutorial.LoadData();
+        BattleTutorial.LoadData();
 
         ArtifactAdditionalStatus = new ArtifactAdditionalStatus();
         EngravingAdditionalStatus = new EngravingAdditionalStatus();

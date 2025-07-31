@@ -4069,17 +4069,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 127030049}
   m_CullTransparentMesh: 1
---- !u!114 &132753055 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5046979908408666415, guid: 7361384692583a142b714b5eefa49269, type: 3}
-  m_PrefabInstance: {fileID: 736896103}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66a566ee370cf134f92cc3fb1912ce38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &136204228
 GameObject:
   m_ObjectHideFlags: 0
@@ -5540,6 +5529,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 202679324}
   m_CullTransparentMesh: 1
+--- !u!114 &203755417 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7140865915623775230, guid: 7361384692583a142b714b5eefa49269, type: 3}
+  m_PrefabInstance: {fileID: 736896103}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &205209445
 GameObject:
   m_ObjectHideFlags: 0
@@ -19772,7 +19772,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 492255051310705454, guid: 7361384692583a142b714b5eefa49269, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 5278485.5
+      value: 5317329.5
       objectReference: {fileID: 0}
     - target: {fileID: 2260561254648331018, guid: 7361384692583a142b714b5eefa49269, type: 3}
       propertyPath: m_AnchorMax.x
@@ -19874,10 +19874,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7140865915623775230, guid: 7361384692583a142b714b5eefa49269, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1531693884}
     - target: {fileID: 7689239259618036975, guid: 7361384692583a142b714b5eefa49269, type: 3}
       propertyPath: m_Size
       value: 1
@@ -45000,6 +44996,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1624765404}
   m_CullTransparentMesh: 1
+--- !u!1 &1626775438 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8872928901942746989, guid: 7361384692583a142b714b5eefa49269, type: 3}
+  m_PrefabInstance: {fileID: 736896103}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1626775440 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7961596918730436102, guid: 7361384692583a142b714b5eefa49269, type: 3}
+  m_PrefabInstance: {fileID: 736896103}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1626775438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1629296913
 GameObject:
   m_ObjectHideFlags: 0
@@ -46166,6 +46178,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1668057423}
   m_CullTransparentMesh: 1
+--- !u!114 &1671266280 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2603955473473556069, guid: 7361384692583a142b714b5eefa49269, type: 3}
+  m_PrefabInstance: {fileID: 736896103}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1672425802
 GameObject:
   m_ObjectHideFlags: 0
@@ -55673,7 +55696,10 @@ MonoBehaviour:
   characterInfoUI: {fileID: 736896107}
   BattleUILog: {fileID: 736896105}
   BattleLogPrefab: {fileID: 2471338843486174664, guid: 6c89d1575d083a242ba9693ec87c3c7c, type: 3}
-  BattleTutorial: {fileID: 132753055}
+  tutorialBoard: {fileID: 1626775438}
+  tutorialText: {fileID: 1671266280}
+  TutorialPushButton: {fileID: 1626775440}
+  TutorialSkipButton: {fileID: 203755417}
   diceBackboard: {fileID: 736896110}
   roll: {fileID: 736896120}
   char1: {fileID: 736896118}

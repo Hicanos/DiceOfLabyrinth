@@ -4,12 +4,9 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
-using TMPro;
 
 public class BattleTutorial : MonoBehaviour
-{
-    [SerializeField] GameObject tutorialBoard;
-    [SerializeField] TextMeshProUGUI tutorialText;
+{    
     private LoadTutorialData loadTutorialData;
     public BattleTutorialDataForSave DataForSave = new BattleTutorialDataForSave();
 
@@ -47,6 +44,10 @@ public class BattleTutorial : MonoBehaviour
         {
             tutorialDataDic.Add(datas[i].Index, datas[i]);
         }
+
+        BattleUI battleUI = UIManager.Instance.BattleUI;
+        battleUI.TutorialPushButton.onClick.AddListener(OnClickTutorialTouch);
+        battleUI.TutorialSkipButton.onClick.AddListener(OnClickTutorialSkip);
     }
     
     public void StartTutorial(int iNum = -1)
@@ -82,7 +83,7 @@ public class BattleTutorial : MonoBehaviour
 
     private void ActiveTutorialText()
     {
-        tutorialBoard.SetActive(true);
+        UIManager.Instance.BattleUI.TutorialBoardSetActive(true);
 
         currentTextIndex = 0;
         textLength = tutorialDataDic[currentDataIndex].Texts.Length;
@@ -96,7 +97,7 @@ public class BattleTutorial : MonoBehaviour
     /// </summary>
     private void DeactiveTutorialText()
     {
-        tutorialBoard.SetActive(false);
+        UIManager.Instance.BattleUI.TutorialBoardSetActive(false);
 
         currentDataIndex = tutorialDataDic[currentDataIndex].IndexGoesTo;
 
@@ -106,6 +107,10 @@ public class BattleTutorial : MonoBehaviour
             BattleManager.Instance.isTutorialOver = true;
             DataForSave.IsTutorialOver = true;
             loadTutorialData.SaveData();
+
+            BattleUI battleUI = UIManager.Instance.BattleUI;
+            battleUI.TutorialPushButton.onClick.RemoveListener(OnClickTutorialTouch);
+            battleUI.TutorialSkipButton.onClick.RemoveListener(OnClickTutorialSkip);
         }
     }
 
@@ -125,8 +130,8 @@ public class BattleTutorial : MonoBehaviour
             }
 
             WriteText(currentDataIndex, currentTextIndex);
-        }        
-    }    
+        }
+    }
 
     public void OnClickTutorialSkip()
     {
@@ -143,6 +148,8 @@ public class BattleTutorial : MonoBehaviour
 
     IEnumerator WriteTextCoroutine(string text)
     {
+        BattleUI battleUI = UIManager.Instance.BattleUI;
+
         isWriting = true;
         int textLength = text.Length;
         string useText = text.Substring(0,1);
@@ -158,7 +165,7 @@ public class BattleTutorial : MonoBehaviour
                 useText = text.Substring(0, index);
             }
 
-            tutorialText.text = useText;
+            battleUI.ChangeTutorialText(useText);
 
             if (index == textLength)
             {
@@ -176,7 +183,8 @@ public class BattleTutorial : MonoBehaviour
         StopCoroutine(writeTextCoroutine);
         isWriting = false;
 
-        tutorialText.text = tutorialDataDic[dataIndex].Texts[textIndex];
+        string text = tutorialDataDic[dataIndex].Texts[textIndex];
+        UIManager.Instance.BattleUI.ChangeTutorialText(text);
     }
 }
 
@@ -239,7 +247,7 @@ public class LoadTutorialData
 
     public void SaveData()
     {
-        string jsonString = JsonConvert.SerializeObject(UIManager.Instance.BattleUI.BattleTutorial.DataForSave, Formatting.Indented);
+        string jsonString = JsonConvert.SerializeObject(BattleManager.Instance.BattleTutorial.DataForSave, Formatting.Indented);
 
         File.WriteAllText(FilePath, jsonString);
     }
