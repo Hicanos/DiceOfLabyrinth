@@ -50,11 +50,13 @@ public class GameManager : MonoBehaviour
     {
         DataSaver.Instance.Load();
         CharacterManager.Instance.LoadOwnedCharactersFromData();
+        
+        // 기본 캐릭터 획득(중복 획득 방지 처리됨)
+        CharacterManager.Instance.AcquireDefaultCharacters();
         ItemManager.Instance.LoadOwnedItemsFromData();
         if (StageManager.Instance != null && DataSaver.Instance.SaveData.stageData != null)
         {
             StageManager.Instance.stageSaveData = DataSaver.Instance.SaveData.stageData.ToStageSaveData();
-
             StageManager.Instance.InitializeStageStates(StageManager.Instance.chapterData);
         }
     }
