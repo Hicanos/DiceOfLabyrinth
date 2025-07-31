@@ -973,7 +973,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Victory); // 승리 효과음 재생
+        SoundManager.Instance.PlayOneShotBGM(SoundManager.SoundType.BGM_Victory); // 승리 효과음 재생
     }
 
     public void OpenDefeatPanel() // 패배 패널을 여는 함수
@@ -996,7 +996,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Defeat); // 패배 효과음 재생
+        SoundManager.Instance.PlayOneShotBGM(SoundManager.SoundType.BGM_Defeat); // 패배 효과음 재생
     }
 
     public void OnClickVictoryNextButton() // 승리 패널에서 다음 버튼 클릭 시 호출되는 함수
