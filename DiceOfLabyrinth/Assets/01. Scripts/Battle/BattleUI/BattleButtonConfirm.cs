@@ -75,6 +75,6 @@ public class BattleButtonConfirm : AbstractBattleButton
     
     public void OnPushShowArtifact()
     {
-        UIManager.Instance.BattleUI.stagmaDisplayer.SetActive(true);
+
     }
 }

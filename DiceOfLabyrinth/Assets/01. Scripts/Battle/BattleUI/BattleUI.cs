@@ -8,7 +8,6 @@ public class BattleUI : MonoBehaviour
     public GameObject fixedDiceArea;
     public GameObject victoryUI;
     public GameObject defeatUI;
-    public GameObject stagmaDisplayer;
     public GameObject CharacterInfo;
     public Canvas     battleCanvas;
     [SerializeField] BattleUICharacterInfo characterInfoUI;
