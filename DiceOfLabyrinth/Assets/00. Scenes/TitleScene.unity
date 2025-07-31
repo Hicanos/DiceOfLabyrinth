@@ -715,6 +715,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 13769627}
   m_CullTransparentMesh: 1
+--- !u!114 &15429981 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3545131379338668544, guid: 7361384692583a142b714b5eefa49269, type: 3}
+  m_PrefabInstance: {fileID: 736896103}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c2eb3d42320eb643ba3d3c18b61f51a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &18170707
 GameObject:
   m_ObjectHideFlags: 0
@@ -14317,11 +14328,6 @@ MonoBehaviour:
 --- !u!1 &736896108 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9101682743127706038, guid: 7361384692583a142b714b5eefa49269, type: 3}
-  m_PrefabInstance: {fileID: 736896103}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &736896109 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8756403226152821364, guid: 7361384692583a142b714b5eefa49269, type: 3}
   m_PrefabInstance: {fileID: 736896103}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &736896110 stripped
@@ -40791,7 +40797,6 @@ MonoBehaviour:
   fixedDiceArea: {fileID: 736896113}
   victoryUI: {fileID: 274225043}
   defeatUI: {fileID: 1543982490}
-  stagmaDisplayer: {fileID: 736896109}
   CharacterInfo: {fileID: 736896108}
   battleCanvas: {fileID: 1288800832}
   characterInfoUI: {fileID: 736896107}
@@ -40806,6 +40811,7 @@ MonoBehaviour:
   char4: {fileID: 736896115}
   char5: {fileID: 736896114}
   characters: {fileID: 1978533074}
+  patternDisplayer: {fileID: 15429981}
   battleLog: {fileID: 736896106}
   cost: {fileID: 736896119}
   rank: {fileID: 736896112}
