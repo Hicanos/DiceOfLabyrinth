@@ -59,9 +59,8 @@ public class BattleButtonSkill : AbstractBattleButton
 
         character.UsingSkill = true;
         Debug.Log(character.CharNameKr + " 스킬 사용");
-        
-        character.UseActiveSkill(BattleManager.Instance.BattleGroup.BattleCharacters, BattleManager.Instance.Enemy);
-        //characterPrefab.GetComponent<SpawnedCharacter>().PrepareAttack();
+        characterPrefab.GetComponent<SpawnedCharacter>().PrepareAttack();
+        character.UseActiveSkill(BattleManager.Instance.BattleGroup.BattleCharacters, BattleManager.Instance.Enemy);        
     }
 
     private void GetIndex()
