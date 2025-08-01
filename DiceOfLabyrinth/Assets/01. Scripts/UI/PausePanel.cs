@@ -15,6 +15,9 @@ public class PausePanel : MonoBehaviour
 
     private void Awake()
     {
+        gameObject.SetActive(false);
+    }
+
     public void OnClickContinue()
     {
         gameObject.SetActive(false);
