@@ -100,7 +100,7 @@ public class CharacterManager
         {
             var lobbyChar = new LobbyCharacter();
             lobbyChar.Initialize(so, 1);
-            OwnedCharacters.Add(lobbyChar);
+            OwnedCharacters.Add(lobbyChar);            
             DataSaver.Instance.SaveAllCharacters(OwnedCharacters);
         }
     }
@@ -186,15 +186,45 @@ public class CharacterManager
     /// 디폴트 캐릭터(Char_0~ Char_4) 획득
     /// </summary>
     
-    public void AcquireDefaultCharacters()
+    public async void AcquireDefaultCharacters()
     {
+        // Addressables가 로드될 때까지 대기
+        const int MaxWaitFrames = 200; // 최대 대기 프레임(약 4초)
+        const int WaitFrameMillis = 20; // 프레임당 대기(ms)
+        int waitCount = 0;
+        while (!IsLoaded && waitCount < MaxWaitFrames)
+        {
+            await Task.Delay(WaitFrameMillis);
+            waitCount++;
+        }
+        if (!IsLoaded)
+        {
+            Debug.LogError("캐릭터 SO가 로드되지 않아 기본 캐릭터를 획득할 수 없습니다.");
+            return;
+        }
+
+        // 데이터 세이버에 캐릭터 정보가 없으면(최초 실행) 강제로 추가
+        if (DataSaver.Instance.SaveData.characters == null || DataSaver.Instance.SaveData.characters.Count == 0)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                string charID = "Char_" + i.ToString();
+                AcquireCharacter(charID);
+                Debug.Log($"최초 실행: 기본 캐릭터 강제 획득: {charID}");
+            }
+            return;
+        }
+
+        // 기존 데이터에 없는 캐릭터만 추가
         for (int i = 0; i < 5; i++)
         {
             string charID = "Char_" + i.ToString();
-            if (!OwnedCharacters.Any(c => c.CharacterData != null && c.CharacterData.charID == charID))
+            bool hasInOwned = OwnedCharacters.Any(c => c.CharacterData != null && c.CharacterData.charID == charID);
+            bool hasInSaveData = DataSaver.Instance.SaveData.characters.Any(c => c.CharacterID == charID);
+            if (!hasInOwned || !hasInSaveData)
             {
                 AcquireCharacter(charID);
-                Debug.Log($"획득한 캐릭터 ID: {charID}");
+                Debug.Log($"기존 데이터에 없어서 기본 캐릭터 획득: {charID}");
             }
         }
     }
