@@ -40,6 +40,10 @@ public class GameManager : MonoBehaviour
         // 아이템 SO 로드 대기
         yield return ItemManager.Instance.LoadAllItemSOs();
 
+        // 튜토리얼 매니저 생성대기
+        while (TutorialManager.Instance == null)
+            yield return null;
+
 
         // SO 데이터 복구
         RestoreGameData();
