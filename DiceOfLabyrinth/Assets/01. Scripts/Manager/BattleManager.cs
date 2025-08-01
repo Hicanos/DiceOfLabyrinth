@@ -161,6 +161,11 @@ public class BattleManager : MonoBehaviour
         manastoneAmount = data.manaStone;
     }
 
+    private void CheckDataChanged()
+    {
+
+    }
+
     public void EndBattle(bool isWon = true)
     {
         StartCoroutine(EndBattleCoroutine(isWon));
@@ -286,6 +291,11 @@ public class BattleCharGroup
                 //characters[i].IsDied == true;
                 DeadIndex.Add(i);
                 DeadCount++;
+            }
+            else
+            {
+                DeadIndex.Remove(i);
+                DeadCount--;
             }
         }
 

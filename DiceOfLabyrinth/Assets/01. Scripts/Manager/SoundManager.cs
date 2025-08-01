@@ -70,7 +70,7 @@ public class SoundManager : MonoBehaviour
             if (bgmSource.clip == clip && bgmSource.isPlaying)
                 return;
             bgmSource.clip = clip;
-            bgmSource.volume = bgmVolume;
+            bgmSource.volume = masterVolume * bgmVolume;
             bgmSource.Play();
         }
         else
@@ -88,7 +88,7 @@ public class SoundManager : MonoBehaviour
         if (soundDict.TryGetValue(type, out var clip))
         {
             bgmSource.clip = clip;
-            bgmSource.volume = bgmVolume;
+            bgmSource.volume = masterVolume * bgmVolume;
             bgmSource.PlayOneShot(clip, bgmVolume);
         }
     }
@@ -97,7 +97,7 @@ public class SoundManager : MonoBehaviour
         if (soundDict.TryGetValue(type, out var clip))
         {
             sfxSource.clip = clip;
-            sfxSource.volume = sfxVolume;
+            sfxSource.volume = masterVolume * sfxVolume;
             sfxSource.PlayOneShot(clip);
         }
     }
@@ -115,6 +115,7 @@ public class SoundManager : MonoBehaviour
         if (soundDict.TryGetValue(type, out var clip))
         {
             sfxSource.PlayOneShot(clip, sfxVolume);
+            sfxSource.volume = masterVolume * sfxVolume;
             lastPlayedTime[type] = Time.unscaledTime;
         }
     }
