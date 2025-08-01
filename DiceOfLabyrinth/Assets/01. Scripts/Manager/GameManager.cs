@@ -40,6 +40,10 @@ public class GameManager : MonoBehaviour
         // 아이템 SO 로드 대기
         yield return ItemManager.Instance.LoadAllItemSOs();
 
+        // 튜토리얼 매니저 생성대기
+        while (TutorialManager.Instance == null)
+            yield return null;
+
 
         // SO 데이터 복구
         RestoreGameData();
@@ -59,6 +63,9 @@ public class GameManager : MonoBehaviour
             StageManager.Instance.stageSaveData = DataSaver.Instance.SaveData.stageData.ToStageSaveData();
             StageManager.Instance.InitializeStageStates(StageManager.Instance.chapterData);
         }
+        // 튜토리얼 완료 상태 복구
+        TutorialManager.Instance.isLobbyTutorialCompleted = DataSaver.Instance.SaveData.userData.isLobbyTutorialCompleted;
+        TutorialManager.Instance.isGameTutorialCompleted = DataSaver.Instance.SaveData.userData.isGameTutorialCompleted;
     }
 
     /// <summary>
@@ -96,9 +103,23 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void OnApplicationQuit()
     {
+        Debug.Log("애플리케이션 종료됨");
+        Debug.Log("게임 데이터 저장 중...");
         SaveGame();
         // 아이템, 캐릭터 릴리즈
         ItemManager.Instance.ReleaseAllItems();
         CharacterManager.Instance.ReleaseAllCharacters();
+    }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            Debug.Log("앱이 백그라운드로 전환됨, 데이터 자동 저장");
+            SaveGame();
+            // 아이템, 캐릭터 릴리즈
+            ItemManager.Instance.ReleaseAllItems();
+            CharacterManager.Instance.ReleaseAllCharacters();
+        }
     }
 }
