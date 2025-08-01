@@ -13,11 +13,6 @@ public class PausePanel : MonoBehaviour
     [SerializeField] private Button pedigreeButton;
     [SerializeField] private Button exitButton;
 
-    private void Awake()
-    {
-        gameObject.SetActive(false);
-    }
-
     public void OnClickContinue()
     {
         gameObject.SetActive(false);

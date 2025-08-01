@@ -17,7 +17,6 @@ public class PedigreePopup : MonoBehaviour
 
     private void Awake()
     {
-        gameObject.SetActive(false);
         selectDiceCommonPedigree.SetActive(true);
         selectCharacterPassivePedigree.SetActive(false);
         diceCommonPedigreeUI.SetActive(true);
