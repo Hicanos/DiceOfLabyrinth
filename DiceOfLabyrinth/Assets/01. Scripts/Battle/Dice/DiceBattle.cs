@@ -82,6 +82,8 @@ public class DiceBattle
             }
         }
 
+        if(count > maxCount) { maxCount = count; }
+
         maxCount = maxCount == 0 ? count : maxCount;
 
         if (maxCount == 5)

@@ -13,11 +13,6 @@ public class PausePanel : MonoBehaviour
     [SerializeField] private Button pedigreeButton;
     [SerializeField] private Button exitButton;
 
-    private void Awake()
-    {
-        gameObject.SetActive(false);
-    }
-
     public void OnClickContinue()
     {
         gameObject.SetActive(false);
@@ -28,6 +23,7 @@ public class PausePanel : MonoBehaviour
     {
         gameObject.SetActive(false);
         Time.timeScale = 1f;
+        BattleManager.Instance.ExitStageSetting();
         StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex);
     }
 
