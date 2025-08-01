@@ -18,7 +18,7 @@ public class RecoveryPopup : MonoBehaviour
     [SerializeField] private GameObject[] characterHealthBars;
     [SerializeField] private TMP_Text[] characterHealthBarTexts;
 
-    [Header("Viewer Refresh Colors")]
+    [Header("Viewer ListPopupRefresh Colors")]
     [SerializeField, Range(0f, 1f)] private float selectedAlpha = 1f;
     [SerializeField, Range(0f, 1f)] private float unselectedAlpha = 0.5f;
 

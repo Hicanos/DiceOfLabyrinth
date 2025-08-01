@@ -31,7 +31,7 @@ public class ShopPopup : MonoBehaviour
     [SerializeField] private TMP_Text ownedArtifactDescriptionText;
     [SerializeField] private TMP_Text sellPriceText;
 
-    [Header("Artifact Icon Refresh Alpha")]
+    [Header("Artifact Icon ListPopupRefresh Alpha")]
     [SerializeField, Range(0f, 1f)] private float selectedAlpha = 1f;
     [SerializeField, Range(0f, 1f)] private float unselectedAlpha = 0.5f;
 

@@ -147,52 +147,46 @@ public class SelectAdventureUIController : MonoBehaviour
     }
     private void RefreshChapterButton()
     {
-
-        for (int i = 0; i < 5; i++) // 챕터 버튼 텍스트 업데이트
+        for (int i = 0; i < 5; i++) // 챕터 버튼 텍스트 및 상태 업데이트
         {
-            int chapterIndex = i * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0); // 현재 그룹 번호와 난이도에 따라 챕터 인덱스 계산
-            if (chapterIndex < chapterData.chapterIndex.Count) // 유효한 챕터 인덱스일 때
+            int chapterIndex = i * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0); // 인덱스 계산
+
+            if (chapterIndex < chapterData.chapterIndex.Count)
             {
-                chapterTexts[i].text = $"{chapterData.chapterIndex[chapterIndex].ChapterName}"; // 챕터 이름 업데이트
+                chapterTexts[i].text = $"{chapterData.chapterIndex[chapterIndex].ChapterName}";
             }
-            else // 유효하지 않은 챕터 인덱스일 때
+            else
             {
-                chapterTexts[i].text = "N/A"; // N/A로 표시
+                chapterTexts[i].text = "N/A";
             }
-            // 챕터 버튼 상태 업데이트
-            //if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex] == null) // 챕터 상태가 초기화되지 않았을 때
-            //{
-            //    StageManager.Instance.InitializeStageStates(StageManager.Instance.chapterData);
-            //}
+
             bool selectableChapterState = StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked;
-            chapterButtonsRockIcons[i].SetActive(!selectableChapterState); // 챕터가 잠겨있으면 아이콘 표시
+            chapterButtonsRockIcons[i].SetActive(!selectableChapterState); // 잠겨있으면 락 아이콘 표시
+
+            // 모든 버튼을 비선택 상태로 초기화
+            chapterButtonsImages[i].color = unselectedButtonColor;
+            chapterTexts[i].color = unselectedButtonTextColor;
         }
     }
+
     private void RefreshChapterButton(int index)
     {
         if (index < 0 || index >= chapterButtonsImages.Count)
         {
             return;
         }
-        RefreshChapterButton(); // 챕터 버튼 텍스트 업데이트
-        int chapterIndex = index * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0); // 현재 그룹 번호와 난이도에 따라 챕터 인덱스 계산
+
+        RefreshChapterButton(); // 모든 버튼 초기화 (텍스트, 락, 비선택 상태)
+
+        int chapterIndex = index * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0);
         if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked == false)
         {
             return;
         }
-        for (int i = 0; i < 5; i++) // 챕터 버튼 색상 업데이트
-            {
-                if (i == index) // 선택된 챕터 버튼
-                {
-                    chapterButtonsImages[i].color = selectedButtonColor; // 선택된 버튼 색상
-                    chapterTexts[i].color = selectedButtonTextColor; // 선택된 버튼 색상
-                }
-                else // 선택되지 않은 챕터 버튼
-                {
-                    chapterButtonsImages[i].color = unselectedButtonColor; // 선택되지 않은 버튼 색상
-                    chapterTexts[i].color = unselectedButtonTextColor; // 선택되지 않은 버튼 색상
-                }
-            }
+
+        // 선택된 버튼만 선택 상태로 설정
+        chapterButtonsImages[index].color = selectedButtonColor;
+        chapterTexts[index].color = selectedButtonTextColor;
     }
 
     public void OnClickStartButton() // 코스트 지불 UI의 시작 버튼
