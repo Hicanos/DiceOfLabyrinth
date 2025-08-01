@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class BattleUI : MonoBehaviour
 {
     public GameObject fixedDiceArea;
+    public FakeDiceHolding FakeDiceHolding;
     public GameObject victoryUI;
     public GameObject defeatUI;
     public GameObject CharacterInfo;

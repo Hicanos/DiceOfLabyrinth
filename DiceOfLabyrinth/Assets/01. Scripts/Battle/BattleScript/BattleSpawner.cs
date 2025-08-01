@@ -195,7 +195,9 @@ public class BattleSpawner : MonoBehaviour
 
             DiceManager.Instance.Dices[i] = dice;
             DiceManager.Instance.FakeDices[i] = fakeDice;
-        }        
+        }
+
+        //UIManager.Instance.BattleUI.FakeDiceHolding.SpawnFakeDices(character);
     }
 
     public void DestroyDices()
