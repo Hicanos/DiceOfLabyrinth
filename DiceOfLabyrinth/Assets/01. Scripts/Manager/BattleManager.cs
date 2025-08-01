@@ -62,7 +62,7 @@ public class BattleManager : MonoBehaviour
     public ArtifactAdditionalStatus ArtifactAdditionalStatus;
 
     [Header("Values")]
-    public bool     IsTutorialOver;
+    public  bool    IsTutorialOver;
     public  int     BattleTurn;
     public  int     CostSpendedInTurn;
     public  bool    IsBattle;

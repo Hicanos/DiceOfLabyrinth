@@ -26,6 +26,10 @@ public class BattleTutorial : MonoBehaviour
 
     private IEnumerator writeTextCoroutine;
 
+    //public void LoadData()
+    //{
+    //    StartCoroutine(LoadDataCoroutine());
+    //}
     public void LoadData()
     {
         BattleTutorialData[] datas;
@@ -34,8 +38,13 @@ public class BattleTutorial : MonoBehaviour
         loadTutorialData.LoadData();
 
         //Debug.Log(BattleManager.Instance.IsTutorialOver);
-        if (BattleManager.Instance.IsTutorialOver) return;
-        
+        if (BattleManager.Instance.IsTutorialOver)
+        {
+            Debug.Log("튜토리얼이 이미 진행되어 데이터 받아오지 않음");
+            return;
+        }
+
+
         datas = loadTutorialData.GetData();
         DataForSave.Data = datas;
 
@@ -212,12 +221,14 @@ public class LoadTutorialData
     {
         TextAsset textAsset = Resources.Load<TextAsset>("Json/BattleTutorialData");
         string jsonString = textAsset.text;
+        Debug.Log($"로드 : { jsonString}");
         root = JObject.Parse(jsonString);
 
         JToken isOver = root["IsTutorialOver"];
 
-        BattleManager.Instance.IsTutorialOver = (bool)isOver;
-        isTutorialOver = (bool)isOver;
+        //BattleManager.Instance.IsTutorialOver = (bool)isOver;
+        //isTutorialOver = (bool)isOver;
+        isTutorialOver = BattleManager.Instance.IsTutorialOver;
     }
 
     public BattleTutorialData[] GetData()
@@ -248,7 +259,6 @@ public class LoadTutorialData
     public void SaveData()
     {
         string jsonString = JsonConvert.SerializeObject(BattleManager.Instance.BattleTutorial.DataForSave, Formatting.Indented);
-
         File.WriteAllText(FilePath, jsonString);
     }
 }
