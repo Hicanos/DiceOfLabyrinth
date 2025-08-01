@@ -50,6 +50,15 @@ public class BattleCharacterAttack : MonoBehaviour
         float penetration;
         float elementDamage = 1;
 
+
+        for (int i = 0; i < battleCharacters.Count; i++)
+        {
+            if (battleCharacters[i].IsDied) continue;
+            if (battleManager.BattleGroup.DeadIndex.Contains(i)) continue;
+
+            characterPrefabs[i].GetComponent<SpawnedCharacter>().PrepareAttack();
+        }
+
         for (int i = 0; i < battleCharacters.Count; i++)
         {
             if (battleCharacters[i].IsDied) continue;
@@ -63,6 +72,7 @@ public class BattleCharacterAttack : MonoBehaviour
 
             Vector3 firstPosition = characterPrefabs[i].transform.position;
 
+            characterPrefabs[i].GetComponent<SpawnedCharacter>().Attack();
             //pastTime = 0;
             //while (pastTime < destTime)
             //{
