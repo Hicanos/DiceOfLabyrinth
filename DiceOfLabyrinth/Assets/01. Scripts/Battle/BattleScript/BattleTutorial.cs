@@ -31,14 +31,14 @@ public class BattleTutorial : MonoBehaviour
     //    StartCoroutine(LoadDataCoroutine());
     //}
     public void LoadData()
-    {
+    {        
         BattleTutorialData[] datas;
 
         loadTutorialData = new LoadTutorialData();
         loadTutorialData.LoadData();
 
         //Debug.Log(BattleManager.Instance.IsTutorialOver);
-        if (BattleManager.Instance.IsTutorialOver)
+        if (TutorialManager.Instance.isGameTutorialCompleted)
         {
             Debug.Log("튜토리얼이 이미 진행되어 데이터 받아오지 않음");
             return;
@@ -62,7 +62,7 @@ public class BattleTutorial : MonoBehaviour
     
     public void StartTutorial(int iNum = -1)
     {
-        if (BattleManager.Instance.IsTutorialOver) return;
+        if (BattleManager.IsTutorialOver) return;
 
         switch (iNum)
         {
@@ -113,9 +113,10 @@ public class BattleTutorial : MonoBehaviour
 
         if (currentDataIndex == -1)
         {
-            BattleManager.Instance.IsTutorialOver = true;
+            BattleManager.IsTutorialOver = true;
             DataForSave.IsTutorialOver = true;
             loadTutorialData.SaveData();
+
 
             BattleUI battleUI = UIManager.Instance.BattleUI;
             battleUI.TutorialPushButton.onClick.RemoveListener(OnClickTutorialTouch);
@@ -228,7 +229,7 @@ public class LoadTutorialData
 
         //BattleManager.Instance.IsTutorialOver = (bool)isOver;
         //isTutorialOver = (bool)isOver;
-        isTutorialOver = BattleManager.Instance.IsTutorialOver;
+        isTutorialOver = TutorialManager.Instance.isGameTutorialCompleted;
     }
 
     public BattleTutorialData[] GetData()
@@ -236,7 +237,7 @@ public class LoadTutorialData
         if (isTutorialOver)
         {
             Debug.Log("배틀 튜토리얼이 종료되어 데이터 받아오지 않음");
-            BattleManager.Instance.IsTutorialOver = true;
+            BattleManager.IsTutorialOver = true;
             return null;
         }
 
@@ -258,7 +259,9 @@ public class LoadTutorialData
 
     public void SaveData()
     {
-        string jsonString = JsonConvert.SerializeObject(BattleManager.Instance.BattleTutorial.DataForSave, Formatting.Indented);
-        File.WriteAllText(FilePath, jsonString);
+        Debug.Log("세이브");
+        TutorialManager.Instance.isGameTutorialCompleted = true;
+        //string jsonString = JsonConvert.SerializeObject(BattleManager.Instance.BattleTutorial.DataForSave, Formatting.Indented);
+        //File.WriteAllText(FilePath, jsonString);
     }
 }

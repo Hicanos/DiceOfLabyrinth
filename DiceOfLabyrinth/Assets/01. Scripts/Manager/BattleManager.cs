@@ -62,7 +62,7 @@ public class BattleManager : MonoBehaviour
     public ArtifactAdditionalStatus ArtifactAdditionalStatus;
 
     [Header("Values")]
-    public  bool    IsTutorialOver;
+    static public  bool    IsTutorialOver;
     public  int     BattleTurn;
     public  int     CostSpendedInTurn;
     public  bool    IsBattle;
@@ -102,7 +102,9 @@ public class BattleManager : MonoBehaviour
     public void StartBattle(BattleStartData data) //전투 시작시
     {
         GetStartData(data);
+                
         BattleTutorial.LoadData();
+        
 
         ArtifactAdditionalStatus = new ArtifactAdditionalStatus();
         EngravingAdditionalStatus = new EngravingAdditionalStatus();
