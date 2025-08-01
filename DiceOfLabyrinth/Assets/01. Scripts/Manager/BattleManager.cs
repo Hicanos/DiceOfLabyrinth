@@ -100,7 +100,7 @@ public class BattleManager : MonoBehaviour
     }
 
     public void StartBattle(BattleStartData data) //전투 시작시
-    {        
+    {
         GetStartData(data);
         BattleTutorial.LoadData();
 
@@ -139,9 +139,11 @@ public class BattleManager : MonoBehaviour
         IsBattle = false;
     }
 
-    private void ExitStageSetting()
+    public void ExitStageSetting()
     {
         Debug.Log("익시트 스테이지");
+        IsBattle = false;
+        InputManager.Instance.BattleInputEnd();
         BattleGroup = null;
         InBattleStage = false;
 
