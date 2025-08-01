@@ -30,6 +30,7 @@ public class PublicUIController : MonoBehaviour
 
     [Header("Popup")]
     [SerializeField] private GameObject messagePopup;
+    [SerializeField] private GameObject settingPopup;
 
     private void Start()
     {
@@ -136,5 +137,11 @@ public class PublicUIController : MonoBehaviour
     public void OnClickHomeButton()
     {
         SceneManagerEx.Instance.LoadScene("LobbyScene");
+    }
+
+    public void OnClickSettingButton()
+    {
+        if (settingPopup != null)
+            settingPopup.SetActive(true);
     }
 }

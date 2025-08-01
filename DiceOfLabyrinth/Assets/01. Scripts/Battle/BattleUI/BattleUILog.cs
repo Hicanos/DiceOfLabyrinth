@@ -130,7 +130,11 @@ public class BattleUILog : MonoBehaviour
     public void TurnOffAllLogs()
     {
         currentLogIndex = 0;
-        foreach(GameObject go in logs)
+        Vector2 contentSize;
+        contentSize = content.sizeDelta;
+        contentSize.y = 0;
+        content.sizeDelta = contentSize;
+        foreach (GameObject go in logs)
         {
             go.SetActive(false);
         }

@@ -35,11 +35,11 @@ public class BattleUIHP : MonoBehaviour
             enemyHPBar.transform.rotation = enemyHPQuaternion;
         }
 
-        if(BattleManager.Instance.CharacterAttack.isCharacterAttacking)
-        {
-            //캐릭터 회전값에 따른 hp회전
-            GetPlayerHPRotation();
-        }
+        //if(BattleManager.Instance.CharacterAttack.isCharacterAttacking)
+        //{
+        //    //캐릭터 회전값에 따른 hp회전
+        //    GetPlayerHPRotation();
+        //}
     }    
 
     public void SpawnCharacterHP()
@@ -83,13 +83,13 @@ public class BattleUIHP : MonoBehaviour
         Transform layoutGroupTransform;
         RectTransform rect;
         GameObject go;
-        GameObject pD;
+        //GameObject pD;
         GetEnmeyHPRotation(enemy);
 
         go = Instantiate(EnemyHPCanvas, enemy.EnemyPrefab.transform);
         enemy.EnemyHPBars = go;
 
-        pD = Instantiate(patternDisplayer, enemy.EnemyHPBars.transform);
+        //pD = Instantiate(patternDisplayer, enemy.EnemyHPBars.transform);
         go = Instantiate(CharacterHPBack, enemy.EnemyHPBars.transform);
         enemyHPBar = go;
         rect = go.GetComponent<RectTransform>();
@@ -97,8 +97,8 @@ public class BattleUIHP : MonoBehaviour
         rect.localPosition = EnemyPos;
         rect.rotation = enemyHPQuaternion;
 
-        rect = pD.GetComponent<RectTransform>();
-        rect.rotation = enemyHPQuaternion;
+        //rect = pD.GetComponent<RectTransform>();
+        //rect.rotation = enemyHPQuaternion;
 
         enemy.LayoutGroups = go.GetComponentInChildren<HorizontalLayoutGroup>();
         rect = enemy.LayoutGroups.GetComponentInChildren<RectTransform>();

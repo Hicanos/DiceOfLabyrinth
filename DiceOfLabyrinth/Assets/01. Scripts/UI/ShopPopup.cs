@@ -31,7 +31,7 @@ public class ShopPopup : MonoBehaviour
     [SerializeField] private TMP_Text ownedArtifactDescriptionText;
     [SerializeField] private TMP_Text sellPriceText;
 
-    [Header("Artifact Icon Refresh Alpha")]
+    [Header("Artifact Icon ListPopupRefresh Alpha")]
     [SerializeField, Range(0f, 1f)] private float selectedAlpha = 1f;
     [SerializeField, Range(0f, 1f)] private float unselectedAlpha = 0.5f;
 
@@ -281,6 +281,7 @@ public class ShopPopup : MonoBehaviour
         //}
         ShopArtifactRefresh();
         ResetButtonRefresh();
+        StageManager.Instance.battleUIController.RefreshManaStoneViewer(); // 마석 뷰어 갱신
         OnClickShopArtifactSlot(0); // 첫 번째 슬롯으로 초기화
     }
     private void ResetButtonRefresh()
@@ -319,6 +320,7 @@ public class ShopPopup : MonoBehaviour
             StageManager.Instance.stageSaveData.artifacts.Add(null); // null로 채워서 리스트 크기 유지
         }
         OwnedArtifactRefresh();
+        StageManager.Instance.battleUIController.RefreshManaStoneViewer(); // 마석 뷰어 갱신
         OnClickOwnedArtifactSlot(selectedArtifactIndexInOwnedList); // 선택한 슬롯의 아티팩트 정보 갱신
     }
     public void OnClickPurchaseButton()
@@ -349,6 +351,7 @@ public class ShopPopup : MonoBehaviour
             return; // 빈 슬롯이 없으면 리턴
         }
         StageManager.Instance.stageSaveData.manaStone -= selectedArtifact.PurchasePrice; // 마석 차감
+        StageManager.Instance.battleUIController.RefreshManaStoneViewer(); // 마석 뷰어 갱신
         StageManager.Instance.stageSaveData.artifacts[emptySlot] = selectedArtifact; // 빈 슬롯에 아티팩트 추가
         OwnedArtifactRefresh(); // 소유한 아티팩트 갱신
         OnClickOwnedArtifactSlot(emptySlot); // 새로 추가된 아티팩트 정보 갱신

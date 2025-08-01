@@ -11,16 +11,6 @@ public class BattleUIPatternDisplay : AbstractBattleButton
     [SerializeField] TextMeshProUGUI text_SkillDescription;
     [SerializeField] Button button;
 
-    private void OnEnable()
-    {
-        UIManager.Instance.BattleUI.Buttons.Add(this);
-    }
-
-    private void OnDisable()
-    {
-        UIManager.Instance.BattleUI.Buttons.Remove(this);
-    }
-
     public override void Setting()
     {
 
@@ -31,7 +21,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
         switch (state)
         {
             case DetailedTurnState.Enter:
-                ReturnColor();
+                gameObject.SetActive(true);
                 descriptionPanel.SetActive(false);
                 StartCoroutine(BlinkUI());
                 break;
@@ -42,7 +32,7 @@ public class BattleUIPatternDisplay : AbstractBattleButton
                 button.interactable = true;
                 break;
             case DetailedTurnState.EndTurn:
-                MakeTransparent();
+                gameObject.SetActive(false);
                 descriptionPanel.SetActive(false);
                 break;
         }

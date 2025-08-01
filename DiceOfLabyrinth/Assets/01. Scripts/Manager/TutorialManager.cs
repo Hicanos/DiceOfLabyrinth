@@ -19,12 +19,13 @@ public class TutorialManager : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private TMP_Text tutorialText;
     [SerializeField] private GameObject tutorialBg;
-    [SerializeField] private TMP_Text nextText;
-    [SerializeField] private GameObject[] lobbyTutorialImage = new GameObject[2];
+    //[SerializeField] private TMP_Text nextText;
+    [SerializeField] private GameObject lobbyTutorialImage;
+    [SerializeField] private GameObject lobbyTutorialImageBg;
 
     [Header("Tutorial Settings")]
-    [SerializeField, Range(0, 5)] private int lobbyTutorialSteps;
-    [SerializeField, Range(0, 5)] private int gameTutorialSteps;
+    [SerializeField, Range(0, 6)] private int lobbyTutorialSteps;
+    [SerializeField, Range(0, 6)] private int gameTutorialSteps;
 
     [Header("Tutorial Data")]
     [SerializeField] private List<LobbyTutorial> lobbyTutorials;
@@ -47,53 +48,54 @@ public class TutorialManager : MonoBehaviour
             lobbyTutorials[i].Hide();
         }
         tutorialPopup.SetActive(false);
-        lobbyTutorialImage[0].SetActive(false); 
-        lobbyTutorialImage[1].SetActive(false);
+        lobbyTutorialImageBg.SetActive(false);
+        lobbyTutorialImage.SetActive(true); 
+        //lobbyTutorialImage[1].SetActive(false);
     }
-    public void OnEnable()
-    {
-        StartNextTextBlink();
-    }
-    public void OnDisable()
-    {
-        StopNextTextBlink();
-    }
-    private void StartNextTextBlink()
-    {
-        if (nextTextBlinkCoroutine != null)
-            StopCoroutine(nextTextBlinkCoroutine);
-        nextTextBlinkCoroutine = StartCoroutine(BlinkNextText());
-    }
-    private void StopNextTextBlink()
-    {
-        if (nextTextBlinkCoroutine != null)
-        {
-            StopCoroutine(nextTextBlinkCoroutine);
-            nextTextBlinkCoroutine = null;
-        }
-        if (nextText != null)
-        {
-            var color = nextText.color;
-            color.a = 1f;
-            nextText.color = color;
-        }
-    }
+    //public void OnEnable()
+    //{
+    //    StartNextTextBlink();
+    //}
+    //public void OnDisable()
+    //{
+    //    StopNextTextBlink();
+    //}
+    //private void StartNextTextBlink()
+    //{
+    //    if (nextTextBlinkCoroutine != null)
+    //        StopCoroutine(nextTextBlinkCoroutine);
+    //    nextTextBlinkCoroutine = StartCoroutine(BlinkNextText());
+    //}
+    //private void StopNextTextBlink()
+    //{
+    //    if (nextTextBlinkCoroutine != null)
+    //    {
+    //        StopCoroutine(nextTextBlinkCoroutine);
+    //        nextTextBlinkCoroutine = null;
+    //    }
+    //    if (nextText != null)
+    //    {
+    //        var color = nextText.color;
+    //        color.a = 1f;
+    //        nextText.color = color;
+    //    }
+    //}
 
-    private IEnumerator BlinkNextText()
-    {
-        while (true)
-        {
-            float t = Mathf.PingPong(Time.time, 1f); // 0~1 반복
-            float alpha = Mathf.Lerp(0.5f, 1f, t);   // 0.5~1 선형보간
-            if (nextText != null)
-            {
-                var color = nextText.color;
-                color.a = alpha;
-                nextText.color = color;
-            }
-            yield return null;
-        }
-    }
+    //private IEnumerator BlinkNextText()
+    //{
+    //    while (true)
+    //    {
+    //        float t = Mathf.PingPong(Time.time, 1f); // 0~1 반복
+    //        float alpha = Mathf.Lerp(0.5f, 1f, t);   // 0.5~1 선형보간
+    //        if (nextText != null)
+    //        {
+    //            var color = nextText.color;
+    //            color.a = alpha;
+    //            nextText.color = color;
+    //        }
+    //        yield return null;
+    //    }
+    //}
     public void StartLobbyTutorial()
     {
         if ("LobbyScene" != SceneManager.GetActiveScene().name||isLobbyTutorialCompleted)
@@ -119,18 +121,17 @@ public class TutorialManager : MonoBehaviour
         }
         LobbyTutorial currentTutorial = lobbyTutorials[step];
         tutorialText.text = currentTutorial.description;
-        for (int i = 0; i < 2; i++)
+
+        if (currentTutorial.sprites[0] != null)
         {
-                if (currentTutorial.sprites[i] != null)
-                {
-                    lobbyTutorialImage[i].GetComponent<Image>().sprite = currentTutorial.sprites[i];
-                lobbyTutorialImage[i].SetActive(true);
-                }
-                else
-                {
-                lobbyTutorialImage[i].SetActive(false);
-                }
+            lobbyTutorialImage.GetComponent<Image>().sprite = currentTutorial.sprites[0];
+        lobbyTutorialImageBg.SetActive(true);
         }
+        else
+        {
+        lobbyTutorialImageBg.SetActive(false);
+        }
+
         for (int i = 0; i < lobbyTutorials.Count; i++)
         {
             if (i == step)
@@ -147,7 +148,7 @@ public class TutorialManager : MonoBehaviour
     {
         if ("LobbyScene" == SceneManager.GetActiveScene().name)
         {
-            if (lobbyTutorialSteps <= 4)
+            if (lobbyTutorialSteps < lobbyTutorials.Count - 1)
             {
                 lobbyTutorialSteps++;
                 ShowLobbyTutorial(lobbyTutorialSteps);
@@ -188,24 +189,24 @@ public class TutorialManager : MonoBehaviour
     class LobbyTutorial
     {
         [TextArea] public string description;
-        public GameObject button;
+        public GameObject image;
         public Coroutine blinkCoroutine;
         // 첨부 이미지 리스트
         public Sprite[] sprites = new Sprite[2];
         public void Blinking()
         {
-            if (button != null)
+            if (image != null)
             {
-                if (button.GetComponent<CanvasGroup>() == null)
+                if (image.GetComponent<CanvasGroup>() == null)
                 {
-                    button.AddComponent<CanvasGroup>();
+                    image.AddComponent<CanvasGroup>();
                 }
                 blinkCoroutine = TutorialManager.Instance.StartCoroutine(BlinkButton());
             }
         }
         private IEnumerator BlinkButton()
         {
-            CanvasGroup canvasGroup = button.GetComponent<CanvasGroup>();
+            CanvasGroup canvasGroup = image.GetComponent<CanvasGroup>();
             while (true)
             {
                 float t = Mathf.PingPong(Time.time, 1f); // 0~1 반복
@@ -220,18 +221,18 @@ public class TutorialManager : MonoBehaviour
 
         public void Hide()
         {
-            if (button != null)
+            if (image != null)
             {
-                if (button.GetComponent<CanvasGroup>() == null)
+                if (image.GetComponent<CanvasGroup>() == null)
                 {
-                    button.AddComponent<CanvasGroup>();
+                    image.AddComponent<CanvasGroup>();
                 }
                 if (blinkCoroutine != null)
                 {
                     TutorialManager.Instance.StopCoroutine(blinkCoroutine);
                     blinkCoroutine = null;
                 }
-            button.GetComponent<CanvasGroup>().alpha = 0.2f;
+            image.GetComponent<CanvasGroup>().alpha = 0.2f;
             }
         }
         public void Show()
@@ -241,9 +242,9 @@ public class TutorialManager : MonoBehaviour
                 TutorialManager.Instance.StopCoroutine(blinkCoroutine);
                 blinkCoroutine = null;
             }
-            if (button != null && button.GetComponent<CanvasGroup>() != null)
+            if (image != null && image.GetComponent<CanvasGroup>() != null)
             {
-                button.GetComponent<CanvasGroup>().alpha = 1f; // Reset alpha to fully visible
+                image.GetComponent<CanvasGroup>().alpha = 1f; // Reset alpha to fully visible
             }
         }
     }

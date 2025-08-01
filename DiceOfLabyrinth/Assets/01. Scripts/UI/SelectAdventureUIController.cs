@@ -59,22 +59,30 @@ public class SelectAdventureUIController : MonoBehaviour
     [SerializeField] private TMP_Text directCompleteGoldRewardText;
     public bool isDifficulty = false; // 챕터 난이도 선택 여부
 
+    [Header("Chapter Buttons Images")]
+    [SerializeField] private List<Image> chapterButtonsImages = new List<Image>(5); // 챕터 버튼 이미지 리스트, 각 그룹의 챕터 버튼 이미지를 표시합니다.
+    [Header("Chapter Buttons Rock Icons")]
+    [SerializeField] private List<GameObject> chapterButtonsRockIcons = new List<GameObject>(5); // 챕터 버튼 리스트, 각 그룹의 챕터 버튼을 표시합니다.
+
+    [Header("Chapter Buttons Select Color")]
+    [SerializeField] private Color selectedButtonColor = new(1f,1f,1f,1f); // 선택된 챕터 버튼 색상
+    [SerializeField] private Color unselectedButtonColor = new(156/255f, 156 / 255f, 156 / 255f, 1f); // 선택되지 않은 챕터 버튼 색상
+    [SerializeField] private Color unselectedButtonTextColor = new(35/255f, 35 / 255f, 35 / 255f, 1f); // 선택되지 않은 챕터 버튼 텍스트 색상
+    [SerializeField] private Color selectedButtonTextColor = new(217/255f, 217 / 255f, 217 / 255f, 1f); // 선택된 챕터 버튼 텍스트 색상
+
+
     private void OnEnable()
     {
         selectChapterPanel.SetActive(true);
         scarceStaminaPanel.SetActive(false);
         DifficultyToggleRefresh(); // 초기 난이도 토글 상태 설정
-        OnClickChapterButton(0); // 초기 챕터 버튼 클릭 이벤트 호출, 첫 번째 챕터를 선택합니다.
         OnClickMultipleMinButton(); // 직접 완료 배수 초기화
     }
 
     public void OnClickChapterButton(int normalChapterIndex) // 챕터 버튼
     {
-        int chapterIndex = normalChapterIndex; // 스테이지 인덱스는 Normal 챕터의 인덱스와 동일합니다.
-        if (isDifficulty)
-        {
-            chapterIndex++; // 하드 챕터의 인덱스는 Normal 챕터 인덱스 + 1입니다.
-        }
+        int chapterIndex = normalChapterIndex + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0); // 현재 그룹 번호와 난이도에 따라 챕터 인덱스 계산
+
         if (chapterData == null)
         {
             messagePopup.Open("chapterData is null");
@@ -98,9 +106,9 @@ public class SelectAdventureUIController : MonoBehaviour
         {
             return;
         }
-        Debug.Log($"Selected chapter index: {chapterIndex}, Hard: {isDifficulty})");
         UpdateSelectedChapterUI(chapterIndex); // 선택된 챕터 UI 업데이트
         selectedChapterIndex = chapterIndex; // 선택된 챕터 인덱스 설정
+        RefreshChapterButton(normalChapterIndex/2); // 챕터 버튼 텍스트 업데이트
     }
 
     public void OnClickChapterGroupPreviousButton() // 챕터 그룹 버튼
@@ -139,20 +147,46 @@ public class SelectAdventureUIController : MonoBehaviour
     }
     private void RefreshChapterButton()
     {
-
-        for(int i = 0; i < chapterTexts.Count; i++) // 챕터 버튼 텍스트 업데이트
+        for (int i = 0; i < 5; i++) // 챕터 버튼 텍스트 및 상태 업데이트
         {
-            
-            int chapterIndex = i * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0); // 현재 그룹 번호와 난이도에 따라 챕터 인덱스 계산
-            if (chapterIndex < chapterData.chapterIndex.Count) // 유효한 챕터 인덱스일 때
+            int chapterIndex = i * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0); // 인덱스 계산
+
+            if (chapterIndex < chapterData.chapterIndex.Count)
             {
-                chapterTexts[i].text = $"{chapterData.chapterIndex[chapterIndex].ChapterName}"; // 챕터 이름 업데이트
+                chapterTexts[i].text = $"{chapterData.chapterIndex[chapterIndex].ChapterName}";
             }
-            else // 유효하지 않은 챕터 인덱스일 때
+            else
             {
-                chapterTexts[i].text = "N/A"; // N/A로 표시
+                chapterTexts[i].text = "N/A";
             }
+
+            bool selectableChapterState = StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked;
+            chapterButtonsRockIcons[i].SetActive(!selectableChapterState); // 잠겨있으면 락 아이콘 표시
+
+            // 모든 버튼을 비선택 상태로 초기화
+            chapterButtonsImages[i].color = unselectedButtonColor;
+            chapterTexts[i].color = unselectedButtonTextColor;
         }
+    }
+
+    private void RefreshChapterButton(int index)
+    {
+        if (index < 0 || index >= chapterButtonsImages.Count)
+        {
+            return;
+        }
+
+        RefreshChapterButton(); // 모든 버튼 초기화 (텍스트, 락, 비선택 상태)
+
+        int chapterIndex = index * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0);
+        if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked == false)
+        {
+            return;
+        }
+
+        // 선택된 버튼만 선택 상태로 설정
+        chapterButtonsImages[index].color = selectedButtonColor;
+        chapterTexts[index].color = selectedButtonTextColor;
     }
 
     public void OnClickStartButton() // 코스트 지불 UI의 시작 버튼

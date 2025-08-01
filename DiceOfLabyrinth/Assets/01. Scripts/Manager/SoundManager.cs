@@ -12,6 +12,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource sfxSource;// SFX 재생용
 
     [Header("Volume Settings")]
+    [Range(0f, 1f)] public float masterVolume = 1f;
     [Range(0f, 1f)] public float bgmVolume = 1f;
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
@@ -69,7 +70,7 @@ public class SoundManager : MonoBehaviour
             if (bgmSource.clip == clip && bgmSource.isPlaying)
                 return;
             bgmSource.clip = clip;
-            bgmSource.volume = bgmVolume;
+            bgmSource.volume = masterVolume * bgmVolume;
             bgmSource.Play();
         }
         else
@@ -82,10 +83,21 @@ public class SoundManager : MonoBehaviour
         bgmSource.Stop();
     }
 
+    public void PlayOneShotBGM(SoundType type) // 배경음악을 한 번만 재생
+    {
+        if (soundDict.TryGetValue(type, out var clip))
+        {
+            bgmSource.clip = clip;
+            bgmSource.volume = masterVolume * bgmVolume;
+            bgmSource.PlayOneShot(clip, bgmVolume);
+        }
+    }
     public void PlaySFX(SoundType type) // SFX 재생
     {
         if (soundDict.TryGetValue(type, out var clip))
         {
+            sfxSource.clip = clip;
+            sfxSource.volume = masterVolume * sfxVolume;
             sfxSource.PlayOneShot(clip);
         }
     }
@@ -103,18 +115,25 @@ public class SoundManager : MonoBehaviour
         if (soundDict.TryGetValue(type, out var clip))
         {
             sfxSource.PlayOneShot(clip, sfxVolume);
+            sfxSource.volume = masterVolume * sfxVolume;
             lastPlayedTime[type] = Time.unscaledTime;
         }
     }
-    public void SetBGMVolume(float volume) // 배경음악 볼륨 설정
+    public void SetBGMVolume(float volume)
     {
         bgmVolume = Mathf.Clamp01(volume);
-        bgmSource.volume = bgmVolume;
+        bgmSource.volume = masterVolume * bgmVolume;
     }
-
-    public void SetSFXVolume(float volume) // SFX 볼륨 설정
+    public void SetSFXVolume(float volume)
     {
         sfxVolume = Mathf.Clamp01(volume);
+        sfxSource.volume = masterVolume * sfxVolume;
+    }
+    public void SetMasterVolume(float volume)
+    {
+        masterVolume = Mathf.Clamp01(volume);
+        bgmSource.volume = masterVolume * bgmVolume;
+        sfxSource.volume = masterVolume * sfxVolume;
     }
 }
 

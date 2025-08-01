@@ -53,6 +53,7 @@ public class BattleCharacter : IDamagable
     private int initialLevel;
 
     public bool IsDied { get; private set; }
+    public bool UsingSkill { get; set; } = false;
 
     public event Action<int> OnHPChanged;
     public event Action OnDied;
@@ -115,6 +116,7 @@ public class BattleCharacter : IDamagable
         if (lobbyChar == null)
             throw new InvalidOperationException($"BattleCharacter: 해당하는 LobbyCharacter를 찾을 수 없습니다. (charID: {CharID})");
 
+        IsDied = false;
         // 초기값 저장 (Lobby 기준)
         initialLevel = lobbyChar.Level;
         initialATK = lobbyChar.RegularATK;
@@ -158,6 +160,7 @@ public class BattleCharacter : IDamagable
     /// </summary>
     public void ResetBattleData()
     {
+        IsDied = false;
         CurrentHP = RegularHP;
         CurrentATK = RegularATK;
         CurrentDEF = RegularDEF;
@@ -213,6 +216,7 @@ public class BattleCharacter : IDamagable
     {
         //배틀 캐릭터를 DataSaver에서 Regular 값을 세팅할 수 있도록 해주는 메서드
         // 전달받은 데이터로 Regular 값 세팅
+        IsDied = false;
         RegularHP = data.regularHP;
         RegularATK = data.regularATK;
         RegularDEF = data.regularDEF;

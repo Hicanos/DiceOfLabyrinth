@@ -59,6 +59,15 @@ public class DiceHolding : MonoBehaviour
         }
     }
 
+    //public void TestGetFixedDiceIndex(int index)
+    //{
+    //    fixedDiceList.Add(index);
+    //}
+    //public void TestGetReleasedDiceIndex(int index)
+    //{
+    //    fixedDiceList.Remove(index);
+    //}
+
     private void DiceFixed(DiceMy dice)
     {
         isCantFix = true;
@@ -87,7 +96,7 @@ public class DiceHolding : MonoBehaviour
         isCantFix = false;
     }
     public void DiceFix(int index)
-    {      
+    {
         Canvas canvas = GetBattleCanvas();
         RectTransform targetRect = areas[index].GetComponent<RectTransform>();
         if(DiceRollButton == null)

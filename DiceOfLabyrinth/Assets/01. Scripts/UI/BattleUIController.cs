@@ -1,7 +1,9 @@
 ﻿using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -40,11 +42,14 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private GameObject defeatPanel;
     [SerializeField] private GameObject selectItemPanel;
     [SerializeField] private GameObject selectEventPanel;
-    [SerializeField] private GameObject selectArtifactPanel;
+
+    [Header("Pause Panel")]
+    [SerializeField] private PausePanel pausePanel;
 
     [Header("Popup")]
     [SerializeField] private GameObject shopPopup;
     [SerializeField] private GameObject recoveryPopup; // 회복 팝업
+    [SerializeField] private TMP_Text manaStoneText; // 마나스톤 갯수를 표시할 텍스트
 
     [Header("Item Choice Icons")]
     [SerializeField] private GameObject[] itemChoiceIcon = new GameObject[3]; // 아이템 선택 아이콘을 위한 배열
@@ -70,6 +75,11 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private Color platformDefaultColor; // 플랫폼 기본 색상
     [SerializeField] private Color platformSelectedColor; // 플랫폼 선택 시 색상
     private int selectedPlatformIndex = -1; // 선택된 플랫폼 인덱스
+
+    [Header("BgSprites")]
+    [SerializeField] private GameObject backgroundSprite;
+    [SerializeField] private GameObject worldMap;
+
 #if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
     private void Update()
     {
@@ -115,18 +125,56 @@ public class BattleUIController : MonoBehaviour
         }
     }
 #endif
-    
-    private void OnDisable()
+
+    private void OnEnable()
     {
-        for (int i = 0; i < characterPlatforms.Length; i++)
+        RefreshManaStoneViewer(); // 마나스톤 갯수 초기화
+        foreach (var platform in characterPlatforms)
         {
-            if (characterPlatforms[i] != null)
+            if (platform != null)
             {
-                Destroy(characterPlatforms[i]);
-                characterPlatforms[i] = null;
+                AssignPlatformsFromScene(); // 씬에서 플랫폼 할당
             }
         }
-        selectedPlatformIndex = -1; // 초기 선택된 플랫폼 인덱스 설정
+
+    }
+
+    public void OnClickPauseButton()
+    {
+        if (pausePanel != null)
+        {
+            pausePanel.gameObject.SetActive(true);
+            Time.timeScale = 0f;
+        }       
+    }
+
+    private void AssignPlatformsFromScene()
+    {
+        var relays = FindObjectsByType<PlatformClickRelay>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < characterPlatforms.Length; i++)
+        {
+            characterPlatforms[i] = relays.FirstOrDefault(p => p.platformIndex == i)?.gameObject;
+        }
+    }
+    public void SetBackgroundSprite(Sprite sprite)
+    {
+        if (backgroundSprite == null)
+        {
+            GameObject bgObject = GameObject.FindWithTag("Background");
+            if (bgObject != null)
+            {
+                backgroundSprite = bgObject;
+            }
+        }
+
+        if (backgroundSprite != null)
+        {
+            var meshRenderer = backgroundSprite.GetComponent<MeshRenderer>();
+            if (meshRenderer != null && sprite != null)
+            {
+                meshRenderer.material.mainTexture = sprite.texture;
+            }
+        }
     }
     public void OnClickPerformed(InputAction.CallbackContext context)
     {
@@ -161,6 +209,17 @@ public class BattleUIController : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+    public void RefreshManaStoneViewer()
+    {
+        if (manaStoneText != null)
+        {
+            manaStoneText.text = StageManager.Instance.stageSaveData.manaStone.ToString(); // 현재 마나스톤 갯수를 표시
+        }
+        else
+        {
+            Debug.LogWarning("ManaStoneText가 설정되지 않았습니다.");
         }
     }
     private void OnPlatformClicked(int platformIndex)
@@ -214,26 +273,6 @@ public class BattleUIController : MonoBehaviour
     }
     public void OpenTeamFormationPanel()
     {
-        // 플랫폼 초기화: 기존 플랫폼 제거 및 새로 생성
-        for (int i = 0; i < characterPlatforms.Length; i++)
-        {
-            if (characterPlatforms[i] != null)
-            {
-                Destroy(characterPlatforms[i]);
-                characterPlatforms[i] = null;
-            }
-        }
-        for (int i = 0; i < characterPlatforms.Length; i++)
-        {
-            Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
-                .stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
-
-            var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
-            platform.SetActive(false);
-            characterPlatforms[i] = platform;
-            characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i;
-            platform.transform.position = spawnPoint;
-        }
         RefreshTeamFormationButton(); // 팀 구성 버튼 상태 갱신
         RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
         //Debug.Log($"[TeamFormation] AcquiredCharacters Count: {CharacterManager.Instance.AcquiredCharacters.Count}");
@@ -256,6 +295,9 @@ public class BattleUIController : MonoBehaviour
         recoveryPopup.SetActive(false);
         if (InventoryPopup.Instance != null)
             InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        SetBackgroundSprite(chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.
+            stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground);
+
         // characterButtons의 개수를 보유 캐릭터 수 만큼으로 설정하는 로직은 나중에 구현할 예정 현재는 7개로 사용
 
         int ownedCount = CharacterManager.Instance.OwnedCharacters.Count;
@@ -431,18 +473,6 @@ public class BattleUIController : MonoBehaviour
     {
         for (int i = 0; i < characterPlatforms.Length; i++)
         {
-            // 플랫폼이 null이면 즉시 생성
-            if (characterPlatforms[i] == null)
-            {
-                Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
-                    .stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
-                var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
-                platform.SetActive(false);
-                characterPlatforms[i] = platform;
-                characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i;
-                platform.transform.position = spawnPoint;
-            }
-
             var platformRenderer = characterPlatforms[i].GetComponent<Renderer>();
             if (platformRenderer != null)
             {
@@ -494,23 +524,22 @@ public class BattleUIController : MonoBehaviour
         DeleteSpawnedCharacters(); // 기존에 스폰된 캐릭터 제거
         for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++)
         {
-            Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.PlayerFormations[formationIndex].PlayerPositions[i].Position;
+            Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                .stageData.PlayerFormations[formationIndex].PlayerPositions[i].Position;
+
+            // 캐릭터 스폰
             if (StageManager.Instance.stageSaveData.entryCharacters[i] != null)
             {
-                // 캐릭터를 월드에 스폰하는 로직, 스테이지 데이터에 스폰 포지션이 있으며 스폰 포지션과 같은 인덱스의 엔트리 캐릭터를 스폰
                 GameObject battleCharacterObject = StageManager.Instance.stageSaveData.entryCharacters[i].charBattlePrefab;
-                GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity); // 스폰 포인트에 캐릭터 스폰
+                GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity);
             }
-            GameObject characterPlatform = characterPlatforms[i]; // 캐릭터 플랫폼 가져오기
-            if (characterPlatform == null)
+
+            // 플랫폼 위치 이동 (생성 X)
+            GameObject characterPlatform = characterPlatforms[i];
+            if (characterPlatform != null)
             {
-                var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
-                platform.SetActive(false);
-                characterPlatform = platform;
-                characterPlatform.GetComponent<PlatformClickRelay>().platformIndex = i;
-                platform.transform.position = spawnPoint;
+                characterPlatform.transform.position = spawnPoint;
             }
-            characterPlatform.transform.position = spawnPoint; // 플랫폼 위치 설정
         }
     }
     private void DeleteSpawnedCharacters() // 월드에 스폰된 캐릭터를 제거하는 함수
@@ -530,16 +559,26 @@ public class BattleUIController : MonoBehaviour
         }
         for (int i = 0; i < characterPlatforms.Length; i++)
         {
-            // 플랫폼이 null이면 즉시 생성
+            // 플랫폼이 null이면 월드에서 먼저 찾아보고, 없으면 즉시 생성
             if (characterPlatforms[i] == null)
             {
-                Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                // 월드에서 플랫폼을 찾기
+                characterPlatforms[i] = FindObjectsByType<PlatformClickRelay>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                    .Where(p => p.platformIndex == i)
+                    .Select(p => p.gameObject)
+                    .FirstOrDefault();
+
+                // 플랫폼이 null이면 즉시 생성
+                if (characterPlatforms[i] == null)
+                {
+                    Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
                     .stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
-                var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
-                platform.SetActive(false);
-                characterPlatforms[i] = platform;
-                characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i;
-                platform.transform.position = spawnPoint;
+                    var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
+                    platform.SetActive(false);
+                    characterPlatforms[i] = platform;
+                    characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i;
+                    platform.transform.position = spawnPoint;
+                }
             }
             RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
         }
@@ -831,23 +870,30 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickStageNextButton() // 스테이지 패널에서 다음 버튼 클릭 시 호출되는 함수
     {
-        if (StageManager.Instance.stageSaveData.currentPhaseIndex < 4) // 페이즈4 까지는 선택지 패널을 열고 그 후 배틀 룸 입장
+        if(StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.Standby) // 현재 페이즈 상태가 대기 상태일 때
         {
-            OpenSelectChoicePanel(); // 선택지 이벤트 패널 열기
+            if (StageManager.Instance.stageSaveData.currentPhaseIndex < 4) // 페이즈0-3 까지는 선택지 패널을 열고 그 후 배틀 룸 입장
+            {
+                OpenSelectChoicePanel(); // 선택지 이벤트 패널 열기
+            }
+            else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 4) // 페이즈 4는 선택지 대신 상점을 염
+            {
+                OpenShopPopup(); // 상점 패널 열기
+            }
+            else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5) // 페이즈 5는 보스 룸
+            {
+                messagePopup.Open("보스가 등장했습니다! 입장할래?",
+                () => StageManager.Instance.selectBossEnemy(),
+                () => messagePopup.Close());
+            }
+            else // 페이즈 인덱스가 범위를 벗어난 경우
+            {
+                messagePopup.Open("잘못된 페이즈 인덱스입니다. 다시 시도해 주세요.");
+            }
         }
-        else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 4) // 페이즈 5는 선택지 대신 상점을 염
+        else if (StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.EquipmentArtifact)
         {
-            OpenShopPopup(); // 상점 패널 열기
-        }
-        else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5) // 페이즈 6은 보스 룸
-        {
-            messagePopup.Open("보스가 등장했습니다! 입장할래?",
-            () => StageManager.Instance.selectBossEnemy(),
-            () => messagePopup.Close());
-        }
-        else // 페이즈 인덱스가 범위를 벗어난 경우
-        {
-            messagePopup.Open("잘못된 페이즈 인덱스입니다. 다시 시도해 주세요.");
+            InventoryPopup.Instance.OnClickInventoryButton();
         }
     }
 
@@ -953,7 +999,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Victory); // 승리 효과음 재생
+        SoundManager.Instance.PlayOneShotBGM(SoundManager.SoundType.BGM_Victory); // 승리 효과음 재생
     }
 
     public void OpenDefeatPanel() // 패배 패널을 여는 함수
@@ -976,7 +1022,7 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
-        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Defeat); // 패배 효과음 재생
+        SoundManager.Instance.PlayOneShotBGM(SoundManager.SoundType.BGM_Defeat); // 패배 효과음 재생
     }
 
     public void OnClickVictoryNextButton() // 승리 패널에서 다음 버튼 클릭 시 호출되는 함수
@@ -1017,7 +1063,7 @@ public class BattleUIController : MonoBehaviour
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.EquipmentArtifact; // 현재 페이즈 상태를 "EquipmentArtifact"로 설정
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
-        stagePanel.SetActive(false);
+        stagePanel.SetActive(true);
         battlePanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
@@ -1025,12 +1071,12 @@ public class BattleUIController : MonoBehaviour
         selectEventPanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        InventoryPopup.Instance.OnClickInventoryButton(); // 인벤토리 팝업 열기
+
         foreach (var characterPlatform in characterPlatforms)
-        {
-            if (characterPlatform != null)
-                characterPlatform.SetActive(false);
-        }
+            {
+                if (characterPlatform != null)
+                    characterPlatform.SetActive(false);
+            }
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
     }
 }

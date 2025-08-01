@@ -152,9 +152,9 @@ public class BattleEnemyAttack : MonoBehaviour
             int provability = skill.FrontLineProbability;
             int skillValue = enemySkillData.SkillValue;
 
-            targetIndexTest = targetGetterDictionary[skill.Method](targetCount, provability);
+            targetIndexTest = battleManager.Enemy.currentTargetIndex;
 
-            battleManager.Enemy.currentTargetIndex = targetIndexTest;
+            //battleManager.Enemy.currentTargetIndex = targetIndexTest;
             for (int j = 0; j < targetIndexTest.Count; j++)
             {
                 characterIndex = targetIndexTest[j];

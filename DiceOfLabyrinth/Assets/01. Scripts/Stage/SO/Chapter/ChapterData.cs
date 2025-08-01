@@ -18,7 +18,7 @@ public class ChapterData : ScriptableObject
 public class ChapterInfo
 {
     [SerializeField] private string chapterName;
-    [SerializeField] private string description;
+    [SerializeField, TextArea] private string description;
     [SerializeField] private Sprite sprite;
     [SerializeField] private int chapterCost;
     [SerializeField] private int firstClearJewelReward; // 챕터를 처음 클리어했을 때 주는 보석 보상
