@@ -471,15 +471,16 @@ public class DataSaver
                 {
                     TutorialManager.Instance.isLobbyTutorialCompleted = SaveData.userData.isLobbyTutorialCompleted;
                     TutorialManager.Instance.isGameTutorialCompleted = SaveData.userData.isGameTutorialCompleted;
-                }               
+                    Debug.Log($"튜토리얼 완료 여부 로드됨: Lobby={TutorialManager.Instance.isLobbyTutorialCompleted}, Game={TutorialManager.Instance.isGameTutorialCompleted}");
+                }
             }
             else
             {
                 SaveData = new GameSaveData();
                 Save();
-#if UNITY_EDITOR
+// #if UNITY_EDITOR
                 Debug.Log("저장 파일이 없어 새 데이터로 초기화");
-#endif
+// #endif
             }
         }
         catch (Exception ex)
