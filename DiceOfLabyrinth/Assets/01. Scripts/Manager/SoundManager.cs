@@ -12,6 +12,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource sfxSource;// SFX 재생용
 
     [Header("Volume Settings")]
+    [Range(0f, 1f)] public float masterVolume = 1f;
     [Range(0f, 1f)] public float bgmVolume = 1f;
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
@@ -117,15 +118,21 @@ public class SoundManager : MonoBehaviour
             lastPlayedTime[type] = Time.unscaledTime;
         }
     }
-    public void SetBGMVolume(float volume) // 배경음악 볼륨 설정
+    public void SetBGMVolume(float volume)
     {
         bgmVolume = Mathf.Clamp01(volume);
-        bgmSource.volume = bgmVolume;
+        bgmSource.volume = masterVolume * bgmVolume;
     }
-
-    public void SetSFXVolume(float volume) // SFX 볼륨 설정
+    public void SetSFXVolume(float volume)
     {
         sfxVolume = Mathf.Clamp01(volume);
+        sfxSource.volume = masterVolume * sfxVolume;
+    }
+    public void SetMasterVolume(float volume)
+    {
+        masterVolume = Mathf.Clamp01(volume);
+        bgmSource.volume = masterVolume * bgmVolume;
+        sfxSource.volume = masterVolume * sfxVolume;
     }
 }
 
