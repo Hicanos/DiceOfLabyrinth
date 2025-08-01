@@ -91,6 +91,8 @@ public class BattleCharacterAttack : MonoBehaviour
             //}
             //characterPrefabs[i].transform.position = firstPosition;
 
+            battleCharacters[i].UsingSkill = false;
+
             if (battleManager.Enemy.IsDead)
             {
                 isCharacterAttacking = false;

@@ -15,6 +15,8 @@ public class GetCharacter : MonoBehaviour
     // R : 스킬북 하급/포션 하급
     // 아이템 개수는 5~10개 사이로 랜덤 획득
 
+    int jewelAmount = 150; // 1회 소환에 필요한 보석 수
+
     public void GetCharacters()
     {
         CharacterManager.Instance.AcquireDefaultCharacters();
@@ -54,6 +56,7 @@ public class GetCharacter : MonoBehaviour
     public void GatchaSingle()
     {
         // 1회 소환 로직+ UI 업데이트도 포함
+        UserDataManager.Instance.UseJewel(jewelAmount);
         Gatcha();
     }
 
@@ -61,6 +64,7 @@ public class GetCharacter : MonoBehaviour
     public void GatchaTen()
     {
         // 10연차 소환 로직 구현 + UI 업데이트도 포함
+        UserDataManager.Instance.UseJewel(jewelAmount * 10);
         int count = 0; 
         for (int i = 0; i < 10; i++)
         {

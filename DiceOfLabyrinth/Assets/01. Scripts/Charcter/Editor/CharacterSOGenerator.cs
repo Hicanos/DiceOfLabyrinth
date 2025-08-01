@@ -135,6 +135,23 @@ public class CharacterSOGenerator : EditorWindow
             {
                 so.Standing = AssetDatabase.LoadAssetAtPath<Sprite>(data.StandingPath);
             }
+            // 신규 경로 필드 Sprite 할당
+            if (!string.IsNullOrEmpty(data.ElementalIconPath))
+            {
+                so.elementIcon = AssetDatabase.LoadAssetAtPath<Sprite>(data.ElementalIconPath);
+            }
+            if (!string.IsNullOrEmpty(data.RoleIconPath))
+            {
+                so.RoleIcons = AssetDatabase.LoadAssetAtPath<Sprite>(data.RoleIconPath);
+            }
+            if (!string.IsNullOrEmpty(data.BackGroundPath))
+            {
+                so.BackGroundIcon = AssetDatabase.LoadAssetAtPath<Sprite>(data.BackGroundPath);
+            }
+            if (!string.IsNullOrEmpty(data.DiceNumIconPath))
+            {
+                so.DiceNumIcon = AssetDatabase.LoadAssetAtPath<Sprite>(data.DiceNumIconPath);
+            }
 
             // 스킬 ID를 통해 액티브 및 패시브 스킬 SO를 할당 - 스킬 아이디에 맞는 SkillSO를 찾아서 할당 (ActiveSO와 PassiveSO는 SkillSO를 상속받음)
             // Addressable은 사용하지 않고, SO를 직접 할당
@@ -273,5 +290,9 @@ public class CharacterSOGenerator : EditorWindow
         public string UpperPath; // 상체 이미지 경로 추가
         public string StandingPath; // 스탠딩 이미지 경로 추가
         public string DicePrefabPath; // 캐릭터 전용 주사위 프리팹 경로 추가
+        public string ElementalIconPath; // 원소 아이콘 경로 추가
+        public string RoleIconPath; // 역할 아이콘 경로 추가
+        public string BackGroundPath; // 배경 경로 추가
+        public string DiceNumIconPath; // 주사위 숫자 아이콘 경로 추가
     }
 }
