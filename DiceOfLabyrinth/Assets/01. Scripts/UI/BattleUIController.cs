@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -42,6 +43,9 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private GameObject selectItemPanel;
     [SerializeField] private GameObject selectEventPanel;
     [SerializeField] private GameObject selectArtifactPanel;
+
+    [Header("Pause Panel")]
+    [SerializeField] private PausePanel pausePanel;
 
     [Header("Popup")]
     [SerializeField] private GameObject shopPopup;
@@ -128,6 +132,15 @@ public class BattleUIController : MonoBehaviour
                 AssignPlatformsFromScene(); // 씬에서 플랫폼 할당
             }
         }
+    }
+
+    public void OnClickPauseButton()
+    {
+        if (pausePanel != null)
+        {
+            pausePanel.gameObject.SetActive(true);
+            Time.timeScale = 0f;
+        }       
     }
 
     private void AssignPlatformsFromScene()
