@@ -174,7 +174,7 @@ public class Goblin : MonoBehaviour, IEnemy
     private IEnumerator HitRoutine()
     {
         PlayAnimationByState(EnemyState.Hit);
-        float hitDuration = 1.3f;
+        float hitDuration = 0.7f;
         yield return new WaitForSeconds(hitDuration);
         if (IsDead)
             PlayAnimationByState(EnemyState.Dead);
