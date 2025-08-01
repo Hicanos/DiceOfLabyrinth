@@ -10,6 +10,7 @@ public class BattleSpawner : MonoBehaviour
     bool isPreparing;
     bool isActive;
     const int numFIve = 5;
+    [SerializeField] GameObject defaultDIce;
     [SerializeField] Vector3 spawnDetach;
     [SerializeField] float spawnDestTime;
     public List<FormationVector> formationVec;

@@ -146,7 +146,7 @@ public class BattleCharacterAttack : MonoBehaviour
         Debug.Log($"Engrving :  + {engravingAddAtk}\nArtifact :  + {artifactAddAtk}\nElement :  + {additionalElementDamage}");
         damage = Mathf.Clamp(damage, 0, damage);
 
-        if (battleManager.IsTutorialOver == false) damage /= 4;
+        if (BattleManager.IsTutorialOver == false) damage /= 4;
         return (int)damage;
     }
 }
