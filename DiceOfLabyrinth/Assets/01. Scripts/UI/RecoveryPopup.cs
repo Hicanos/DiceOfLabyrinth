@@ -117,6 +117,7 @@ public class RecoveryPopup : MonoBehaviour
         character.CurrentHP = Mathf.Min(character.RegularHP, character.CurrentHP + (int)(0.8f * character.RegularHP));
         StageManager.Instance.stageSaveData.manaStone -= focusedRecoveryCost;
         messagePopup.Open($"{character.CharNameKr}의 체력을 80% 회복했습니다.");
+        StageManager.Instance.battleUIController.RefreshManaStoneViewer(); // 마석 뷰어 갱신
         PlayerViewerRefresh(selectedCharacterIndex);
     }
 
@@ -141,6 +142,7 @@ public class RecoveryPopup : MonoBehaviour
         }
         StageManager.Instance.stageSaveData.manaStone -= allRecoveryCost;
         messagePopup.Open("모든 캐릭터의 체력을 30% 회복했습니다.");
+        StageManager.Instance.battleUIController.RefreshManaStoneViewer(); // 마석 뷰어 갱신
         for (int i = 0; i < characterViewers.Length; i++)
         {
             PlayerViewerRefresh(i);
@@ -173,6 +175,7 @@ public class RecoveryPopup : MonoBehaviour
         character.Revive();
         StageManager.Instance.stageSaveData.manaStone -= reviveCost;
         messagePopup.Open($"{character.CharNameKr}이(가) 부활했습니다.");
+        StageManager.Instance.battleUIController.RefreshManaStoneViewer(); // 마석 뷰어 갱신
         PlayerViewerRefresh(selectedCharacterIndex);
     }
     public void OnClickClose()
