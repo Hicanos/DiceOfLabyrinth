@@ -33,6 +33,7 @@ public class BattleTutorial : MonoBehaviour
         loadTutorialData = new LoadTutorialData();
         loadTutorialData.LoadData();
 
+        //Debug.Log(BattleManager.Instance.IsTutorialOver);
         if (BattleManager.Instance.IsTutorialOver) return;
         
         datas = loadTutorialData.GetData();
