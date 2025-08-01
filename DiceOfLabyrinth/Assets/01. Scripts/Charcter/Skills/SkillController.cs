@@ -8,6 +8,9 @@ using static DesignEnums;
 public class SkillController
 {
     // 스킬 사용 메인 진입점
+
+    static GameObject characterPrefab;
+
     public static void SkillUse(BattleCharacter user, SkillSO skill, List<BattleCharacter> allAllies, BattleEnemy enemy)
     {
         List<IDamagable> targets = GetTargets(user, skill.SkillTarget, allAllies, enemy);
@@ -155,9 +158,8 @@ public class SkillController
     // Skill의 BuffID에 따른 버프 적용
     private static void ApplyBuff(BattleCharacter user, SkillSO skill, List<IDamagable> target)
     {
-        // 버프 적용 로직
-        // SkillSO의 BuffID에 따라 BuffData에서 버프 정보를 가져와 적용
-
+        characterPrefab = BattleManager.Instance.BattleGroup.CharacterPrefabs[BattleManager.Instance.BattleGroup.BattleCharacters.IndexOf(user)];
+        characterPrefab.GetComponent<SpawnedCharacter>().SkillAttack();
         Debug.Log($"{user.CharNameKr}이(가) {skill.SkillNameKr} 스킬을 사용하여 버프/디버프를 적용했습니다.");
     }
 }

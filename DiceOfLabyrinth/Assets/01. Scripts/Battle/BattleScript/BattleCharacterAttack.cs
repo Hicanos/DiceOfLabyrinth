@@ -38,7 +38,8 @@ public class BattleCharacterAttack : MonoBehaviour
 
     public IEnumerator CharacterAttackCoroutine(float diceWeighting)
     {
-        float pastTime, destTime = charAttackMoveTime;
+        //float pastTime;
+        float destTime = charAttackMoveTime;
 
         List<BattleCharacter> battleCharacters = battleManager.BattleGroup.BattleCharacters;
         GameObject[] characterPrefabs = battleManager.BattleGroup.CharacterPrefabs;
@@ -62,29 +63,35 @@ public class BattleCharacterAttack : MonoBehaviour
 
             Vector3 firstPosition = characterPrefabs[i].transform.position;
 
-            pastTime = 0;
-            while (pastTime < destTime)
-            {
-                characterPrefabs[i].transform.position = Vector3.Lerp(firstPosition, attackPosition, pastTime / destTime);
+            //pastTime = 0;
+            //while (pastTime < destTime)
+            //{
+            //    characterPrefabs[i].transform.position = Vector3.Lerp(firstPosition, attackPosition, pastTime / destTime);
 
-                pastTime += Time.deltaTime;
-                yield return null;
-            }
+            //    pastTime += Time.deltaTime;
+            //    yield return null;
+            //}
+            WaitForSeconds waitForSeconds = new WaitForSeconds(destTime);
+            yield return waitForSeconds;
 
             battleManager.Enemy.TakeDamage(damage);
             battleManager.Enemy.iEnemy.TakeDamage();
             UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(battleCharacters[i].CharNameKr, battleManager.Enemy.Data.EnemyName, damage, true);
 
-            pastTime = 0;
-            while (pastTime < destTime)
-            {
-                characterPrefabs[i].transform.position = Vector3.Lerp(attackPosition, firstPosition, pastTime / destTime);
+            yield return waitForSeconds;
 
-                pastTime += Time.deltaTime;
+            //pastTime = 0;
+            //while (pastTime < destTime)
+            //{
+            //    characterPrefabs[i].transform.position = Vector3.Lerp(attackPosition, firstPosition, pastTime / destTime);
 
-                yield return null;
-            }
-            characterPrefabs[i].transform.position = firstPosition;
+            //    pastTime += Time.deltaTime;
+
+            //    yield return null;
+            //}
+            //characterPrefabs[i].transform.position = firstPosition;
+
+            battleCharacters[i].UsingSkill = false;
 
             if (battleManager.Enemy.IsDead)
             {
@@ -129,7 +136,7 @@ public class BattleCharacterAttack : MonoBehaviour
         Debug.Log($"Engrving :  + {engravingAddAtk}\nArtifact :  + {artifactAddAtk}\nElement :  + {additionalElementDamage}");
         damage = Mathf.Clamp(damage, 0, damage);
 
-        if (battleManager.isTutorialOver == false) damage /= 10;
+        if (battleManager.IsTutorialOver == false) damage /= 4;
         return (int)damage;
     }
 }

@@ -2,18 +2,23 @@
 using System;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour
 {
     public GameObject fixedDiceArea;
+    public FakeDiceHolding FakeDiceHolding;
     public GameObject victoryUI;
     public GameObject defeatUI;
     public GameObject CharacterInfo;
     public Canvas     battleCanvas;
     [SerializeField] BattleUICharacterInfo characterInfoUI;
-    public BattleUILog BattleUILog;
-    public GameObject BattleLogPrefab;
-    public BattleTutorial BattleTutorial;
+    public BattleUILog      BattleUILog;
+    public GameObject       BattleLogPrefab;
+    [SerializeField] GameObject       tutorialBoard;
+    [SerializeField] TextMeshProUGUI  tutorialText;
+    public Button TutorialPushButton;
+    public Button TutorialSkipButton;
 
     [Header("AbstractButtons")]
     [SerializeField] AbstractBattleButton diceBackboard;
@@ -77,5 +82,15 @@ public class BattleUI : MonoBehaviour
         characterInfoUI.UpdateCharacterInfo(index);
 
         CharacterInfo.SetActive(true);
+    }
+
+    public void TutorialBoardSetActive(bool value)
+    {
+        tutorialBoard.SetActive(value);
+    }
+
+    public void ChangeTutorialText(string text)
+    {
+        tutorialText.text = text;
     }
 }

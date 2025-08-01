@@ -346,7 +346,7 @@ public class DiceManager : MonoBehaviour
         loadScript.LoadDiceJson();
 
         dicePos = loadScript.GetPoses().ToArray();
-        DiceBattle.damageWightTable = loadScript.GetWeighting().ToArray();
+        DiceBattle.DamageWeightTable = loadScript.GetWeighting().ToArray();
         rotationVectors = loadScript.GetVectorCodes().ToArray();
         rolldiceDefaultPosition = loadScript.GetDiceDefaultPosition();
     }
@@ -362,14 +362,5 @@ public class DiceManager : MonoBehaviour
         }
         BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.RollEnd);
         BattleManager.Instance.GetCost(signitureAmount);
-    }
-
-    public void DestroyDices()
-    {
-        for(int i = 0; i < Dices.Length; i++)
-        {
-            Destroy(Dices[i]);
-            Destroy(FakeDices[i]);
-        }
     }
 }

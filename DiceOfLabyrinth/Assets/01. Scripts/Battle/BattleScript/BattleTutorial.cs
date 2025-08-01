@@ -1,105 +1,116 @@
 ﻿using UnityEngine;
+using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.IO;
-using TMPro;
 
 public class BattleTutorial : MonoBehaviour
-{
-    [SerializeField] GameObject tutorialBoard;
-    [SerializeField] TextMeshProUGUI tutorialText;
-    public BattleTutorialData TutorialData = new BattleTutorialData();
-
-    private int textIndex;
-    private int textMaxIndex;
-    [SerializeField] float textWriteTime;
-    private IEnumerator writeTextCoroutine;
-    private bool isWriting;
+{    
     private LoadTutorialData loadTutorialData;
-    private int currentIndex = -1;
+    public BattleTutorialDataForSave DataForSave = new BattleTutorialDataForSave();
+
+    Dictionary<int, BattleTutorialData> tutorialDataDic = new Dictionary<int, BattleTutorialData>();
+
+    [SerializeField] float textWriteTime;
+
+    private int dataLength;
+    private int textLength;
+    private int currentDataIndex;
+    private int currentTextIndex = -1;
+
+    public bool IsTutorialOver;
+    private bool isRollEndTutorialDone;
+    private bool isConfirmTutorialDone;
+    private bool isWriting;
+
+    private IEnumerator writeTextCoroutine;
 
     public void LoadData()
     {
+        BattleTutorialData[] datas;
+
         loadTutorialData = new LoadTutorialData();
         loadTutorialData.LoadData();
-        loadTutorialData.GetIsTutorialOver();
-        TutorialData.Texts = loadTutorialData.GetTexts();
-        textMaxIndex = TutorialData.Texts[0].Length;
+
+        //Debug.Log(BattleManager.Instance.IsTutorialOver);
+        if (BattleManager.Instance.IsTutorialOver) return;
+        
+        datas = loadTutorialData.GetData();
+        DataForSave.Data = datas;
+
+        dataLength = datas.Length;
+
+        for(int i = 0; i < dataLength; i++)
+        {
+            tutorialDataDic.Add(datas[i].Index, datas[i]);
+        }
+
+        BattleUI battleUI = UIManager.Instance.BattleUI;
+        battleUI.TutorialPushButton.onClick.AddListener(OnClickTutorialTouch);
+        battleUI.TutorialSkipButton.onClick.AddListener(OnClickTutorialSkip);
     }
     
     public void StartTutorial(int iNum = -1)
     {
-        if (BattleManager.Instance.isTutorialOver) return;
-        int index;
+        if (BattleManager.Instance.IsTutorialOver) return;
 
         switch (iNum)
         {
-            case (int)DetailedTurnState.Enter:                
-                index = 0;
-                if(currentIndex == 3)
-                {
-                    index = 4;
-                }
-                else if (currentIndex >= index)
-                {
-                    return;
-                }
+            case (int)DetailedTurnState.Enter:
+                ActiveTutorialText();
                 break;
             case (int)DetailedTurnState.RollEnd:
-                index = 1;
-                if (currentIndex >= index)
+                if(isRollEndTutorialDone == false)
                 {
-                    return;
+                    ActiveTutorialText();
                 }
+                isRollEndTutorialDone = true;
                 break;
             case (int)DetailedTurnState.AttackEnd:
-                index = 3;
-                if (currentIndex >= index)
-                {
-                    return;
-                }
+                ActiveTutorialText();
                 break;
             case -1:
-                index = 2;
-                if (currentIndex >= index)
+                if(isConfirmTutorialDone == false)
                 {
-                    return;
+                    ActiveTutorialText();
                 }
+                isConfirmTutorialDone = true;
                 break;
             default:
                 return;
         }
-
-        ActiveTutorialText(index);
     }
 
-    private void ActiveTutorialText(int index)
+    private void ActiveTutorialText()
     {
-        if (index == currentIndex)
-        {
-            return;
-        }
+        UIManager.Instance.BattleUI.TutorialBoardSetActive(true);
 
-        currentIndex = index;
-        tutorialBoard.SetActive(true);
-        textIndex = 0;
+        currentTextIndex = 0;
+        textLength = tutorialDataDic[currentDataIndex].Texts.Length;
 
-        textMaxIndex = TutorialData.Texts[index].Length;
-
-        WriteText(index);
+        WriteText(currentDataIndex, currentTextIndex);
     }
 
+    /// <summary>
+    /// 튜토리얼 UI를 끄고, 다음 데이터 인덱스를 받습니다.
+    /// 다음 데이터 인덱스가 -1인 경우 튜토리얼 종료입니다.
+    /// </summary>
     private void DeactiveTutorialText()
     {
-        tutorialBoard.SetActive(false);
+        UIManager.Instance.BattleUI.TutorialBoardSetActive(false);
 
-        if(currentIndex + 1 == TutorialData.Texts.Length)
+        currentDataIndex = tutorialDataDic[currentDataIndex].IndexGoesTo;
+
+        if (currentDataIndex == -1)
         {
-            Debug.Log(1);
-            BattleManager.Instance.isTutorialOver = true;
-            TutorialData.IsTutorialOver = true;
+            BattleManager.Instance.IsTutorialOver = true;
+            DataForSave.IsTutorialOver = true;
             loadTutorialData.SaveData();
+
+            BattleUI battleUI = UIManager.Instance.BattleUI;
+            battleUI.TutorialPushButton.onClick.RemoveListener(OnClickTutorialTouch);
+            battleUI.TutorialSkipButton.onClick.RemoveListener(OnClickTutorialSkip);
         }
     }
 
@@ -107,19 +118,19 @@ public class BattleTutorial : MonoBehaviour
     {
         if(isWriting)
         {
-            SkipWriteText();
+            SkipWriteText(currentDataIndex, currentTextIndex);
         }
         else
         {
-            textIndex++;
-            if (textIndex == textMaxIndex)
+            currentTextIndex++;
+            if (currentTextIndex == textLength)
             {
                 DeactiveTutorialText();
                 return;
             }
 
-            WriteText(currentIndex);
-        }        
+            WriteText(currentDataIndex, currentTextIndex);
+        }
     }
 
     public void OnClickTutorialSkip()
@@ -127,9 +138,9 @@ public class BattleTutorial : MonoBehaviour
         DeactiveTutorialText();
     }
 
-    private void WriteText(int index)
+    private void WriteText(int dataIndex, int textIndex)
     {
-        string text = TutorialData.Texts[index][textIndex];
+        string text = tutorialDataDic[dataIndex].Texts[textIndex];
 
         writeTextCoroutine = WriteTextCoroutine(text);
         StartCoroutine(writeTextCoroutine);
@@ -137,6 +148,8 @@ public class BattleTutorial : MonoBehaviour
 
     IEnumerator WriteTextCoroutine(string text)
     {
+        BattleUI battleUI = UIManager.Instance.BattleUI;
+
         isWriting = true;
         int textLength = text.Length;
         string useText = text.Substring(0,1);
@@ -152,7 +165,7 @@ public class BattleTutorial : MonoBehaviour
                 useText = text.Substring(0, index);
             }
 
-            tutorialText.text = useText;
+            battleUI.ChangeTutorialText(useText);
 
             if (index == textLength)
             {
@@ -165,49 +178,76 @@ public class BattleTutorial : MonoBehaviour
         }
     }
 
-    public void SkipWriteText()
+    public void SkipWriteText(int dataIndex, int textIndex)
     {
         StopCoroutine(writeTextCoroutine);
         isWriting = false;
 
-        tutorialText.text = TutorialData.Texts[currentIndex][textIndex];
+        string text = tutorialDataDic[dataIndex].Texts[textIndex];
+        UIManager.Instance.BattleUI.ChangeTutorialText(text);
     }
 }
 
 public class BattleTutorialData
 {
-    public string[][] Texts;
+    public int Index;
+    public string[] Texts;
+    public int  IndexGoesTo;
+}
+
+public class BattleTutorialDataForSave
+{
+    public BattleTutorialData[] Data;
     public bool IsTutorialOver;
 }
 
 public class LoadTutorialData
 {
-    JObject root;
-    string FilePath = Application.dataPath + "\\Resources\\Json\\BattleTutorialData.json";
+    readonly string FilePath = Application.dataPath + "\\Resources\\Json\\BattleTutorialData.json";
+
+    private JObject root;
+    private bool isTutorialOver;
+
     public void LoadData()
     {
         TextAsset textAsset = Resources.Load<TextAsset>("Json/BattleTutorialData");
         string jsonString = textAsset.text;
         root = JObject.Parse(jsonString);
-    }
 
-    public string[][] GetTexts()
-    {
-        JToken Texts = root["Texts"];
-
-        return JsonConvert.DeserializeObject<string[][]>(Texts.ToString());
-    }
-
-    public void GetIsTutorialOver()
-    {
         JToken isOver = root["IsTutorialOver"];
 
-        BattleManager.Instance.isTutorialOver = (bool)isOver;
+        BattleManager.Instance.IsTutorialOver = (bool)isOver;
+        isTutorialOver = (bool)isOver;
     }
+
+    public BattleTutorialData[] GetData()
+    {
+        if (isTutorialOver)
+        {
+            Debug.Log("배틀 튜토리얼이 종료되어 데이터 받아오지 않음");
+            BattleManager.Instance.IsTutorialOver = true;
+            return null;
+        }
+
+        JToken Data = root["Data"];
+
+        return JsonConvert.DeserializeObject<BattleTutorialData[]>(Data.ToString());
+
+        //JToken Texts = root["Texts"];
+
+        //return JsonConvert.DeserializeObject<string[][]>(Texts.ToString());
+    }
+
+    //public void GetIsTutorialOver()
+    //{
+    //    JToken isOver = root["IsTutorialOver"];
+
+    //    BattleManager.Instance.isTutorialOver = (bool)isOver;
+    //}
 
     public void SaveData()
     {
-        string jsonString = JsonConvert.SerializeObject(UIManager.Instance.BattleUI.BattleTutorial.TutorialData, Formatting.Indented);
+        string jsonString = JsonConvert.SerializeObject(BattleManager.Instance.BattleTutorial.DataForSave, Formatting.Indented);
 
         File.WriteAllText(FilePath, jsonString);
     }

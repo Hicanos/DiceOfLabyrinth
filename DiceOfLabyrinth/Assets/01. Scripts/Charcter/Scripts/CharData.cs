@@ -140,6 +140,11 @@ public class CharData
     /// </summary>
     public string DicePrefabPath;
 
+    public string ElementalIconPath;
+    public string RoleIconPath;
+    public string BackGroundPath;
+    public string DiceNumIconPath;
+
 }
 public class CharDataLoader
 {

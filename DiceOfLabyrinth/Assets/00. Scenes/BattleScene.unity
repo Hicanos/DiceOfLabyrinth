@@ -2381,6 +2381,7 @@ MonoBehaviour:
   BattleSpawner: {fileID: 5666082356261757287}
   UIValueChanger: {fileID: 303490232559084238}
   BattleUIHP: {fileID: 5666082356261757288}
+  BattleTutorial: {fileID: 5666082356261757289}
   CharacterAttack: {fileID: 562530837}
   EnemyAttack: {fileID: 562530836}
   EnemyPatternContainer: {fileID: 562530839}
@@ -2389,6 +2390,8 @@ MonoBehaviour:
   BattleTurn: 0
   CostSpendedInTurn: 0
   IsBattle: 0
+  InBattleStage: 0
+  IsStageClear: 0
   IsBoss: 0
   IsWon: 0
   WaitSecondEndBattle: 4
@@ -2405,6 +2408,7 @@ GameObject:
   - component: {fileID: 303490232559084238}
   - component: {fileID: 5666082356261757287}
   - component: {fileID: 5666082356261757288}
+  - component: {fileID: 5666082356261757289}
   m_Layer: 0
   m_Name: BattleManager
   m_TagString: Untagged
@@ -2482,6 +2486,20 @@ MonoBehaviour:
   CharacterPos: {x: 0, y: 3.8, z: 0}
   EnemyHPVec: {x: 2.68, y: 0.37, z: 0}
   EnemyPos: {x: 0, y: 2.46, z: 0}
+--- !u!114 &5666082356261757289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5666082356261757285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66a566ee370cf134f92cc3fb1912ce38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textWriteTime: 0.03
+  IsTutorialOver: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
