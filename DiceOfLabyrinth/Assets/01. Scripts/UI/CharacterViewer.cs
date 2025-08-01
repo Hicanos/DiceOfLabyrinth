@@ -22,6 +22,9 @@ public class CharacterViewer : MonoBehaviour
         characterNameText.text = characterData.nameKr;
         characterUpperImage.sprite = characterData.Upper;
         // 이미지들의 스프라이트가 데이터로 만들어지면 추가될 예정
+        characterClassTypeImage.sprite = characterData.RoleIcons; // 캐릭터 클래스 타입 아이콘
+        characterElimentTypeImage.sprite = characterData.elementIcon; // 캐릭터 엘리먼트 타입 아이콘
+        characterSignatureDiceImage.sprite = characterData.DiceNumIcon; // 캐릭터 시그니처 주사위 아이콘
 
     }
     public void OnClickCharacterViewer()
