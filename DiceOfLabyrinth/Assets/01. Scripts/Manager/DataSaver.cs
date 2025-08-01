@@ -23,7 +23,7 @@ public class DataSaver
     {
         // 튜토리얼 클리어 여부
         public bool isLobbyTutorialCompleted = false;
-        public bool IsTutorialOver = false; // 게임 튜토리얼 완료 여부 : 삭제 가능성
+        public bool isGameTutorialCompleted = false;
         // TutorialManager의 값을 저장/로드
     }
 
@@ -378,12 +378,9 @@ public class DataSaver
             if (TutorialManager.Instance != null)
             {
                 SaveData.userData.isLobbyTutorialCompleted = TutorialManager.Instance.isLobbyTutorialCompleted;
+                SaveData.userData.isGameTutorialCompleted = TutorialManager.Instance.isGameTutorialCompleted;
             }
-            // BattleManager 게임 튜얼 완료 여부 동기화 : 삭제 가능성
-            if (BattleManager.Instance != null)
-            {
-                SaveData.userData.IsTutorialOver = BattleManager.Instance.IsTutorialOver;
-            }
+            
 
             // StageSaveData → StageData 변환 및 저장
             if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
@@ -473,12 +470,8 @@ public class DataSaver
                 if (TutorialManager.Instance != null)
                 {
                     TutorialManager.Instance.isLobbyTutorialCompleted = SaveData.userData.isLobbyTutorialCompleted;
-                }
-                // BattleManager 게임 튜토리얼 완료 여부 반영 : 삭제 가능성
-                if (BattleManager.Instance != null)
-                {
-                    BattleManager.Instance.IsTutorialOver = SaveData.userData.IsTutorialOver;
-                }
+                    TutorialManager.Instance.isGameTutorialCompleted = SaveData.userData.isGameTutorialCompleted;
+                }               
             }
             else
             {
