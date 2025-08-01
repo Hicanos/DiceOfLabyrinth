@@ -28,7 +28,7 @@ public class PausePanel : MonoBehaviour
     {
         gameObject.SetActive(false);
         Time.timeScale = 1f;
-        SceneManagerEx.Instance.LoadScene("LobbyScene");
+        StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex);
     }
 
     public void OnClickSetting()
