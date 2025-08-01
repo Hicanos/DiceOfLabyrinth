@@ -37,7 +37,7 @@ public class BattleTutorial : MonoBehaviour
         loadTutorialData = new LoadTutorialData();
         loadTutorialData.LoadData();
 
-        //Debug.Log(BattleManager.Instance.IsTutorialOver);
+        Debug.Log(TutorialManager.Instance.isGameTutorialCompleted);
         if (TutorialManager.Instance.isGameTutorialCompleted)
         {
             Debug.Log("튜토리얼이 이미 진행되어 데이터 받아오지 않음");
@@ -62,7 +62,7 @@ public class BattleTutorial : MonoBehaviour
     
     public void StartTutorial(int iNum = -1)
     {
-        if (BattleManager.IsTutorialOver) return;
+        if (TutorialManager.Instance.isGameTutorialCompleted) return;
 
         switch (iNum)
         {
