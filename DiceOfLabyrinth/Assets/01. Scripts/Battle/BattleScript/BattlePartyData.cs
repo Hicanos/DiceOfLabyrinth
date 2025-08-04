@@ -18,14 +18,13 @@ public class BattlePartyData
 
     public StageSaveData.CurrentFormationType CurrentFormationType;
 
-    public List<int> FrontLine = new List<int>();
-    public List<int> BackLine = new List<int>();
+    public List<int> FrontLine;
+    public List<int> BackLine;
     private int frontLineNum;
 
-    public List<int> DeadIndex = new List<int>();
-    public int DeadCount;
+    public List<int> DeadIndex;
 
-    private bool isAllDead => DeadCount == numFive ? true : false;
+    private bool isAllDead => DeadIndex.Count() == numFive;
 
     private int currentHitIndex;
     private int currentHitDamage;
@@ -35,17 +34,13 @@ public class BattlePartyData
     public BattlePartyData(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> engravings)
     {
         battleManager = BattleManager.Instance;
-        BattleCharacterInBattle.index = 0;
-
-        this.characters = new BattleCharacterInBattle[numFive];
-        defaultCharacters = characters;
-
-        for (int i = 0; i < numFive; i++)
-        {
-            this.characters[i] = new BattleCharacterInBattle(characters[i], this);
-        }
+        BattleCharacterInBattle.index = 0;        
 
         this.artifacts = artifacts; this.engravings = engravings;
+
+        DeadIndex = new List<int>();
+        FrontLine = new List<int>();
+        BackLine = new List<int>();
 
         CurrentFormationType = StageManager.Instance.stageSaveData.currentFormationType;
         frontLineNum = (int)CurrentFormationType;
@@ -57,6 +52,14 @@ public class BattlePartyData
         for(int i = frontLineNum; i < numFive; i++)
         {
             BackLine.Add(i);
+        }
+
+        this.characters = new BattleCharacterInBattle[numFive];
+        defaultCharacters = characters;
+
+        for (int i = 0; i < numFive; i++)
+        {
+            this.characters[i] = new BattleCharacterInBattle(characters[i], this);
         }
     }
 
@@ -70,9 +73,18 @@ public class BattlePartyData
 
     public void CharacterDead(int index)
     {
-        DeadCount++;
         currentDeadIndex = index;
-        DeadIndex.Add(index);
+
+        if(DeadIndex.Contains(index))
+        {
+            UnityEngine.Debug.Log("이미 사망한 아군입니다.");
+            return;
+        }
+        else
+        {
+            DeadIndex.Add(index);
+        }
+
         battleManager.ArtifactBuffs.ActionCharacterDie();
 
         if (FrontLine.Contains<int>(index))
@@ -92,7 +104,15 @@ public class BattlePartyData
 
     public void CharacterRevive(int index)
     {
-        DeadCount--;
+        if(DeadIndex.Contains(index))
+        {
+            DeadIndex.Remove(index);
+        }
+        else
+        {
+            UnityEngine.Debug.Log("이미 살아있는 아군입니다.");
+            return;
+        }
 
         if (index <= frontLineNum)
         {
