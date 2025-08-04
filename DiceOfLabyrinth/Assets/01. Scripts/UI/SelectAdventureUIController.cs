@@ -234,6 +234,7 @@ public class SelectAdventureUIController : MonoBehaviour
                 () => {
                     selectChapterPanel.SetActive(false);
                     scarceStaminaPanel.SetActive(false);
+                    SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
                     StageManager.Instance.RestoreStageState();
                 }, // 확인(Yes) 버튼 클릭 시
                 () =>
@@ -274,7 +275,7 @@ public class SelectAdventureUIController : MonoBehaviour
             StageManager.Instance.stageSaveData.currentChapterIndex = chapterIndex; // 현재 챕터 인덱스 설정
             StageManager.Instance.stageSaveData.ResetToDefault(chapterIndex); // 스테이지 상태 초기화
             Debug.Log($"Starting battle for chapter: {selectedChapter.ChapterName} (Index: {chapterIndex})");
-            //SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
+            SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
             //costCalculationPanel.SetActive(false);
             StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태 복원
         }

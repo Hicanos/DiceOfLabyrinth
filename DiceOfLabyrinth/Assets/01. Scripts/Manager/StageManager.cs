@@ -184,7 +184,6 @@ public class StageManager : MonoBehaviour
                 Debug.LogWarning("BattleUIController를 BattleScene에서 찾을 수 없습니다.");
             }
         }
-
         if (stageSaveData == null)
         {
             Debug.LogError("StageSaveData가 할당되지 않았습니다. 스테이지 데이터를 초기화해주세요.");
