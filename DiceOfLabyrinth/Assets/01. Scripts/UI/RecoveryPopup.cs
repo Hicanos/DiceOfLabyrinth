@@ -173,7 +173,6 @@ public class RecoveryPopup : MonoBehaviour
         }
         var character = StageManager.Instance.stageSaveData.battleCharacters[selectedCharacterIndex];
         character.Revive();
-        BattleManager.Instance.BattleGroup.CharacterRevive(selectedCharacterIndex);
         StageManager.Instance.stageSaveData.manaStone -= reviveCost;
         messagePopup.Open($"{character.CharNameKr}이(가) 부활했습니다.");
         StageManager.Instance.battleUIController.RefreshManaStoneViewer(); // 마석 뷰어 갱신

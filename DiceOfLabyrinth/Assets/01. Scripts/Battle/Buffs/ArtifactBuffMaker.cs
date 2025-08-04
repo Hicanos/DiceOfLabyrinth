@@ -17,7 +17,8 @@ public enum ArtifactEffectTypeEnum
     EnemyDebuff,
     RemoveDebuff,
     GetBarrier,
-    CharacterRevive
+    CharacterRevive,
+    AdditionalAttackCount
 }
 
 public enum ArtifactConditionTypeEnum
@@ -44,7 +45,7 @@ public class ArtifactBuffMaker
 {
     public void MakeArtifactBuff()
     {
-        List<ArtifactData> artifacts = BattleManager.Instance.BattleGroup.Artifacts;
+        List<ArtifactData> artifacts = BattleManager.Instance.PartyData.Artifacts;
         ArtifactDetailData detailData;
         Action<IBuff> AddBuffAction;
 
@@ -160,6 +161,8 @@ public class ArtifactBuffMaker
                 return new Action<ArtifactDetailData>(GetBarrierAction);
             case ArtifactEffectTypeEnum.CharacterRevive:
                 return new Action<ArtifactDetailData>(CharacterReviveAction);
+            case ArtifactEffectTypeEnum.AdditionalAttackCount:
+                return new Action<ArtifactDetailData>(AdditionalAttackCountAction);
             default:
                 return new Action<ArtifactDetailData>(DefaultAction);
         }
@@ -204,12 +207,12 @@ public class ArtifactBuffMaker
     }
     private void HealHPRatioAction(ArtifactDetailData data)
     {
-        List<BattleCharacter> characters = BattleManager.Instance.BattleGroup.BattleCharacters;
-        for (int i = 0; i < characters.Count; i++)
+        BattleCharacterInBattle[] characters = BattleManager.Instance.PartyData.Characters;
+        for (int i = 0; i < characters.Length; i++)
         {
-            if(characters[i].IsDied) continue;
+            if(characters[i].IsDead) continue;
 
-            float healAmount = characters[i].RegularHP * data.EffectValue;
+            float healAmount = characters[i].MaxHP * data.EffectValue;
             characters[i].Heal((int)healAmount);
         }        
     }
@@ -227,14 +230,18 @@ public class ArtifactBuffMaker
     }
     private void GetBarrierAction(ArtifactDetailData data)
     {
-        BattleManager.Instance.BattleGroup.CharacterGetBarrier(data.EffectValue);
+        BattleManager.Instance.PartyData.CharacterGetBarrier(data.EffectValue);
     }
     private void CharacterReviveAction(ArtifactDetailData data)
     {
-        BattleCharGroup battleGroup = BattleManager.Instance.BattleGroup;
+        BattlePartyData partyData = BattleManager.Instance.PartyData;
 
-        battleGroup.CharacterRevive(battleGroup.CurrentDeadIndex);
+        partyData.Characters[partyData.CurrentDeadIndex].Revive();
         Debug.Log("부활 아티펙트 활성");
+    }
+    private void AdditionalAttackCountAction(ArtifactDetailData data)
+    {
+        BattleManager.Instance.PartyData.Characters[0].GetAttackCount((int)data.EffectValue);
     }
     #endregion
 
@@ -301,7 +308,7 @@ public class ArtifactDetailData
                 Init(ArtifactConditionTypeEnum.DiceSignitureCount, 0, ArtifactEffectTypeEnum.AdditionalStatusWithSignitureCount, data.Value, ArtifactCallBackLocation.CharacterAttack);
                 break;
             case ArtifactEffectData.EffectType.AdditionalAttackCount:
-
+                Init(ArtifactConditionTypeEnum.Chace, 50, ArtifactEffectTypeEnum.AdditionalAttackCount, data.Value, ArtifactCallBackLocation.CharacterAttack);
                 break;
             case ArtifactEffectData.EffectType.HealingWhenStartBattle:
                 Init(ArtifactConditionTypeEnum.PlayerTurnStartNum, 1, ArtifactEffectTypeEnum.HealHPRatio, data.Value, ArtifactCallBackLocation.TurnEnter);

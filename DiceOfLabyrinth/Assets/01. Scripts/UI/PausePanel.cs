@@ -23,7 +23,6 @@ public class PausePanel : MonoBehaviour
     {
         gameObject.SetActive(false);
         Time.timeScale = 1f;
-        BattleManager.Instance.ExitStageSetting();
         StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex);
     }
 

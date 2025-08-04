@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class BattleUIHP : MonoBehaviour
 {
@@ -44,7 +43,7 @@ public class BattleUIHP : MonoBehaviour
 
     public void SpawnCharacterHP()
     {
-        BattleCharGroup battleGroup = BattleManager.Instance.BattleGroup;
+        BattleCharacterInBattle character;
         GameObject go;
         GameObject temp;
         RectTransform rect;
@@ -52,25 +51,27 @@ public class BattleUIHP : MonoBehaviour
 
         for (int i = 0; i < 5; i++)
         {
-            go = Instantiate(CharacterHPCanvas, battleGroup.CharacterPrefabs[i].transform);
-            battleGroup.CharacterHPBars[i] = go;
+            character = BattleManager.Instance.PartyData.Characters[i];
 
-            go = Instantiate(CharacterHPBack, battleGroup.CharacterHPBars[i].transform);
+            go = Instantiate(CharacterHPCanvas, character.Prefab.transform);
+            character.CharacterHPBars = go;
+
+            go = Instantiate(CharacterHPBack, character.CharacterHPBars.transform);
             rect = go.GetComponent<RectTransform>();
             rect.sizeDelta = CharacterHPVec;
             rect.localPosition = CharacterPos;
-            battleGroup.LayoutGroups[i] = go.GetComponentInChildren<HorizontalLayoutGroup>();
-            rect = battleGroup.LayoutGroups[i].GetComponent<RectTransform>();
+            character.LayoutGroups = go.GetComponentInChildren<HorizontalLayoutGroup>();
+            rect = character.LayoutGroups.GetComponent<RectTransform>();
             rect.sizeDelta = CharacterHPVec;
-            layoutGroupTransform = battleGroup.LayoutGroups[i].transform;
+            layoutGroupTransform = character.LayoutGroups.transform;
 
-            battleGroup.CharacterHPs[i] = Instantiate(CharacterHPFront, layoutGroupTransform).GetComponent<RectTransform>();
-            battleGroup.CharacterBarriers[i] = Instantiate(CharacterHPBarrier, layoutGroupTransform).GetComponent<RectTransform>();
-            battleGroup.CharacterBlank[i] = Instantiate(CharacterHPBlank, layoutGroupTransform).GetComponent<RectTransform>();
+            character.CharacterHPs = Instantiate(CharacterHPFront, layoutGroupTransform).GetComponent<RectTransform>();
+            character.CharacterBarriers = Instantiate(CharacterHPBarrier, layoutGroupTransform).GetComponent<RectTransform>();
+            character.CharacterBlank = Instantiate(CharacterHPBlank, layoutGroupTransform).GetComponent<RectTransform>();
 
             temp = Instantiate(CharacterHPText, go.transform);
             temp.GetComponent<RectTransform>().sizeDelta = CharacterHPVec;
-            battleGroup.CharacterHPTexts[i] = temp.GetComponent<TextMeshProUGUI>();
+            character.CharacterHPTexts = temp.GetComponent<TextMeshProUGUI>();
 
             BattleManager.Instance.UIValueChanger.ChangeCharacterHp((HPEnumCharacter)i);
         }
@@ -124,14 +125,14 @@ public class BattleUIHP : MonoBehaviour
     private void GetPlayerHPRotation()
     {
         BattleManager battleManager = BattleManager.Instance;
-        BattleCharGroup battleGroup = battleManager.BattleGroup;
-        List<BattleCharacter> characters = battleGroup.BattleCharacters;
+        BattleCharacterInBattle character;
 
         float rotationY;
 
         for(int i = 0; i < numFIve; i++)
         {
-            rotationY = battleGroup.CharacterPrefabs[i].transform.rotation.y;
+            character = BattleManager.Instance.PartyData.Characters[i];
+            rotationY = character.Prefab.transform.rotation.y;
             playerHPRotation[i] = Quaternion.Euler(0, -rotationY, 0);
         }
     }

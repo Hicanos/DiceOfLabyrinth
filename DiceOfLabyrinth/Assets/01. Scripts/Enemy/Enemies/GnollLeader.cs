@@ -65,7 +65,7 @@ public class GnollLeader : MonoBehaviour, IEnemy
     private Vector3 GetTargetPositionByIndex(int index)
     {
         var playerPos = BattleManager.Instance?.BattleSpawner?.formationVec;
-        int playerFormation = (int)BattleManager.Instance?.BattleGroup?.CurrentFormationType;
+        int playerFormation = (int)BattleManager.Instance?.PartyData?.CurrentFormationType;
 
         if (playerPos == null || playerFormation < 0 || playerFormation >= playerPos.Count)
             return new Vector3(-1, -1, -4);

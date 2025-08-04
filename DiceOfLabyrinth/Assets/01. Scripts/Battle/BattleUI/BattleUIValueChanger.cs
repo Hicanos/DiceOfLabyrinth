@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public enum BattleTextUIEnum
 { 
@@ -32,15 +33,15 @@ public class BattleUIValueChanger : MonoBehaviour
     /// </summary>
     public void ChangeCharacterHp(HPEnumCharacter hpEnum)
     {
-        BattleCharGroup battleGroup = BattleManager.Instance.BattleGroup;
-
-        int maxHP = battleGroup.BattleCharacters[(int)hpEnum].RegularHP;
-        int curHP = battleGroup.BattleCharacters[(int)hpEnum].CurrentHP;
+        BattleCharacterInBattle character = BattleManager.Instance.PartyData.Characters[(int)hpEnum];
+        
+        int maxHP = character.MaxHP;
+        int curHP = character.CurrentHP;
 
         string hpString;
-        if (battleGroup.BarrierAmounts[(int)hpEnum] > 0)
+        if (character.IsBarrierOn)
         {
-            hpString = $"{curHP} / {maxHP} + ({battleGroup.BarrierAmounts[(int)hpEnum]})";
+            hpString = $"{curHP} / {maxHP} + ({character.CurrentBarrier})";
         }
         else
         {
@@ -77,7 +78,7 @@ public class BattleUIValueChanger : MonoBehaviour
     /// </summary>
     public void ChangeUIText(HPEnumCharacter uiEnum, string value)
     {
-        BattleManager.Instance.BattleGroup.CharacterHPTexts[(int)uiEnum].text = value;
+        BattleManager.Instance.PartyData.Characters[(int)uiEnum].CharacterHPTexts.text = value;
     }
 
     /// <summary>
@@ -85,34 +86,32 @@ public class BattleUIValueChanger : MonoBehaviour
     /// </summary>
     public void ChangeCharacterHpRatio(HPEnumCharacter hpEnum)
     {        
-        BattleCharGroup battleGroup = BattleManager.Instance.BattleGroup;
+        BattleCharacterInBattle character = BattleManager.Instance.PartyData.Characters[(int)hpEnum];
         int index = (int)hpEnum;
 
-        int totalHP = battleGroup.BattleCharacters[index].RegularHP + battleGroup.BarrierAmounts[index];
-        int curHP = battleGroup.BattleCharacters[index].CurrentHP + battleGroup.BarrierAmounts[index];
+        int totalHP = character.MaxHP + character.CurrentBarrier;
+        int curHP = character.CurrentHP + character.CurrentBarrier;
 
         float hpRatio;
         float barrierRatio;
         float blinkRatio;
 
-        if (curHP >= battleGroup.BattleCharacters[index].RegularHP)
+        if (curHP >= character.MaxHP)
         {
-            hpRatio = (float)battleGroup.BattleCharacters[index].CurrentHP / curHP;
-            barrierRatio = (float)battleGroup.BarrierAmounts[index] / curHP;
+            hpRatio = (float)character.CurrentHP / curHP;
+            barrierRatio = (float)character.CurrentBarrier / curHP;
             blinkRatio = 0;
         }
         else
         {
-            hpRatio = (float)battleGroup.BattleCharacters[index].CurrentHP / totalHP;
-            barrierRatio = (float)battleGroup.BarrierAmounts[index] / totalHP;
+            hpRatio = (float)character.CurrentHP / totalHP;
+            barrierRatio = (float)character.CurrentBarrier / totalHP;
             blinkRatio = 1 - (hpRatio + barrierRatio);
         }
-        
-        
 
-        battleGroup.CharacterHPs[index].localScale = new Vector3(hpRatio, 1, 1);
-        battleGroup.CharacterBarriers[index].localScale = new Vector3(barrierRatio, 1, 1);
-        battleGroup.CharacterBlank[index].localScale = new Vector3(blinkRatio, 1, 1);
+        character.CharacterHPs.localScale = new Vector3(hpRatio, 1, 1);
+        character.CharacterBarriers.localScale = new Vector3(barrierRatio, 1, 1);
+        character.CharacterBlank.localScale = new Vector3(blinkRatio, 1, 1);
     }
 
     /// <summary>

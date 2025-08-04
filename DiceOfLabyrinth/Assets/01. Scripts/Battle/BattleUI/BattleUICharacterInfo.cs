@@ -14,14 +14,14 @@ public class BattleUICharacterInfo : MonoBehaviour
 
     public void UpdateCharacterInfo(int index)
     {
-        BattleCharacter character = BattleManager.Instance.BattleGroup.BattleCharacters[index];
+        BattleCharacterInBattle character = BattleManager.Instance.PartyData.Characters[index];
 
         textName.text = character.CharNameKr;
         textPosition.text = "포지션";
         textAtk.text = character.CurrentATK.ToString();
         textDef.text = character.CurrentDEF.ToString();
-        textHP.text = character.RegularHP.ToString();
-        textCNo.text = character.CharacterData.charDiceData.CignatureNo.ToString();
+        //textHP.text = character.MaxHP.ToString();
+        //textCNo.text = character.CharacterData.charDiceData.CignatureNo.ToString();
     }
 
     public void OnClickClosePanel()

@@ -158,7 +158,7 @@ public class SkillController
     // Skill의 BuffID에 따른 버프 적용
     private static void ApplyBuff(BattleCharacter user, SkillSO skill, List<IDamagable> target)
     {
-        characterPrefab = BattleManager.Instance.BattleGroup.CharacterPrefabs[BattleManager.Instance.BattleGroup.BattleCharacters.IndexOf(user)];
+        characterPrefab = BattleManager.Instance.PartyData.Characters[BattleManager.Instance.PartyData.DefaultCharacters.IndexOf(user)].Prefab;
         characterPrefab.GetComponent<SpawnedCharacter>().SkillAttack();
         Debug.Log($"{user.CharNameKr}이(가) {skill.SkillNameKr} 스킬을 사용하여 버프/디버프를 적용했습니다.");
     }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class BattleButtonSkill : AbstractBattleButton
 {
-    BattleCharacter character;
+    BattleCharacterInBattle character;
     Button button;
     Image image;
     int index;
@@ -16,17 +16,17 @@ public class BattleButtonSkill : AbstractBattleButton
         GetIndex();
         button = GetComponent<Button>();
         image = GetComponent<Image>();
-        character = BattleManager.Instance.BattleGroup.BattleCharacters[index-1];
-        characterPrefab = BattleManager.Instance.BattleGroup.CharacterPrefabs[index-1];
+        character = BattleManager.Instance.PartyData.Characters[index-1];
+        characterPrefab = BattleManager.Instance.PartyData.Characters[index - 1].Prefab;
         SpriteSetting();
 
     }
 
     private void SpriteSetting()
     {
-        if (character != null && character.CharacterData != null && character.CharacterData.icon != null)
+        if (character != null && character.character.CharacterData != null && character.character.CharacterData.icon != null)
         {
-            image.sprite = character.CharacterData.activeSO.SkillIcon;
+            image.sprite = character.character.CharacterData.activeSO.SkillIcon;
         }
     }
 
@@ -51,16 +51,16 @@ public class BattleButtonSkill : AbstractBattleButton
 
     public override void OnPush()
     {
-        if (character.UsingSkill)
+        if (character.character.UsingSkill)
         {
             Debug.Log(character.CharNameKr+"는 이미 스킬을 사용 중입니다.");
             return;
         }
 
-        character.UsingSkill = true;
+        character.character.UsingSkill = true;
         Debug.Log(character.CharNameKr + " 스킬 사용");
         characterPrefab.GetComponent<SpawnedCharacter>().PrepareAttack();
-        character.UseActiveSkill(BattleManager.Instance.BattleGroup.BattleCharacters, BattleManager.Instance.Enemy);        
+        character.character.UseActiveSkill(BattleManager.Instance.PartyData.DefaultCharacters, BattleManager.Instance.Enemy);        
     }
 
     private void GetIndex()
