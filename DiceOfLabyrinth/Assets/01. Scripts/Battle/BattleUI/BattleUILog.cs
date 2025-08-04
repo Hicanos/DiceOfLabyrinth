@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
 
 public class BattleUILog : MonoBehaviour
 {
@@ -98,8 +98,6 @@ public class BattleUILog : MonoBehaviour
     IEnumerator WriteLogCoroutine(string logString = null)
     {
         isWriting = true;
-        Debug.Log($"currentLogIndex : {currentLogIndex}");
-        Debug.Log("writeLogCoroutine");
         float width;
         GameObject log;
         TextMeshProUGUI logText;
