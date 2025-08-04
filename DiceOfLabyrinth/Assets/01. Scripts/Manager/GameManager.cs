@@ -130,9 +130,6 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("앱이 백그라운드로 전환됨, 데이터 자동 저장");
             SaveGame();
-            // 아이템, 캐릭터 릴리즈
-            ItemManager.Instance.ReleaseAllItems();
-            CharacterManager.Instance.ReleaseAllCharacters();
         }
     }
 }
