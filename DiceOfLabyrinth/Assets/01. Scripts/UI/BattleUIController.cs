@@ -535,10 +535,14 @@ public class BattleUIController : MonoBehaviour
             }
 
             // 플랫폼 위치 이동 (생성 X)
-            GameObject characterPlatform = characterPlatforms[i];
-            if (characterPlatform != null)
+            characterPlatforms[i] = FindObjectsByType<PlatformClickRelay>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .Where(p => p.platformIndex == i)
+                .Select(p => p.gameObject)
+                .FirstOrDefault();
+            if (characterPlatforms[i] != null)
             {
-                characterPlatform.transform.position = spawnPoint;
+                characterPlatforms[i].SetActive(true); // 플랫폼 활성화
+                characterPlatforms[i].transform.position = spawnPoint;
             }
         }
     }
