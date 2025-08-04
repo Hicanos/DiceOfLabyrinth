@@ -37,6 +37,9 @@ public class BattleButtonSkill : AbstractBattleButton
             case DetailedTurnState.Enter:
                 button.interactable = true;
                 break;
+            case DetailedTurnState.Roll:
+                button.interactable = false;
+                break;
             case DetailedTurnState.Attack:
                 button.interactable = false;
                 break;

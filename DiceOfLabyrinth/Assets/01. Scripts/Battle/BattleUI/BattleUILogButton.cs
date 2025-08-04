@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class BattleUILogButton : AbstractBattleButton
 {
     [SerializeField] RectTransform scrollView;    
-    [SerializeField] float destTime;    
+    [SerializeField] float destTime;
     bool isOff = true;
     float currentRatio;
 
@@ -19,7 +19,12 @@ public class BattleUILogButton : AbstractBattleButton
 
     public override void OnOffButton(DetailedTurnState state)
     {
-
+        switch (state)
+        {
+            case DetailedTurnState.EndTurn:
+                if (isOff) OnPush();
+                break;
+        }
     }
 
     public override void OnPush()
