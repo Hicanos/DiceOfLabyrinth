@@ -4,7 +4,7 @@ using TMPro;
 
 public class BattleCharacterInBattle : IDamagable
 {
-    static int index; //전투 종료 후 index를 0으로 초기화 해야함
+    public static int index; //전투 종료 후 index를 0으로 초기화 해야함
 
     private string  charNameKr;
     private string  charNameEn;

@@ -35,6 +35,7 @@ public class BattlePartyData
     public BattlePartyData(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> engravings)
     {
         battleManager = BattleManager.Instance;
+        BattleCharacterInBattle.index = 0;
 
         this.characters = new BattleCharacterInBattle[numFive];
         defaultCharacters = characters;
