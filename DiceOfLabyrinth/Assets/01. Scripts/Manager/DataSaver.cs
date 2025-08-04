@@ -282,6 +282,7 @@ public class DataSaver
         public float regularCritChance;
         public float regularCritDamage;
         public float regularPenetration;
+        public bool IsDied;
 
         // 역직렬화용 기본 생성자
         public BattleCharacterData() { }
@@ -305,6 +306,7 @@ public class DataSaver
             regularCritChance = bc.RegularCritChance;
             regularCritDamage = bc.RegularCritDamage;
             regularPenetration = bc.Penetration;
+            IsDied = bc.IsDied;
         }
 
         // BattleCharacterData를 BattleCharacter에 복원
