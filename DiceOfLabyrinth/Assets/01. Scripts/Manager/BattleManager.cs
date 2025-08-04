@@ -88,7 +88,12 @@ public class BattleManager : MonoBehaviour
         UIManager.Instance.BattleUI.Setting();
         DiceManager.Instance.DiceHolding.SettingForHolding();
     }
-    
+
+    private void OnDestroy()
+    {
+        InputManager.Instance.BattleInputEnd();
+    }
+
     void Update()
     {
         if (IsBattle)
