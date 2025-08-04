@@ -1,5 +1,6 @@
 ﻿public class BattleStatePlayerTurn : IBattleTurnState
 {
+    const int numFive = 5;
     BattleManager battleManager = BattleManager.Instance;
     UseBuff useBuff = new UseBuff();
     public void Enter()
@@ -51,15 +52,8 @@
 
     private int AlivedCharacter()
     {
-        int num = 0;
+        int num = numFive - battleManager.PartyData.DeadCount;
 
-        foreach (BattleCharacter character in battleManager.BattleGroup.BattleCharacters)
-        {
-            if (character.IsDied == false)
-            {
-                num++;
-            }
-        }
         return num;
     }
 }

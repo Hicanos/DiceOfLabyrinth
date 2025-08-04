@@ -71,6 +71,6 @@ public class SkillEffectContainer
     {
         float damage = giversAtk * buffValue * skillValue;
 
-        BattleManager.Instance.BattleGroup.BattleCharacters[targetIndex].TakeDamage((int)damage);
+        //BattleManager.Instance.PartyData.BattleCharacters[targetIndex].TakeDamage((int)damage);
     }
 }

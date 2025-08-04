@@ -44,6 +44,9 @@ public class GameManager : MonoBehaviour
         while (TutorialManager.Instance == null)
             yield return null;
 
+        while (SoundManager.Instance == null)
+            yield return null;
+
 
         // SO 데이터 복구
         RestoreGameData();
@@ -66,6 +69,16 @@ public class GameManager : MonoBehaviour
         // 튜토리얼 완료 상태 복구
         TutorialManager.Instance.isLobbyTutorialCompleted = DataSaver.Instance.SaveData.userData.isLobbyTutorialCompleted;
         TutorialManager.Instance.isGameTutorialCompleted = DataSaver.Instance.SaveData.userData.isGameTutorialCompleted;
+
+        SoundManager.Instance.ApplyVolumes();
+
+        // 로드 완료 되면 타이틀 재생
+        StartBGM();
+    }
+
+    private void StartBGM()
+    {
+        SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Title);
     }
 
     /// <summary>
@@ -117,9 +130,6 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("앱이 백그라운드로 전환됨, 데이터 자동 저장");
             SaveGame();
-            // 아이템, 캐릭터 릴리즈
-            ItemManager.Instance.ReleaseAllItems();
-            CharacterManager.Instance.ReleaseAllCharacters();
         }
     }
 }

@@ -110,7 +110,7 @@ public class DiceManager : MonoBehaviour
     {
         for (int i = 0; i < diceCount; i++)
         {
-            CharDiceData diceData = BattleManager.Instance.BattleGroup.BattleCharacters[i].CharacterData.charDiceData;
+            CharDiceData diceData = BattleManager.Instance.PartyData.Characters[i].character.CharacterData.charDiceData;
 
             Dices[i] = diceContainer.transform.GetChild(i).gameObject;
             dicesDatas[i] = Dices[i].GetComponent<DiceMy>();

@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using System.Linq;
 
 public class CharacterViewer : MonoBehaviour
 {
@@ -29,9 +30,14 @@ public class CharacterViewer : MonoBehaviour
     }
     public void OnClickCharacterViewer()
     {
-        //아직 미구현
-        //// 캐릭터 정보 팝업을 띄우는 로직
-        //if (characterData == null) return;
-        //CharacterUIController.Instance.OpenCharacterInfoPopup(characterData);
+        // 캐릭터 정보 팝업을 띄우는 로직
+        //if (characterData == null || !CharacterManager.Instance.OwnedCharacters.Any(c => c.CharacterData.charID == characterData.charID))
+        //{
+        //    // 캐릭터가 소유되지 않은 경우
+        //    return;
+        //}
+        //CharacterUIController.Instance.OpenCharacterInfoPopup(
+        //    CharacterManager.Instance.OwnedCharacters.FirstOrDefault(c => c.CharacterData.charID == characterData.charID)
+        //    );
     }
 }

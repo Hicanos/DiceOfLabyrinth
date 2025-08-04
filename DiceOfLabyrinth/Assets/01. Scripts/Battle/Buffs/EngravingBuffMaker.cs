@@ -28,7 +28,7 @@ public class EngravingBuffMaker
 {        
     public void MakeEngravingBuff()
     {
-        List<EngravingData> engravings = BattleManager.Instance.BattleGroup.Engravings;
+        List<EngravingData> engravings = BattleManager.Instance.PartyData.Engravings;
         Action<IBuff> addBuffAction;
         DamageCondition condition;
         IBuff buff;

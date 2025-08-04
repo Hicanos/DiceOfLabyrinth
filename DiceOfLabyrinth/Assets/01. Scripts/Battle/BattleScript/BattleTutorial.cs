@@ -113,10 +113,7 @@ public class BattleTutorial : MonoBehaviour
 
         if (currentDataIndex == -1)
         {
-            BattleManager.IsTutorialOver = true;
-            DataForSave.IsTutorialOver = true;
             loadTutorialData.SaveData();
-
 
             BattleUI battleUI = UIManager.Instance.BattleUI;
             battleUI.TutorialPushButton.onClick.RemoveListener(OnClickTutorialTouch);
@@ -237,7 +234,6 @@ public class LoadTutorialData
         if (isTutorialOver)
         {
             Debug.Log("배틀 튜토리얼이 종료되어 데이터 받아오지 않음");
-            BattleManager.IsTutorialOver = true;
             return null;
         }
 

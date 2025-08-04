@@ -2,6 +2,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
+using TMPro;
 
 public class CharacterUIController : MonoBehaviour
 {
@@ -19,9 +21,29 @@ public class CharacterUIController : MonoBehaviour
     [SerializeField] private Transform unownedCharacterViewerParent; // 소유하지 않은 캐릭터 뷰어가 배치될 부모 오브젝트
 
     [Header("Info Popup")]
+    [SerializeField] private GameObject basicInfoPopup; // 캐릭터 정보 팝업
+    [SerializeField] private GameObject levelUpPopup; // 캐릭터 레벨업 팝업
+    [SerializeField] private GameObject skillInfoPopup; // 캐릭터 스킬 정보 팝업
+
+    [Header("Basic Info")]
+    [SerializeField] private TMP_Text characterNameText; // 캐릭터 이름 표시용 텍스트
+    [SerializeField] private TMP_Text characterlevelText; // 캐릭터 레벨 표시용 텍스트
+    [SerializeField] private Image characterClassTypeImage; // 캐릭터 클래스 타입 표시용 이미지
+    [SerializeField] private TMP_Text characterClassText; // 캐릭터 클래스 타입 표시용 텍스트
+    [SerializeField] private Image characterElementTypeImage; // 캐릭터 엘리먼트 타입 표시용 이미지
+    [SerializeField] private TMP_Text characterElementText; // 캐릭터 엘리먼트 타입 표시용 텍스트
+    [SerializeField] private Image characterSignatureDiceImage; // 캐릭터 시그니처 주사위 이미지 표시용 이미지
+    [SerializeField] private TMP_Text characterSignatureDiceText; // 캐릭터 시그니처 주사위 표시용 텍스트
+    [SerializeField] private TMP_Text characterAffectionText; // 캐릭터 애정도 표시용 텍스트
+
+
+    [Header("Button Colors")]
+    [SerializeField] private Color selectedButtonColor = new(170/255f,140/255f,100/255f,1); // 선택된 버튼 색상
+    [SerializeField] private Color unselectedButtonColor = new(1,220/255f,170/255f,1); // 선택되지 않은 버튼 색상
 
     [Header("CharacterList")]
     [SerializeField] private List<CharacterSO> unownedCharacters = new List<CharacterSO>(); // 소유하지 않은 캐릭터 목록
+    [SerializeField] private LobbyCharacter selectedCharacter; // 현재 선택된 캐릭터
 
     private void Awake()
     {
@@ -128,7 +150,7 @@ public class CharacterUIController : MonoBehaviour
             }
         }
     }
-    public void OpenCharacterInfoPopup(CharacterSO characterData)
+    public void OpenCharacterInfoPopup(LobbyCharacter character)
     {
         characterListPopup.SetActive(false);
         characterInfoPopup.SetActive(true);

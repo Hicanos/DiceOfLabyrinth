@@ -38,6 +38,11 @@ public class TutorialManager : MonoBehaviour
         {
             Instance = this;
         }
+        else
+        {
+            Destroy(gameObject); // 이미 인스턴스가 존재하면 중복 생성 방지
+            return;
+        }
     }
     public void Start()
     {

@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 
 public class BattleManager : MonoBehaviour
@@ -39,7 +38,7 @@ public class BattleManager : MonoBehaviour
     public BattleTutorial BattleTutorial;
 
     public BattleEnemy Enemy;
-    public BattleCharGroup BattleGroup;
+    public BattlePartyData PartyData;
 
     public BattleCharacterAttack CharacterAttack;
     public BattleEnemyAttack EnemyAttack;
@@ -62,7 +61,6 @@ public class BattleManager : MonoBehaviour
     public ArtifactAdditionalStatus ArtifactAdditionalStatus;
 
     [Header("Values")]
-    static public  bool    IsTutorialOver;
     public  int     BattleTurn;
     public  int     CostSpendedInTurn;
     public  bool    IsBattle;
@@ -133,8 +131,8 @@ public class BattleManager : MonoBehaviour
         ArtifactAdditionalStatus.ResetStatus();
         EngravingAdditionalStatus.ResetStatus();
 
-        BattleSpawner.CharacterDeActive();
-        BattleSpawner.DeactiveCharacterHP(BattleGroup);
+        //BattleSpawner.CharacterDeActive();
+        //BattleSpawner.DeactiveCharacterHP(PartyData);
 
         Destroy(Enemy.EnemyPrefab);
 
@@ -146,20 +144,19 @@ public class BattleManager : MonoBehaviour
         Debug.Log("익시트 스테이지");
         IsBattle = false;
         InputManager.Instance.BattleInputEnd();
-        BattleGroup = null;
-        InBattleStage = false;
-
+        BattleSpawner.DestroyCharacters();
         BattleSpawner.DestroyDices();
+
+        PartyData = null;
+        InBattleStage = false;
     }
 
     private void GetStartData(BattleStartData data) //start시 호출되도록
     {
         Enemy = new BattleEnemy(data.selectedEnemy);
 
-        if (BattleGroup == null)
-        {
-            BattleGroup = new BattleCharGroup(data.battleCharacters, data.artifacts, data.engravings);
-        }
+        PartyData = new BattlePartyData(data.battleCharacters, data.artifacts, data.engravings);
+        
         manastoneAmount = data.manaStone;
     }
 
@@ -185,18 +182,19 @@ public class BattleManager : MonoBehaviour
         //결과창 실행
         if (isWon)
         {
-            data = new BattleResultData(true, BattleGroup.BattleCharacters, manastoneAmount);
+            data = new BattleResultData(true, PartyData.GetEndBattleCharacter(), manastoneAmount);
 
-            if (IsStageClear)
-            {
-                ExitStageSetting();
-            }            
+            ExitStageSetting();
+            //if (IsStageClear)
+            //{
+            //    ExitStageSetting();
+            //}
             
             StageManager.Instance.OnBattleResult(data);            
         }
         else
         {
-            data = new BattleResultData(false, BattleGroup.BattleCharacters, manastoneAmount);
+            data = new BattleResultData(false, PartyData.GetEndBattleCharacter(), manastoneAmount);
             ExitStageSetting();
             StageManager.Instance.OnBattleResult(data);
         }
@@ -229,168 +227,17 @@ public class BattleManager : MonoBehaviour
     public void SpendCost(int iNum)
     {
         int cost = currentCost;
-
+        if (cost < iNum)
+        {
+            Debug.Log("코스트가 부족합니다.");
+            return;
+        }
         cost = Mathf.Clamp(cost - iNum, 0, MaxCost);
         currentCost = cost;
         string st = $"{currentCost} / {MaxCost}";
         UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, st);
         ArtifactBuffs.ActionSpendCost();
     }    
-}
-
-public class BattleCharGroup
-{
-    const int numFive = 5;
-    BattleManager battleManager;
-
-    private List<BattleCharacter>  battleCharacters;
-    private List<ArtifactData> artifacts;
-    private List<EngravingData> engravings;
-    //private EngravingEffect[]    engravingEffects;
-    public List<BattleCharacter> BattleCharacters => battleCharacters;
-
-    public List<ArtifactData> Artifacts => artifacts;
-    public List<EngravingData> Engravings => engravings;  
-
-    public GameObject[] CharacterPrefabs = new GameObject[numFive];
-    public StageSaveData.CurrentFormationType CurrentFormationType;
-
-    private int[] barrierAmounts = new int[numFive];
-    public int[] BarrierAmounts => barrierAmounts;
-
-    [NonSerialized] public GameObject[]      CharacterHPBars  = new GameObject[numFive];
-    [NonSerialized] public RectTransform[]   CharacterHPs     = new RectTransform[numFive];
-    [NonSerialized] public RectTransform[]   CharacterBarriers= new RectTransform[numFive];
-    [NonSerialized] public RectTransform[]   CharacterBlank = new RectTransform[numFive];
-    [NonSerialized] public TextMeshProUGUI[] CharacterHPTexts = new TextMeshProUGUI[numFive];
-    [NonSerialized] public HorizontalLayoutGroup[] LayoutGroups = new HorizontalLayoutGroup[numFive];
-
-    public List<int> FrontLine = new List<int>();
-    public List<int> BackLine = new List<int>();
-    private int frontLineNum;
-
-    public List<int> DeadIndex = new List<int>();
-    public int DeadCount;
-    private bool isAllDead => DeadCount == numFive ? true : false;
-    private int currentHitIndex;
-    private int currentHittedDamage;
-    private int currentDeadIndex;
-    public int CurrentDeadIndex => currentDeadIndex;
-
-    public BattleCharGroup(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> engravings)
-    {
-        battleManager = BattleManager.Instance;
-
-        battleCharacters = characters; this.artifacts = artifacts; this.engravings = engravings;
-
-        CurrentFormationType = StageManager.Instance.stageSaveData.currentFormationType;
-        frontLineNum = (int)CurrentFormationType;
-
-        for(int i = 0; i < numFive; i++)
-        {
-            if (battleCharacters[i].CurrentHP == 0)
-            {
-                //characters[i].IsDied == true;
-                DeadIndex.Add(i);
-                DeadCount++;
-            }
-            else
-            {
-                DeadIndex.Remove(i);
-                DeadCount--;
-            }
-        }
-
-        for (int i = 0; i < frontLineNum + 1; i++)
-        {
-            if (DeadIndex.Contains(i)) continue;
-            FrontLine.Add(i);
-        }
-        for (int i = frontLineNum + 1; i < numFive; i++)
-        {
-            if (DeadIndex.Contains(i)) continue;
-            BackLine.Add(i);
-        }
-    }
-
-    public void CharacterHeal(int index, int amount)
-    {
-        BattleCharacters[index].Heal(amount);
-    }
-
-    public void CharacterGetBarrier(float effectRatio)
-    {
-        float amount = currentHittedDamage * effectRatio;
-
-        barrierAmounts[currentHitIndex] = (int)amount;
-        battleManager.UIValueChanger.ChangeCharacterHp((HPEnumCharacter)currentHitIndex);
-    }
-
-    public void CharacterHit(int index, int amount)
-    {
-        LayoutGroups[index].childControlWidth = false;
-
-        if (barrierAmounts[index] >= amount)
-        {
-            barrierAmounts[index] = barrierAmounts[index] - amount;
-        }
-        else
-        {
-            amount = amount - barrierAmounts[index];
-            CharacterHPHit(index, amount);
-        }
-
-        battleManager.UIValueChanger.ChangeCharacterHp((HPEnumCharacter)index);
-        LayoutGroups[index].childControlWidth = true;
-    }
-
-    public void CharacterHPHit(int index, int damage)
-    {
-        currentHitIndex = index;
-        currentHittedDamage = damage;
-        BattleCharacters[index].TakeDamage(damage);
-        battleManager.ArtifactBuffs.ActionCharacterHit();
-    }
-
-    public void CharacterDead(int index)
-    {
-        DeadCount++;
-        currentDeadIndex = index;
-        DeadIndex.Add(index);
-        battleManager.ArtifactBuffs.ActionCharacterDie();
-
-        if (FrontLine.Contains<int>(index))
-        {
-            FrontLine.Remove(index);
-        }
-        else if(BackLine.Contains<int>(index))
-        {
-            BackLine.Remove(index);
-        }
-
-        if (isAllDead)
-        {
-            battleManager.EndBattle(false);
-        }
-    }
-
-    public void CharacterRevive(int index)
-    {
-        DeadCount--;
-
-        if (index <= frontLineNum)
-        {
-            FrontLine.Add(index);
-            FrontLine.Sort();
-            battleCharacters[index].Revive();
-        }
-        else if (index > frontLineNum)
-        {
-            BackLine.Add(index);
-            BackLine.Sort();
-            battleCharacters[index].Revive();
-        }
-    }
 }
 
 public class BattleEnemy : IDamagable

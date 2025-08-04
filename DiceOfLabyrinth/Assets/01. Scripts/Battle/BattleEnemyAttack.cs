@@ -70,9 +70,9 @@ public class BattleEnemyAttack : MonoBehaviour
     #region 타겟 결정 메서드들
     private List<int> GetTargetFrontBackProbability(int targetCount = 1, int front = 80)
     {
-        int frontBack = (int)BattleManager.Instance.BattleGroup.CurrentFormationType + 1;
-        List<int> frontIndex = BattleManager.Instance.BattleGroup.FrontLine.ToList();
-        List<int> BackIndex = BattleManager.Instance.BattleGroup.BackLine.ToList();
+        int frontBack = (int)BattleManager.Instance.PartyData.CurrentFormationType + 1;
+        List<int> frontIndex = BattleManager.Instance.PartyData.FrontLine.ToList();
+        List<int> BackIndex = BattleManager.Instance.PartyData.BackLine.ToList();
         List<int> targetIndex = new List<int>();
 
         for(int i = 0; i < targetCount; i++)
@@ -100,8 +100,8 @@ public class BattleEnemyAttack : MonoBehaviour
     private List<int> GetTargetAll(int targetCount, int value = 0)
     {
         List<int> targetIndex = new List<int>();
-        List<int> frontIndex = BattleManager.Instance.BattleGroup.FrontLine;
-        List<int> BackIndex = BattleManager.Instance.BattleGroup.BackLine;
+        List<int> frontIndex = BattleManager.Instance.PartyData.FrontLine;
+        List<int> BackIndex = BattleManager.Instance.PartyData.BackLine;
 
         for (int i = 0; i < frontIndex.Count; i++)
         {
@@ -117,12 +117,12 @@ public class BattleEnemyAttack : MonoBehaviour
 
     private List<int> GetTargetLowHp(int targetCount, int value = 0)
     {
-        List<BattleCharacter> characters = BattleManager.Instance.BattleGroup.BattleCharacters;
+        BattleCharacterInBattle[] characters = BattleManager.Instance.PartyData.Characters;
         List<int> targetIndex = new List<int>();
         
         for (int i = 0; i < characterCount; i++)
         {
-            if (characters[i].IsDied) continue;
+            if (characters[i].IsDead) continue;
 
             targetIndex.Add(i);
         }
@@ -139,7 +139,7 @@ public class BattleEnemyAttack : MonoBehaviour
     public void EnemyAttackDealDamage()
     {
         BattleManager battleManager = BattleManager.Instance;
-        BattleCharacter battleCharacter;
+        BattleCharacterInBattle character;
         int characterIndex;
 
         int skillLength = battleManager.Enemy.currentSkill.Skills.Length;
@@ -158,14 +158,13 @@ public class BattleEnemyAttack : MonoBehaviour
             for (int j = 0; j < targetIndexTest.Count; j++)
             {
                 characterIndex = targetIndexTest[j];
-                battleCharacter = battleManager.BattleGroup.BattleCharacters[characterIndex];
+                character = battleManager.PartyData.Characters[characterIndex];
 
-                int damage = skillValue * battleManager.Enemy.CurrentAtk - battleCharacter.CurrentDEF;
+                int damage = skillValue * battleManager.Enemy.CurrentAtk - character.CurrentDEF;
                 if (damage < 0) damage = 0;
 
-                battleManager.BattleGroup.CharacterHit(characterIndex, damage);
-                UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(battleManager.Enemy.Data.EnemyName, battleCharacter.CharNameKr, damage, false);
-                if (battleCharacter.IsDied) battleManager.BattleGroup.CharacterDead(characterIndex);
+                character.TakeDamage(damage);
+                UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(battleManager.Enemy.Data.EnemyName, character.CharNameKr, damage, false);
 
                 if (skill.Debuff == EnemyDebuff.None) continue;
                 else

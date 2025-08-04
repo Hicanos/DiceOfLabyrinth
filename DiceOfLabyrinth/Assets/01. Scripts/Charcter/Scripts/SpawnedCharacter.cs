@@ -6,6 +6,8 @@ public class SpawnedCharacter : MonoBehaviour
 {
     public Animator Animator { get; private set; } // 캐릭터의 애니메이터 컴포넌트
     [SerializeField] string CharacterID; // 스폰된 캐릭터의 고유 ID
+    [SerializeField] AudioClip AttackSFX; // 캐릭터의 오디오 클립
+    [SerializeField] AudioClip SkillSFX; // 캐릭터의 스킬 오디오 클립
 
     private void Awake()
     {
@@ -46,13 +48,14 @@ public class SpawnedCharacter : MonoBehaviour
     {
         Animator.SetBool("AttackIdle", false); // 공격 준비 애니메이션 해제
         Animator.SetTrigger("Attack"); // 공격 애니메이션 트리거 설정
+        SoundManager.Instance.PlaySFX(AttackSFX);
     }
 
     public void SkillAttack()
     {
         // 스킬 사용 시 애니메이션 조정
         Attack(); // 기본 공격 애니메이션
-
+        SoundManager.Instance.PlaySFX(SkillSFX); // 스킬 사운드 재생
     }
 
     public void GetDamage()

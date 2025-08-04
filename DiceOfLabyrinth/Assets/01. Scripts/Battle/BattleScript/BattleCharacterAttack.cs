@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 public class BattleCharacterAttack : MonoBehaviour
 {
@@ -41,8 +40,8 @@ public class BattleCharacterAttack : MonoBehaviour
         //float pastTime;
         float destTime = charAttackMoveTime;
 
-        List<BattleCharacter> battleCharacters = battleManager.BattleGroup.BattleCharacters;
-        GameObject[] characterPrefabs = battleManager.BattleGroup.CharacterPrefabs;
+        BattleCharacterInBattle[] battleCharacters = battleManager.PartyData.Characters;
+        GameObject characterPrefab;
 
         int monsterDef = battleManager.Enemy.Data.Def;
         int characterAtk;
@@ -50,65 +49,49 @@ public class BattleCharacterAttack : MonoBehaviour
         float penetration;
         float elementDamage = 1;
 
-
-        for (int i = 0; i < battleCharacters.Count; i++)
+        for (int i = 0; i < battleCharacters.Length; i++)
         {
-            if (battleCharacters[i].IsDied) continue;
-            if (battleManager.BattleGroup.DeadIndex.Contains(i)) continue;
+            if (battleCharacters[i].IsDead) continue;
+            if (battleManager.PartyData.DeadIndex.Contains(i)) continue;
 
-            characterPrefabs[i].GetComponent<SpawnedCharacter>().PrepareAttack();
+            characterPrefab = battleCharacters[i].Prefab;
+            characterPrefab.GetComponent<SpawnedCharacter>().PrepareAttack();
         }
 
-        for (int i = 0; i < battleCharacters.Count; i++)
+        for (int i = 0; i < battleCharacters.Length; i++)
         {
-            if (battleCharacters[i].IsDied) continue;
-            if (battleManager.BattleGroup.DeadIndex.Contains(i)) continue;
+            if (battleCharacters[i].IsDead) continue;
+            if (battleManager.PartyData.DeadIndex.Contains(i)) continue;
+            characterPrefab = battleCharacters[i].Prefab;
 
             characterAtk = battleCharacters[i].CurrentATK;
-            penetration = battleCharacters[i].Penetration;
-            elementDamage = JudgeElementSuperiority(battleCharacters[i].CharacterData, battleManager.Enemy.Data);
+            penetration = battleCharacters[i].CurrentPenetration;
+            elementDamage = JudgeElementSuperiority(battleCharacters[i].character.CharacterData, battleManager.Enemy.Data);
 
             damage = CalculateDamage(characterAtk, monsterDef, penetration, elementDamage, diceWeighting);
 
-            Vector3 firstPosition = characterPrefabs[i].transform.position;
-
-            characterPrefabs[i].GetComponent<SpawnedCharacter>().Attack();
-            //pastTime = 0;
-            //while (pastTime < destTime)
-            //{
-            //    characterPrefabs[i].transform.position = Vector3.Lerp(firstPosition, attackPosition, pastTime / destTime);
-
-            //    pastTime += Time.deltaTime;
-            //    yield return null;
-            //}
-            WaitForSeconds waitForSeconds = new WaitForSeconds(destTime);
-            yield return waitForSeconds;
-
-            battleManager.Enemy.TakeDamage(damage);
-            battleManager.Enemy.iEnemy.TakeDamage();
-            UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(battleCharacters[i].CharNameKr, battleManager.Enemy.Data.EnemyName, damage, true);
-
-            yield return waitForSeconds;
-
-            //pastTime = 0;
-            //while (pastTime < destTime)
-            //{
-            //    characterPrefabs[i].transform.position = Vector3.Lerp(attackPosition, firstPosition, pastTime / destTime);
-
-            //    pastTime += Time.deltaTime;
-
-            //    yield return null;
-            //}
-            //characterPrefabs[i].transform.position = firstPosition;
-
-            battleCharacters[i].UsingSkill = false;
-
-            if (battleManager.Enemy.IsDead)
+            for (int j = 0; j < battleCharacters[i].AttackCount; j++)
             {
-                isCharacterAttacking = false;
-                StopAttackCoroutine();
+                characterPrefab.GetComponent<SpawnedCharacter>().Attack();
+
+                WaitForSeconds waitForSeconds = new WaitForSeconds(destTime);
+                yield return waitForSeconds;
+
+                battleManager.Enemy.TakeDamage(damage);
+                battleManager.Enemy.iEnemy.TakeDamage();
+                UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(battleCharacters[i].CharNameKr, battleManager.Enemy.Data.EnemyName, damage, true);
+
+                yield return waitForSeconds;
+
+                battleCharacters[i].character.UsingSkill = false;
+
+                if (battleManager.Enemy.IsDead)
+                {
+                    isCharacterAttacking = false;
+                    StopAttackCoroutine();
+                }
+                yield return new WaitForSeconds(waitSecondCharAttack);
             }
-            yield return new WaitForSeconds(waitSecondCharAttack);
         }
         isCharacterAttacking = false;
         BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.AttackEnd);
@@ -143,10 +126,10 @@ public class BattleCharacterAttack : MonoBehaviour
         float artifactAddAtk = battleManager.ArtifactAdditionalStatus.AdditionalDamage;
 
         float damage = (characterAtk - monsterDef * (1- penetration)) * (1 + artifactAddAtk + elementDamage + additionalElementDamage) * ((int)diceWeighting * engravingAddAtk);
-        Debug.Log($"Engrving :  + {engravingAddAtk}\nArtifact :  + {artifactAddAtk}\nElement :  + {additionalElementDamage}");
+        Debug.Log($"({characterAtk} - {monsterDef} * (1 - {penetration})) * (1 + {artifactAddAtk} + {elementDamage} + {additionalElementDamage}) * ({(int)diceWeighting} * {engravingAddAtk})\nEngrving :  + {engravingAddAtk}\nArtifact :  + {artifactAddAtk}\nElement :  + {additionalElementDamage}");
         damage = Mathf.Clamp(damage, 0, damage);
 
-        if (BattleManager.IsTutorialOver == false) damage /= 4;
+        if (TutorialManager.Instance.isGameTutorialCompleted == false) damage /= 4;
         return (int)damage;
     }
 }

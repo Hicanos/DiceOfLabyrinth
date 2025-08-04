@@ -11,6 +11,7 @@ public class SelectAdventureUIController : MonoBehaviour
     public MessagePopup messagePopup; // 체크 패널, 챕터가 잠겨있을 때 팝업을 띄우기 위해 사용합니다.
 
     [SerializeField] private int selectedChapterIndex = 0; // 선택된 챕터 인덱스
+    [SerializeField] private int selectedChapterButtonIndex = -1; // 선택된 챕터 버튼 인덱스
 
     [SerializeField] private CanvasGroup scarceStaminaFade;
 
@@ -77,6 +78,7 @@ public class SelectAdventureUIController : MonoBehaviour
         scarceStaminaPanel.SetActive(false);
         DifficultyToggleRefresh(); // 초기 난이도 토글 상태 설정
         OnClickMultipleMinButton(); // 직접 완료 배수 초기화
+        OnClickChapterButton(0); // 첫 번째 챕터 버튼 클릭하여 초기화
     }
 
     public void OnClickChapterButton(int normalChapterIndex) // 챕터 버튼
@@ -98,17 +100,19 @@ public class SelectAdventureUIController : MonoBehaviour
             messagePopup.Open("선택한 챕터가 유효하지 않습니다. 다시 시도해 주세요.");
             return;
         }
-        if (StageManager.Instance.stageSaveData.chapterStates == null) // 챕터 상태가 초기화되지 않았을 때
-        {
-            StageManager.Instance.InitializeStageStates(StageManager.Instance.chapterData);
-        }
+        //if (StageManager.Instance.stageSaveData.chapterStates == null) // 챕터 상태가 초기화되지 않았을 때
+        //{
+        //    StageManager.Instance.InitializeStageStates(StageManager.Instance.chapterData);
+        //}
         if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked == false) // 챕터가 잠겨있을 때
         {
+            messagePopup.Open($"챕터({chapterData.GetNameAndDifficulty(chapterIndex)})가 잠겨 있습니다. 다른 챕터를 완료한 후 다시 시도해 주세요.");
             return;
         }
-        UpdateSelectedChapterUI(chapterIndex); // 선택된 챕터 UI 업데이트
+        selectedChapterButtonIndex = normalChapterIndex / 2; // 선택된 챕터 버튼 인덱스 설정
         selectedChapterIndex = chapterIndex; // 선택된 챕터 인덱스 설정
-        RefreshChapterButton(normalChapterIndex/2); // 챕터 버튼 텍스트 업데이트
+        UpdateSelectedChapterUI(chapterIndex); // 선택된 챕터 UI 업데이트
+        RefreshChapterButton(); // 챕터 버튼 텍스트 업데이트
     }
 
     public void OnClickChapterGroupPreviousButton() // 챕터 그룹 버튼
@@ -117,7 +121,9 @@ public class SelectAdventureUIController : MonoBehaviour
         {
             selectedChapterGroupNumber--;
             selectedChapterGroupNumberText.text = $"{selectedChapterGroupNumber + 1}"; // 그룹 번호 텍스트 업데이트
+            selectedChapterButtonIndex = -1; // 선택 초기화
             RefreshChapterButton(); // 챕터 버튼 텍스트 업데이트
+            OnClickChapterButton(0); // 첫 번째 챕터 버튼을 클릭하여 초기화
         }
         else if (selectedChapterGroupNumber == 0) // 현재 그룹 번호가 0일 때
         {
@@ -134,7 +140,9 @@ public class SelectAdventureUIController : MonoBehaviour
         {
             selectedChapterGroupNumber++;
             selectedChapterGroupNumberText.text = $"{selectedChapterGroupNumber + 1}"; // 그룹 번호 텍스트 업데이트
+            selectedChapterButtonIndex = -1; // 선택 초기화
             RefreshChapterButton(); // 챕터 버튼 텍스트 업데이트
+            OnClickChapterButton(0); // 첫 번째 챕터 버튼을 클릭하여 초기화
         }
         else if (selectedChapterGroupNumber == chapterData.chapterIndex.Count / 10 - 1) // 현재 그룹 번호가 최대 그룹 번호일 때
         {
@@ -147,9 +155,9 @@ public class SelectAdventureUIController : MonoBehaviour
     }
     private void RefreshChapterButton()
     {
-        for (int i = 0; i < 5; i++) // 챕터 버튼 텍스트 및 상태 업데이트
+        for (int i = 0; i < 5; i++)
         {
-            int chapterIndex = i * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0); // 인덱스 계산
+            int chapterIndex = i * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0);
 
             if (chapterIndex < chapterData.chapterIndex.Count)
             {
@@ -161,34 +169,21 @@ public class SelectAdventureUIController : MonoBehaviour
             }
 
             bool selectableChapterState = StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked;
-            chapterButtonsRockIcons[i].SetActive(!selectableChapterState); // 잠겨있으면 락 아이콘 표시
+            chapterButtonsRockIcons[i].SetActive(!selectableChapterState);
 
-            // 모든 버튼을 비선택 상태로 초기화
-            chapterButtonsImages[i].color = unselectedButtonColor;
-            chapterTexts[i].color = unselectedButtonTextColor;
+            // 선택된 버튼만 강조, 나머지는 비선택
+            if (selectedChapterButtonIndex == i)
+            {
+                chapterButtonsImages[i].color = selectedButtonColor;
+                chapterTexts[i].color = selectedButtonTextColor;
+            }
+            else
+            {
+                chapterButtonsImages[i].color = unselectedButtonColor;
+                chapterTexts[i].color = unselectedButtonTextColor;
+            }
         }
     }
-
-    private void RefreshChapterButton(int index)
-    {
-        if (index < 0 || index >= chapterButtonsImages.Count)
-        {
-            return;
-        }
-
-        RefreshChapterButton(); // 모든 버튼 초기화 (텍스트, 락, 비선택 상태)
-
-        int chapterIndex = index * 2 + selectedChapterGroupNumber * 10 + (isDifficulty ? 1 : 0);
-        if (StageManager.Instance.stageSaveData.chapterStates[chapterIndex].isUnLocked == false)
-        {
-            return;
-        }
-
-        // 선택된 버튼만 선택 상태로 설정
-        chapterButtonsImages[index].color = selectedButtonColor;
-        chapterTexts[index].color = selectedButtonTextColor;
-    }
-
     public void OnClickStartButton() // 코스트 지불 UI의 시작 버튼
     {
         int chapterIndex = selectedChapterIndex; // 선택된 챕터 인덱스 가져오기
@@ -458,7 +453,9 @@ public class SelectAdventureUIController : MonoBehaviour
     public void OnClickDifficulty(bool DifficultyToggle)
     {
         isDifficulty = DifficultyToggle; // 토글 상태에 따라 난이도 설정
+        selectedChapterButtonIndex = -1; // 선택 초기화
         DifficultyToggleRefresh();
+        OnClickChapterButton(0); // 첫 번째 챕터 버튼 클릭하여 초기화
     }
 
 
