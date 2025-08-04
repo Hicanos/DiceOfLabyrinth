@@ -28,7 +28,7 @@ public class BattleUILog : MonoBehaviour
         content.sizeDelta = size;
         maxLogIndex = numOfInitialLogs;
     }
-
+    
     public void MakeLogPool()
     {
         GameObject go;
@@ -41,6 +41,7 @@ public class BattleUILog : MonoBehaviour
         }
     }
 
+    #region 로그 작성 메서드
     public void WriteBattleLog(bool isCharacterTurn)
     {
         if (currentLogIndex == maxLogIndex)
@@ -48,16 +49,16 @@ public class BattleUILog : MonoBehaviour
             MakeNewLog();
         }
 
-        if (isCharacterTurn)
+        string logString = isCharacterTurn ? "플레이어 턴" : "에너미 턴";
+
+        if (isWriting == true)
         {
-            writeLogCoroutine = WriteLogCoroutine("플레이어 턴");
-            StartCoroutine(writeLogCoroutine);
+            stashedLogs.Add(logString);
+            return;
         }
-        else
-        {
-            writeLogCoroutine = WriteLogCoroutine("에너미 턴");
-            StartCoroutine(writeLogCoroutine);
-        }
+
+        writeLogCoroutine = WriteLogCoroutine(logString);
+        StartCoroutine(writeLogCoroutine);
     }
 
     public void WriteBattleLog(string logSubject, string logObject, int damage, bool isCharacterAttack)
@@ -77,7 +78,7 @@ public class BattleUILog : MonoBehaviour
 
         writeLogCoroutine = WriteLogCoroutine(logString);
         StartCoroutine(writeLogCoroutine);
-    }
+    }    
 
     private string MakeLogString(string logSubject, string logObject, int damage, bool isCharacterAttack)
     {
@@ -93,7 +94,46 @@ public class BattleUILog : MonoBehaviour
         }
         
         return logString;
-    }    
+    }
+
+    public void WriteBattleLog(DiceRankingEnum rank)
+    {
+        if (currentLogIndex == maxLogIndex)
+        {
+            MakeNewLog();
+        }
+
+        string logString = $"족보 : <color=purple>{rank}</color>";
+
+        if (isWriting == true)
+        {
+            stashedLogs.Add(logString);
+            return;
+        }
+
+        writeLogCoroutine = WriteLogCoroutine(logString);
+        StartCoroutine(writeLogCoroutine);
+    }
+
+    public void WriteBattleLog(string name)
+    {
+        if (currentLogIndex == maxLogIndex)
+        {
+            MakeNewLog();
+        }
+
+        string logString = $"<color=green>{name}</color> <color=red>사망</color>";
+
+        if (isWriting == true)
+        {
+            stashedLogs.Add(logString);
+            return;
+        }
+
+        writeLogCoroutine = WriteLogCoroutine(logString);
+        StartCoroutine(writeLogCoroutine);
+    }
+    #endregion
 
     IEnumerator WriteLogCoroutine(string logString = null)
     {

@@ -20,7 +20,8 @@ public class DiceBattle
     }
 
     public float GetDamageWeighting() //족보별계수
-    {        
+    {
+        UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(DiceManager.Instance.DiceRank);
         return DamageWeightTable[(int)DiceManager.Instance.DiceRank];
     }
 

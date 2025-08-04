@@ -159,7 +159,7 @@ public class BattleCharacterInBattle : IDamagable
     private void Dead()
     {
         isDead = true;
-
+        UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(CharNameKr);
         partyData.CharacterDead(myIndex);
     }
 
