@@ -114,11 +114,37 @@ public class SoundManager : MonoBehaviour
 
         if (soundDict.TryGetValue(type, out var clip))
         {
-            sfxSource.PlayOneShot(clip, sfxVolume);
             sfxSource.volume = masterVolume * sfxVolume;
+            sfxSource.PlayOneShot(clip, sfxVolume);
             lastPlayedTime[type] = Time.unscaledTime;
         }
     }
+
+    // SFX 재생 (Enum에 포함되지 않는 사운드 타입)
+
+    public void PlaySFX(AudioClip clip, float customCooldown = -1f)
+    {
+        float cooldown = customCooldown > 0 ? customCooldown : defaultSfxCooldown;
+        if (clip == null) return;
+        float lastTime;
+        if (lastPlayedTime.TryGetValue(SoundType.UIClick, out lastTime))
+        {
+            if (Time.unscaledTime - lastTime < cooldown)
+                return; // 아직 쿨타임이 지나지 않음
+        }
+        sfxSource.volume = masterVolume * sfxVolume;
+        sfxSource.PlayOneShot(clip, sfxVolume);
+        lastPlayedTime[SoundType.UIClick] = Time.unscaledTime;
+    }
+
+    public void ApplyVolumes()
+    {
+        if (bgmSource != null)
+            bgmSource.volume = masterVolume * bgmVolume;
+        if (sfxSource != null)
+            sfxSource.volume = masterVolume * sfxVolume;
+    }
+
     public void SetBGMVolume(float volume)
     {
         bgmVolume = Mathf.Clamp01(volume);
