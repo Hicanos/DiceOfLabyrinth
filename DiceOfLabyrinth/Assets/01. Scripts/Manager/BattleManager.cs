@@ -227,7 +227,11 @@ public class BattleManager : MonoBehaviour
     public void SpendCost(int iNum)
     {
         int cost = currentCost;
-
+        if (cost < iNum)
+        {
+            Debug.Log("코스트가 부족합니다.");
+            return;
+        }
         cost = Mathf.Clamp(cost - iNum, 0, MaxCost);
         currentCost = cost;
         string st = $"{currentCost} / {MaxCost}";
