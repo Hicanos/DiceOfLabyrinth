@@ -28,6 +28,23 @@ public class DataSaver
     }
 
     [Serializable]
+    public class OptionData
+    {
+        public float masterVolume = 1f;
+        public float bgmVolume = 1f;
+        public float sfxVolume = 1f;
+
+        // 생성자
+        public OptionData() { }
+        public OptionData(float masterVolume, float bgmVolume, float sfxVolume)
+        {
+            this.masterVolume = masterVolume;
+            this.bgmVolume = bgmVolume;
+            this.sfxVolume = sfxVolume;
+        }
+    }
+
+    [Serializable]
     public class CharacterData
     {
         // 플레이어가 보유한 캐릭터 정보와 그 캐릭터의 레벨 정보(스킬, 주사위 포함)
@@ -322,6 +339,7 @@ public class DataSaver
     public class GameSaveData
     {
         public UserData userData = new UserData();
+        public OptionData optionData = new OptionData();
         public List<CharacterData> characters = new List<CharacterData>();
         public List<ItemData> items = new List<ItemData>();
         public StageData stageData;
@@ -364,6 +382,25 @@ public class DataSaver
         }
     }
 
+    private void SyncSoundOptions()
+    {
+        if (SoundManager.Instance != null)
+        {
+            SaveData.optionData.masterVolume = SoundManager.Instance.masterVolume;
+            SaveData.optionData.bgmVolume = SoundManager.Instance.bgmVolume;
+            SaveData.optionData.sfxVolume = SoundManager.Instance.sfxVolume;
+        }
+    }
+
+    private void SyncTutorialCompletion()
+    {
+        if (TutorialManager.Instance != null)
+        {
+            SaveData.userData.isLobbyTutorialCompleted = TutorialManager.Instance.isLobbyTutorialCompleted;
+            SaveData.userData.isGameTutorialCompleted = TutorialManager.Instance.isGameTutorialCompleted;
+        }
+    }
+
     /// <summary>
     /// 게임 데이터 저장(json 파일)
     /// </summary>
@@ -373,15 +410,8 @@ public class DataSaver
         {
             SyncCharacterData();
             SyncItemData();
-
-            // TutorialManager 튜토리얼 완료 여부 동기화
-            if (TutorialManager.Instance != null)
-            {
-                SaveData.userData.isLobbyTutorialCompleted = TutorialManager.Instance.isLobbyTutorialCompleted;
-                SaveData.userData.isGameTutorialCompleted = TutorialManager.Instance.isGameTutorialCompleted;
-            }
-            
-
+            SyncTutorialCompletion();
+            SyncSoundOptions();
             // StageSaveData → StageData 변환 및 저장
             if (StageManager.Instance != null && StageManager.Instance.stageSaveData != null)
                 SaveData.stageData = new StageData(StageManager.Instance.stageSaveData);
@@ -466,21 +496,14 @@ public class DataSaver
                 Debug.Log($"chapterStates null? {SaveData.stageData.chapterStates == null}");
                 // SO 복원은 GameManager에서 Addressables 로드 완료 후 호출
 
-                // 튜토리얼 완료 여부를 TutorialManager에 반영
-                if (TutorialManager.Instance != null)
-                {
-                    TutorialManager.Instance.isLobbyTutorialCompleted = SaveData.userData.isLobbyTutorialCompleted;
-                    TutorialManager.Instance.isGameTutorialCompleted = SaveData.userData.isGameTutorialCompleted;
-                    Debug.Log($"튜토리얼 완료 여부 로드됨: Lobby={TutorialManager.Instance.isLobbyTutorialCompleted}, Game={TutorialManager.Instance.isGameTutorialCompleted}");
-                }
+                ApplyTutorialCompletion();
+                ApplySoundOptions();
             }
             else
             {
                 SaveData = new GameSaveData();
                 Save();
-// #if UNITY_EDITOR
                 Debug.Log("저장 파일이 없어 새 데이터로 초기화");
-// #endif
             }
         }
         catch (Exception ex)
@@ -490,6 +513,34 @@ public class DataSaver
             Save();
         }
         // SO 복원은 GameManager에서 Addressables 로드 완료 후 호출
+    }
+
+    private void ApplyTutorialCompletion()
+    {
+        if (TutorialManager.Instance != null)
+        {
+            TutorialManager.Instance.isLobbyTutorialCompleted = SaveData.userData.isLobbyTutorialCompleted;
+            TutorialManager.Instance.isGameTutorialCompleted = SaveData.userData.isGameTutorialCompleted;
+            Debug.Log($"튜토리얼 완료 여부 로드됨: Lobby={TutorialManager.Instance.isLobbyTutorialCompleted}, Game={TutorialManager.Instance.isGameTutorialCompleted}");
+        }
+    }
+
+    private void ApplySoundOptions()
+    {
+        // OptionData가 null이면 기본값으로 초기화
+        if (SaveData.optionData == null)
+            SaveData.optionData = new OptionData();
+
+        // 각 필드가 비정상 값일 경우 기본값으로 복구
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.masterVolume = (SaveData.optionData.masterVolume > 0f && SaveData.optionData.masterVolume <= 1f)
+                ? SaveData.optionData.masterVolume : 1f;
+            SoundManager.Instance.bgmVolume = (SaveData.optionData.bgmVolume > 0f && SaveData.optionData.bgmVolume <= 1f)
+                ? SaveData.optionData.bgmVolume : 1f;
+            SoundManager.Instance.sfxVolume = (SaveData.optionData.sfxVolume > 0f && SaveData.optionData.sfxVolume <= 1f)
+                ? SaveData.optionData.sfxVolume : 1f;
+        }
     }
 
     private void EnsureStageDataIntegrity()
@@ -509,4 +560,6 @@ public class DataSaver
         if (SaveData.stageData.chapterStates == null)
             SaveData.stageData.chapterStates = new List<ChapterStates>();
     }
+
+
 }
