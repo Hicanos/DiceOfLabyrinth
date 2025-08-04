@@ -31,6 +31,8 @@ public class BattleUILog : MonoBehaviour
     
     public void MakeLogPool()
     {
+        if (logs.Count != 0) return;
+
         GameObject go;
         for (int i = 0; i < numOfInitialLogs; i++)
         {

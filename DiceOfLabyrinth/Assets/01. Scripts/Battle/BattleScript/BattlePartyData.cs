@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 public class BattlePartyData
@@ -49,7 +50,7 @@ public class BattlePartyData
         {
             FrontLine.Add(i);
         }
-        for(int i = frontLineNum; i < numFive; i++)
+        for(int i = frontLineNum + 1; i < numFive; i++)
         {
             BackLine.Add(i);
         }
