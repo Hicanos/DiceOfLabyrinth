@@ -5,7 +5,16 @@ public class UserDataManager : MonoBehaviour
 {
     public static UserDataManager Instance { get; private set; }
 
-    [field: SerializeField] public UserData userdata { get; private set; }
+    // 계정 정보
+    public string nickname = "User";
+    public int level = 1;
+    public int exp = 0;
+
+    // 재화
+    public int currentStamina = 50;
+    public int maxStamina = 50;
+    public int gold = 0;
+    public int jewel = 0;
 
     private void Awake()
     {
@@ -23,58 +32,58 @@ public class UserDataManager : MonoBehaviour
     // 경험치
     public void AddExp(int amount)
     {
-        userdata.exp += amount;
+        exp += amount;
         UIManager.Instance.publicUIController.Refresh();
     }
 
     // 스테미나
     public bool UseStamina(int amount)
     {
-        if (userdata.stamina < amount)
+        if (currentStamina < amount)
             return false;
 
-        userdata.stamina -= amount;
+        currentStamina -= amount;
         UIManager.Instance.publicUIController.Refresh();
         return true;
     }
 
     public void AddStamina(int amount)
     {
-        userdata.stamina += amount;
+        currentStamina += amount;
         UIManager.Instance.publicUIController.Refresh();
     }
 
     // 쥬얼
     public bool UseJewel(int amount)
     {
-        if (userdata.jewel < amount)
+        if (jewel < amount)
             return false;
 
-        userdata.jewel -= amount;
+        jewel -= amount;
         UIManager.Instance.publicUIController.Refresh();
         return true;
     }
 
     public void AddJewel(int amount)
     {
-        userdata.jewel += amount;
+        jewel += amount;
         UIManager.Instance.publicUIController.Refresh();
     }
 
     // 골드
     public bool UseGold(int amount)
     {
-        if (userdata.gold < amount)
+        if (gold < amount)
             return false;
 
-        userdata.gold -= amount;
+        gold -= amount;
         UIManager.Instance.publicUIController.Refresh();
         return true;
     }
 
     public void AddGold(int amount)
     {
-        userdata.gold += amount;
+        gold += amount;
         UIManager.Instance.publicUIController.Refresh();
     }
 }
