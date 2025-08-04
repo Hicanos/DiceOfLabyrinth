@@ -15,7 +15,8 @@ public class UserDataManager : MonoBehaviour
     public int currentStamina = 50;
     public int maxStamina = 50;
     public int gold = 0;
-    public int jewel = 0;
+    public int jewel = 10000;
+    public DateTime lastQuit;
 
 
     // 스테미나 회복
@@ -38,11 +39,6 @@ public class UserDataManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        // 게임 실행 시 마지막 종료 시간으로부터 스테미나 회복 처리
-        RecoverStaminaFromLastQuit();
-    }
 
     private void Update()
     {
@@ -60,45 +56,42 @@ public class UserDataManager : MonoBehaviour
     }
 
 
-    private void OnApplicationPause(bool pause)
-    {
-        // 앱이 백그라운드로 갔을 때 시간 저장
-        if (pause)
-        {
-            SaveQuitTime();
-        }
-    }
+    //private void OnApplicationPause(bool pause)
+    //{
+    //    // 앱이 백그라운드로 갔을 때 시간 저장
+    //    if (pause)
+    //    {
+    //        SaveQuitTime();
+    //    }
+    //}
 
-    private void OnApplicationQuit()
-    {
-        // 앱 완전 종료 시 시간 저장
-        SaveQuitTime();
-    }
+    //private void OnApplicationQuit()
+    //{
+    //    // 앱 완전 종료 시 시간 저장
+    //    SaveQuitTime();
+    //}
+
+    ///// <summary>
+    ///// 앱 종료 또는 백그라운드 진입 시간 저장
+    ///// </summary>
+    //private void SaveQuitTime()
+    //{
+    //    PlayerPrefs.SetString(LastQuitTimeKey, DateTime.Now.ToString());
+    //    PlayerPrefs.Save();
+    //}
 
     /// <summary>
-    /// 앱 종료 또는 백그라운드 진입 시간 저장
+    /// DataSaver의 저장된 종료 시점(LastQuitTime)으로부터 경과 시간만큼 스테미나 회복
     /// </summary>
-    private void SaveQuitTime()
+    public void RecoverStaminaFromLastQuit()
     {
-        PlayerPrefs.SetString(LastQuitTimeKey, DateTime.Now.ToString());
-        PlayerPrefs.Save();
-    }
-
-    /// <summary>
-    /// 마지막 종료 시간으로부터 경과 시간만큼 스테미나 회복
-    /// </summary>
-    private void RecoverStaminaFromLastQuit()
-    {
-        // 저장된 종료 시간이 없으면 처리 안함
-        if (!PlayerPrefs.HasKey(LastQuitTimeKey))
+        if (DataSaver.Instance?.SaveData?.userData == null)
         {
+            lastQuit = DateTime.Now;
             return;
         }
-
-        DateTime lastQuit = DateTime.Parse(PlayerPrefs.GetString(LastQuitTimeKey));
+        lastQuit = DataSaver.Instance.SaveData.userData.LastQuitTime;
         TimeSpan diff = DateTime.Now - lastQuit;
-
-        // 경과 시간으로 회복량 계산
         int recovered = (int)(diff.TotalSeconds / staminaRecoveryInterval);
         if (recovered > 0)
         {
