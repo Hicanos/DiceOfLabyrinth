@@ -60,6 +60,7 @@ public class InputManager : MonoBehaviour
 
     private void WriteVec(Vector2 vec)
     {
+        Debug.Log("WriteVec");
         posVec = vec;
     }
 
@@ -68,7 +69,7 @@ public class InputManager : MonoBehaviour
         if (isInputActive == false) return;
         if (context.phase == InputActionPhase.Started)
         {
-            //Debug.Log("start");
+            Debug.Log("Press Start");
 
             BattleManager.Instance.BattleSpawner.SkipCharacterSpwan();
             DiceManager.Instance.DiceHolding.SkipRolling(posVec);
@@ -76,7 +77,7 @@ public class InputManager : MonoBehaviour
 
         if (context.phase == InputActionPhase.Canceled)
         {
-            //Debug.Log("Exit");
+            Debug.Log("Press Exit");
 
             DiceManager.Instance.DiceHolding.SelectDice(posVec);
         }

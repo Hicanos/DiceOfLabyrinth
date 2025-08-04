@@ -1,5 +1,4 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class BattleButtonSkill : AbstractBattleButton
@@ -36,6 +35,9 @@ public class BattleButtonSkill : AbstractBattleButton
         {
             case DetailedTurnState.Enter:
                 button.interactable = true;
+                break;
+            case DetailedTurnState.Roll:
+                button.interactable = false;
                 break;
             case DetailedTurnState.Attack:
                 button.interactable = false;

@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 public class BattleUILogButton : AbstractBattleButton
 {
     [SerializeField] RectTransform scrollView;    
-    [SerializeField] float destTime;    
+    [SerializeField] float destTime;
     bool isOff = true;
     float currentRatio;
 
@@ -18,8 +17,7 @@ public class BattleUILogButton : AbstractBattleButton
     }
 
     public override void OnOffButton(DetailedTurnState state)
-    {
-
+    {        
     }
 
     public override void OnPush()
