@@ -15,7 +15,11 @@ public class BattleUILog : MonoBehaviour
 
     private int currentLogIndex;
     private int maxLogIndex;
-    float contentHeight;
+    private float contentHeight;
+    private bool isWriting;
+    private List<string> stashedLogs = new List<string>();
+
+    private IEnumerator writeLogCoroutine;
 
     public void Start()
     {
@@ -46,11 +50,13 @@ public class BattleUILog : MonoBehaviour
 
         if (isCharacterTurn)
         {
-            StartCoroutine(WriteLogCoroutine("플레이어 턴"));
+            writeLogCoroutine = WriteLogCoroutine("플레이어 턴");
+            StartCoroutine(writeLogCoroutine);
         }
         else
         {
-            StartCoroutine(WriteLogCoroutine("에너미 턴"));
+            writeLogCoroutine = WriteLogCoroutine("에너미 턴");
+            StartCoroutine(writeLogCoroutine);
         }
     }
 
@@ -62,7 +68,15 @@ public class BattleUILog : MonoBehaviour
         }
 
         string logString = MakeLogString(logSubject, logObject, damage, isCharacterAttack);
-        StartCoroutine(WriteLogCoroutine(logString));
+
+        if(isWriting == true)
+        {
+            stashedLogs.Add(logString);
+            return;
+        }
+
+        writeLogCoroutine = WriteLogCoroutine(logString);
+        StartCoroutine(writeLogCoroutine);
     }
 
     private string MakeLogString(string logSubject, string logObject, int damage, bool isCharacterAttack)
@@ -83,6 +97,9 @@ public class BattleUILog : MonoBehaviour
 
     IEnumerator WriteLogCoroutine(string logString = null)
     {
+        isWriting = true;
+        Debug.Log($"currentLogIndex : {currentLogIndex}");
+        Debug.Log("writeLogCoroutine");
         float width;
         GameObject log;
         TextMeshProUGUI logText;
@@ -115,6 +132,8 @@ public class BattleUILog : MonoBehaviour
 
         scrollbar.value = 0;
         currentLogIndex++;
+        isWriting = false;
+        CheckStashedLog();
     }
 
     private void MakeNewLog()
@@ -137,6 +156,18 @@ public class BattleUILog : MonoBehaviour
         foreach (GameObject go in logs)
         {
             go.SetActive(false);
+        }
+    }
+
+    private void CheckStashedLog()
+    {
+        if(stashedLogs.Count > 0)
+        {
+            StopCoroutine(writeLogCoroutine);
+
+            writeLogCoroutine = WriteLogCoroutine(stashedLogs[0]);
+            stashedLogs.RemoveAt(0);
+            StartCoroutine(writeLogCoroutine);
         }
     }
 }
