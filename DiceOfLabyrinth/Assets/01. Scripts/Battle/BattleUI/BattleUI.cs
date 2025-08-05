@@ -19,6 +19,8 @@ public class BattleUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI  tutorialText;
     public Button TutorialPushButton;
     public Button TutorialSkipButton;
+    [SerializeField] Button tempInventoryButton;
+    [SerializeField] Button tempPauseButton;
 
     [Header("AbstractButtons")]
     [SerializeField] AbstractBattleButton diceBackboard;
@@ -92,5 +94,11 @@ public class BattleUI : MonoBehaviour
     public void ChangeTutorialText(string text)
     {
         tutorialText.text = text;
+    }
+
+    public void TempButton()
+    {
+        tempInventoryButton.enabled = !tempInventoryButton.enabled;
+        tempPauseButton.enabled = !tempPauseButton.enabled;
     }
 }

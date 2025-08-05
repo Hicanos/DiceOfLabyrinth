@@ -39,14 +39,14 @@ public class PublicUIController : MonoBehaviour
 
     public void Refresh()
     {
-        UserData userdata = UserDataManager.Instance.userdata;
+        UserDataManager manager = UserDataManager.Instance;
 
-        if (userdata == null)
+        if (manager == null)
             return;
 
-        staminaText.text = userdata.stamina.ToString("N0");
-        goldText.text = userdata.gold.ToString("N0");
-        jewelText.text = userdata.jewel.ToString("N0");
+        staminaText.text = $"{manager.currentStamina}/{manager.maxStamina}";
+        goldText.text = manager.gold.ToString("N0");
+        jewelText.text = manager.jewel.ToString("N0");
     }
 
     public void ApplyMode(HudMode mode)

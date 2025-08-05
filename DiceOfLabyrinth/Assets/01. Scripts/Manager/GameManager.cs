@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private IEnumerator Start()
     {
+        while (UserDataManager.Instance == null)
+            yield return null; // UserDataManager가 생성될 때까지 대기
 
         // StageManager.Instance가 생성될 때까지 대기
         while (StageManager.Instance == null)
@@ -66,14 +68,12 @@ public class GameManager : MonoBehaviour
             StageManager.Instance.stageSaveData = DataSaver.Instance.SaveData.stageData.ToStageSaveData();
             StageManager.Instance.InitializeStageStates(StageManager.Instance.chapterData);
         }
-        // 튜토리얼 완료 상태 복구
-        TutorialManager.Instance.isLobbyTutorialCompleted = DataSaver.Instance.SaveData.userData.isLobbyTutorialCompleted;
-        TutorialManager.Instance.isGameTutorialCompleted = DataSaver.Instance.SaveData.userData.isGameTutorialCompleted;
 
         SoundManager.Instance.ApplyVolumes();
 
         // 로드 완료 되면 타이틀 재생
         StartBGM();
+        UserDataManager.Instance.RecoverStaminaFromLastQuit();
     }
 
     private void StartBGM()

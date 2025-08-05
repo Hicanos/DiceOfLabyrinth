@@ -52,7 +52,7 @@
 
     private int AlivedCharacter()
     {
-        int num = numFive - battleManager.PartyData.DeadCount;
+        int num = numFive - battleManager.PartyData.DeadIndex.Count;
 
         return num;
     }

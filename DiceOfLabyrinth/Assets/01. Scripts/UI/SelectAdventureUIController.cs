@@ -354,7 +354,7 @@ public class SelectAdventureUIController : MonoBehaviour
         {
             messagePopup.Open($"진행 중인 챕터({StageManager.Instance.chapterData.GetNameAndDifficulty(StageManager.Instance.stageSaveData.currentChapterIndex)})가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
         }
-        else if (UserDataManager.Instance.userdata.stamina < actualCost) // 스태미나가 부족할 때
+        else if (UserDataManager.Instance.currentStamina < actualCost) // 스태미나가 부족할 때
         {
             messagePopup.Open($"직접 완료를 하려면 {actualCost} 스태미나가 필요합니다. 충전하시겠습니까?",
                 () => OpenScaresStaminaPanel(), // 스태미나 부족 UI 열기
@@ -507,8 +507,8 @@ public class SelectAdventureUIController : MonoBehaviour
     private void UpdateStaminaUI() // 스태미나 부족 UI를 업데이트
     {
         // 스태미나 충전을 하게 되었을 때의 상태를 보여줍니다.
-        beforeStaminaText.text = $"{UserDataManager.Instance.userdata.stamina}";
-        afterStaminaText.text = $"{UserDataManager.Instance.userdata.stamina + 50}";
+        beforeStaminaText.text = $"{UserDataManager.Instance.currentStamina}";
+        afterStaminaText.text = $"{UserDataManager.Instance.currentStamina + 50}";
         jewelCostText.text = $"{jewelCost}"; // 추후 구매 할 때마다 가격 증가하도록 변경
     }
 }

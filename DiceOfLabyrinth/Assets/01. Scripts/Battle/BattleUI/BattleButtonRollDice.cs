@@ -23,6 +23,7 @@ public class BattleButtonRollDice : AbstractBattleButton
                 break;
             case DetailedTurnState.Roll:
                 rollButton.interactable = false;
+                UIManager.Instance.BattleUI.TempButton();
                 break;
             case DetailedTurnState.RollEnd:
                 if (DiceManager.Instance.RollRemain == 0)
@@ -36,6 +37,7 @@ public class BattleButtonRollDice : AbstractBattleButton
                 break;
             case DetailedTurnState.Attack:
                 rollButton.interactable = false;
+                UIManager.Instance.BattleUI.TempButton();
                 break;
             case DetailedTurnState.AttackEnd:
                 rollButton.interactable = true;

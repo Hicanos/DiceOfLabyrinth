@@ -21,6 +21,32 @@ public class DataSaver
     [Serializable]
     public class UserData
     {
+        public string NickName;
+        public int Level;
+        public int Exp;
+        public int Gold;
+        public int Jewel;
+        public int currentStamina;
+        public DateTime LastQuitTime;
+        public float RemainingRecoveryTime; // 스테미나 회복 대기 시간
+
+        // 생성자
+        public UserData() { }
+        public UserData(string nickName, int level, int exp, int gold, int jewel, int currentStamina, float remainingRecoveryTime)
+        {
+            NickName = nickName;
+            Level = level;
+            Exp = exp;
+            Gold = gold;
+            Jewel = jewel;
+            this.currentStamina = currentStamina;
+            LastQuitTime = DateTime.Now; // 현재 시간으로 초기화
+            RemainingRecoveryTime = remainingRecoveryTime;
+        }
+    }
+
+    public class TutorialData 
+    {
         // 튜토리얼 클리어 여부
         public bool isLobbyTutorialCompleted = false;
         public bool isGameTutorialCompleted = false;
@@ -282,6 +308,7 @@ public class DataSaver
         public float regularCritChance;
         public float regularCritDamage;
         public float regularPenetration;
+        public bool IsDied;
 
         // 역직렬화용 기본 생성자
         public BattleCharacterData() { }
@@ -305,6 +332,7 @@ public class DataSaver
             regularCritChance = bc.RegularCritChance;
             regularCritDamage = bc.RegularCritDamage;
             regularPenetration = bc.Penetration;
+            IsDied = bc.IsDied;
         }
 
         // BattleCharacterData를 BattleCharacter에 복원
@@ -339,6 +367,7 @@ public class DataSaver
     public class GameSaveData
     {
         public UserData userData = new UserData();
+        public TutorialData tutorialData = new TutorialData();
         public OptionData optionData = new OptionData();
         public List<CharacterData> characters = new List<CharacterData>();
         public List<ItemData> items = new List<ItemData>();
@@ -396,8 +425,44 @@ public class DataSaver
     {
         if (TutorialManager.Instance != null)
         {
-            SaveData.userData.isLobbyTutorialCompleted = TutorialManager.Instance.isLobbyTutorialCompleted;
-            SaveData.userData.isGameTutorialCompleted = TutorialManager.Instance.isGameTutorialCompleted;
+            SaveData.tutorialData.isLobbyTutorialCompleted = TutorialManager.Instance.isLobbyTutorialCompleted;
+            SaveData.tutorialData.isGameTutorialCompleted = TutorialManager.Instance.isGameTutorialCompleted;
+        }
+    }
+
+    /// <summary>
+    /// UserData 정보 동기화 (UserDataManager → SaveData)
+    /// </summary>
+    public void SyncUserData()
+    {
+        if (UserDataManager.Instance != null)
+        {
+            SaveData.userData.NickName = UserDataManager.Instance.nickname;
+            SaveData.userData.Level = UserDataManager.Instance.level;
+            SaveData.userData.Exp = UserDataManager.Instance.exp;
+            SaveData.userData.Gold = UserDataManager.Instance.gold;
+            SaveData.userData.Jewel = UserDataManager.Instance.jewel;
+            SaveData.userData.currentStamina = UserDataManager.Instance.currentStamina;
+            SaveData.userData.LastQuitTime = DateTime.Now; // 저장 시점의 시간으로 저장
+            SaveData.userData.RemainingRecoveryTime = UserDataManager.Instance.remainingRecoveryTime; // 스테미나 회복 대기 시간
+        }
+    }
+
+    /// <summary>
+    /// 저장된 UserData를 UserDataManager에 적용
+    /// </summary>
+    public void ApplyUserData()
+    {
+        if (UserDataManager.Instance != null && SaveData.userData != null)
+        {
+            UserDataManager.Instance.nickname = SaveData.userData.NickName;
+            UserDataManager.Instance.level = SaveData.userData.Level;
+            UserDataManager.Instance.exp = SaveData.userData.Exp;
+            UserDataManager.Instance.gold = SaveData.userData.Gold;
+            UserDataManager.Instance.jewel = SaveData.userData.Jewel;
+            UserDataManager.Instance.currentStamina = SaveData.userData.currentStamina;
+            UserDataManager.Instance.lastQuit = SaveData.userData.LastQuitTime; // 저장된 종료 시점 적용
+            UserDataManager.Instance.remainingRecoveryTime = SaveData.userData.RemainingRecoveryTime; // 스테미나 회복 대기 시간 적용
         }
     }
 
@@ -408,6 +473,7 @@ public class DataSaver
     {
         try
         {
+            SyncUserData();
             SyncCharacterData();
             SyncItemData();
             SyncTutorialCompletion();
@@ -496,6 +562,7 @@ public class DataSaver
                 Debug.Log($"chapterStates null? {SaveData.stageData.chapterStates == null}");
                 // SO 복원은 GameManager에서 Addressables 로드 완료 후 호출
 
+                ApplyUserData();
                 ApplyTutorialCompletion();
                 ApplySoundOptions();
             }
@@ -519,8 +586,8 @@ public class DataSaver
     {
         if (TutorialManager.Instance != null)
         {
-            TutorialManager.Instance.isLobbyTutorialCompleted = SaveData.userData.isLobbyTutorialCompleted;
-            TutorialManager.Instance.isGameTutorialCompleted = SaveData.userData.isGameTutorialCompleted;
+            TutorialManager.Instance.isLobbyTutorialCompleted = SaveData.tutorialData.isLobbyTutorialCompleted;
+            TutorialManager.Instance.isGameTutorialCompleted = SaveData.tutorialData.isGameTutorialCompleted;
             Debug.Log($"튜토리얼 완료 여부 로드됨: Lobby={TutorialManager.Instance.isLobbyTutorialCompleted}, Game={TutorialManager.Instance.isGameTutorialCompleted}");
         }
     }
@@ -531,7 +598,7 @@ public class DataSaver
         if (SaveData.optionData == null)
             SaveData.optionData = new OptionData();
 
-        // 각 필드가 비정상 값일 경우 기본값으로 복구
+        // 각 필드가 비정상 값일 case 기본값으로 복구
         if (SoundManager.Instance != null)
         {
             SoundManager.Instance.masterVolume = (SaveData.optionData.masterVolume > 0f && SaveData.optionData.masterVolume <= 1f)
