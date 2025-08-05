@@ -4,9 +4,10 @@ public class LobbyUIController : MonoBehaviour
 {
     [Header("UI Elements")]
     [SerializeField] private GameObject lobbyPanel;
-    [SerializeField] private GameObject charactersPanel;
     [SerializeField] private GameObject summonCharactersPanel;
     [SerializeField] private GameObject inventoryPanel;
+
+    public MessagePopup messagePopup;
 
     private void OnEnable()
     {
@@ -36,6 +37,12 @@ public class LobbyUIController : MonoBehaviour
         {
             SceneManagerEx.Instance.LoadScene("SelectAdventureScene");
         }
+    }
+
+    public void OnClickStoreButton()
+    {
+        messagePopup.Open("미구현된 기능입니다.\n" +
+            "추후 업데이트될 예정입니다.");
     }
 
     public void OnClickBackButton()
