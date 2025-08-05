@@ -28,10 +28,11 @@ public class DataSaver
         public int Jewel;
         public int currentStamina;
         public DateTime LastQuitTime;
+        public float RemainingRecoveryTime; // 스테미나 회복 대기 시간
 
         // 생성자
         public UserData() { }
-        public UserData(string nickName, int level, int exp, int gold, int jewel, int currentStamina)
+        public UserData(string nickName, int level, int exp, int gold, int jewel, int currentStamina, float remainingRecoveryTime)
         {
             NickName = nickName;
             Level = level;
@@ -40,6 +41,7 @@ public class DataSaver
             Jewel = jewel;
             this.currentStamina = currentStamina;
             LastQuitTime = DateTime.Now; // 현재 시간으로 초기화
+            RemainingRecoveryTime = remainingRecoveryTime;
         }
     }
 
@@ -442,6 +444,7 @@ public class DataSaver
             SaveData.userData.Jewel = UserDataManager.Instance.jewel;
             SaveData.userData.currentStamina = UserDataManager.Instance.currentStamina;
             SaveData.userData.LastQuitTime = DateTime.Now; // 저장 시점의 시간으로 저장
+            SaveData.userData.RemainingRecoveryTime = UserDataManager.Instance.remainingRecoveryTime; // 스테미나 회복 대기 시간
         }
     }
 
@@ -459,6 +462,7 @@ public class DataSaver
             UserDataManager.Instance.jewel = SaveData.userData.Jewel;
             UserDataManager.Instance.currentStamina = SaveData.userData.currentStamina;
             UserDataManager.Instance.lastQuit = SaveData.userData.LastQuitTime; // 저장된 종료 시점 적용
+            UserDataManager.Instance.remainingRecoveryTime = SaveData.userData.RemainingRecoveryTime; // 스테미나 회복 대기 시간 적용
         }
     }
 
