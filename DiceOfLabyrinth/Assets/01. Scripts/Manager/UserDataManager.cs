@@ -21,6 +21,7 @@ public class UserDataManager : MonoBehaviour
 
     // 스테미나 회복
     [SerializeField] private int staminaRecoveryInterval = 300; // 스테미나 회복 간격 (5분마다 1 회복)
+    public float remainingRecoveryTime = 0f; // 다음 회복까지 남은 시간
     private float recoveryTimer = 0f; // 게임 실행 중 경과 시간
 
     // 앱 종료 시점 저장용 키
@@ -46,58 +47,59 @@ public class UserDataManager : MonoBehaviour
         if (currentStamina < maxStamina)
         {
             recoveryTimer += Time.deltaTime; // 경과 시간 누적
+
+            // 회복 할 시간이 지났는지 체크
             if (recoveryTimer >= staminaRecoveryInterval)
             {
-                currentStamina = Mathf.Min(currentStamina + 1, maxStamina); // 1 회복, 최대치 제한
-                recoveryTimer = 0f;
+                int recovered = (int)(recoveryTimer / staminaRecoveryInterval);
+
+                // 회복 할 값이 있는 경우
+                if (recovered > 0)
+                currentStamina = Mathf.Min(currentStamina + recovered, maxStamina); // 1 회복, 최대치 제한
+                recoveryTimer %= staminaRecoveryInterval; // 남은 시간만 남기고 초기화
                 UIManager.Instance.publicUIController.Refresh();
             }
+
+            // 종료 시 저장할 남은 시간
+            remainingRecoveryTime = recoveryTimer;
         }
     }
 
-
-    //private void OnApplicationPause(bool pause)
-    //{
-    //    // 앱이 백그라운드로 갔을 때 시간 저장
-    //    if (pause)
-    //    {
-    //        SaveQuitTime();
-    //    }
-    //}
-
-    //private void OnApplicationQuit()
-    //{
-    //    // 앱 완전 종료 시 시간 저장
-    //    SaveQuitTime();
-    //}
-
-    ///// <summary>
-    ///// 앱 종료 또는 백그라운드 진입 시간 저장
-    ///// </summary>
-    //private void SaveQuitTime()
-    //{
-    //    PlayerPrefs.SetString(LastQuitTimeKey, DateTime.Now.ToString());
-    //    PlayerPrefs.Save();
-    //}
-
     /// <summary>
-    /// DataSaver의 저장된 종료 시점(LastQuitTime)으로부터 경과 시간만큼 스테미나 회복
+    /// DataSaver의 저장된 종료 시점(LastQuitTime)으로부터 경과 시간 + 이전 잔여 시간만큼 스테미나 회복
     /// </summary>
     public void RecoverStaminaFromLastQuit()
     {
+        // 저장된 데이터가 없으면 지금 시간을 기준으로 초기화
         if (DataSaver.Instance?.SaveData?.userData == null)
         {
             lastQuit = DateTime.Now;
+            remainingRecoveryTime = 0f;
             return;
         }
+
+        // 마지막 종료 시간 불러오기
         lastQuit = DataSaver.Instance.SaveData.userData.LastQuitTime;
+
+        // 종료 이후 경과 시간
         TimeSpan diff = DateTime.Now - lastQuit;
-        int recovered = (int)(diff.TotalSeconds / staminaRecoveryInterval);
+
+        // 총 경과 시간 = 종료 후 경과 시간 + 저장된 남은 시간
+        float totalElapsed = (float)diff.TotalSeconds + remainingRecoveryTime;
+
+        // 회복할 양 계산
+        int recovered = (int)(totalElapsed / staminaRecoveryInterval);
+        float newRemaining = totalElapsed % staminaRecoveryInterval;
+
         if (recovered > 0)
         {
             currentStamina = Math.Min(currentStamina + recovered, maxStamina);
             UIManager.Instance.publicUIController.Refresh();
         }
+
+        // 새로운 잔여 시간 저장
+        recoveryTimer = newRemaining;
+        remainingRecoveryTime = newRemaining;
     }
 
     // 경험치
