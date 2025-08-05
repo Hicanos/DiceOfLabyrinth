@@ -72,7 +72,7 @@ public class BattleCharacterInBattle : IDamagable
         if (character.IsDied == true)
         {
             isDead = true;
-            Dead();
+            partyData.CharacterDead(myIndex);
         }
     }
 
