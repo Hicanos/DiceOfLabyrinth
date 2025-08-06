@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 public class CharacterUIController : MonoBehaviour
 {
@@ -90,8 +91,11 @@ public class CharacterUIController : MonoBehaviour
         (highLevelUpPotionConsumeAmount * highLevelUpPotion.ExpAmount) +
         (royalLevelUpPotionConsumeAmount * royalLevelUpPotion.ExpAmount); // 가상 경험치 계산
 
+
+    private int skillInfoState = 0; // 스킬 정보 상태 (0: 액티브, 1: 패시브)
     [Header("Skill Info Popup")]
     [SerializeField] private TMP_Text[] skillNameText = new TMP_Text[2]; // 스킬 이름 표시용 텍스트
+    [SerializeField] private TMP_Text[] skillCooldownText = new TMP_Text[2]; // 스킬 쿨타임 표시용 텍스트
     [SerializeField] private TMP_Text skillBeforeDescriptionText; // 스킬 설명 표시용 텍스트 (레벨업 전)
     [SerializeField] private TMP_Text skillAfterDescriptionText; // 스킬 설명 표시용 텍스트 (레벨업 후)
     [SerializeField] private TMP_Text skillBeforeLevelText; // 스킬 레벨 표시용 텍스트 (레벨업 전)
@@ -101,10 +105,26 @@ public class CharacterUIController : MonoBehaviour
     [SerializeField] private Image passiveSkillIconImage; // 패시브 스킬 아이콘 이미지
     [SerializeField] private Image activeSkillIconImage; // 액티브 스킬 아이콘 이미지
     [SerializeField] private Image[] selectedSkillIconImage = new Image[2]; // 선택된 스킬 아이콘 이미지
-    [SerializeField] private TMP_Text skillLevelUpCostText; // 스킬 레벨업 비용 표시용 텍스트
-    [SerializeField] private TMP_Text lowSkillBookCostText; // 낮은 스킬북 비용 표시용 텍스트 (필요한 개수/소유 개수)
-    [SerializeField] private TMP_Text midSkillBookCostText; // 중간 스킬북 비용 표시용 텍스트 (필요한 개수/소유 개수)
-    [SerializeField] private TMP_Text highSkillBookCostText; // 높은 스킬북 비용 표시용 텍스트 (필요한 개수/소유 개수)
+    [SerializeField] private TMP_Text skillLevelUpGoldCostText; // 스킬 레벨업 비용 표시용 텍스트
+    [SerializeField] private TMP_Text lowSkillBookCostText; // 낮은 스킬북 비용 표시용 텍스트 (소유 개수 / 필요한 개수)
+    [SerializeField] private TMP_Text midSkillBookCostText; // 중간 스킬북 비용 표시용 텍스트 (소유 개수 / 필요한 개수)
+    [SerializeField] private TMP_Text highSkillBookCostText; // 높은 스킬북 비용 표시용 텍스트 (소유 개수 / 필요한 개수)
+
+    [SerializeField] private GameObject selectPassiveButton; // 패시브 스킬 선택 버튼
+    [SerializeField] private GameObject selectActiveButton; // 액티브 스킬 선택 버튼
+
+    [Header("Skill Book")]
+    [SerializeField] private SkillBook lowSkillBook; // 낮은 스킬북 데이터
+    [SerializeField] private SkillBook midSkillBook; // 중간 스킬북 데이터
+    [SerializeField] private SkillBook highSkillBook; // 높은 스킬북 데이터
+
+    [Header("Skill Level Up Gold Cost")]
+    [SerializeField] private int[] skillLevelUpGoldCost = new int[4] {
+        600, // 레벨 1 -> 2
+        1200, // 레벨 2 -> 3
+        2400, // 레벨 3 -> 4
+        4800 // 레벨 4 -> 5
+    }; // 스킬 레벨업 비용 배열
     [Header("Button Colors")]
     [SerializeField] private Color selectedButtonColor = new(170/255f,140/255f,100/255f,1); // 선택된 버튼 색상
     [SerializeField] private Color unselectedButtonColor = new(1,220/255f,170/255f,1); // 선택되지 않은 버튼 색상
@@ -582,8 +602,148 @@ public class CharacterUIController : MonoBehaviour
     // ------------ 캐릭터 스킬 정보 팝업 관련 메서드-----------
     private void SkillInfoPopupRefresh(LobbyCharacter character)
     {
-        skillNameText[0].text = character.CharacterData.activeSO.SkillNameKr;
-        skillNameText[1].text = character.CharacterData.passiveSO.SkillNameKr;
-        skillBeforeDescriptionText.text = character.CharacterData.activeSO.SkillDescription;
+        if (character == null || character.CharacterData == null)
+        {
+            Debug.LogError("Character or CharacterData is null in SkillInfoPopupRefresh.");
+            return;
+        }
+        if (skillInfoState == 0)
+        {
+            selectActiveButton.SetActive(true);
+            selectPassiveButton.SetActive(false);
+        }
+        else if (skillInfoState == 1)
+        {
+            selectActiveButton.SetActive(false);
+            selectPassiveButton.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("Invalid skillInfoState: " + skillInfoState);
+            return;
+        }
+        activeSkillIconImage.sprite = character.CharacterData.activeSO.SkillIcon;
+        passiveSkillIconImage.sprite = character.CharacterData.passiveSO.SkillIcon;
+        if (skillInfoState == 0) // 액티브 스킬
+        {
+            skillNameText[0].text = character.ActiveSkill.SkillNameKr;
+            skillNameText[1].text = character.ActiveSkill.SkillNameKr;
+            string activeBeforeDescriptionText = character.CharacterData.activeSO.SkillDescription;
+            Dictionary<string, string> activeReplacements = new Dictionary<string, string>
+            {
+                { "{Skill_Value}", character.SkillValueA.ToString("F1") },
+                { "{Buff_Probability}", (character.BuffProbabilityA * 100).ToString("F1") + "%" },
+                { "{Buff_Value}", character.BuffValueA.ToString("F1") }
+            };
+            skillBeforeDescriptionText.text = ReplaceSkillDescription(activeBeforeDescriptionText, activeReplacements);
+            string activeAfterDescriptionText = character.CharacterData.activeSO.SkillDescription;
+            if (character.SkillLevelA <= 4)
+            {
+                activeReplacements = new Dictionary<string, string>
+                {
+                    { "{Skill_Value}", (character.SkillValueA + character.ActiveSkill.PlusSkillValue).ToString("F1") },
+                    { "{Buff_Probability}", (character.BuffProbabilityA + character.ActiveSkill.PlusBuffProbability).ToString("F1") + "%" },
+                    { "{Buff_Value}", (character.BuffValueA + character.ActiveSkill.PlusBuffValue).ToString("F1") }
+                };
+            }
+            skillAfterDescriptionText.text = ReplaceSkillDescription(activeAfterDescriptionText, activeReplacements);
+            
+            skillBeforeLevelText.text = "Lv." + character.SkillLevelA.ToString();
+            skillAfterLevelText.text = "Lv." + (character.SkillLevelA + 1).ToString();
+
+            skillBeforeCostText.text = character.ActiveSkill.SkillCost.ToString();
+            skillAfterCostText.text = character.ActiveSkill.SkillCost.ToString();
+
+            foreach (Image image in selectedSkillIconImage)
+            {
+                image.sprite = character.ActiveSkill.SkillIcon;
+            }
+            foreach (TMP_Text text in skillCooldownText)
+            {
+                text.text = $"쿨타임 {character.ActiveSkill.CoolTime}턴";
+            }
+
+            Dictionary<SkillBookType, int> skillBookCost = SkillUpgradeChecker.SkillBookRequirements.TryGetValue(
+                character.SkillLevelA,
+                out var costs) ? costs : new Dictionary<SkillBookType, int>();
+            string lowSkillBookCost = costs.TryGetValue(SkillBookType.Low, out int lowCost) ? lowCost.ToString() : "0";
+            string midSkillBookCost = costs.TryGetValue(SkillBookType.Middle, out int midCost) ? midCost.ToString() : "0";
+            string highSkillBookCost = costs.TryGetValue(SkillBookType.High, out int highCost) ? highCost.ToString() : "0";
+            int lowSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(lowSkillBook.ItemID, out var lowAmount) ? lowAmount : 0;
+            int midSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(midSkillBook.ItemID, out var midAmount) ? midAmount : 0;
+            int highSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(highSkillBook.ItemID, out var highAmount) ? highAmount : 0;
+            lowSkillBookCostText.text = $"{lowSkillBookAmount} / {lowSkillBookCost}";
+            midSkillBookCostText.text = $"{midSkillBookAmount} / {midSkillBookCost}";
+            highSkillBookCostText.text = $"{highSkillBookAmount} / {highSkillBookCost}";
+
+            skillLevelUpGoldCostText.text = skillLevelUpGoldCost[character.SkillLevelA - 1].ToString();
+        }
+        else if(skillInfoState == 1) // 패시브 스킬
+        {
+            skillNameText[0].text = character.PassiveSkill.SkillNameKr;
+            skillNameText[1].text = character.PassiveSkill.SkillNameKr;
+            string passiveDescriptionText = character.CharacterData.passiveSO.SkillDescription;
+            Dictionary<string, string> passiveReplacements = new Dictionary<string, string>
+            {
+                { "{Skill_Value}", character.SkillValueB.ToString("F1") },
+                { "{Buff_Probability}", (character.BuffProbabilityB * 100).ToString("F1") + "%" },
+                { "{Buff_Value}", character.BuffValueB.ToString("F1") }
+            };
+            skillBeforeDescriptionText.text = ReplaceSkillDescription(passiveDescriptionText, passiveReplacements);
+            string passiveAfterDescriptionText = character.CharacterData.passiveSO.SkillDescription;
+            if (character.SkillLevelB <= 4)
+            {
+                passiveReplacements = new Dictionary<string, string>
+                {
+                    { "{Skill_Value}", (character.SkillValueB + character.PassiveSkill.PlusSkillValue).ToString("F1") },
+                    { "{Buff_Probability}", (character.BuffProbabilityB + character.PassiveSkill.PlusBuffProbability).ToString("F1") + "%" },
+                    { "{Buff_Value}", (character.BuffValueB + character.PassiveSkill.PlusBuffValue).ToString("F1") }
+                };
+            }
+            skillAfterDescriptionText.text = ReplaceSkillDescription(passiveAfterDescriptionText, passiveReplacements);
+            
+            skillBeforeLevelText.text = "Lv." + character.SkillLevelB.ToString();
+            skillAfterLevelText.text = "Lv." + (character.SkillLevelB + 1).ToString();
+            skillBeforeCostText.text = "";
+            skillAfterCostText.text = "";
+            foreach (Image image in selectedSkillIconImage)
+            {
+                image.sprite = character.PassiveSkill.SkillIcon;
+            }
+            foreach (TMP_Text text in skillCooldownText)
+            {
+                text.text = $"쿨타임 없음";
+            }
+            Dictionary<SkillBookType, int> skillBookCost = SkillUpgradeChecker.SkillBookRequirements.TryGetValue(
+                character.SkillLevelB,
+                out var costs) ? costs : new Dictionary<SkillBookType, int>();
+            string lowSkillBookCost = costs.TryGetValue(SkillBookType.Low, out int lowCost) ? lowCost.ToString() : "0";
+            string midSkillBookCost = costs.TryGetValue(SkillBookType.Middle, out int midCost) ? midCost.ToString() : "0";
+            string highSkillBookCost = costs.TryGetValue(SkillBookType.High, out int highCost) ? highCost.ToString() : "0";
+            int lowSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(lowSkillBook.ItemID, out var lowAmount) ? lowAmount : 0;
+            int midSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(midSkillBook.ItemID, out var midAmount) ? midAmount : 0;
+            int highSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(highSkillBook.ItemID, out var highAmount) ? highAmount : 0;
+
+            lowSkillBookCostText.text = $"{lowSkillBookAmount} / {lowSkillBookCost}";
+            midSkillBookCostText.text = $"{midSkillBookAmount} / {midSkillBookCost}";
+            highSkillBookCostText.text = $"{highSkillBookAmount} / {highSkillBookCost}";
+
+            skillLevelUpGoldCostText.text = skillLevelUpGoldCost[character.SkillLevelB - 1].ToString();
+        }
+    }
+
+    private string ReplaceSkillDescription(string description, Dictionary<string, string> replacements)
+    {
+        foreach (var kvp in replacements)
+        {
+            description = Regex.Replace(description, Regex.Escape(kvp.Key), kvp.Value);
+        }
+        return description;
+    }
+
+    public void OnClickSkillInfoStateButton(int state)
+    {
+        skillInfoState = state;
+        SkillInfoPopupRefresh(selectedCharacter);
     }
 }
