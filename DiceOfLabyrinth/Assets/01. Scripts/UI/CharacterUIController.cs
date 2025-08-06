@@ -747,4 +747,78 @@ public class CharacterUIController : MonoBehaviour
         skillInfoState = state;
         SkillInfoPopupRefresh(selectedCharacter);
     }
+
+    public void OnClickSkillLevelUpButton()
+    {
+        if (selectedCharacter == null || selectedCharacter.CharacterData == null)
+        {
+            Debug.LogError("Selected character or character data is null in OnClickSkillLevelUpButton.");
+            return;
+        }
+        if (skillInfoState == 0) // 액티브 스킬 레벨업
+        {
+            if (selectedCharacter.SkillLevelA < 5)
+            {
+                int skillLevel = selectedCharacter.SkillLevelA;
+                int skillCost = skillLevelUpGoldCost[skillLevel - 1];
+                if (UserDataManager.Instance.gold < skillCost)
+                {
+                    UIManager.Instance.messagePopup.Open("골드가 부족합니다.");
+                    return;
+                }
+                if (SkillUpgradeChecker.CanUpgradeSkill(skillLevel))
+                {
+                    Dictionary<SkillBookType, int> skillBookCost = SkillUpgradeChecker.SkillBookRequirements[skillLevel];
+                    int lowSkillBookCost = skillBookCost.TryGetValue(SkillBookType.Low, out int lowCost) ? lowCost : 0;
+                    int midSkillBookCost = skillBookCost.TryGetValue(SkillBookType.Middle, out int midCost) ? midCost : 0;
+                    int highSkillBookCost = skillBookCost.TryGetValue(SkillBookType.High, out int highCost) ? highCost : 0;
+
+                    ItemManager.Instance.GetItem(lowSkillBook.ItemID, -lowSkillBookCost);
+                    ItemManager.Instance.GetItem(midSkillBook.ItemID, -midSkillBookCost);
+                    ItemManager.Instance.GetItem(highSkillBook.ItemID, -highSkillBookCost);
+                    selectedCharacter.SkillLevelA++;
+                    UserDataManager.Instance.UseGold(skillCost);
+                }
+                else
+                {
+                    UIManager.Instance.messagePopup.Open("스킬 레벨업에 필요한 스킬북이 부족합니다.");
+                    return;
+                }
+            }
+        }
+        else if (skillInfoState == 1) // 패시브 스킬 레벨업
+        {
+            if (selectedCharacter.SkillLevelB < 5)
+            {
+                int skillLevel = selectedCharacter.SkillLevelB;
+                int skillCost = skillLevelUpGoldCost[skillLevel - 1];
+                if (UserDataManager.Instance.gold < skillCost)
+                {
+                    UIManager.Instance.messagePopup.Open("골드가 부족합니다.");
+                    return;
+                }
+                if (SkillUpgradeChecker.CanUpgradeSkill(skillLevel))
+                {
+                    Dictionary<SkillBookType, int> skillBookCost = SkillUpgradeChecker.SkillBookRequirements[skillLevel];
+                    int lowSkillBookCost = skillBookCost.TryGetValue(SkillBookType.Low, out int lowCost) ? lowCost : 0;
+                    int midSkillBookCost = skillBookCost.TryGetValue(SkillBookType.Middle, out int midCost) ? midCost : 0;
+                    int highSkillBookCost = skillBookCost.TryGetValue(SkillBookType.High, out int highCost) ? highCost : 0;
+                    ItemManager.Instance.GetItem(lowSkillBook.ItemID, -lowSkillBookCost);
+                    ItemManager.Instance.GetItem(midSkillBook.ItemID, -midSkillBookCost);
+                    ItemManager.Instance.GetItem(highSkillBook.ItemID, -highSkillBookCost);
+                    selectedCharacter.SkillLevelB++;
+                    UserDataManager.Instance.UseGold(skillCost);
+                }
+                else
+                {
+                    UIManager.Instance.messagePopup.Open("스킬 레벨업에 필요한 스킬북이 부족합니다.");
+                    return;
+                }
+            }
+        }
+        // 스킬 레벨업 후 팝업 갱신
+        InfoPopupRefresh(selectedCharacter);
+        LevelUpPopupRefresh(selectedCharacter);
+        SkillInfoPopupRefresh(selectedCharacter);
+    }
 }
