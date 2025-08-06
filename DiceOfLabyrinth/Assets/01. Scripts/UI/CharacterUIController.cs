@@ -566,6 +566,7 @@ public class CharacterUIController : MonoBehaviour
         highLevelUpPotionConsumeAmount = 0; // 사용 후 개수 초기화
         royalLevelUpPotionConsumeAmount = 0; // 사용 후 개수 초기화
         RefreshPotionButtons(); // 버튼 갱신
+        InfoPopupRefresh(selectedCharacter); // 캐릭터 정보 팝업 갱신
         LevelUpPopupRefresh(selectedCharacter); // 레벨업 팝업 갱신
     }
     public void OnPotionButtonPointerDown_LowUp() { OnPotionButtonPointerDown(0, true); }
