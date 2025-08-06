@@ -2,10 +2,8 @@
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
-using UnityEditor.Build.Pipeline;
 
 public class CharacterUIController : MonoBehaviour
 {
