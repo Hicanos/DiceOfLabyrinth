@@ -11,6 +11,12 @@
         battleManager.GetCost(AlivedCharacter());
         
         battleManager.EngravingBuffs.ReduceDuration();
+        
+        // 턴 종료 시 모든 캐릭터의 스킬 쿨타임 감소
+        foreach (var character in BattleManager.Instance.PartyData.Characters)
+        {
+            character.character.ReduceSkillCooldown();
+        }
 
         UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(true);
         battleManager.CostSpendedInTurn = 0;
