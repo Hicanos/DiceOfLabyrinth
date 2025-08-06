@@ -4230,6 +4230,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 8760684236072144528}
   characterClassTypeImage: {fileID: 2481812895056308745}
+  characterBgImage: {fileID: 884097845543217034}
   characterElimentTypeImage: {fileID: 4399200620122693361}
   characterUpperImage: {fileID: 6089752587035520877}
   characterSignatureDiceImage: {fileID: 2060477761344884969}
@@ -5275,6 +5276,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 1839294436139423031}
   characterClassTypeImage: {fileID: 4462651212367255394}
+  characterBgImage: {fileID: 2950135714137801230}
   characterElimentTypeImage: {fileID: 8050017770480786206}
   characterUpperImage: {fileID: 8497282502625372607}
   characterSignatureDiceImage: {fileID: 8868264078501353170}
@@ -6039,6 +6041,8 @@ MonoBehaviour:
   - {fileID: 3854962586376245700}
   skillBeforeDescriptionText: {fileID: 5689215604094751038}
   skillAfterDescriptionText: {fileID: 2298384386024377486}
+  activeSkillLevelText: {fileID: 5467885239470535326}
+  passiveSkillLevelText: {fileID: 3404315755509603600}
   skillBeforeLevelText: {fileID: 869686606494197105}
   skillAfterLevelText: {fileID: 1047883942162836229}
   skillBeforeCostText: {fileID: 4178902091161535986}
@@ -9123,6 +9127,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 4677608193099717495}
   characterClassTypeImage: {fileID: 2239439194373455883}
+  characterBgImage: {fileID: 5099966516384638157}
   characterElimentTypeImage: {fileID: 2405557624831584561}
   characterUpperImage: {fileID: 8706103836565700229}
   characterSignatureDiceImage: {fileID: 2277675849739126623}
@@ -17173,6 +17178,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 6818516379619247389}
   characterClassTypeImage: {fileID: 7944855435565773924}
+  characterBgImage: {fileID: 8732736888790834634}
   characterElimentTypeImage: {fileID: 5056700473487319782}
   characterUpperImage: {fileID: 3421799212999811420}
   characterSignatureDiceImage: {fileID: 5229098399688845904}
@@ -17833,6 +17839,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 52003371497350397}
   characterClassTypeImage: {fileID: 3795562143825062035}
+  characterBgImage: {fileID: 1081324825891193035}
   characterElimentTypeImage: {fileID: 1792100833021297000}
   characterUpperImage: {fileID: 5221827321645482395}
   characterSignatureDiceImage: {fileID: 4991335597100221778}
@@ -21988,7 +21995,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8022154711418528087}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7971109559085837690}
+        m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+        m_MethodName: OnClickCharacterChangeButton
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5780876746124978140
 GameObject:
   m_ObjectHideFlags: 0
@@ -23333,6 +23352,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 5044227789992334835}
   characterClassTypeImage: {fileID: 8271894346145390423}
+  characterBgImage: {fileID: 5704648912531649205}
   characterElimentTypeImage: {fileID: 6275010905911985207}
   characterUpperImage: {fileID: 5690234996151342630}
   characterSignatureDiceImage: {fileID: 8275142208287396415}
@@ -24601,6 +24621,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 2569756426294531599}
   characterClassTypeImage: {fileID: 3350436314542602007}
+  characterBgImage: {fileID: 6802062796213105135}
   characterElimentTypeImage: {fileID: 3715175907640048701}
   characterUpperImage: {fileID: 8164681847491963052}
   characterSignatureDiceImage: {fileID: 7510830802195306116}
@@ -25601,6 +25622,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 6948928917218192202}
   characterClassTypeImage: {fileID: 3756989379671208879}
+  characterBgImage: {fileID: 2517594710457452985}
   characterElimentTypeImage: {fileID: 652242309680188699}
   characterUpperImage: {fileID: 7703803795955020607}
   characterSignatureDiceImage: {fileID: 4676090086494787847}
@@ -26944,8 +26966,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2843242930848484072}
   - {fileID: 1972208746300840638}
+  - {fileID: 2843242930848484072}
   - {fileID: 4787192714908164461}
   - {fileID: 989741054435238917}
   m_Father: {fileID: 318091787387699777}
@@ -28227,7 +28249,7 @@ GameObject:
   - component: {fileID: 2843242930848484072}
   - component: {fileID: 7681064437793718581}
   - component: {fileID: 8195437053701981249}
-  - component: {fileID: 1312446802505505075}
+  - component: {fileID: 6443043766432627737}
   m_Layer: 5
   m_Name: Button - Left Character
   m_TagString: Untagged
@@ -28292,7 +28314,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1312446802505505075
+--- !u!114 &6443043766432627737
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -28335,7 +28357,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8195437053701981249}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7971109559085837690}
+        m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+        m_MethodName: OnClickCharacterChangeButton
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: -1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7193257042906971652
 GameObject:
   m_ObjectHideFlags: 0
@@ -28636,6 +28670,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 3795656420314331137}
   characterClassTypeImage: {fileID: 3933122853452775575}
+  characterBgImage: {fileID: 4101102066839199604}
   characterElimentTypeImage: {fileID: 8853679330473686466}
   characterUpperImage: {fileID: 9138767430952310718}
   characterSignatureDiceImage: {fileID: 5861240364784872255}
@@ -32208,6 +32243,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 2020145753714754725}
   characterClassTypeImage: {fileID: 2904076800770699715}
+  characterBgImage: {fileID: 3729933308329103592}
   characterElimentTypeImage: {fileID: 7784089822461953548}
   characterUpperImage: {fileID: 6356163465128229773}
   characterSignatureDiceImage: {fileID: 3369311191253037581}
@@ -32360,6 +32396,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 3815547716204146465}
   characterClassTypeImage: {fileID: 8676123692725844619}
+  characterBgImage: {fileID: 2446386916981798204}
   characterElimentTypeImage: {fileID: 4900840023000258269}
   characterUpperImage: {fileID: 2882335861798628581}
   characterSignatureDiceImage: {fileID: 7754002733116396730}
@@ -33770,6 +33807,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 8641650856879042553}
   characterClassTypeImage: {fileID: 772504601595228960}
+  characterBgImage: {fileID: 6355366537326640646}
   characterElimentTypeImage: {fileID: 1515891129930445815}
   characterUpperImage: {fileID: 4882549276188009432}
   characterSignatureDiceImage: {fileID: 9052163038375880695}
