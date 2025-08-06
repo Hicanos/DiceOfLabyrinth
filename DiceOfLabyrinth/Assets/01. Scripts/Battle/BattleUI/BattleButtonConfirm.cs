@@ -59,7 +59,12 @@ public class BattleButtonConfirm : AbstractBattleButton
         diceManager.HideFakeDice();
         diceManager.DiceHolding.isCantFix = false;
 
-        //BattleManager.Instance.BattlePlayerTurnState.AbstractButtonPushed();
+        // 족보/시그니처 정보 확인 및 버프 적용 예시
+        //var diceRank = diceManager.DiceRank;
+        //var signitureAmount = diceManager.SignitureAmount;
+        //var signitureIndex = diceManager.SignitureIndex;
+        // TODO: 여기서 조건에 맞는 패시브 스킬 자동 발동
+
         BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.Attack);
 
         float diceWeighting = DiceManager.Instance.DiceBattle.GetDamageWeighting(); //족보별 계수

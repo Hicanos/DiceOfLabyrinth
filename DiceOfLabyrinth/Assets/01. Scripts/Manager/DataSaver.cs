@@ -86,7 +86,7 @@ public class DataSaver
         public float CritChance; // 치명타 확률
         public float CritDamage; // 치명타 피해량
         // 캐릭터의 스킬 정보 - SkillData 리스트로 저장
-        // public List<SkillData> Skills = new List<SkillData>(); // 각 캐릭터가 보유한 스킬 정보
+        public List<SkillData> Skills = new List<SkillData>(); // 각 캐릭터가 보유한 스킬 정보
 
         // 생성자
         public CharacterData() { }
@@ -309,6 +309,7 @@ public class DataSaver
         public float regularCritDamage;
         public float regularPenetration;
         public bool IsDied;
+        public int CurrentSkillCooldown; // 현재 스킬 쿨타임 추가
 
         // 역직렬화용 기본 생성자
         public BattleCharacterData() { }
@@ -333,12 +334,16 @@ public class DataSaver
             regularCritDamage = bc.RegularCritDamage;
             regularPenetration = bc.Penetration;
             IsDied = bc.IsDied;
+            // 쿨타임 저장
+            CurrentSkillCooldown = bc.CurrentSkillCooldown;
         }
 
         // BattleCharacterData를 BattleCharacter에 복원
         public void LoadBattleCharacter(BattleCharacter bc, BattleCharacterData data)
         {
             bc.DataSetting(data);
+            // 쿨타임 복원
+            bc.CurrentSkillCooldown = data.CurrentSkillCooldown;
         }
 
     }
@@ -385,16 +390,38 @@ public class DataSaver
         if (CharacterManager.Instance != null)
         {
             var lobbyCharacters = CharacterManager.Instance.OwnedCharacters;
-            SaveData.characters = lobbyCharacters.Select(lobbyChar => new CharacterData
-            {
-                CharacterID = lobbyChar.CharacterData.charID,
-                Level = lobbyChar.Level,
-                CurrentExp = lobbyChar.CurrentExp,
-                ATK = lobbyChar.RegularATK,
-                DEF = lobbyChar.RegularDEF,
-                HP = lobbyChar.RegularHP,
-                CritChance = lobbyChar.CritChance,
-                CritDamage = lobbyChar.CritDamage
+            SaveData.characters = lobbyCharacters.Select(lobbyChar => {
+                var charData = new CharacterData
+                {
+                    CharacterID = lobbyChar.CharacterData.charID,
+                    Level = lobbyChar.Level,
+                    CurrentExp = lobbyChar.CurrentExp,
+                    ATK = lobbyChar.RegularATK,
+                    DEF = lobbyChar.RegularDEF,
+                    HP = lobbyChar.RegularHP,
+                    CritChance = lobbyChar.CritChance,
+                    CritDamage = lobbyChar.CritDamage,
+                    Skills = new List<SkillData>()
+                };
+                // 액티브 스킬 저장
+                if (lobbyChar.ActiveSkill != null)
+                {
+                    charData.Skills.Add(new SkillData
+                    {
+                        SkillID = lobbyChar.ActiveSkill.SkillID,
+                        Level = lobbyChar.SkillLevelA,
+                    });
+                }
+                // 패시브 스킬 저장
+                if (lobbyChar.PassiveSkill != null)
+                {
+                    charData.Skills.Add(new SkillData
+                    {
+                        SkillID = lobbyChar.PassiveSkill.SkillID,
+                        Level = lobbyChar.SkillLevelB,
+                    });
+                }
+                return charData;
             }).ToList();
         }
     }
