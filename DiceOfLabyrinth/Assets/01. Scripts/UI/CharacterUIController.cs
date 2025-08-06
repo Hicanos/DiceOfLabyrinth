@@ -98,6 +98,14 @@ public class CharacterUIController : MonoBehaviour
     [SerializeField] private List<CharacterSO> unownedCharacters = new List<CharacterSO>(); // 소유하지 않은 캐릭터 목록
     [SerializeField] private LobbyCharacter selectedCharacter; // 현재 선택된 캐릭터
 
+    [Header("Potion Button Hold Settings")]
+    private bool isPotionButtonHeld = false;
+    private float potionButtonHoldTime = 0f;
+    private float holdThreshold = 0.3f; // 홀드로 인식할 최소 시간(초)
+    private float repeatRate = 0.05f;   // 연속 입력 간격(초)
+    private float repeatTimer = 0f;
+    private int holdPotionType = -1;
+    private bool isCountUp = true;
     private void Awake()
     {
         if (Instance == null)
@@ -126,6 +134,25 @@ public class CharacterUIController : MonoBehaviour
         foreach (var viewer in unownedCharacterViewers)
         {
             viewer.SetActive(false);
+        }
+    }
+    private void Update()
+    {
+        if (isPotionButtonHeld)
+        {
+            potionButtonHoldTime += Time.unscaledDeltaTime;
+            if (potionButtonHoldTime >= holdThreshold)
+            {
+                repeatTimer += Time.unscaledDeltaTime;
+                if (repeatTimer >= repeatRate)
+                {
+                    repeatTimer = 0f;
+                    if (isCountUp)
+                        OnClickLevelUpPotionCountUpButton(holdPotionType);
+                    else
+                        OnClickLevelUpPotionCountDownButton(holdPotionType);
+                }
+            }
         }
     }
     public void OpenCharacterListPopup()
@@ -289,19 +316,19 @@ public class CharacterUIController : MonoBehaviour
     private void AddVirtualExp(LobbyCharacter character)
     {
         virtualCurrentExp = character.CurrentExp + virtualExp; // 캐릭터 현재 경험치 + 가상 경험치
-        while (virtualCurrentExp >= GetExpToNextLevel())
+        while (virtualCurrentExp >= GetExpToNextLevel(character))
         {
-            virtualCurrentExp -= GetExpToNextLevel();
+            virtualCurrentExp -= GetExpToNextLevel(character);
             virtualLevel++;
         }
         // 가상 경험치 슬라이더 갱신
-        int expToNextLevel = GetExpToNextLevel();
+        int expToNextLevel = GetExpToNextLevel(character);
         characterExpSlider.value = (float)virtualCurrentExp / expToNextLevel;
         virtualExpText.text = $"{virtualCurrentExp} / {expToNextLevel}";
     }
-    private int GetExpToNextLevel()
+    private int GetExpToNextLevel(LobbyCharacter character)
     {
-        return 250 * (virtualLevel + 1);
+        return 250 * (character.Level + virtualLevel + 1);
     }
 
     public void OnClickLevelUpPotionCountUpButton(int potionType)
@@ -504,6 +531,36 @@ public class CharacterUIController : MonoBehaviour
         royalLevelUpPotionConsumeAmount = 0; // 사용 후 개수 초기화
         RefreshPotionButtons(); // 버튼 갱신
         LevelUpPopupRefresh(selectedCharacter); // 레벨업 팝업 갱신
+    }
+    public void OnPotionButtonPointerDown_LowUp() { OnPotionButtonPointerDown(0, true); }
+    public void OnPotionButtonPointerDown_LowDown() { OnPotionButtonPointerDown(0, false); }
+    public void OnPotionButtonPointerDown_MidUp() { OnPotionButtonPointerDown(1, true); }
+    public void OnPotionButtonPointerDown_MidDown() { OnPotionButtonPointerDown(1, false); }
+    public void OnPotionButtonPointerDown_HighUp() { OnPotionButtonPointerDown(2, true); }
+    public void OnPotionButtonPointerDown_HighDown() { OnPotionButtonPointerDown(2, false); }
+    public void OnPotionButtonPointerDown_RoyalUp() { OnPotionButtonPointerDown(3, true); }
+    public void OnPotionButtonPointerDown_RoyalDown() { OnPotionButtonPointerDown(3, false); }
+    public void OnPotionButtonPointerDown(int potionType, bool countUp)
+    {
+        isPotionButtonHeld = true;
+        potionButtonHoldTime = 0f;
+        repeatTimer = 0f;
+        holdPotionType = potionType;
+        isCountUp = countUp;
+    }
+
+    public void OnPotionButtonPointerUp()
+    {
+        if (isPotionButtonHeld && potionButtonHoldTime < holdThreshold)
+        {
+            // 짧게 눌렀을 때는 한 번만 동작
+            if (isCountUp)
+                OnClickLevelUpPotionCountUpButton(holdPotionType);
+            else
+                OnClickLevelUpPotionCountDownButton(holdPotionType);
+        }
+        isPotionButtonHeld = false;
+        holdPotionType = -1;
     }
 
     // ------------ 캐릭터 스킬 정보 팝업 관련 메서드-----------
