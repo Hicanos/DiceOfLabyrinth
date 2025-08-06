@@ -812,7 +812,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
 --- !u!114 &6256654604256062790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -830,13 +830,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerDown_MidUp
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -846,13 +846,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerUp
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -1069,7 +1069,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2373432471129573018}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7971109559085837690}
+        m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+        m_MethodName: OnClickSkillInfoStateButton
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &253688092892119313
 GameObject:
   m_ObjectHideFlags: 0
@@ -6019,6 +6031,33 @@ MonoBehaviour:
   midLevelUpPotion: {fileID: 11400000, guid: 7c9bda7314caed946824e782618e4f13, type: 2}
   highLevelUpPotion: {fileID: 11400000, guid: 5fec8530a63b0b74eb783619a5cea859, type: 2}
   royalLevelUpPotion: {fileID: 11400000, guid: bb3de4e513b8bcf42a1b114201542d93, type: 2}
+  skillNameText:
+  - {fileID: 1808755090763464999}
+  - {fileID: 6405960633914550394}
+  skillCooldownText:
+  - {fileID: 3334646921464046040}
+  - {fileID: 3854962586376245700}
+  skillBeforeDescriptionText: {fileID: 5689215604094751038}
+  skillAfterDescriptionText: {fileID: 2298384386024377486}
+  skillBeforeLevelText: {fileID: 869686606494197105}
+  skillAfterLevelText: {fileID: 1047883942162836229}
+  skillBeforeCostText: {fileID: 4178902091161535986}
+  skillAfterCostText: {fileID: 2826287867759184807}
+  passiveSkillIconImage: {fileID: 7334488314374364485}
+  activeSkillIconImage: {fileID: 6278605371790475953}
+  selectedSkillIconImage:
+  - {fileID: 7929151076487924675}
+  - {fileID: 3018199816293196906}
+  skillLevelUpGoldCostText: {fileID: 6650028829203691091}
+  lowSkillBookCostText: {fileID: 8128047442558899080}
+  midSkillBookCostText: {fileID: 6644598614060770904}
+  highSkillBookCostText: {fileID: 8683351939181103396}
+  selectPassiveButton: {fileID: 8598217265266762622}
+  selectActiveButton: {fileID: 35467571758597575}
+  lowSkillBook: {fileID: 11400000, guid: 24cb96fd2ebe3d3418505d378888f9fe, type: 2}
+  midSkillBook: {fileID: 11400000, guid: bcf6d3c1c0b7bc1489ca8a2b2dc22b12, type: 2}
+  highSkillBook: {fileID: 11400000, guid: d7c479224600cac49bbc05a51f553025, type: 2}
+  skillLevelUpGoldCost: 58020000b004000060090000c0120000
   selectedButtonColor: {r: 0.6666667, g: 0.54901963, b: 0.39215687, a: 1}
   unselectedButtonColor: {r: 1, g: 0.6666667, b: 0.39215687, a: 1}
   unownedCharacters: []
@@ -12040,7 +12079,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5935988235140381216}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7971109559085837690}
+        m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+        m_MethodName: OnClickSkillInfoStateButton
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3237429042844940957
 GameObject:
   m_ObjectHideFlags: 0
@@ -12766,6 +12817,7 @@ GameObject:
   - component: {fileID: 496589777745194248}
   - component: {fileID: 8200748431002109945}
   - component: {fileID: 401959934088126009}
+  - component: {fileID: 3985846677010723106}
   m_Layer: 5
   m_Name: Button - Cancel Icon
   m_TagString: Untagged
@@ -12886,7 +12938,52 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
+--- !u!114 &3985846677010723106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3381749033548081393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerDown_RoyalDown
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 3
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerUp
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &3400577206651493911
 GameObject:
   m_ObjectHideFlags: 0
@@ -14783,6 +14880,7 @@ GameObject:
   - component: {fileID: 502909553686194382}
   - component: {fileID: 4793764085336725087}
   - component: {fileID: 5773642852848570503}
+  - component: {fileID: 5908847665212847952}
   m_Layer: 5
   m_Name: Button - Cancel Icon
   m_TagString: Untagged
@@ -14903,7 +15001,52 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
+--- !u!114 &5908847665212847952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3918787026817324527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerDown_MidDown
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 3
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerUp
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &3920963034698730619
 GameObject:
   m_ObjectHideFlags: 0
@@ -19339,6 +19482,7 @@ GameObject:
   - component: {fileID: 2855020022510541945}
   - component: {fileID: 7301367148389122505}
   - component: {fileID: 7583073497951193569}
+  - component: {fileID: 217070988207583408}
   m_Layer: 5
   m_Name: Button - Cancel Icon
   m_TagString: Untagged
@@ -19459,7 +19603,52 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
+--- !u!114 &217070988207583408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5123030831115314012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerDown_LowDown
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 3
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerUp
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &5129833794133568295
 GameObject:
   m_ObjectHideFlags: 0
@@ -22449,7 +22638,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
 --- !u!114 &870685647709816281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22467,13 +22656,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1738931642334242655}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerDown_LowUp
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -22483,13 +22672,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1738931642334242655}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerUp
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -24887,7 +25076,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
 --- !u!114 &7268977552992455588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24905,13 +25094,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1738931642334242655}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerDown_RoyalUp
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -24921,13 +25110,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1738931642334242655}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerUp
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -26985,6 +27174,7 @@ GameObject:
   - component: {fileID: 1684528133111230627}
   - component: {fileID: 2065243472647098749}
   - component: {fileID: 1948570737932842793}
+  - component: {fileID: 4500942506762721874}
   m_Layer: 5
   m_Name: Button - Cancel Icon
   m_TagString: Untagged
@@ -27105,7 +27295,52 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
+--- !u!114 &4500942506762721874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7045250916364884757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerDown_HighDown
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 3
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerUp
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &7078245507824901941
 GameObject:
   m_ObjectHideFlags: 0
@@ -31676,7 +31911,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
 --- !u!114 &6103870376196421340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31694,13 +31929,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1738931642334242655}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerDown_HighUp
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -31710,13 +31945,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1738931642334242655}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
+        - m_Target: {fileID: 7971109559085837690}
+          m_TargetAssemblyTypeName: CharacterUIController, Assembly-CSharp
+          m_MethodName: OnPotionButtonPointerUp
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
