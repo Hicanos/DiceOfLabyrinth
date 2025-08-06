@@ -2,10 +2,8 @@
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
-using UnityEditor.Build.Pipeline;
 
 public class CharacterUIController : MonoBehaviour
 {
@@ -298,6 +296,28 @@ public class CharacterUIController : MonoBehaviour
         basicInfoPopup.SetActive(state == 0);
         levelUpPopup.SetActive(state == 1);
         skillInfoPopup.SetActive(state == 2);
+    }
+    // ----------- 캐릭터 인포 팝업 캐릭터 체인지 버튼 관련 메서드 ---------------
+
+    public void OnClickCharacterChangeButton(int direction)
+    {
+        // 방향에 따라 캐릭터 변경
+        if (direction > 0) // 다음 캐릭터
+        {
+            int currentIndex = CharacterManager.Instance.OwnedCharacters.IndexOf(selectedCharacter);
+            int nextIndex = (currentIndex + 1) % CharacterManager.Instance.OwnedCharacters.Count;
+            selectedCharacter = CharacterManager.Instance.OwnedCharacters[nextIndex];
+        }
+        else if (direction < 0) // 이전 캐릭터
+        {
+            int currentIndex = CharacterManager.Instance.OwnedCharacters.IndexOf(selectedCharacter);
+            int nextIndex = (currentIndex - 1 + CharacterManager.Instance.OwnedCharacters.Count) % CharacterManager.Instance.OwnedCharacters.Count;
+            selectedCharacter = CharacterManager.Instance.OwnedCharacters[nextIndex];
+        }
+        characterStandingImage.sprite = selectedCharacter.CharacterData.Standing; // 캐릭터 풀바디 이미지 설정
+        InfoPopupRefresh(selectedCharacter);
+        LevelUpPopupRefresh(selectedCharacter);
+        SkillInfoPopupRefresh(selectedCharacter);
     }
     // ---------- 캐릭터 정보 팝업 관련 메서드---------------
     private void InfoPopupRefresh(LobbyCharacter character)
