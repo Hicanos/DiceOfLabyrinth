@@ -53,15 +53,6 @@ public class BattleCharacterAttack : MonoBehaviour
         {
             if (battleCharacters[i].IsDead) continue;
             if (battleManager.PartyData.DeadIndex.Contains(i)) continue;
-
-            characterPrefab = battleCharacters[i].Prefab;
-            characterPrefab.GetComponent<SpawnedCharacter>().PrepareAttack();
-        }
-
-        for (int i = 0; i < battleCharacters.Length; i++)
-        {
-            if (battleCharacters[i].IsDead) continue;
-            if (battleManager.PartyData.DeadIndex.Contains(i)) continue;
             characterPrefab = battleCharacters[i].Prefab;
 
             characterAtk = battleCharacters[i].CurrentATK;
