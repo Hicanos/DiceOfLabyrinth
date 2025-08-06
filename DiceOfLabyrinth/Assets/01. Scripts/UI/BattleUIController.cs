@@ -398,6 +398,11 @@ public class BattleUIController : MonoBehaviour
         RefreshTeamFormationButton();
     }
 
+    public void OnClickFilterButton()
+    {
+        messagePopup.Open("미구현된 기능입니다.\n" +
+            "추후 업데이트될 예정입니다.");
+    }
 
     public void OnClickSelectLeaderButton()
     {
