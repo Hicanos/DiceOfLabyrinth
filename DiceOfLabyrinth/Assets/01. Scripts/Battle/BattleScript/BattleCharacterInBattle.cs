@@ -69,6 +69,7 @@ public class BattleCharacterInBattle : IDamagable
         currentCritDamage   = character.CurrentCritDamage;
         currentPenetration  = character.CurrentPenetration;
 
+        Debug.Log($"{charNameKr}, 체력 : {CurrentHP}, 사망상태 : {character.IsDied}");
         if (character.IsDied == true)
         {
             isDead = true;

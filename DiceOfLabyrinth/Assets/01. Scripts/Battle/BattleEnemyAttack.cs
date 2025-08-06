@@ -163,8 +163,8 @@ public class BattleEnemyAttack : MonoBehaviour
                 int damage = skillValue * battleManager.Enemy.CurrentAtk - character.CurrentDEF;
                 if (damage < 0) damage = 0;
 
-                character.TakeDamage(damage);
                 UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(battleManager.Enemy.Data.EnemyName, character.CharNameKr, damage, false);
+                character.TakeDamage(damage);
 
                 if (skill.Debuff == EnemyDebuff.None) continue;
                 else

@@ -205,6 +205,11 @@ public class BattleUILog : MonoBehaviour
         {
             StopCoroutine(writeLogCoroutine);
 
+            if (currentLogIndex == maxLogIndex)
+            {
+                MakeNewLog();
+            }
+
             writeLogCoroutine = WriteLogCoroutine(stashedLogs[0]);
             stashedLogs.RemoveAt(0);
             StartCoroutine(writeLogCoroutine);

@@ -37,7 +37,6 @@ public class BattleTutorial : MonoBehaviour
         loadTutorialData = new LoadTutorialData();
         loadTutorialData.LoadData();
 
-        Debug.Log(TutorialManager.Instance.isGameTutorialCompleted);
         if (TutorialManager.Instance.isGameTutorialCompleted)
         {
             Debug.Log("튜토리얼이 이미 진행되어 데이터 받아오지 않음");
@@ -219,7 +218,7 @@ public class LoadTutorialData
     {
         TextAsset textAsset = Resources.Load<TextAsset>("Json/BattleTutorialData");
         string jsonString = textAsset.text;
-        Debug.Log($"로드 : { jsonString}");
+        //Debug.Log($"로드 : { jsonString}");
         root = JObject.Parse(jsonString);
 
         JToken isOver = root["IsTutorialOver"];
