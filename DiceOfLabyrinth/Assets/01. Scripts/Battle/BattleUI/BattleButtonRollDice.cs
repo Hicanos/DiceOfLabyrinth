@@ -62,13 +62,6 @@ public class BattleButtonRollDice : AbstractBattleButton
         else
         {
             rollButton.interactable = false;
-
-            // 턴 종료 시 모든 캐릭터의 스킬 쿨타임 감소
-            foreach (var character in BattleManager.Instance.PartyData.Characters)
-            {
-                character.character.ReduceSkillCooldown();
-            }
-
             battleManager.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.EndTurn);
             battleManager.EndPlayerTurn();
         }
