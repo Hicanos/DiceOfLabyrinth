@@ -569,6 +569,12 @@ public class BattleUIController : MonoBehaviour
                 characterPlatform.SetActive(false);
         }
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
+
+        StagePanel stagePanelScript = GetComponentInChildren<StagePanel>();
+        if (stagePanelScript != null)
+        {
+            stagePanelScript.UpdateFlags(StageManager.Instance.stageSaveData.currentPhaseIndex);
+        }
     }
 
     public void OpenBattlePanel()
