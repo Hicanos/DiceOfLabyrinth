@@ -398,6 +398,11 @@ public class BattleUIController : MonoBehaviour
         RefreshTeamFormationButton();
     }
 
+    public void OnClickFilterButton()
+    {
+        messagePopup.Open("미구현된 기능입니다.\n" +
+            "추후 업데이트될 예정입니다.");
+    }
 
     public void OnClickSelectLeaderButton()
     {
@@ -525,6 +530,12 @@ public class BattleUIController : MonoBehaviour
                 characterPlatform.SetActive(false);
         }
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
+
+        StagePanel stagePanelScript = GetComponentInChildren<StagePanel>();
+        if (stagePanelScript != null)
+        {
+            stagePanelScript.UpdateFlags(StageManager.Instance.stageSaveData.currentPhaseIndex);
+        }
     }
 
     public void OpenBattlePanel()
