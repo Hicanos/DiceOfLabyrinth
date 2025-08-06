@@ -1977,6 +1977,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 5349052136472078733}
   characterClassTypeImage: {fileID: 6139503729428675535}
+  characterBgImage: {fileID: 4484292133028703041}
   characterElimentTypeImage: {fileID: 996786919763730936}
   characterUpperImage: {fileID: 5350833595776772514}
   characterSignatureDiceImage: {fileID: 2043359504218323803}
@@ -2793,6 +2794,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 5905512284105210992}
   characterClassTypeImage: {fileID: 5512643227287405899}
+  characterBgImage: {fileID: 1373603777353291144}
   characterElimentTypeImage: {fileID: 8716579932648367179}
   characterUpperImage: {fileID: 1481705572422451227}
   characterSignatureDiceImage: {fileID: 4222449300473943352}
@@ -4433,6 +4435,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 4700531142773830294}
   characterClassTypeImage: {fileID: 8651940209227164474}
+  characterBgImage: {fileID: 2569798029614216821}
   characterElimentTypeImage: {fileID: 6371289534627186718}
   characterUpperImage: {fileID: 485816848412093641}
   characterSignatureDiceImage: {fileID: 462219128921187816}
@@ -5029,6 +5032,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 5838504831309787535}
   characterClassTypeImage: {fileID: 6379275435831578062}
+  characterBgImage: {fileID: 5786288879808806921}
   characterElimentTypeImage: {fileID: 6143183505716594504}
   characterUpperImage: {fileID: 2939200483672529035}
   characterSignatureDiceImage: {fileID: 7859019491823753841}
@@ -5978,6 +5982,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 4448543868103865713}
   characterClassTypeImage: {fileID: 8584764350421814852}
+  characterBgImage: {fileID: 4507190357731505320}
   characterElimentTypeImage: {fileID: 623955817709162782}
   characterUpperImage: {fileID: 6683065696470075121}
   characterSignatureDiceImage: {fileID: 7843506921724926057}
@@ -7591,6 +7596,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 6974410139757584044}
   characterClassTypeImage: {fileID: 5865472135805424842}
+  characterBgImage: {fileID: 8794399579138755554}
   characterElimentTypeImage: {fileID: 2731525500133687514}
   characterUpperImage: {fileID: 4168477542938673020}
   characterSignatureDiceImage: {fileID: 5491500917787741741}
@@ -9706,7 +9712,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6349672207056290093
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9960,6 +9966,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 7251184736524799939}
   characterClassTypeImage: {fileID: 2666079061364666241}
+  characterBgImage: {fileID: 8520356986417044477}
   characterElimentTypeImage: {fileID: 4971814218524497475}
   characterUpperImage: {fileID: 3524706619743392391}
   characterSignatureDiceImage: {fileID: 335460993074561460}
@@ -10613,6 +10620,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 7855921609629556960}
   characterClassTypeImage: {fileID: 9131713136914446257}
+  characterBgImage: {fileID: 6542061238069196983}
   characterElimentTypeImage: {fileID: 6265372315385812178}
   characterUpperImage: {fileID: 9211169659219047182}
   characterSignatureDiceImage: {fileID: 5641758857388974974}
@@ -11037,6 +11045,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 4636632844383179086}
   characterClassTypeImage: {fileID: 6585045676442649807}
+  characterBgImage: {fileID: 3145459760308102072}
   characterElimentTypeImage: {fileID: 5706096217799789059}
   characterUpperImage: {fileID: 7761041616764311094}
   characterSignatureDiceImage: {fileID: 7779601803159686808}
@@ -11545,7 +11554,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 197800784419156349}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickFilterButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7486613024814235671
 GameObject:
   m_ObjectHideFlags: 0
