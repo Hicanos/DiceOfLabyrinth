@@ -52,7 +52,7 @@ public class BattleCharacter : IDamagable
     private float initialPenetration;
     private int initialLevel;
 
-    public bool IsDied { get; set; }
+    public bool IsDied;
     public bool UsingSkill { get; set; } = false;
 
     public event Action<int> OnHPChanged;
