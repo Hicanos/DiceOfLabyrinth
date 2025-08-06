@@ -456,6 +456,11 @@ public class BattleUIController : MonoBehaviour
         messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
     }
 
+    public void OnClickFilterButton()
+    {
+        messagePopup.Open("미구현된 기능입니다.\n" +
+            "추후 업데이트될 예정입니다.");
+    }
 
     private void RefreshPlatformColors(int selectedIndex)
     {
