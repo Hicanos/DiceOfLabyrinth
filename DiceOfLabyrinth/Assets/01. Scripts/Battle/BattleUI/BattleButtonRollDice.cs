@@ -56,6 +56,17 @@ public class BattleButtonRollDice : AbstractBattleButton
         {
             diceManager.RollDice();
 
+            // 캐릭터 PrepareAttack() 실행
+            var battleCharacters = BattleManager.Instance.PartyData.Characters;
+            for (int i = 0; i < battleCharacters.Length; i++)
+            {
+                if (battleCharacters[i].IsDead) continue;
+                if (battleManager.PartyData.DeadIndex.Contains(i)) continue;
+
+                var characterPrefab = battleCharacters[i].Prefab;
+                characterPrefab.GetComponent<SpawnedCharacter>().PrepareAttack();
+            }
+
             battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.Reroll, diceManager.RollRemain.ToString());
             diceManager.DiceHolding.GetFixedList();
             
