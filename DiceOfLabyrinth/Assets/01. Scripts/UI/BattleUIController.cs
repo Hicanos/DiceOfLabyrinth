@@ -648,6 +648,7 @@ public class BattleUIController : MonoBehaviour
         List<ArtifactData> allArtifacts = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
     .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ArtifactList;
         var owned = StageManager.Instance.stageSaveData.artifacts.Where(a => a != null).ToList(); // 현재 소유한 아티팩트 목록
+        owned.AddRange(StageManager.Instance.stageSaveData.equipedArtifacts); // 장착된 아티팩트도 소유 목록에 추가
         var available = allArtifacts.Except(owned).ToList();
 
         List<ArtifactData> availableArtifacts = null;

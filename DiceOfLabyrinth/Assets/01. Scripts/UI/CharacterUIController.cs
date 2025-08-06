@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
+using UnityEditor.Build.Pipeline;
 
 public class CharacterUIController : MonoBehaviour
 {
@@ -777,9 +778,9 @@ public class CharacterUIController : MonoBehaviour
                     int midSkillBookCost = skillBookCost.TryGetValue(SkillBookType.Middle, out int midCost) ? midCost : 0;
                     int highSkillBookCost = skillBookCost.TryGetValue(SkillBookType.High, out int highCost) ? highCost : 0;
 
-                    ItemManager.Instance.GetItem(lowSkillBook.ItemID, -lowSkillBookCost);
-                    ItemManager.Instance.GetItem(midSkillBook.ItemID, -midSkillBookCost);
-                    ItemManager.Instance.GetItem(highSkillBook.ItemID, -highSkillBookCost);
+                    if (lowSkillBookCost > 0) ItemManager.Instance.GetItem(lowSkillBook.ItemID, -lowSkillBookCost);
+                    if (midSkillBookCost > 0) ItemManager.Instance.GetItem(midSkillBook.ItemID, -midSkillBookCost);
+                    if (highSkillBookCost > 0) ItemManager.Instance.GetItem(highSkillBook.ItemID, -highSkillBookCost);
                     selectedCharacter.SkillLevelA++;
                     UserDataManager.Instance.UseGold(skillCost);
                 }
@@ -807,9 +808,9 @@ public class CharacterUIController : MonoBehaviour
                     int lowSkillBookCost = skillBookCost.TryGetValue(SkillBookType.Low, out int lowCost) ? lowCost : 0;
                     int midSkillBookCost = skillBookCost.TryGetValue(SkillBookType.Middle, out int midCost) ? midCost : 0;
                     int highSkillBookCost = skillBookCost.TryGetValue(SkillBookType.High, out int highCost) ? highCost : 0;
-                    ItemManager.Instance.GetItem(lowSkillBook.ItemID, -lowSkillBookCost);
-                    ItemManager.Instance.GetItem(midSkillBook.ItemID, -midSkillBookCost);
-                    ItemManager.Instance.GetItem(highSkillBook.ItemID, -highSkillBookCost);
+                    if (lowSkillBookCost > 0) ItemManager.Instance.GetItem(lowSkillBook.ItemID, -lowSkillBookCost);
+                    if (midSkillBookCost > 0) ItemManager.Instance.GetItem(midSkillBook.ItemID, -midSkillBookCost);
+                    if (highSkillBookCost > 0) ItemManager.Instance.GetItem(highSkillBook.ItemID, -highSkillBookCost);
                     selectedCharacter.SkillLevelB++;
                     UserDataManager.Instance.UseGold(skillCost);
                 }
