@@ -29,28 +29,17 @@ public class GetCharacter : MonoBehaviour
 
     // SSR 캐릭터 ID 리스트 (char_0~char_4)
     [Header("소환 등급 별 ID")]
-    [SerializeField] private List<string> SSRCharacterIDs = new List<string>
-    {
-        "Char_0", "Char_1", "Char_2", "Char_3", "Char_4"
-    };
+    [SerializeField] private List<CharacterSO> SSRCharacterIDs = new List<CharacterSO>();
 
     [SerializeField]
-    private List<string> SSRItemIds = new List<string>
-    {
-        "Item_3", "Item_7"
-    };
+    private List<ItemSO> SSRItemIds = new List<ItemSO>();
+
     // SSR 아이템 ID 리스트
-    [SerializeField] private List<string> SRCharacterIDs; // SR 캐릭터 ID 리스트, 현재는 Null
+    [SerializeField] private List<CharacterSO> SRCharacterIDs; // SR 캐릭터 ID 리스트, 현재는 Null
     [SerializeField]
-    private List<string> SRItemIds = new List<string>
-    {
-        "Item_2","Item_6"
-    }; // SR 아이템 ID 리스트
-    [SerializeField] private List<string> RCharacterIDs; // R 캐릭터 ID 리스트, 현재 Null
-    [SerializeField] private List<string> RItemIds = new List<string>
-    {
-        "Item_1","Item_5"
-    }; // R 아이템 ID 리스트
+    private List<ItemSO> SRItemIds = new List<ItemSO>(); // SR 아이템 ID 리스트
+    [SerializeField] private List<CharacterSO> RCharacterIDs; // R 캐릭터 ID 리스트, 현재 Null
+    [SerializeField] private List<ItemSO> RItemIds = new List<ItemSO>(); // R 아이템 ID 리스트
 
 
     // 소환 버튼
@@ -110,29 +99,36 @@ public class GetCharacter : MonoBehaviour
             {
                 Debug.Log("SSR 캐릭터 획득!");
                 // SSR 캐릭터 5명 중 1개 획득
-                string randomCharID = SSRCharacterIDs[Random.Range(0, SSRCharacterIDs.Count)];
+                var randomChar = SSRCharacterIDs[Random.Range(0, SSRCharacterIDs.Count)];
+                string randomCharID = randomChar.charID; // 캐릭터 ID를 가져옴
+
                 ResultCharacters(randomCharID);
-                return $"<color=#ff0000>SSR 캐릭터</color> : {randomCharID}";
+                return $"<color=#ff0000>SSR 캐릭터</color> : {randomChar.nameKr}";
 
             }
             else
             {
                 Debug.Log("SSR 아이템 획득!");
                 // SSR 아이템 2개 중 1개 획득
-                string randomItemID = SSRItemIds[Random.Range(0, SSRItemIds.Count)];
-                Resulttems(randomItemID, Random.Range(5, 11)); // 5~10개 획득
+                var randomItem = SSRItemIds[Random.Range(0, SSRItemIds.Count)];
+                string randomItemID = randomItem.ItemID; // 아이템 ID를 가져옴
+                int itemCount = Random.Range(5, 11); // 5~10개 획득
+
+                Resulttems(randomItemID, itemCount); // 5~10개 획득
                 Debug.Log($"획득한 SSR 아이템 ID: {randomItemID}");
-                return $"<color=#ff0000>SSR 아이템</color> : {randomItemID}";
+                return $"<color=#ff0000>SSR 아이템</color> : {randomItem.NameKr} x{itemCount}";
             }
         }
         else if (randomValue < 20) // SR 캐릭터 획득 확률 18%
         {
             Debug.Log("SR 보상 획득");
             // 현재 SR캐릭터 없음, Item획득
-            string randomItemID = SRItemIds[Random.Range(0, SRItemIds.Count)];
-            Resulttems(randomItemID, Random.Range(5, 11)); // 5~10개 획득
+            var randomItem = SRItemIds[Random.Range(0, SRItemIds.Count)];
+            string randomItemID = randomItem.ItemID; // 아이템 ID를 가져옴
+            int itemCount = Random.Range(5, 11); // 5~10개 획득
+            Resulttems(randomItemID, itemCount); // 5~10개 획득
             Debug.Log($"획득한 SR 아이템 ID: {randomItemID}");
-            return $"<color=#0000ff>SR 아이템</color> :  {randomItemID}";
+            return $"<color=#0000ff>SR 아이템</color> :  {randomItem.NameKr} x{itemCount}";
 
 
         }
@@ -141,10 +137,12 @@ public class GetCharacter : MonoBehaviour
             Debug.Log("R 보상 획득!");
             // R 캐릭터 획득 로직 추가
             // 현재 R 캐릭터 없음, Item획득
-            string randomItemID = RItemIds[Random.Range(0, RItemIds.Count)];
-            Resulttems(randomItemID, Random.Range(5, 11)); // 5~10개 획득
+            var randomItem = RItemIds[Random.Range(0, RItemIds.Count)];
+            string randomItemID = randomItem.ItemID; // 아이템 ID를 가져옴
+            int itemCount = Random.Range(5, 11); // 5~10개 획득
+            Resulttems(randomItemID, itemCount); // 5~10개 획득
             Debug.Log($"획득한 R 아이템 ID: {randomItemID}");
-            return $"<color=#00ff00>R 아이템</color> : {randomItemID}";
+            return $"<color=#00ff00>R 아이템</color> : {randomItem.NameKr} x{itemCount}";
         }
     }
 
@@ -176,7 +174,7 @@ public class GetCharacter : MonoBehaviour
         }
         
         CharacterManager.Instance.AcquireCharacter(CharID);
-
+                
         Debug.Log($"획득한 SSR 캐릭터 ID: {CharID}");
     }
 
