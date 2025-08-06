@@ -98,6 +98,8 @@ public class CharacterUIController : MonoBehaviour
     [SerializeField] private TMP_Text[] skillCooldownText = new TMP_Text[2]; // 스킬 쿨타임 표시용 텍스트
     [SerializeField] private TMP_Text skillBeforeDescriptionText; // 스킬 설명 표시용 텍스트 (레벨업 전)
     [SerializeField] private TMP_Text skillAfterDescriptionText; // 스킬 설명 표시용 텍스트 (레벨업 후)
+    [SerializeField] private TMP_Text activeSkillLevelText; // 액티브 스킬 레벨 표시용 텍스트
+    [SerializeField] private TMP_Text passiveSkillLevelText;// 패시브 스킬 레벨 표시용 텍스트
     [SerializeField] private TMP_Text skillBeforeLevelText; // 스킬 레벨 표시용 텍스트 (레벨업 전)
     [SerializeField] private TMP_Text skillAfterLevelText; // 스킬 레벨 표시용 텍스트 (레벨업 후)
     [SerializeField] private TMP_Text skillBeforeCostText; // 스킬 비용 표시용 텍스트 (레벨업 전)
@@ -625,6 +627,8 @@ public class CharacterUIController : MonoBehaviour
         }
         activeSkillIconImage.sprite = character.CharacterData.activeSO.SkillIcon;
         passiveSkillIconImage.sprite = character.CharacterData.passiveSO.SkillIcon;
+        activeSkillLevelText.text = "Lv." + character.SkillLevelA.ToString();
+        passiveSkillLevelText.text = "Lv." + character.SkillLevelB.ToString();
         if (skillInfoState == 0) // 액티브 스킬
         {
             skillNameText[0].text = character.ActiveSkill.SkillNameKr;
