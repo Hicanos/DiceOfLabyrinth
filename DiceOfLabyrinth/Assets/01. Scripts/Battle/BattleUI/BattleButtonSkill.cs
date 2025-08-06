@@ -53,6 +53,11 @@ public class BattleButtonSkill : AbstractBattleButton
 
     public override void OnPush()
     {
+        if (!character.character.CanUseSkill)
+        {
+            Debug.Log(character.CharNameKr + "의 스킬 쿨타임이 남아있어 사용할 수 없습니다. (남은 쿨타임: " + character.character.CurrentSkillCooldown + ")");
+            return;
+        }
         if (character.character.UsingSkill)
         {
             Debug.Log(character.CharNameKr+"는 이미 스킬을 사용 중입니다.");
