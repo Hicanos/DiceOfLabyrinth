@@ -96,9 +96,17 @@ public class BattleUI : MonoBehaviour
         tutorialText.text = text;
     }
 
-    public void TempButton()
+    public void TempButton(bool value)
     {
-        tempInventoryButton.enabled = !tempInventoryButton.enabled;
-        tempPauseButton.enabled = !tempPauseButton.enabled;
+        if(value)
+        {
+            tempInventoryButton.enabled = true;
+            tempPauseButton.enabled = true;
+        }
+        else
+        {
+            tempInventoryButton.enabled = false;
+            tempPauseButton.enabled = false;
+        }
     }
 }
