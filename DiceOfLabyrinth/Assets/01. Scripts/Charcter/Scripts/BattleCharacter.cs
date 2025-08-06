@@ -52,7 +52,7 @@ public class BattleCharacter : IDamagable
     private float initialPenetration;
     private int initialLevel;
 
-    public bool IsDied { get; set; }
+    public bool IsDied;
     public bool UsingSkill { get; set; } = false;
 
     public event Action<int> OnHPChanged;
@@ -235,7 +235,7 @@ public class BattleCharacter : IDamagable
     {
         //배틀 캐릭터를 DataSaver에서 Regular 값을 세팅할 수 있도록 해주는 메서드
         // 전달받은 데이터로 Regular 값 세팅
-        IsDied = false;
+        IsDied = data.IsDied;
         RegularHP = data.regularHP;
         RegularATK = data.regularATK;
         RegularDEF = data.regularDEF;
