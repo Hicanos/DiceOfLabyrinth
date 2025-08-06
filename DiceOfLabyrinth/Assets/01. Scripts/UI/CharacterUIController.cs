@@ -90,6 +90,21 @@ public class CharacterUIController : MonoBehaviour
         (highLevelUpPotionConsumeAmount * highLevelUpPotion.ExpAmount) +
         (royalLevelUpPotionConsumeAmount * royalLevelUpPotion.ExpAmount); // 가상 경험치 계산
 
+    [Header("Skill Info Popup")]
+    [SerializeField] private TMP_Text[] skillNameText = new TMP_Text[2]; // 스킬 이름 표시용 텍스트
+    [SerializeField] private TMP_Text skillBeforeDescriptionText; // 스킬 설명 표시용 텍스트 (레벨업 전)
+    [SerializeField] private TMP_Text skillAfterDescriptionText; // 스킬 설명 표시용 텍스트 (레벨업 후)
+    [SerializeField] private TMP_Text skillBeforeLevelText; // 스킬 레벨 표시용 텍스트 (레벨업 전)
+    [SerializeField] private TMP_Text skillAfterLevelText; // 스킬 레벨 표시용 텍스트 (레벨업 후)
+    [SerializeField] private TMP_Text skillBeforeCostText; // 스킬 비용 표시용 텍스트 (레벨업 전)
+    [SerializeField] private TMP_Text skillAfterCostText; // 스킬 비용 표시용 텍스트 (레벨업 후)
+    [SerializeField] private Image passiveSkillIconImage; // 패시브 스킬 아이콘 이미지
+    [SerializeField] private Image activeSkillIconImage; // 액티브 스킬 아이콘 이미지
+    [SerializeField] private Image[] selectedSkillIconImage = new Image[2]; // 선택된 스킬 아이콘 이미지
+    [SerializeField] private TMP_Text skillLevelUpCostText; // 스킬 레벨업 비용 표시용 텍스트
+    [SerializeField] private TMP_Text lowSkillBookCostText; // 낮은 스킬북 비용 표시용 텍스트 (필요한 개수/소유 개수)
+    [SerializeField] private TMP_Text midSkillBookCostText; // 중간 스킬북 비용 표시용 텍스트 (필요한 개수/소유 개수)
+    [SerializeField] private TMP_Text highSkillBookCostText; // 높은 스킬북 비용 표시용 텍스트 (필요한 개수/소유 개수)
     [Header("Button Colors")]
     [SerializeField] private Color selectedButtonColor = new(170/255f,140/255f,100/255f,1); // 선택된 버튼 색상
     [SerializeField] private Color unselectedButtonColor = new(1,220/255f,170/255f,1); // 선택되지 않은 버튼 색상
@@ -98,13 +113,14 @@ public class CharacterUIController : MonoBehaviour
     [SerializeField] private List<CharacterSO> unownedCharacters = new List<CharacterSO>(); // 소유하지 않은 캐릭터 목록
     [SerializeField] private LobbyCharacter selectedCharacter; // 현재 선택된 캐릭터
 
+
     [Header("Potion Button Hold Settings")]
     private bool isPotionButtonHeld = false;
     private float potionButtonHoldTime = 0f;
     private float holdThreshold = 0.3f; // 홀드로 인식할 최소 시간(초)
     private float repeatRate = 0.05f;   // 연속 입력 간격(초)
     private float repeatTimer = 0f;
-    private int holdPotionType = -1;
+    private int holdPotionType = -1; // 현재 홀드 중인 포션 타입 (0: 낮은, 1: 중간, 2: 높은, 3: 로열, -1: 없음)
     private bool isCountUp = true;
     private void Awake()
     {
@@ -566,19 +582,8 @@ public class CharacterUIController : MonoBehaviour
     // ------------ 캐릭터 스킬 정보 팝업 관련 메서드-----------
     private void SkillInfoPopupRefresh(LobbyCharacter character)
     {
-        // 액티브 스킬 정보
-        var activeSkill = character.ActiveSkill;
-        if (activeSkill != null)
-        {
-            // 액티브 스킬 정보 갱신 로직
-            // 예: activeSkillText.text = activeSkill.SkillName + " - " + activeSkill.SkillDescription;
-        }
-        // 패시브 스킬 정보
-        var passiveSkill = character.PassiveSkill;
-        if (passiveSkill != null)
-        {
-            // 패시브 스킬 정보 갱신 로직
-            // 예: passiveSkillText.text = passiveSkill.SkillName + " - " + passiveSkill.SkillDescription;
-        }
+        skillNameText[0].text = character.CharacterData.activeSO.SkillNameKr;
+        skillNameText[1].text = character.CharacterData.passiveSO.SkillNameKr;
+        skillBeforeDescriptionText.text = character.CharacterData.activeSO.SkillDescription;
     }
 }

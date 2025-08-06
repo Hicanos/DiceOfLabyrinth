@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class CharacterViewer : MonoBehaviour
 {
@@ -36,8 +37,15 @@ public class CharacterViewer : MonoBehaviour
             // 캐릭터가 소유되지 않은 경우
             return;
         }
-        CharacterUIController.Instance.OpenCharacterInfoPopup(
-            CharacterManager.Instance.OwnedCharacters.FirstOrDefault(c => c.CharacterData.charID == characterData.charID)
+        if ("CharacterScene" == SceneManager.GetActiveScene().name)
+        {
+            CharacterUIController.Instance.OpenCharacterInfoPopup(
+                CharacterManager.Instance.OwnedCharacters.FirstOrDefault(c => c.CharacterData.charID == characterData.charID)
             );
+        }
+        else if ("BattleScene" == SceneManager.GetActiveScene().name)
+        {
+            StageManager.Instance.battleUIController.OnClickCharacterButton(characterData);
+        }
     }
 }

@@ -62,7 +62,7 @@ public class BattleUIController : MonoBehaviour
     [Header("Team Formation")]
     [SerializeField] private SelectedTeamFormation selectedTeamFormation; // 선택된 팀 구성
     [SerializeField] private Image[] teamFormationIcons = new Image[4]; // 팀 구성 아이콘 배열
-    [SerializeField] Image[] characterButtons = new Image[7];
+    [SerializeField] List<CharacterViewer> characterButtons = new List<CharacterViewer>(); // 캐릭터 버튼 배열, 최대 7개로 고정
     public GameObject[] characterPlatforms = new GameObject[5]; // 캐릭터를 위한 플랫폼 배열, 5개로 고정
     public GameObject[] CharacterPlatforms
     {
@@ -285,29 +285,35 @@ public class BattleUIController : MonoBehaviour
         SetBackgroundSprite(chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.
             stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground);
 
-        // characterButtons의 개수를 보유 캐릭터 수 만큼으로 설정하는 로직은 나중에 구현할 예정 현재는 7개로 사용
-
         int ownedCount = CharacterManager.Instance.OwnedCharacters.Count;
-        int buttonCount = characterButtons.Length;
-        int loopCount = Mathf.Min(ownedCount, buttonCount);
-        for (int i = 0; i < loopCount; i++)
-        {
-            var characterSO = CharacterManager.Instance.OwnedCharacters[i].CharacterData;
-            if (characterSO == null)
-            {
-                Debug.LogWarning($"[TeamFormation] CharacterSO at index {i} is null.");
-            }
+        Transform buttonParent = characterButtons[0].transform.parent;
 
-            if (characterSO.icon == null)
+        // 부족하면 복제
+        while (characterButtons.Count < ownedCount)
+        {
+            var go = Instantiate(characterButtons[0].gameObject, buttonParent);
+            var viewer = go.GetComponent<CharacterViewer>();
+            characterButtons.Add(viewer);
+        }
+
+        // 넘치면 비활성화
+        for (int i = 0; i < characterButtons.Count; i++)
+        {
+            if (i < ownedCount)
             {
-                messagePopup.Open($"캐릭터 아이콘이 설정되지 않았습니다. 캐릭터 ID: {characterSO.nameKr}");
+                characterButtons[i].gameObject.SetActive(true);
+                var characterSO = CharacterManager.Instance.OwnedCharacters[i].CharacterData;
+                characterButtons[i].SetCharacterData(characterSO);
             }
-            characterButtons[i].sprite = characterSO.icon; // 캐릭터 아이콘 설정
+            else
+            {
+                characterButtons[i].gameObject.SetActive(false);
+            }
         }
         OnClickTeamFormationButton((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 팀 구성 타입에 맞는 버튼 상태 갱신
     }
 
-    public void OnClickCharacterButton(int characterIndex) // 캐릭터 버튼 클릭 시 호출되는 함수
+    public void OnClickCharacterButton(CharacterSO characterData) // 캐릭터 버튼 클릭 시 호출되는 함수
     {
         if (CharacterManager.Instance == null)
         {
@@ -319,19 +325,9 @@ public class BattleUIController : MonoBehaviour
             messagePopup.Open("OwnedCharacters 리스트가 초기화되지 않았습니다.");
             return;
         }
-        if (characterIndex < 0 || characterIndex >= CharacterManager.Instance.OwnedCharacters.Count)
+        if (characterData == null)
         {
-            messagePopup.Open("잘못된 캐릭터 인덱스입니다. 다시 시도해 주세요.");
-            return;
-        }
-        if (CharacterManager.Instance.OwnedCharacters[characterIndex] == null)
-        {
-            messagePopup.Open("해당 인덱스의 캐릭터가 존재하지 않습니다.");
-            return;
-        }
-        if (CharacterManager.Instance.OwnedCharacters[characterIndex].CharacterData == null)
-        {
-            messagePopup.Open("해당 캐릭터의 데이터가 존재하지 않습니다.");
+            messagePopup.Open("잘못된 캐릭터 데이터입니다. 다시 시도해 주세요.");
             return;
         }
         if (StageManager.Instance == null)
@@ -349,6 +345,7 @@ public class BattleUIController : MonoBehaviour
             messagePopup.Open("entryCharacters 리스트가 초기화되지 않았습니다.");
             return;
         }
+
         // 리스트 크기를 5로 고정
         while (StageManager.Instance.stageSaveData.entryCharacters.Count < 5)
             StageManager.Instance.stageSaveData.entryCharacters.Add(null);
@@ -356,13 +353,11 @@ public class BattleUIController : MonoBehaviour
         while (StageManager.Instance.stageSaveData.entryCharacters.Count > 5)
             StageManager.Instance.stageSaveData.entryCharacters.RemoveAt(StageManager.Instance.stageSaveData.entryCharacters.Count - 1);
 
-        CharacterSO selectedCharacter = CharacterManager.Instance.OwnedCharacters[characterIndex].CharacterData;
-
         // 이미 선택된 캐릭터면 해제(토글)
         bool wasSelected = false;
         for (int i = 0; i < 5; i++)
         {
-            if (StageManager.Instance.stageSaveData.entryCharacters[i] == selectedCharacter)
+            if (StageManager.Instance.stageSaveData.entryCharacters[i] == characterData)
             {
                 StageManager.Instance.stageSaveData.entryCharacters[i] = null;
                 wasSelected = true;
@@ -377,15 +372,15 @@ public class BattleUIController : MonoBehaviour
             {
                 if (StageManager.Instance.stageSaveData.entryCharacters[i] == null)
                 {
-                    StageManager.Instance.stageSaveData.entryCharacters[i] = selectedCharacter;
+                    StageManager.Instance.stageSaveData.entryCharacters[i] = characterData;
                     if (StageManager.Instance.stageSaveData.leaderCharacter == null) // 리더 캐릭터가 설정되지 않았다면 첫 번째 선택된 캐릭터를 리더로 설정
                     {
-                        StageManager.Instance.stageSaveData.leaderCharacter = selectedCharacter;
-                        messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
+                        StageManager.Instance.stageSaveData.leaderCharacter = characterData;
+                        messagePopup.Open($"[{characterData.nameKr}] 캐릭터가 리더로 설정되었습니다.");
                     }
                     //else
                     //{
-                    //    messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 팀에 추가되었습니다.");
+                    //    messagePopup.Open($"[{characterData.nameKr}] 캐릭터가 팀에 추가되었습니다.");
                     //}
                     break;
                 }
@@ -406,40 +401,6 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickSelectLeaderButton()
     {
-        //var entry = StageManager.Instance.stageSaveData.entryCharacters;
-        //if (entry.All(c => c == null))
-        //{
-        //    messagePopup.Open("팀에 캐릭터가 없습니다. 팀을 구성해 주세요.");
-        //    return;
-        //}
-
-        //// 리더가 null이면 0번 인덱스(첫 번째 null이 아닌 캐릭터)를 리더로 지정
-        //if (StageManager.Instance.stageSaveData.leaderCharacter == null)
-        //{
-        //    for (int i = 0; i < entry.Count; i++)
-        //    {
-        //        if (entry[i] != null)
-        //        {
-        //            StageManager.Instance.stageSaveData.leaderCharacter = entry[i];
-        //            messagePopup.Open($"[{entry[i].nameKr}] 캐릭터가 리더로 설정되었습니다.");
-        //            return;
-        //        }
-        //    }
-        //}
-
-        //// 리더가 entryCharacters에 있으면 다음 인덱스의 캐릭터(비어있지 않은 캐릭터)를 리더로, 마지막 인덱스면 0번부터 다시 탐색
-        //int currentLeaderIndex = entry.FindIndex(c => c == StageManager.Instance.stageSaveData.leaderCharacter);
-        //int count = entry.Count;
-        //for (int offset = 1; offset <= count; offset++)
-        //{
-        //    int nextIndex = (currentLeaderIndex + offset) % count;
-        //    if (entry[nextIndex] != null)
-        //    {
-        //        StageManager.Instance.stageSaveData.leaderCharacter = entry[nextIndex];
-        //        messagePopup.Open($"[{entry[nextIndex].nameKr}] 캐릭터가 리더로 설정되었습니다.");
-        //        break;
-        //    }
-        //}
         // 플랫폼 인덱스를 기반으로 리더를 선정하게 변경
         if (selectedPlatformIndex < 0 || selectedPlatformIndex >= characterPlatforms.Length)
         {
