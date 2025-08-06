@@ -142,12 +142,7 @@ public class BattleManager : MonoBehaviour
         Destroy(Enemy.EnemyPrefab);
 
         IsBattle = false;
-    }
 
-    public void ExitStageSetting()
-    {
-        Debug.Log("익시트 스테이지");
-        IsBattle = false;
         InputManager.Instance.BattleInputEnd();
         BattleSpawner.DestroyCharacters();
         BattleSpawner.DestroyDices();
@@ -155,6 +150,8 @@ public class BattleManager : MonoBehaviour
         PartyData = null;
         InBattleStage = false;
     }
+
+   
 
     private void GetStartData(BattleStartData data) //start시 호출되도록
     {
@@ -165,11 +162,6 @@ public class BattleManager : MonoBehaviour
         manastoneAmount = data.manaStone;
     }
 
-    private void CheckDataChanged()
-    {
-
-    }
-
     public void EndBattle(bool isWon = true)
     {
         StartCoroutine(EndBattleCoroutine(isWon));
@@ -177,30 +169,28 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator EndBattleCoroutine(bool isWon = true)
     {        
-        BattleResultData data;
         IsWon = isWon;
-
-        yield return new WaitForSeconds(WaitSecondEndBattle);
-        StateMachine.ChangeState(I_FinishBattleState);
-
+        BattleResultData data;
+        List<BattleCharacter> characters = PartyData.GetEndBattleCharacter();
         manastoneAmount = (int)((manastoneAmount + ArtifactAdditionalStatus.AdditionalStone) * EngravingAdditionalStatus.AdditionalStone);
+
         //결과창 실행
         if (isWon)
         {
-            data = new BattleResultData(true, PartyData.GetEndBattleCharacter(), manastoneAmount);
+            yield return new WaitForSeconds(WaitSecondEndBattle);
 
-            ExitStageSetting();
-            //if (IsStageClear)
-            //{
-            //    ExitStageSetting();
-            //}
+            StateMachine.ChangeState(I_FinishBattleState);
+
+            data = new BattleResultData(true, characters, manastoneAmount);
             
             StageManager.Instance.OnBattleResult(data);            
         }
         else
         {
-            data = new BattleResultData(false, PartyData.GetEndBattleCharacter(), manastoneAmount);
-            ExitStageSetting();
+            StateMachine.ChangeState(I_FinishBattleState);
+
+            data = new BattleResultData(false, characters, manastoneAmount);
+
             StageManager.Instance.OnBattleResult(data);
         }
     }    

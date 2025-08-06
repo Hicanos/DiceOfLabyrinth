@@ -9,6 +9,8 @@ public class BattleStateFinishBattle : IBattleTurnState
 
     public void Enter()
     {
+        UnityEngine.Debug.Log("익시트 배틀");
+
         DiceManager.Instance.ResetSetting();
         InputManager.Instance.BattleInputEnd();
         UIManager.Instance.BattleUI.BattleUILog.TurnOffAllLogs();
@@ -36,5 +38,11 @@ public class BattleStateFinishBattle : IBattleTurnState
         //{
         //    button.DeactiveButton();
         //}
+    }
+
+    public void ExitStageSetting()
+    {
+        
+        
     }
 }
