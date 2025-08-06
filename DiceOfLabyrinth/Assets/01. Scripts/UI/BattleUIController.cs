@@ -62,8 +62,12 @@ public class BattleUIController : MonoBehaviour
     [Header("Team Formation")]
     [SerializeField] private SelectedTeamFormation selectedTeamFormation; // 선택된 팀 구성
     [SerializeField] private Image[] teamFormationIcons = new Image[4]; // 팀 구성 아이콘 배열
-    [SerializeField] Image[] characterButtons = new Image[7];
-    [SerializeField] private GameObject[] characterPlatforms = new GameObject[5]; // 캐릭터를 위한 플랫폼 배열, 5개로 고정
+    [SerializeField] List<CharacterViewer> characterButtons = new List<CharacterViewer>(); // 캐릭터 버튼 배열, 최대 7개로 고정
+    public GameObject[] characterPlatforms = new GameObject[5]; // 캐릭터를 위한 플랫폼 배열, 5개로 고정
+    public GameObject[] CharacterPlatforms
+    {
+        get { return PlatformManager.Instance.platforms; }
+    } // PlatformManager에서 가져온 플랫폼 배열
 
     [Header("Select Choice Panel")]
     [SerializeField] private TMP_Text[] selectChoiceText = new TMP_Text[2]; // 선택지 이벤트 패널 제목
@@ -71,7 +75,6 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private ChoiceOptions[] ChoiceOptions = new ChoiceOptions[2]; // 선택지 이벤트 패널 선택지 옵션, 선택지는 2개까지만 뜸
 
     [Header("Platforms")]
-    [SerializeField] private GameObject platformPrefab; // 플랫폼 프리팹
     [SerializeField] private Color platformDefaultColor; // 플랫폼 기본 색상
     [SerializeField] private Color platformSelectedColor; // 플랫폼 선택 시 색상
     private int selectedPlatformIndex = -1; // 선택된 플랫폼 인덱스
@@ -129,14 +132,6 @@ public class BattleUIController : MonoBehaviour
     private void OnEnable()
     {
         RefreshManaStoneViewer(); // 마나스톤 갯수 초기화
-        foreach (var platform in characterPlatforms)
-        {
-            if (platform != null)
-            {
-                AssignPlatformsFromScene(); // 씬에서 플랫폼 할당
-            }
-        }
-
     }
 
     public void OnClickPauseButton()
@@ -146,15 +141,6 @@ public class BattleUIController : MonoBehaviour
             pausePanel.gameObject.SetActive(true);
             Time.timeScale = 0f;
         }       
-    }
-
-    private void AssignPlatformsFromScene()
-    {
-        var relays = FindObjectsByType<PlatformClickRelay>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        for (int i = 0; i < characterPlatforms.Length; i++)
-        {
-            characterPlatforms[i] = relays.FirstOrDefault(p => p.platformIndex == i)?.gameObject;
-        }
     }
     public void SetBackgroundSprite(Sprite sprite)
     {
@@ -274,6 +260,7 @@ public class BattleUIController : MonoBehaviour
     public void OpenTeamFormationPanel()
     {
         RefreshTeamFormationButton(); // 팀 구성 버튼 상태 갱신
+        PlatformManager.Instance.SetPlatformPosition(); // 플랫폼 위치 설정
         RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
         //Debug.Log($"[TeamFormation] AcquiredCharacters Count: {CharacterManager.Instance.AcquiredCharacters.Count}");
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.TeamSelect; // 현재 페이즈 상태를 팀 구성으로 설정
@@ -298,29 +285,35 @@ public class BattleUIController : MonoBehaviour
         SetBackgroundSprite(chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.
             stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground);
 
-        // characterButtons의 개수를 보유 캐릭터 수 만큼으로 설정하는 로직은 나중에 구현할 예정 현재는 7개로 사용
-
         int ownedCount = CharacterManager.Instance.OwnedCharacters.Count;
-        int buttonCount = characterButtons.Length;
-        int loopCount = Mathf.Min(ownedCount, buttonCount);
-        for (int i = 0; i < loopCount; i++)
-        {
-            var characterSO = CharacterManager.Instance.OwnedCharacters[i].CharacterData;
-            if (characterSO == null)
-            {
-                Debug.LogWarning($"[TeamFormation] CharacterSO at index {i} is null.");
-            }
+        Transform buttonParent = characterButtons[0].transform.parent;
 
-            if (characterSO.icon == null)
-            {
-                messagePopup.Open($"캐릭터 아이콘이 설정되지 않았습니다. 캐릭터 ID: {characterSO.nameKr}");
-            }
-            characterButtons[i].sprite = characterSO.icon; // 캐릭터 아이콘 설정
+        // 부족하면 복제
+        while (characterButtons.Count < ownedCount)
+        {
+            var go = Instantiate(characterButtons[0].gameObject, buttonParent);
+            var viewer = go.GetComponent<CharacterViewer>();
+            characterButtons.Add(viewer);
         }
 
+        // 넘치면 비활성화
+        for (int i = 0; i < characterButtons.Count; i++)
+        {
+            if (i < ownedCount)
+            {
+                characterButtons[i].gameObject.SetActive(true);
+                var characterSO = CharacterManager.Instance.OwnedCharacters[i].CharacterData;
+                characterButtons[i].SetCharacterData(characterSO);
+            }
+            else
+            {
+                characterButtons[i].gameObject.SetActive(false);
+            }
+        }
+        OnClickTeamFormationButton((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 팀 구성 타입에 맞는 버튼 상태 갱신
     }
 
-    public void OnClickCharacterButton(int characterIndex) // 캐릭터 버튼 클릭 시 호출되는 함수
+    public void OnClickCharacterButton(CharacterSO characterData) // 캐릭터 버튼 클릭 시 호출되는 함수
     {
         if (CharacterManager.Instance == null)
         {
@@ -332,19 +325,9 @@ public class BattleUIController : MonoBehaviour
             messagePopup.Open("OwnedCharacters 리스트가 초기화되지 않았습니다.");
             return;
         }
-        if (characterIndex < 0 || characterIndex >= CharacterManager.Instance.OwnedCharacters.Count)
+        if (characterData == null)
         {
-            messagePopup.Open("잘못된 캐릭터 인덱스입니다. 다시 시도해 주세요.");
-            return;
-        }
-        if (CharacterManager.Instance.OwnedCharacters[characterIndex] == null)
-        {
-            messagePopup.Open("해당 인덱스의 캐릭터가 존재하지 않습니다.");
-            return;
-        }
-        if (CharacterManager.Instance.OwnedCharacters[characterIndex].CharacterData == null)
-        {
-            messagePopup.Open("해당 캐릭터의 데이터가 존재하지 않습니다.");
+            messagePopup.Open("잘못된 캐릭터 데이터입니다. 다시 시도해 주세요.");
             return;
         }
         if (StageManager.Instance == null)
@@ -362,6 +345,7 @@ public class BattleUIController : MonoBehaviour
             messagePopup.Open("entryCharacters 리스트가 초기화되지 않았습니다.");
             return;
         }
+
         // 리스트 크기를 5로 고정
         while (StageManager.Instance.stageSaveData.entryCharacters.Count < 5)
             StageManager.Instance.stageSaveData.entryCharacters.Add(null);
@@ -369,13 +353,11 @@ public class BattleUIController : MonoBehaviour
         while (StageManager.Instance.stageSaveData.entryCharacters.Count > 5)
             StageManager.Instance.stageSaveData.entryCharacters.RemoveAt(StageManager.Instance.stageSaveData.entryCharacters.Count - 1);
 
-        CharacterSO selectedCharacter = CharacterManager.Instance.OwnedCharacters[characterIndex].CharacterData;
-
         // 이미 선택된 캐릭터면 해제(토글)
         bool wasSelected = false;
         for (int i = 0; i < 5; i++)
         {
-            if (StageManager.Instance.stageSaveData.entryCharacters[i] == selectedCharacter)
+            if (StageManager.Instance.stageSaveData.entryCharacters[i] == characterData)
             {
                 StageManager.Instance.stageSaveData.entryCharacters[i] = null;
                 wasSelected = true;
@@ -390,15 +372,15 @@ public class BattleUIController : MonoBehaviour
             {
                 if (StageManager.Instance.stageSaveData.entryCharacters[i] == null)
                 {
-                    StageManager.Instance.stageSaveData.entryCharacters[i] = selectedCharacter;
+                    StageManager.Instance.stageSaveData.entryCharacters[i] = characterData;
                     if (StageManager.Instance.stageSaveData.leaderCharacter == null) // 리더 캐릭터가 설정되지 않았다면 첫 번째 선택된 캐릭터를 리더로 설정
                     {
-                        StageManager.Instance.stageSaveData.leaderCharacter = selectedCharacter;
-                        messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
+                        StageManager.Instance.stageSaveData.leaderCharacter = characterData;
+                        messagePopup.Open($"[{characterData.nameKr}] 캐릭터가 리더로 설정되었습니다.");
                     }
                     //else
                     //{
-                    //    messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 팀에 추가되었습니다.");
+                    //    messagePopup.Open($"[{characterData.nameKr}] 캐릭터가 팀에 추가되었습니다.");
                     //}
                     break;
                 }
@@ -412,46 +394,18 @@ public class BattleUIController : MonoBehaviour
     {
         selectedTeamFormation = (SelectedTeamFormation)formationIndex; // 선택된 팀 구성 설정
         StageManager.Instance.stageSaveData.currentFormationType = StageSaveData.CurrentFormationType.FormationA + formationIndex; // 현재 팀 구성 타입 설정
+        PlatformManager.Instance.SetPlatformPosition(); // 플랫폼 위치 설정
         RefreshTeamFormationButton();
     }
 
+    public void OnClickFilterButton()
+    {
+        messagePopup.Open("미구현된 기능입니다.\n" +
+            "추후 업데이트될 예정입니다.");
+    }
 
     public void OnClickSelectLeaderButton()
     {
-        //var entry = StageManager.Instance.stageSaveData.entryCharacters;
-        //if (entry.All(c => c == null))
-        //{
-        //    messagePopup.Open("팀에 캐릭터가 없습니다. 팀을 구성해 주세요.");
-        //    return;
-        //}
-
-        //// 리더가 null이면 0번 인덱스(첫 번째 null이 아닌 캐릭터)를 리더로 지정
-        //if (StageManager.Instance.stageSaveData.leaderCharacter == null)
-        //{
-        //    for (int i = 0; i < entry.Count; i++)
-        //    {
-        //        if (entry[i] != null)
-        //        {
-        //            StageManager.Instance.stageSaveData.leaderCharacter = entry[i];
-        //            messagePopup.Open($"[{entry[i].nameKr}] 캐릭터가 리더로 설정되었습니다.");
-        //            return;
-        //        }
-        //    }
-        //}
-
-        //// 리더가 entryCharacters에 있으면 다음 인덱스의 캐릭터(비어있지 않은 캐릭터)를 리더로, 마지막 인덱스면 0번부터 다시 탐색
-        //int currentLeaderIndex = entry.FindIndex(c => c == StageManager.Instance.stageSaveData.leaderCharacter);
-        //int count = entry.Count;
-        //for (int offset = 1; offset <= count; offset++)
-        //{
-        //    int nextIndex = (currentLeaderIndex + offset) % count;
-        //    if (entry[nextIndex] != null)
-        //    {
-        //        StageManager.Instance.stageSaveData.leaderCharacter = entry[nextIndex];
-        //        messagePopup.Open($"[{entry[nextIndex].nameKr}] 캐릭터가 리더로 설정되었습니다.");
-        //        break;
-        //    }
-        //}
         // 플랫폼 인덱스를 기반으로 리더를 선정하게 변경
         if (selectedPlatformIndex < 0 || selectedPlatformIndex >= characterPlatforms.Length)
         {
@@ -533,13 +487,6 @@ public class BattleUIController : MonoBehaviour
                 GameObject battleCharacterObject = StageManager.Instance.stageSaveData.entryCharacters[i].charBattlePrefab;
                 GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity);
             }
-
-            // 플랫폼 위치 이동 (생성 X)
-            GameObject characterPlatform = characterPlatforms[i];
-            if (characterPlatform != null)
-            {
-                characterPlatform.transform.position = spawnPoint;
-            }
         }
     }
     private void DeleteSpawnedCharacters() // 월드에 스폰된 캐릭터를 제거하는 함수
@@ -559,27 +506,6 @@ public class BattleUIController : MonoBehaviour
         }
         for (int i = 0; i < characterPlatforms.Length; i++)
         {
-            // 플랫폼이 null이면 월드에서 먼저 찾아보고, 없으면 즉시 생성
-            if (characterPlatforms[i] == null)
-            {
-                // 월드에서 플랫폼을 찾기
-                characterPlatforms[i] = FindObjectsByType<PlatformClickRelay>(FindObjectsInactive.Include, FindObjectsSortMode.None)
-                    .Where(p => p.platformIndex == i)
-                    .Select(p => p.gameObject)
-                    .FirstOrDefault();
-
-                // 플랫폼이 null이면 즉시 생성
-                if (characterPlatforms[i] == null)
-                {
-                    Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
-                    .stageData.PlayerFormations[(int)StageManager.Instance.stageSaveData.currentFormationType].PlayerPositions[i].Position;
-                    var platform = Instantiate(platformPrefab, spawnPoint, Quaternion.identity);
-                    platform.SetActive(false);
-                    characterPlatforms[i] = platform;
-                    characterPlatforms[i].GetComponent<PlatformClickRelay>().platformIndex = i;
-                    platform.transform.position = spawnPoint;
-                }
-            }
             RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
         }
     }
@@ -604,6 +530,12 @@ public class BattleUIController : MonoBehaviour
                 characterPlatform.SetActive(false);
         }
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
+
+        StagePanel stagePanelScript = GetComponentInChildren<StagePanel>();
+        if (stagePanelScript != null)
+        {
+            stagePanelScript.UpdateFlags(StageManager.Instance.stageSaveData.currentPhaseIndex);
+        }
     }
 
     public void OpenBattlePanel()
@@ -716,6 +648,7 @@ public class BattleUIController : MonoBehaviour
         List<ArtifactData> allArtifacts = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
     .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ArtifactList;
         var owned = StageManager.Instance.stageSaveData.artifacts.Where(a => a != null).ToList(); // 현재 소유한 아티팩트 목록
+        owned.AddRange(StageManager.Instance.stageSaveData.equipedArtifacts); // 장착된 아티팩트도 소유 목록에 추가
         var available = allArtifacts.Except(owned).ToList();
 
         List<ArtifactData> availableArtifacts = null;

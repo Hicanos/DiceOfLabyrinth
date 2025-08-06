@@ -116,9 +116,20 @@ public class ItemManager
         if (ownedItems.ContainsKey(ItemID))
         {
             ownedItems[ItemID] += Count;
+            if(ownedItems[ItemID] <= 0)
+            {
+                ownedItems[ItemID] = 0; // 개수가 음수로 내려가지 않도록 방지
+                ownedItems.Remove(ItemID); // 개수가 0이 되면 아이템 제거
+                Debug.Log($"아이템 제거: {ItemID}, 개수가 0이 되어 제거됨");
+            }
         }
         else
         {
+            if (Count <= 0)
+            {
+                Debug.Log($"아이템 획득 실패: {ItemID}, 획득 개수가 0 이하입니다.");
+                return;
+            }
             ownedItems.Add(ItemID, Count);
         }
 #if UNITY_EDITOR

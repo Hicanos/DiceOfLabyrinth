@@ -53,15 +53,6 @@ public class BattleCharacterAttack : MonoBehaviour
         {
             if (battleCharacters[i].IsDead) continue;
             if (battleManager.PartyData.DeadIndex.Contains(i)) continue;
-
-            characterPrefab = battleCharacters[i].Prefab;
-            characterPrefab.GetComponent<SpawnedCharacter>().PrepareAttack();
-        }
-
-        for (int i = 0; i < battleCharacters.Length; i++)
-        {
-            if (battleCharacters[i].IsDead) continue;
-            if (battleManager.PartyData.DeadIndex.Contains(i)) continue;
             characterPrefab = battleCharacters[i].Prefab;
 
             characterAtk = battleCharacters[i].CurrentATK;
@@ -120,13 +111,13 @@ public class BattleCharacterAttack : MonoBehaviour
 
     private int CalculateDamage(int characterAtk, int monsterDef, float penetration, float elementDamage, float diceWeighting)
     {
-        //{공격력 - 방어력 * (1-방어력 관통률)} * (1 + 버프 + 아티팩트 + 속성 + 패시브) * (족보별 계수 * 각인 계수)
         float engravingAddAtk = battleManager.EngravingAdditionalStatus.AdditionalDamage;
         float additionalElementDamage = battleManager.ArtifactAdditionalStatus.AdditionalElementDamage;
         float artifactAddAtk = battleManager.ArtifactAdditionalStatus.AdditionalDamage;
 
-        float damage = (characterAtk - monsterDef * (1- penetration)) * (1 + artifactAddAtk + elementDamage + additionalElementDamage) * ((int)diceWeighting * engravingAddAtk);
-        Debug.Log($"({characterAtk} - {monsterDef} * (1 - {penetration})) * (1 + {artifactAddAtk} + {elementDamage} + {additionalElementDamage}) * ({(int)diceWeighting} * {engravingAddAtk})\nEngrving :  + {engravingAddAtk}\nArtifact :  + {artifactAddAtk}\nElement :  + {additionalElementDamage}");
+        //공격력 * [100/{방어력 * (1-방어력 관통률) +100}] * (1 + 버프 + 아티팩트 + 속성 + 패시브) * 족보별 계수 * 각인 계수
+        float damage = characterAtk * (100/ (monsterDef * (1- penetration) + 100)) * (1 + artifactAddAtk + elementDamage + additionalElementDamage) * ((int)diceWeighting * engravingAddAtk);
+        Debug.Log($"{characterAtk} * (100 / {monsterDef} * (1 - {penetration} + 100)) * (1 + {artifactAddAtk} + {elementDamage} + {additionalElementDamage}) * ({(int)diceWeighting} * {engravingAddAtk})\nEngrving :  + {engravingAddAtk}\nArtifact :  + {artifactAddAtk}\nElement :  + {additionalElementDamage}");
         damage = Mathf.Clamp(damage, 0, damage);
 
         if (TutorialManager.Instance.isGameTutorialCompleted == false) damage /= 4;

@@ -234,19 +234,20 @@ public class SelectAdventureUIController : MonoBehaviour
                 () => {
                     selectChapterPanel.SetActive(false);
                     scarceStaminaPanel.SetActive(false);
+                    SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
                     StageManager.Instance.RestoreStageState();
                 }, // 확인(Yes) 버튼 클릭 시
                 () =>
                 {
-                    messagePopup.Close(); // 취소(No) 버튼 클릭 시
-                    messagePopup.Open("진행 중이던 챕터를 정산하시겠습니까? \n" +
-                        "정산을 하게 되면 현재 진행 중인 챕터의 상태가 초기화됩니다. \n" +
-                        "정산 후에는 다시 진행할 수 없습니다.",
-                        () => {
-                            StageManager.Instance.EndChapterEarly(chapterIndex); // 현재 진행 중인 챕터를 정산합니다.
-                        }, // 확인(Yes) 버튼 클릭 시
-                        () => messagePopup.Close() // 취소(No) 버튼 클릭 시
-                    );
+                    messagePopup.Close();
+                    DOTween.Sequence()
+                        .AppendInterval(0.25f) // fadeOut 시간만큼 대기
+                        .AppendCallback(() => {
+                            messagePopup.Open("진행 중이던 챕터를 정산하시겠습니까? ...",
+                                () => { StageManager.Instance.EndChapterEarly(chapterIndex); },
+                                () => messagePopup.Close()
+                            );
+                        });
                 }
                 );
                 return;
@@ -274,7 +275,7 @@ public class SelectAdventureUIController : MonoBehaviour
             StageManager.Instance.stageSaveData.currentChapterIndex = chapterIndex; // 현재 챕터 인덱스 설정
             StageManager.Instance.stageSaveData.ResetToDefault(chapterIndex); // 스테이지 상태 초기화
             Debug.Log($"Starting battle for chapter: {selectedChapter.ChapterName} (Index: {chapterIndex})");
-            //SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
+            SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
             //costCalculationPanel.SetActive(false);
             StageManager.Instance.RestoreStageState(); // 현재 스테이지 상태 복원
         }
@@ -353,7 +354,7 @@ public class SelectAdventureUIController : MonoBehaviour
         {
             messagePopup.Open($"진행 중인 챕터({StageManager.Instance.chapterData.GetNameAndDifficulty(StageManager.Instance.stageSaveData.currentChapterIndex)})가 있습니다. 먼저 해당 챕터를 종료한 후 다시 시도해 주세요.");
         }
-        else if (UserDataManager.Instance.userdata.stamina < actualCost) // 스태미나가 부족할 때
+        else if (UserDataManager.Instance.currentStamina < actualCost) // 스태미나가 부족할 때
         {
             messagePopup.Open($"직접 완료를 하려면 {actualCost} 스태미나가 필요합니다. 충전하시겠습니까?",
                 () => OpenScaresStaminaPanel(), // 스태미나 부족 UI 열기
@@ -506,8 +507,8 @@ public class SelectAdventureUIController : MonoBehaviour
     private void UpdateStaminaUI() // 스태미나 부족 UI를 업데이트
     {
         // 스태미나 충전을 하게 되었을 때의 상태를 보여줍니다.
-        beforeStaminaText.text = $"{UserDataManager.Instance.userdata.stamina}";
-        afterStaminaText.text = $"{UserDataManager.Instance.userdata.stamina + 50}";
+        beforeStaminaText.text = $"{UserDataManager.Instance.currentStamina}";
+        afterStaminaText.text = $"{UserDataManager.Instance.currentStamina + 50}";
         jewelCostText.text = $"{jewelCost}"; // 추후 구매 할 때마다 가격 증가하도록 변경
     }
 }

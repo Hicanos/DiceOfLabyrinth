@@ -3,23 +3,23 @@ using System.Collections.Generic;
 
 public class FakeDiceHolding : MonoBehaviour
 {
-    //private const int diceMaxNum = 6;
-    //private const int diceCount = 5;
+    private const int diceMaxNum = 6;
+    private const int diceCount = 5;
 
-    //[SerializeField] AbstractDiceArea[] fakeDiceAreas;
-    //[SerializeField] AbstractDiceArea[] fixedFakeDiceAreas;
+    [SerializeField] AbstractDiceArea[] fakeDiceAreas;
+    [SerializeField] AbstractDiceArea[] fixedFakeDiceAreas;
 
-    //private int[] diceResult;
-    //private bool[] isFixedList;
+    private int[] diceResult;
+    private bool[] isFixedList;
 
-    //public void SpawnFakeDices(List<BattleCharacter> characters)
-    //{
-    //    for(int i = 0; i < diceCount; i++)
-    //    {
-    //        fakeDiceAreas[i].SetDiceImages(characters);
-    //        fixedFakeDiceAreas[i].SetDiceImages(characters);
-    //    }
-    //}
+    public void SpawnFakeDices(List<BattleCharacter> characters)
+    {
+        for (int i = 0; i < diceCount; i++)
+        {
+            fakeDiceAreas[i].SetDiceImages(characters);
+            fixedFakeDiceAreas[i].SetDiceImages(characters);
+        }
+    }
 
     //public void ActiveFakeDiceResult(int[] diceResult)
     //{

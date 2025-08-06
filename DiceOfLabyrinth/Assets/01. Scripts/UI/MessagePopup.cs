@@ -2,6 +2,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MessagePopup : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class MessagePopup : MonoBehaviour
     [SerializeField] private GameObject yesButton;
     [SerializeField] private GameObject noButton;
     [SerializeField] private CanvasGroup cgFade;
+    [SerializeField] private ScrollRect scrollRect;
 
     [SerializeField] float fadeIn = .25f;
     [SerializeField] float fadeOut = .20f;
@@ -54,6 +56,8 @@ public class MessagePopup : MonoBehaviour
         _onNo = onNo;
         gameObject.SetActive(true);
 
+        ResetScrollPosition();
+
 #if DOTWEEN
         cgFade.alpha = 0;
         cgFade.DOFade(1, fadeIn);
@@ -61,6 +65,14 @@ public class MessagePopup : MonoBehaviour
         transform.localScale = Vector3.one * popScale;
         transform.DOScale(1, fadeIn).SetEase(Ease.OutBack);
 #endif
+    }
+
+    private void ResetScrollPosition()
+    {
+        if (scrollRect != null)
+        {
+            scrollRect.verticalNormalizedPosition = 1f; // 맨 위
+        }
     }
 
     public void OnClickYes()

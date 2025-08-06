@@ -111,7 +111,6 @@ public class BattleEnemyAttack : MonoBehaviour
         {
             targetIndex.Add(BackIndex[i]);
         }
-
         return targetIndex;
     }
 
@@ -160,6 +159,7 @@ public class BattleEnemyAttack : MonoBehaviour
                 characterIndex = targetIndexTest[j];
                 character = battleManager.PartyData.Characters[characterIndex];
 
+                Debug.Log($"에너미 어택 : {skillValue} * {battleManager.Enemy.CurrentAtk} - {character.CurrentDEF}");
                 int damage = skillValue * battleManager.Enemy.CurrentAtk - character.CurrentDEF;
                 if (damage < 0) damage = 0;
 

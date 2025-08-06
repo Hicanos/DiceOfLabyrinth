@@ -52,7 +52,7 @@ public class BattleCharacter : IDamagable
     private float initialPenetration;
     private int initialLevel;
 
-    public bool IsDied { get; set; }
+    public bool IsDied;
     public bool UsingSkill { get; set; } = false;
 
     public event Action<int> OnHPChanged;
@@ -67,6 +67,9 @@ public class BattleCharacter : IDamagable
     public float BuffValueA;
     public ActiveSO ActiveSkill;
 
+    public int SkillCooldown = 3; // 기본 쿨타임(원하는 값으로 조정)
+    public int CurrentSkillCooldown = 0;
+
 
     [Header("패시브 스킬 데이터")]
     // LobbyCharacter를 확인하고, 해당 데이터와 연동
@@ -76,7 +79,20 @@ public class BattleCharacter : IDamagable
     public float BuffValueB;
     public PassiveSO PassiveSkill;
 
+    public bool CanUseSkill => CurrentSkillCooldown == 0;
 
+    public void ReduceSkillCooldown()
+    {
+        if (CurrentSkillCooldown > 0)
+            CurrentSkillCooldown--;
+        if(CurrentSkillCooldown <= 0)
+            CurrentSkillCooldown = 0; // 쿨타임이 0 이하로 내려가지 않도록 보장
+    }
+
+    public void SetSkillCooldown()
+    {
+        CurrentSkillCooldown = SkillCooldown;
+    }
 
     public BattleCharacter(CharacterSO so)
     {
@@ -143,6 +159,9 @@ public class BattleCharacter : IDamagable
         SkillValueA = lobbyChar.SkillValueA;
         BuffProbabilityA = lobbyChar.BuffProbabilityA;
         BuffValueA = lobbyChar.BuffValueA;
+
+        //SkillSO의 쿨타임을 가져옴
+        SkillCooldown = ActiveSkill != null ? ActiveSkill.CoolTime : 3; // 기본값 3
 
         PassiveSkill = lobbyChar.PassiveSkill;
         SkillLevelB = lobbyChar.SkillLevelB;
@@ -216,7 +235,7 @@ public class BattleCharacter : IDamagable
     {
         //배틀 캐릭터를 DataSaver에서 Regular 값을 세팅할 수 있도록 해주는 메서드
         // 전달받은 데이터로 Regular 값 세팅
-        IsDied = false;
+        IsDied = data.IsDied;
         RegularHP = data.regularHP;
         RegularATK = data.regularATK;
         RegularDEF = data.regularDEF;
@@ -280,6 +299,7 @@ public class BattleCharacter : IDamagable
         if (ActiveSkill != null)
         {
             SkillController.SkillUse(this, ActiveSkill, allAllies, enemy);
+            SetSkillCooldown(); // 스킬 사용 시 쿨타임 설정
         }
         else
         {

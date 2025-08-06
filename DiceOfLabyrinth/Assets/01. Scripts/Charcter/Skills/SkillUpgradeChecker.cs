@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class SkillUpgradeChecker
 {
     // 스킬 레벨업에 필요한 스킬북 개수 정의
-    private static readonly Dictionary<int, Dictionary<SkillBookType, int>> SkillBookRequirements = new()
+    public static readonly Dictionary<int, Dictionary<SkillBookType, int>> SkillBookRequirements = new()
     {
         { 1, new Dictionary<SkillBookType, int> { { SkillBookType.Low, 5 } } },
         { 2, new Dictionary<SkillBookType, int> { { SkillBookType.Low, 10 }, { SkillBookType.Middle, 5 } } },
