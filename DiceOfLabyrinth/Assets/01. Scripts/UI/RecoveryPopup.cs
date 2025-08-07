@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Helios.GUI;
 
 public class RecoveryPopup : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class RecoveryPopup : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] private GameObject shopPopup;
     [SerializeField] private MessagePopup messagePopup;
+    [SerializeField] private AnimationRect animationRect;
 
     [Header("Character Viewers")]
     [SerializeField] private GameObject[] characterViewers;
@@ -186,7 +188,21 @@ public class RecoveryPopup : MonoBehaviour
     }
     public void OnClickShop()
     {
-        shopPopup.SetActive(true);
-        gameObject.SetActive(false);
+        if (animationRect.IsAnimating)
+        {
+            return;
+        }
+
+        animationRect.CloseWithCallback(() =>
+        {
+            shopPopup.SetActive(true);
+            gameObject.SetActive(false);
+
+            AnimationRect shopAnim = shopPopup.GetComponent<AnimationRect>();
+            if (shopAnim != null)
+            {
+                shopAnim.PlayAllWithLock();
+            }
+        });
     }
 }
