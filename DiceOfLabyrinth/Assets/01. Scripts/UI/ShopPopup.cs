@@ -362,12 +362,22 @@ public class ShopPopup : MonoBehaviour
 
     public void OnClickRecoveryPopupButton()
     {
-        
+        if (animationRect.IsAnimating)
+        {
+            return;
+        }
+
         animationRect.CloseWithCallback(() =>
         {
             gameObject.SetActive(false);
+            recoveryPopup.SetActive(true);
+
+            AnimationRect recoveryAnim = recoveryPopup.GetComponent<AnimationRect>();
+            if (recoveryAnim != null)
+            {
+                recoveryAnim.PlayAllWithLock();
+            }
         });
-        recoveryPopup.SetActive(true);
     }
 
     public void OnClickCloseButton()

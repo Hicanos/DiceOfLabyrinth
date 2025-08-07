@@ -24,6 +24,10 @@ namespace Helios.GUI {
         public float timeDelayBot = 0.05f;
         public float timeDelayBotNext = 0f;
 
+        [Header("팝업이 화면 밖으로 나가는 거리")]
+        public float leftOutDistance = 1500f;
+        public float rightOutDistance = 1500f;
+
         public RectTransform[] rectAnimScale;
         public RectTransform[] rectAnimRight;
         public RectTransform[] rectAnimLeft;
@@ -36,6 +40,9 @@ namespace Helios.GUI {
         private bool originSaved = false;
         Vector3 scaleStart = new Vector3(0.0f, 0.0f, 0.0f);
 
+        // 애니메이션 중 클릭 방지
+        private bool isAnimating = false;
+        public bool IsAnimating => isAnimating; // 외부 접근용
 
 
 #if DOTWEEN
@@ -75,12 +82,41 @@ namespace Helios.GUI {
         AnimBotIn();
     }
 
+    public void PlayAllWithLock()
+    {
+        isAnimating = true;
+        PlayAllIn();
+        Invoke(nameof(ReleaseLock), GetMaxInAnimTime());
+    }
+
+    private void ReleaseLock()
+    {
+        isAnimating = false;
+    }
+
+    public float GetMaxInAnimTime()
+    {
+        int maxCount = Mathf.Max(
+            rectAnimScale?.Length ?? 0,
+            rectAnimRight?.Length ?? 0,
+            rectAnimLeft?.Length ?? 0,
+            rectAnimTop?.Length ?? 0,
+            rectAnimBot?.Length ?? 0
+        );
+
+        float maxDelay = Mathf.Max(timeDelayScale, timeDelayRight, timeDelayLeft, timeDelayTop, timeDelayBot);
+        float maxAnim = Mathf.Max(timeAnimScale, timeAnimRight, timeAnimLeft, timeAnimTop, timeAnimBot);
+        float maxDelayNext = Mathf.Max(timeDelayRightNext, timeDelayLeftNext, timeDelayTopNext, timeDelayBotNext);
+
+        return maxDelay + maxDelayNext * maxCount + maxAnim;
+    }
+
     void AnimScaleIn() {
-        for(int i = 0; i < rectAnimScale.Length; i++) {
-            if(rectAnimScale[i] == null) continue;
-            rectAnimScale[i].localScale = scaleStart;
-            rectAnimScale[i].DOScale(Vector3.one, timeAnimScale).SetEase(Ease.OutBack).SetDelay(timeDelayScale + timeDelayScale * i);
-        }
+    for(int i = 0; i < rectAnimScale.Length; i++) {
+        if(rectAnimScale[i] == null) continue;
+        rectAnimScale[i].localScale = scaleStart;
+        rectAnimScale[i].DOScale(Vector3.one, timeAnimScale).SetEase(Ease.OutBack).SetDelay(timeDelayScale + timeDelayScale * i);
+    }
     }
 
     public void AnimRightIn() {
@@ -131,7 +167,7 @@ namespace Helios.GUI {
             Vector2 vector2 = rectAnimLeft[i].anchoredPosition;
             rectAnimLeft[i].anchoredPosition = new Vector2(vector2.x, vector2.y);
 
-            DG.Tweening.Tween tween = rectAnimLeft[i].DOAnchorPosX(vector2.x - 1500, timeAnimLeft)
+            DG.Tweening.Tween tween = rectAnimLeft[i].DOAnchorPosX(vector2.x - leftOutDistance, timeAnimLeft)
                     .SetEase(Ease.OutCubic)
                     .SetDelay(timeDelayLeft + timeDelayLeftNext * i * 2);
             if (i == rectAnimLeft.Length - 1 && onComplete != null)
@@ -150,7 +186,7 @@ namespace Helios.GUI {
             Vector2 vector2 = rectAnimRight[i].anchoredPosition;
             rectAnimRight[i].anchoredPosition = new Vector2(vector2.x, vector2.y);
 
-            DG.Tweening.Tween tween = rectAnimRight[i].DOAnchorPosX(vector2.x + 1500, timeAnimRight)
+            DG.Tweening.Tween tween = rectAnimRight[i].DOAnchorPosX(vector2.x + rightOutDistance, timeAnimRight)
                     .SetEase(Ease.OutCubic)
                     .SetDelay(timeDelayRight + timeDelayRightNext * i * 2);
             if (i == rectAnimRight.Length - 1 && onComplete != null)
@@ -201,7 +237,7 @@ namespace Helios.GUI {
             if (rect == null) continue;
 
             Vector2 original = rect.anchoredPosition;
-            rect.DOAnchorPosX(original.x - 1500, timeAnimLeft)
+            rect.DOAnchorPosX(original.x - leftOutDistance, timeAnimLeft)
                 .SetEase(Ease.OutCubic)
                 .OnComplete(() => checkComplete());
         }
@@ -213,7 +249,7 @@ namespace Helios.GUI {
             if (rect == null) continue;
 
             Vector2 original = rect.anchoredPosition;
-            rect.DOAnchorPosX(original.x + 1500, timeAnimRight)
+            rect.DOAnchorPosX(original.x + rightOutDistance, timeAnimRight)
                 .SetEase(Ease.OutCubic)
                 .OnComplete(() => checkComplete());
         }
