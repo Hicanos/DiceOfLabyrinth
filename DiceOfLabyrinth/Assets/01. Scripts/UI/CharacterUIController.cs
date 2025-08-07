@@ -628,7 +628,27 @@ public class CharacterUIController : MonoBehaviour
     {
         if (character == null || character.CharacterData == null)
         {
-            Debug.LogError("Character or CharacterData is null in SkillInfoPopupRefresh.");
+            // UI를 안전한 기본값으로 복구
+            foreach (var text in skillNameText)
+                text.text = "-";
+            foreach (var text in skillCooldownText)
+                text.text = "-";
+            skillBeforeDescriptionText.text = "-";
+            skillAfterDescriptionText.text = "-";
+            activeSkillLevelText.text = "Lv.-";
+            passiveSkillLevelText.text = "Lv.-";
+            skillBeforeLevelText.text = "Lv.-";
+            skillAfterLevelText.text = "Lv.-";
+            skillBeforeCostText.text = "-";
+            skillAfterCostText.text = "-";
+            skillLevelUpGoldCostText.text = "-";
+            lowSkillBookCostText.text = "-";
+            midSkillBookCostText.text = "-";
+            highSkillBookCostText.text = "-";
+            if (activeSkillIconImage != null) activeSkillIconImage.sprite = null;
+            if (passiveSkillIconImage != null) passiveSkillIconImage.sprite = null;
+            foreach (var img in selectedSkillIconImage)
+                if (img != null) img.sprite = null;
             return;
         }
         if (skillInfoState == 0)
@@ -663,8 +683,12 @@ public class CharacterUIController : MonoBehaviour
             };
             skillBeforeDescriptionText.text = ReplaceSkillDescription(activeBeforeDescriptionText, activeReplacements);
             string activeAfterDescriptionText = character.CharacterData.activeSO.SkillDescription;
+            skillBeforeLevelText.text = "Lv." + character.SkillLevelA.ToString();
+            skillAfterLevelText.text = "Lv." + character.SkillLevelA.ToString();
+
             if (character.SkillLevelA <= 4)
             {
+                skillAfterLevelText.text = "Lv." + (character.SkillLevelA + 1).ToString();
                 activeReplacements = new Dictionary<string, string>
                 {
                     { "{Skill_Value}", (character.SkillValueA + character.ActiveSkill.PlusSkillValue).ToString("F1") },
@@ -673,9 +697,6 @@ public class CharacterUIController : MonoBehaviour
                 };
             }
             skillAfterDescriptionText.text = ReplaceSkillDescription(activeAfterDescriptionText, activeReplacements);
-            
-            skillBeforeLevelText.text = "Lv." + character.SkillLevelA.ToString();
-            skillAfterLevelText.text = "Lv." + (character.SkillLevelA + 1).ToString();
 
             skillBeforeCostText.text = character.ActiveSkill.SkillCost.ToString();
             skillAfterCostText.text = character.ActiveSkill.SkillCost.ToString();
@@ -689,20 +710,31 @@ public class CharacterUIController : MonoBehaviour
                 text.text = $"쿨타임 {character.ActiveSkill.CoolTime}턴";
             }
 
-            Dictionary<SkillBookType, int> skillBookCost = SkillUpgradeChecker.SkillBookRequirements.TryGetValue(
-                character.SkillLevelA,
-                out var costs) ? costs : new Dictionary<SkillBookType, int>();
-            string lowSkillBookCost = costs.TryGetValue(SkillBookType.Low, out int lowCost) ? lowCost.ToString() : "0";
-            string midSkillBookCost = costs.TryGetValue(SkillBookType.Middle, out int midCost) ? midCost.ToString() : "0";
-            string highSkillBookCost = costs.TryGetValue(SkillBookType.High, out int highCost) ? highCost.ToString() : "0";
-            int lowSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(lowSkillBook.ItemID, out var lowAmount) ? lowAmount : 0;
-            int midSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(midSkillBook.ItemID, out var midAmount) ? midAmount : 0;
-            int highSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(highSkillBook.ItemID, out var highAmount) ? highAmount : 0;
-            lowSkillBookCostText.text = $"{lowSkillBookAmount} / {lowSkillBookCost}";
-            midSkillBookCostText.text = $"{midSkillBookAmount} / {midSkillBookCost}";
-            highSkillBookCostText.text = $"{highSkillBookAmount} / {highSkillBookCost}";
-
-            skillLevelUpGoldCostText.text = skillLevelUpGoldCost[character.SkillLevelA - 1].ToString();
+            if (character.SkillLevelA <= 4)
+            {
+                // 코스트/스킬북 계산 및 UI 표시
+                Dictionary<SkillBookType, int> skillBookCost = SkillUpgradeChecker.SkillBookRequirements.TryGetValue(
+                    character.SkillLevelA,
+                    out var costs) ? costs : new Dictionary<SkillBookType, int>();
+                string lowSkillBookCost = costs.TryGetValue(SkillBookType.Low, out int lowCost) ? lowCost.ToString() : "0";
+                string midSkillBookCost = costs.TryGetValue(SkillBookType.Middle, out int midCost) ? midCost.ToString() : "0";
+                string highSkillBookCost = costs.TryGetValue(SkillBookType.High, out int highCost) ? highCost.ToString() : "0";
+                int lowSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(lowSkillBook.ItemID, out var lowAmount) ? lowAmount : 0;
+                int midSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(midSkillBook.ItemID, out var midAmount) ? midAmount : 0;
+                int highSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(highSkillBook.ItemID, out var highAmount) ? highAmount : 0;
+                lowSkillBookCostText.text = $"{lowSkillBookAmount} / {lowSkillBookCost}";
+                midSkillBookCostText.text = $"{midSkillBookAmount} / {midSkillBookCost}";
+                highSkillBookCostText.text = $"{highSkillBookAmount} / {highSkillBookCost}";
+                skillLevelUpGoldCostText.text = skillLevelUpGoldCost[character.SkillLevelA - 1].ToString();
+            }
+            else
+            {
+                // 최대 레벨 UI
+                lowSkillBookCostText.text = "-";
+                midSkillBookCostText.text = "-";
+                highSkillBookCostText.text = "-";
+                skillLevelUpGoldCostText.text = "-";
+            }
         }
         else if(skillInfoState == 1) // 패시브 스킬
         {
@@ -717,8 +749,11 @@ public class CharacterUIController : MonoBehaviour
             };
             skillBeforeDescriptionText.text = ReplaceSkillDescription(passiveDescriptionText, passiveReplacements);
             string passiveAfterDescriptionText = character.CharacterData.passiveSO.SkillDescription;
+            skillBeforeLevelText.text = "Lv." + character.SkillLevelB.ToString();
+            skillAfterLevelText.text = "Lv." + character.SkillLevelB.ToString();
             if (character.SkillLevelB <= 4)
             {
+                skillAfterLevelText.text = "Lv." + (character.SkillLevelB + 1).ToString();
                 passiveReplacements = new Dictionary<string, string>
                 {
                     { "{Skill_Value}", (character.SkillValueB + character.PassiveSkill.PlusSkillValue).ToString("F1") },
@@ -740,21 +775,31 @@ public class CharacterUIController : MonoBehaviour
             {
                 text.text = $"쿨타임 없음";
             }
-            Dictionary<SkillBookType, int> skillBookCost = SkillUpgradeChecker.SkillBookRequirements.TryGetValue(
-                character.SkillLevelB,
-                out var costs) ? costs : new Dictionary<SkillBookType, int>();
-            string lowSkillBookCost = costs.TryGetValue(SkillBookType.Low, out int lowCost) ? lowCost.ToString() : "0";
-            string midSkillBookCost = costs.TryGetValue(SkillBookType.Middle, out int midCost) ? midCost.ToString() : "0";
-            string highSkillBookCost = costs.TryGetValue(SkillBookType.High, out int highCost) ? highCost.ToString() : "0";
-            int lowSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(lowSkillBook.ItemID, out var lowAmount) ? lowAmount : 0;
-            int midSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(midSkillBook.ItemID, out var midAmount) ? midAmount : 0;
-            int highSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(highSkillBook.ItemID, out var highAmount) ? highAmount : 0;
-
-            lowSkillBookCostText.text = $"{lowSkillBookAmount} / {lowSkillBookCost}";
-            midSkillBookCostText.text = $"{midSkillBookAmount} / {midSkillBookCost}";
-            highSkillBookCostText.text = $"{highSkillBookAmount} / {highSkillBookCost}";
-
-            skillLevelUpGoldCostText.text = skillLevelUpGoldCost[character.SkillLevelB - 1].ToString();
+            if (character.SkillLevelB <= 4)
+            {
+                // 코스트/스킬북 계산 및 UI 표시
+                Dictionary<SkillBookType, int> skillBookCost = SkillUpgradeChecker.SkillBookRequirements.TryGetValue(
+                    character.SkillLevelB,
+                    out var costs) ? costs : new Dictionary<SkillBookType, int>();
+                string lowSkillBookCost = costs.TryGetValue(SkillBookType.Low, out int lowCost) ? lowCost.ToString() : "0";
+                string midSkillBookCost = costs.TryGetValue(SkillBookType.Middle, out int midCost) ? midCost.ToString() : "0";
+                string highSkillBookCost = costs.TryGetValue(SkillBookType.High, out int highCost) ? highCost.ToString() : "0";
+                int lowSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(lowSkillBook.ItemID, out var lowAmount) ? lowAmount : 0;
+                int midSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(midSkillBook.ItemID, out var midAmount) ? midAmount : 0;
+                int highSkillBookAmount = ItemManager.Instance.OwnedItems.TryGetValue(highSkillBook.ItemID, out var highAmount) ? highAmount : 0;
+                lowSkillBookCostText.text = $"{lowSkillBookAmount} / {lowSkillBookCost}";
+                midSkillBookCostText.text = $"{midSkillBookAmount} / {midSkillBookCost}";
+                highSkillBookCostText.text = $"{highSkillBookAmount} / {highSkillBookCost}";
+                skillLevelUpGoldCostText.text = skillLevelUpGoldCost[character.SkillLevelB - 1].ToString();
+            }
+            else
+            {
+                // 최대 레벨 UI
+                lowSkillBookCostText.text = "-";
+                midSkillBookCostText.text = "-";
+                highSkillBookCostText.text = "-";
+                skillLevelUpGoldCostText.text = "-";
+            }
         }
     }
 
@@ -810,6 +855,11 @@ public class CharacterUIController : MonoBehaviour
                     return;
                 }
             }
+            else
+            {
+                UIManager.Instance.messagePopup.Open("스킬 레벨이 최대입니다.");
+                return;
+            }
         }
         else if (skillInfoState == 1) // 패시브 스킬 레벨업
         {
@@ -839,6 +889,11 @@ public class CharacterUIController : MonoBehaviour
                     UIManager.Instance.messagePopup.Open("스킬 레벨업에 필요한 스킬북이 부족합니다.");
                     return;
                 }
+            }
+            else
+            {
+                UIManager.Instance.messagePopup.Open("스킬 레벨이 최대입니다.");
+                return;
             }
         }
         // 스킬 레벨업 후 팝업 갱신
