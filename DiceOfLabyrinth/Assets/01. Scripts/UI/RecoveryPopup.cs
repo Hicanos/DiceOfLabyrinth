@@ -131,13 +131,10 @@ public class RecoveryPopup : MonoBehaviour
             return;
         }
         // 모든 캐릭터가 죽었거나 풀 체력이면 리턴
-        foreach (var character in StageManager.Instance.stageSaveData.battleCharacters)
+        if (StageManager.Instance.stageSaveData.battleCharacters.TrueForAll(c => c.IsDied || c.CurrentHP >= c.RegularHP))
         {
-            if (character.IsDied || character.CurrentHP >= character.RegularHP)
-            {
-                messagePopup.Open("모든 캐릭터가 이미 최대 체력입니다.");
-                return;
-            }
+            messagePopup.Open("모든 캐릭터가 이미 최대 체력입니다.");
+            return;
         }
         if (StageManager.Instance.stageSaveData.manaStone < allRecoveryCost)
         {
