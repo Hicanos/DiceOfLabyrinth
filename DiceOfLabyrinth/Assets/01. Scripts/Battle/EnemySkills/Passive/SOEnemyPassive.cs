@@ -8,16 +8,23 @@ public enum EnemyPassiveEffectEnum
     AttackTargetBack,
     AttackTargetHighestAtk,
     RestoreHP,
-    StrongWill,
     GetBarrier,
     LifeSteal
 }
 
 public enum EnemyPassiveConditionEnum
 {
+    None,
     HPRatio,
-    StartBattle,
     UseSkillIndex
+}
+
+public enum EnemyPassiveEffectLocationEnum
+{
+    EnemyHit,
+    EnemyAttack,
+    SelectTarget,
+    BattleStart
 }
 
 [CreateAssetMenu(fileName = "EnemySkills", menuName = "EnemySkill/Passive")]
@@ -27,6 +34,7 @@ public class SOEnemyPassive : ScriptableObject
     public string Name;
     public string Description;
     public int UseCount;
+    public EnemyPassiveEffectLocationEnum EffectLocation;
     public EnemyPassiveEffectData[] Effects;
 }
 

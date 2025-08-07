@@ -254,12 +254,17 @@ public class BattleEnemy : IDamagable
     private int currentDef;
     private int currentBarrier;
     private bool isDead;
+    private bool isBarrierOn;
     public float DebuffAtk;
     public float DebuffDef;
+
+    public int AdditionalAtk;
+    public int AdditionalDef;
+
     public EnemyData Data => data;
     public int CurrentHP => currentHP;
-    public int CurrentAtk => currentAtk;
-    public int CurrentDef => currentDef;
+    public int CurrentAtk => currentAtk + AdditionalAtk;
+    public int CurrentDef => currentDef + AdditionalDef;
     public int MaxHP => currentMaxHP;
     public bool IsDead => isDead;
     public int CurrentBarrier => currentBarrier;
@@ -293,39 +298,46 @@ public class BattleEnemy : IDamagable
     public void Heal(int amount)
     {        
         currentHP = Mathf.Clamp(currentHP + amount, 0, currentMaxHP);
+
+        UpdateHPBar();
     }
 
     public void TakeDamage(int damage)
     {
-        LayoutGroups.childControlWidth = false;
-
-        if (currentBarrier >= damage)
+        if (isBarrierOn)
         {
-            currentBarrier = currentBarrier - damage;
+            TakeDamageBarrier(damage);
         }
         else
         {
             damage = damage - currentBarrier;
-            EnemyHPHit(damage);
+            TakeDamageHP(damage);
         }
 
-        BattleManager.Instance.UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
-        LayoutGroups.childControlWidth = true;
+        UpdateHPBar();
     }
 
-    private void EnemyHPHit(int damage)
+    private void TakeDamageBarrier(int damage)
     {
-        currentHittedDamage = damage;
-        DamageHP(damage);
+        if (currentBarrier >= damage)
+        {
+            currentBarrier -= damage;
+        }
+        else
+        {
+            isBarrierOn = false;
+            currentBarrier = 0;
+            TakeDamageHP(damage - currentBarrier);
+        }
     }
 
-    private void DamageHP(int damage)
+    private void TakeDamageHP(int damage)
     {
         currentHP = Mathf.Clamp(currentHP - damage, 0, currentMaxHP);
 
         if (currentHP == 0)
         {
-            EnemyIsDead();            
+            EnemyIsDead();
         }
     }
 
@@ -340,5 +352,22 @@ public class BattleEnemy : IDamagable
 
         BattleManager.Instance.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.EndTurn);
         BattleManager.Instance.EndBattle();
+    }
+
+    public void GetBarrier(int value)
+    {
+        isBarrierOn = true;
+        int amount = MaxHP * value / 100;
+
+        currentBarrier += amount;
+
+        UpdateHPBar();
+    }
+
+    private void UpdateHPBar()
+    {
+        LayoutGroups.childControlWidth = false;
+        BattleManager.Instance.UIValueChanger.ChangeEnemyHpUI(HPEnumEnemy.enemy);
+        LayoutGroups.childControlWidth = true;
     }
 }

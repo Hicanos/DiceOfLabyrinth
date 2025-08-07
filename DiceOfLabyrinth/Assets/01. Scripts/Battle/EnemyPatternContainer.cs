@@ -36,7 +36,7 @@ public class EnemyPatternContainer : MonoBehaviour
 
         for(int i = 0; i < Indexes.Count; i++)
         {
-            enemyPassiveMaker.MakePassive(enemyPassiveDatas[Indexes[i]].Effects, enemyPassiveDatas[Indexes[i]].UseCount);
+            enemyPassiveMaker.MakePassive(enemyPassiveDatas[i]);
         }
     }
 
