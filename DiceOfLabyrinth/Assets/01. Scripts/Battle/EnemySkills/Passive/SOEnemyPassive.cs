@@ -27,11 +27,11 @@ public class SOEnemyPassive : ScriptableObject
     public string Name;
     public string Description;
     public int UseCount;
-    public EnemyPassiveEffect[] Effects;
+    public EnemyPassiveEffectData[] Effects;
 }
 
 [Serializable]
-public class EnemyPassiveEffect
+public class EnemyPassiveEffectData
 {
     public EnemyPassiveEffectEnum EffectType;
     public int EffectValue;
