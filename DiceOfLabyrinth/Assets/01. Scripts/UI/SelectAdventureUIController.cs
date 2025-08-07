@@ -499,9 +499,9 @@ public class SelectAdventureUIController : MonoBehaviour
         int expReward = chapterData.chapterIndex[chapterIndex].stageData.DirectCompleteExpReward;
         int goldReward = chapterData.chapterIndex[chapterIndex].stageData.DirectCompleteGoldReward;
         int potionReward = chapterData.chapterIndex[chapterIndex].stageData.DirectCompletePotionReward;
-        directCompletePotionRewardText.text = $"{potionReward * directCompleteMultiplier}";
-        directCompleteExpRewardText.text = $"{expReward * directCompleteMultiplier}";
-        directCompleteGoldRewardText.text = $"{goldReward * directCompleteMultiplier}";
+        directCompletePotionRewardText.text = $"x {potionReward * directCompleteMultiplier}";
+        directCompleteExpRewardText.text = $"x {expReward * directCompleteMultiplier}";
+        directCompleteGoldRewardText.text = $"x  {goldReward * directCompleteMultiplier}";
     }
 
     private void UpdateStaminaUI() // 스태미나 부족 UI를 업데이트
