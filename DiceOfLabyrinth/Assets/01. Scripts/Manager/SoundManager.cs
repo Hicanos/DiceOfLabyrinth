@@ -122,19 +122,12 @@ public class SoundManager : MonoBehaviour
 
     // SFX 재생 (Enum에 포함되지 않는 사운드 타입)
 
-    public void PlaySFX(AudioClip clip, float customCooldown = -1f)
+    public void PlaySFX(AudioClip clip)
     {
-        float cooldown = customCooldown > 0 ? customCooldown : defaultSfxCooldown;
         if (clip == null) return;
-        float lastTime;
-        if (lastPlayedTime.TryGetValue(SoundType.UIClick, out lastTime))
-        {
-            if (Time.unscaledTime - lastTime < cooldown)
-                return; // 아직 쿨타임이 지나지 않음
-        }
+        
         sfxSource.volume = masterVolume * sfxVolume;
         sfxSource.PlayOneShot(clip, sfxVolume);
-        lastPlayedTime[SoundType.UIClick] = Time.unscaledTime;
     }
 
     public void ApplyVolumes()
