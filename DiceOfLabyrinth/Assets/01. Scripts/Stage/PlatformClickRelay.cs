@@ -3,6 +3,7 @@
 public class PlatformClickRelay : MonoBehaviour
 {
     public int platformIndex;
+    [SerializeField] private GameObject leaderMark;
     private void Awake()
     {
         var uiController = FindAnyObjectByType<BattleUIController>();
@@ -15,5 +16,9 @@ public class PlatformClickRelay : MonoBehaviour
         {
             this.gameObject.SetActive(false);
         }
+    }
+    public void SetAsLeader(bool isLeader)
+    {
+        leaderMark.SetActive(isLeader);
     }
 }

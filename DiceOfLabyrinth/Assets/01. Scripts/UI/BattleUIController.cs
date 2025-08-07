@@ -310,6 +310,14 @@ public class BattleUIController : MonoBehaviour
                 characterButtons[i].gameObject.SetActive(false);
             }
         }
+        // 리더 마크 갱신
+        var leader = StageManager.Instance.stageSaveData.leaderCharacter;
+        for (int i = 0; i < 5; i++)
+        {
+            var entry = StageManager.Instance.stageSaveData.entryCharacters[i];
+            bool isLeader = (entry != null && entry == leader);
+            characterPlatforms[i].GetComponent<PlatformClickRelay>().SetAsLeader(isLeader);
+        }
         OnClickTeamFormationButton((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 팀 구성 타입에 맞는 버튼 상태 갱신
     }
 
@@ -377,11 +385,14 @@ public class BattleUIController : MonoBehaviour
                     {
                         StageManager.Instance.stageSaveData.leaderCharacter = characterData;
                         messagePopup.Open($"[{characterData.nameKr}] 캐릭터가 리더로 설정되었습니다.");
+                        // 리더 마크 갱신
+                        for (int j = 0; j < 5; j++)
+                        {
+                            var entry = StageManager.Instance.stageSaveData.entryCharacters[j];
+                            bool isLeader = (entry != null && entry == characterData);
+                            characterPlatforms[j].GetComponent<PlatformClickRelay>().SetAsLeader(isLeader);
+                        }
                     }
-                    //else
-                    //{
-                    //    messagePopup.Open($"[{characterData.nameKr}] 캐릭터가 팀에 추가되었습니다.");
-                    //}
                     break;
                 }
             }
@@ -419,6 +430,13 @@ public class BattleUIController : MonoBehaviour
             return;
         }
         StageManager.Instance.stageSaveData.leaderCharacter = selectedCharacter; // 선택한 캐릭터를 리더로 설정
+        for (int i = 0; i < 5; i++)
+        {
+            if(i == selectedPlatformIndex)
+                characterPlatforms[i].GetComponent <PlatformClickRelay>().SetAsLeader(true); // 선택한 플랫폼을 리더로 설정
+            else
+                characterPlatforms[i].GetComponent<PlatformClickRelay>().SetAsLeader(false); // 나머지 플랫폼은 리더 표시 제거
+        }
         messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
     }
 
