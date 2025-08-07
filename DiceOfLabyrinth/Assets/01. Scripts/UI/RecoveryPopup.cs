@@ -133,7 +133,7 @@ public class RecoveryPopup : MonoBehaviour
         // 모든 캐릭터가 죽었거나 풀 체력이면 리턴
         if (StageManager.Instance.stageSaveData.battleCharacters.TrueForAll(c => c.IsDied || c.CurrentHP >= c.RegularHP))
         {
-            messagePopup.Open("모든 캐릭터가 이미 최대 체력입니다.");
+            messagePopup.Open("모든 살아있는 캐릭터가 이미 최대 체력입니다.");
             return;
         }
         if (StageManager.Instance.stageSaveData.manaStone < allRecoveryCost)
