@@ -143,4 +143,9 @@ public class LobbyInventoryPanel : MonoBehaviour
             UIManager.Instance.messagePopup.Open("이 아이템은 아직 사용할 수 없습니다.");
         }
     }
+    public void OnClickUnimplementedFeatureButton() // 미구현된 기능 버튼 클릭 시
+    {
+        UIManager.Instance.messagePopup.Open("미구현된 기능입니다.\n" +
+            "추후 업데이트될 예정입니다.");
+    }
 }

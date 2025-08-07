@@ -11,8 +11,8 @@ public class CharacterUIController : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject characterPanel;
     [Header("Popups")]
-    [SerializeField] private GameObject characterListPopup;
-    [SerializeField] private GameObject characterInfoPopup;
+    public GameObject characterListPopup;
+    public GameObject characterInfoPopup;
 
     [Header("Character Viewers")]
     [SerializeField] private List<GameObject> ownedCharacterViewers = new List<GameObject>(); // 소유한 캐릭터 뷰어 목록
