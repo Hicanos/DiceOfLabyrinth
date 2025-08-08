@@ -120,7 +120,7 @@ public class BattleCharacterAttack : MonoBehaviour
         Debug.Log($"{characterAtk} * (100 / {monsterDef} * (1 - {penetration} + 100)) * (1 + {artifactAddAtk} + {elementDamage} + {additionalElementDamage}) * ({(int)diceWeighting} * {engravingAddAtk})\nEngrving :  + {engravingAddAtk}\nArtifact :  + {artifactAddAtk}\nElement :  + {additionalElementDamage}");
         damage = Mathf.Clamp(damage, 0, damage);
 
-        if (TutorialManager.Instance.isGameTutorialCompleted == false) damage /= 4;
+        if (TutorialManager.Instance.isGameTutorialCompleted == false) damage /= 8;
         return (int)damage;
     }
 }

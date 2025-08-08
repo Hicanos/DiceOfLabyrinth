@@ -68,8 +68,8 @@ public class BattleUIValueChanger : MonoBehaviour
             hpString = $"{enemy.CurrentHP} / {enemy.MaxHP}";
         }
 
-        ChangeEnemyHpRatio(hpEnum);
         ChangeUIText(hpEnum, hpString);
+        ChangeEnemyHpRatio(hpEnum);
     }
 
     /// <summary>

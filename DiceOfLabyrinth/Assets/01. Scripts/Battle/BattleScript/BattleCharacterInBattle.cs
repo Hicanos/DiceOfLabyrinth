@@ -166,7 +166,6 @@ public class BattleCharacterInBattle : IDamagable
     private void UpdateHPBar()
     {
         LayoutGroups.childControlWidth = false;
-
         BattleManager.Instance.UIValueChanger.ChangeCharacterHp((HPEnumCharacter)myIndex);
         LayoutGroups.childControlWidth = true;
     }

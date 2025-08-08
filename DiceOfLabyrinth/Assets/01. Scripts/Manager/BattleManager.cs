@@ -294,6 +294,7 @@ public class BattleEnemy : IDamagable
         currentAtk = data.Atk;
         currentDef = data.Def;
         isDead = false;
+        PassiveContainer = new EnemyPassiveContainer();
     }
 
     public void Heal(int amount)
@@ -334,6 +335,7 @@ public class BattleEnemy : IDamagable
 
     private void TakeDamageHP(int damage)
     {
+        Debug.Log("TakeDamageHP");
         currentHP = Mathf.Clamp(currentHP - damage, 0, currentMaxHP);
 
         PassiveContainer.ActionPassiveEnemyHit();

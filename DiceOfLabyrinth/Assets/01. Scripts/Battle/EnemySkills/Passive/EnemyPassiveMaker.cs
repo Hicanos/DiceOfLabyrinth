@@ -10,18 +10,18 @@ public class EnemyPassiveMaker
 
         for(int i = 0; i < datas.Length; i++)
         {
-            enemyPassiveData = new EnemyPassive(passiveSO, GetConditionFunc(datas[i]), GetEffectFunc(datas[i]));
-            
+            enemyPassiveData = new EnemyPassive(passiveSO, GetConditionFunc(datas[i]), GetEffectFunc(datas[i]), passiveSO.Effects[i].UseCount);
+            BattleManager battleManager = BattleManager.Instance;
             switch (passiveSO.EffectLocation)
             {
                 case EnemyPassiveEffectLocationEnum.EnemyHit:
-                    BattleManager.Instance.Enemy.PassiveContainer.AddPassiveEnemyHit(enemyPassiveData);
+                    battleManager.Enemy.PassiveContainer.AddPassiveEnemyHit(enemyPassiveData);
                     break;
                 case EnemyPassiveEffectLocationEnum.EnemyAttack:
-                    BattleManager.Instance.Enemy.PassiveContainer.AddPassiveEnemyAttack(enemyPassiveData);
+                    battleManager.Enemy.PassiveContainer.AddPassiveEnemyAttack(enemyPassiveData);
                     break;
                 case EnemyPassiveEffectLocationEnum.BattleStart:
-                    BattleManager.Instance.Enemy.PassiveContainer.AddPassiveBattleStart(enemyPassiveData);
+                    battleManager.Enemy.PassiveContainer.AddPassiveBattleStart(enemyPassiveData);
                     break;
             }
         }
@@ -148,19 +148,15 @@ public class EnemyPassive : IBuff
     private SOEnemyPassive enemyPassiveSO;
     private Func<int, bool> conditionFunc;
     private Action<int> effectAction;
-    private int[] useCount;
+    private int useCount;
 
-    public EnemyPassive(SOEnemyPassive passiveSO, Func<int, bool> conditionFunc, Action<int> effectAction)
+    public EnemyPassive(SOEnemyPassive passiveSO, Func<int, bool> conditionFunc, Action<int> effectAction, int useCount)
     {
         enemyPassiveSO = passiveSO;
         this.conditionFunc = conditionFunc;
         this.effectAction = effectAction;
 
-        useCount = new int[passiveSO.Effects.Length];
-        for(int i = 0; i < useCount.Length; i++)
-        {
-            useCount[i] = enemyPassiveSO.Effects[i].UseCount;
-        }
+        this.useCount = useCount;
     }
 
     public void Action()
@@ -168,7 +164,7 @@ public class EnemyPassive : IBuff
         for(int i = 0; i < enemyPassiveSO.Effects.Length; i++)
         {
             if (conditionFunc(enemyPassiveSO.Effects[i].ConditionValue) == false) return;
-            if (useCount[i] == 0) return;
+            if (useCount == 0) return;
 
             effectAction(enemyPassiveSO.Effects[i].EffectValue);
         }
@@ -179,22 +175,20 @@ public class EnemyPassive : IBuff
 
     public void ReduceDuration()
     {
-        for (int i = 0; i < useCount.Length; i++)
+        useCount--;
+        if (useCount < 0)
         {
-            useCount[i]--;
-            if (useCount[i] < 0)
-            {
-                useCount[i] = 0;
-            }
+            useCount = 0;
         }
+        
     }
 }
 
 public class EnemyPassiveContainer
 {
-    public List<IBuff> PassiveEnemyHit;
-    public List<IBuff> PassiveEnemyAttack;
-    public List<IBuff> PassiveBattleStart;
+    public List<IBuff> PassiveEnemyHit = new List<IBuff>();
+    public List<IBuff> PassiveEnemyAttack = new List<IBuff>();
+    public List<IBuff> PassiveBattleStart = new List<IBuff>();
 
     public void ActionPassiveEnemyHit()
     {
