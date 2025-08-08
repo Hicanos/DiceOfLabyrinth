@@ -24,6 +24,7 @@ public class BattleCharacterInBattle : IDamagable
     private bool    isDead;
 
     public GameObject   Prefab;
+    public SpawnedCharacter SpawnedCharacter;
 
     public GameObject       CharacterHPBars;
     public RectTransform    CharacterHPs;

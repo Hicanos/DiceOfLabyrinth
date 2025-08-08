@@ -14,6 +14,7 @@ public class PassiveSO : SkillSO
     // SumOver라면 목표치, TeamSignitureDeckMaid 혹은 DeckMaid라면 해당 족보의 값 등
     // UniqueSigniture라면 해당 스킬을 가진 CharacterSO의 DiceData의  public int CignatureNo;를 가져와야함
     // TeamSignitureDeckMaid는 팀 전원의 시그니처 넘버를 확인하고 덱 메이드도봐야함
+    public DiceRankingEnum[] TargetRanks; // DeckMaid, TeamSignitureDeckMaid 등에서 사용될 목표 등급, SumOver은 해당없음
 
     public int TargetValue; // 목표치 (SumOver)
 
