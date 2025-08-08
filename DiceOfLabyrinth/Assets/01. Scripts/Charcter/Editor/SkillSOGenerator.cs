@@ -84,6 +84,24 @@ public class SkillSOGenerator : EditorWindow
             else if (so is PassiveSO passive)
             {
                 passive.BuffIDs = new[] { data.BuffID, data.BuffID_2 };
+
+                // TargetRank 변환 및 할당 (없으면 빈 배열)
+                if (data.TargetRank != null && data.TargetRank.Count > 0)
+                {
+                    var ranks = new List<DiceRankingEnum>();
+                    foreach (var rankInt in data.TargetRank)
+                    {
+                        ranks.Add((DiceRankingEnum)rankInt);
+                    }
+                    passive.TargetRanks = ranks.ToArray();
+                }
+                else
+                {
+                    passive.TargetRanks = new DiceRankingEnum[0];
+                }
+
+                // TargetValue 변환 및 할당 (없으면 0)
+                passive.TargetValue = data.TargetValue;
             }
 
             string assetPath = $"{soOutputPath}{so.SkillID}_SO.asset";

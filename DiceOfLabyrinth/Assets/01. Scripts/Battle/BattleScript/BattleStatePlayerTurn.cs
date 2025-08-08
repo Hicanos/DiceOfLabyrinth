@@ -17,8 +17,19 @@
         // 턴 종료 시 모든 캐릭터의 스킬 쿨타임 감소
         foreach (var character in BattleManager.Instance.PartyData.Characters)
         {
-            character.character.ReduceSkillCooldown();
-            character.character.UsingSkill = false; // 스킬 사용 상태 초기화
+            if (character.character.UsingSkill && character.character.GetBonusAttack)
+            {
+                // 스킬 사용 중이며 추가타가 있는 캐릭터인 경우, 추가타 유지
+                character.character.GetBonusAttack = true;
+                
+            }
+            else
+            {
+                // 스킬 사용 중이 아니거나 추가타가 없는 캐릭터인 경우, 스킬 사용 상태 초기화
+                character.character.GetBonusAttack = false;
+            }
+            character.character.UsingSkill = false;
+            character.character.ReduceSkillCooldown(); // 스킬 사용 상태 초기화
         }
 
         UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(true);

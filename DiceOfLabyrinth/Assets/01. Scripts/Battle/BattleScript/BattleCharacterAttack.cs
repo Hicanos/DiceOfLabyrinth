@@ -42,6 +42,7 @@ public class BattleCharacterAttack : MonoBehaviour
 
         BattleCharacterInBattle[] battleCharacters = battleManager.PartyData.Characters;
         GameObject characterPrefab;
+        SpawnedCharacter spawnedCharacter;
 
         int monsterDef = battleManager.Enemy.Data.Def;
         int characterAtk;
@@ -54,6 +55,7 @@ public class BattleCharacterAttack : MonoBehaviour
             if (battleCharacters[i].IsDead) continue;
             if (battleManager.PartyData.DeadIndex.Contains(i)) continue;
             characterPrefab = battleCharacters[i].Prefab;
+            spawnedCharacter = characterPrefab.GetComponent<SpawnedCharacter>();
 
             characterAtk = battleCharacters[i].CurrentATK;
             penetration = battleCharacters[i].CurrentPenetration;
@@ -63,7 +65,8 @@ public class BattleCharacterAttack : MonoBehaviour
 
             for (int j = 0; j < battleCharacters[i].AttackCount; j++)
             {
-                characterPrefab.GetComponent<SpawnedCharacter>().Attack();
+                
+                spawnedCharacter.Attack();
 
                 WaitForSeconds waitForSeconds = new WaitForSeconds(destTime);
                 yield return waitForSeconds;
@@ -80,6 +83,25 @@ public class BattleCharacterAttack : MonoBehaviour
                 {
                     isCharacterAttacking = false;
                     StopAttackCoroutine();
+                }
+                else if (battleCharacters[i].character.GetBonusAttack)
+                {
+                    // 추가타 구현
+                    battleCharacters[i].character.GetBonusAttack = false;
+                    // 스킬 사용여부 초기화는 플레이서 턴 시작 시 자동 제거됨
+
+                    spawnedCharacter.SkillAttack();
+                    battleCharacters[i].character.UsingSkill = false;
+                    damage = CalculateDamage(characterAtk, monsterDef, penetration, elementDamage, diceWeighting);
+                    battleManager.Enemy.TakeDamage(damage);
+                    battleManager.Enemy.iEnemy.TakeDamage();
+                    UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(battleCharacters[i].CharNameKr, battleManager.Enemy.Data.EnemyName, damage, true);
+                   
+                    if (battleManager.Enemy.IsDead)
+                    {
+                        isCharacterAttacking = false;
+                        StopAttackCoroutine();
+                    }
                 }
                 yield return new WaitForSeconds(waitSecondCharAttack);
             }
