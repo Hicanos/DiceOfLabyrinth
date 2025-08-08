@@ -23,7 +23,6 @@ public enum EnemyPassiveEffectLocationEnum
 {
     EnemyHit,
     EnemyAttack,
-    SelectTarget,
     BattleStart
 }
 
@@ -33,7 +32,7 @@ public class SOEnemyPassive : ScriptableObject
     public int Index;
     public string Name;
     public string Description;
-    public int UseCount;
+    
     public EnemyPassiveEffectLocationEnum EffectLocation;
     public EnemyPassiveEffectData[] Effects;
 }
@@ -45,5 +44,7 @@ public class EnemyPassiveEffectData
     public int EffectValue;
 
     public EnemyPassiveConditionEnum ConditionType;
-    public int ConditionValue;    
+    public int ConditionValue;
+
+    public int UseCount;
 }
