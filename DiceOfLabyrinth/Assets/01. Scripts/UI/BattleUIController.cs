@@ -81,7 +81,7 @@ public class BattleUIController : MonoBehaviour
 
     [Header("BgSprites")]
     [SerializeField] private GameObject backgroundSprite;
-    [SerializeField] private GameObject worldMap;
+    [SerializeField] private Image worldMap;
 
 #if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
     private void Update()
@@ -283,7 +283,7 @@ public class BattleUIController : MonoBehaviour
         if (InventoryPopup.Instance != null)
             InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         SetBackgroundSprite(chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.
-            stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground);
+            stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].TeamSelect);
 
         int ownedCount = CharacterManager.Instance.OwnedCharacters.Count;
         Transform buttonParent = characterButtons[0].transform.parent;
@@ -530,6 +530,12 @@ public class BattleUIController : MonoBehaviour
     public void OpenStagePanel(int phaseIndex) // 스테이지 패널을 여는 함수
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby; // 현재 페이즈 상태를 대기 상태로 설정
+        // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
+        if (worldMap != null)
+        {
+            worldMap.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground;
+        }
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(true);

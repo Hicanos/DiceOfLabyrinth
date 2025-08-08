@@ -26874,6 +26874,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
+      propertyPath: stageSaveData.currentStageIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
       propertyPath: stageSaveData.currentChapterIndex
       value: -1
       objectReference: {fileID: 0}
@@ -30279,6 +30283,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1149779069}
   m_CullTransparentMesh: 1
+--- !u!1 &1157540528 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7852221308180646421, guid: 3b9bce10f5043c74c9df1f27548c8e11, type: 3}
+  m_PrefabInstance: {fileID: 1471866502}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1159088955
 GameObject:
   m_ObjectHideFlags: 0
@@ -53625,7 +53634,7 @@ MonoBehaviour:
   platformDefaultColor: {r: 0, g: 0.6216731, b: 1, a: 1}
   platformSelectedColor: {r: 0.9339623, g: 0.9258811, b: 0.066082224, a: 1}
   backgroundSprite: {fileID: 0}
-  worldMap: {fileID: 0}
+  worldMap: {fileID: 1157540528}
 --- !u!1 &1918096666
 GameObject:
   m_ObjectHideFlags: 0

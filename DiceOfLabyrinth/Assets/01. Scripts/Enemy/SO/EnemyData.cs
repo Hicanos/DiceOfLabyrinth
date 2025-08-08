@@ -50,7 +50,7 @@ public class EnemyData: ScriptableObject
     [SerializeField] private Quaternion enemySpawnRotation; // 적 스폰 회전값
 
     public string EnemyName => enemyName;
-    public int EnemyLevel => (StageManager.Instance.stageSaveData.currentStageIndex + 1) * 10;
+    public int EnemyLevel => (StageManager.Instance.stageSaveData.currentStageIndex + 1) * ((StageManager.Instance.stageSaveData.currentChapterIndex)/2 + 1) * 10; // 현재 스테이지 인덱스에 따라 레벨 계산, 챕터 인덱스에 따라 보정
     public EnemyType Type => enemyType;
     public EnemySpecies Species => enemySpecies;
     public DesignEnums.ElementTypes Attribute => enemyAttribute;
