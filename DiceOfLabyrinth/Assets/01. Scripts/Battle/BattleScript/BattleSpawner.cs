@@ -233,6 +233,8 @@ public class BattleSpawner : MonoBehaviour
         enemy.iEnemy = enemy.EnemyPrefab.GetComponent<IEnemy>();
         enemy.iEnemy.Init();
 
+        battleManager.EnemyPatternContainer.GetPassive();
+
         LoadEnemyHP(enemy);
     }
 

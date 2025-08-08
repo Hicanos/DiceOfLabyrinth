@@ -282,6 +282,7 @@ public class BattleEnemy : IDamagable
     public SOEnemySkill currentSkill;
     public int currentSkill_Index;
     public List<int> currentTargetIndex;
+    public EnemyPassiveContainer PassiveContainer;
 
     int currentHittedDamage;
 
@@ -334,6 +335,8 @@ public class BattleEnemy : IDamagable
     private void TakeDamageHP(int damage)
     {
         currentHP = Mathf.Clamp(currentHP - damage, 0, currentMaxHP);
+
+        PassiveContainer.ActionPassiveEnemyHit();
 
         if (currentHP == 0)
         {
