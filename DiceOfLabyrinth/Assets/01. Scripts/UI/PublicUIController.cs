@@ -140,7 +140,6 @@ public class PublicUIController : MonoBehaviour
         }
         SceneManagerEx.Instance.LoadPreviousScene();
     }
-
     public void OnClickHomeButton()
     {
         SceneManagerEx.Instance.LoadScene("LobbyScene");
