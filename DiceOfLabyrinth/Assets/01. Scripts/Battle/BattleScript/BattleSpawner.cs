@@ -57,8 +57,8 @@ public class BattleSpawner : MonoBehaviour
             go = Instantiate(characters[i].character.CharacterData.charBattlePrefab, curFormationVec[i] - spawnDetach, Quaternion.identity, characterContainer);
 
             characters[i].Prefab = go;
-            spawnedCharacter = go.GetComponent<SpawnedCharacter>();
-            spawnedCharacter.SetCharacterID(characters[i].character.CharacterData.charID);
+            characters[i].SpawnedCharacter = go.GetComponent<SpawnedCharacter>();
+            characters[i].SpawnedCharacter.SetCharacterID(characters[i].character.CharacterData.charID);
             
         }
         SpawnDice(characters);
@@ -113,6 +113,7 @@ public class BattleSpawner : MonoBehaviour
             for (int i = 0; i < numFIve; i++)
             {
                 partyData.Characters[i].Prefab.transform.localPosition = Vector3.Lerp(curFormationVec[i] - spawnDetach, curFormationVec[i], pastTime / destTime);
+                partyData.Characters[i].SpawnedCharacter.Run();
             }
 
             pastTime += Time.deltaTime;
@@ -128,6 +129,10 @@ public class BattleSpawner : MonoBehaviour
             ActiveCharacterHP(partyData);
         }
 
+        for (int i = 0; i < numFIve; i++)
+        {            
+            partyData.Characters[i].SpawnedCharacter.IsIdle();
+        }
         isPreparing = false;
         BattleStart();
     }    
@@ -143,6 +148,7 @@ public class BattleSpawner : MonoBehaviour
         for (int i = 0; i < numFIve; i++)
         {
             partyData.Characters[i].Prefab.transform.localPosition = curFormationVec[i];
+            partyData.Characters[i].SpawnedCharacter.IsIdle();
         }
 
         if (!isActive)
@@ -232,6 +238,8 @@ public class BattleSpawner : MonoBehaviour
         enemy.EnemyPrefab = Instantiate(enemyGO, enemyVec, enemy.Data.EnemySpawnRotation, enemyContainer);
         enemy.iEnemy = enemy.EnemyPrefab.GetComponent<IEnemy>();
         enemy.iEnemy.Init();
+
+        battleManager.EnemyPatternContainer.GetPassive();
 
         LoadEnemyHP(enemy);
     }

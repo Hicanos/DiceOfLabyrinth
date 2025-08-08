@@ -135,6 +135,24 @@ public class BattleUILog : MonoBehaviour
         writeLogCoroutine = WriteLogCoroutine(logString);
         StartCoroutine(writeLogCoroutine);
     }
+    public void WriteBattleLog(BattleEnemy enemy, SOEnemyPassive passive)
+    {
+        if (currentLogIndex == maxLogIndex)
+        {
+            MakeNewLog();
+        }
+
+        string logString = $"<color=red>{enemy.Data.EnemyName}</color> : <color=blue>{passive.Name}</color>사용";
+
+        if (isWriting == true)
+        {
+            stashedLogs.Add(logString);
+            return;
+        }
+
+        writeLogCoroutine = WriteLogCoroutine(logString);
+        StartCoroutine(writeLogCoroutine);
+    }
     #endregion
 
     IEnumerator WriteLogCoroutine(string logString = null)

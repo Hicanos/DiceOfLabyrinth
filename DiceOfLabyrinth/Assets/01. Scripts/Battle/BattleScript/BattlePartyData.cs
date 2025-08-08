@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 public class BattlePartyData
@@ -31,6 +30,7 @@ public class BattlePartyData
     private int currentHitDamage;
     private int currentDeadIndex;
     public int CurrentDeadIndex => currentDeadIndex;
+    public int CurrentHitDamage => currentHitDamage;
 
     public BattlePartyData(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> engravings)
     {

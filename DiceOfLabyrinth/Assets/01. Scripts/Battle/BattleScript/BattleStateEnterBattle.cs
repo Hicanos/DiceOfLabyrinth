@@ -11,7 +11,7 @@
         InputManager.Instance.BattleInputStart();
         BattleManager.Instance.EnterBattleSettings();
         diceManager.DiceSettingForBattle();
-
+        BattleManager.Instance.Enemy.PassiveContainer.ActionPassiveBattleStart();
         AbstractButtonSetting();
     }
     public void BattleUpdate()

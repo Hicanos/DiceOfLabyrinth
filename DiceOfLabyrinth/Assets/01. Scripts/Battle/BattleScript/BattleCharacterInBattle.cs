@@ -24,6 +24,7 @@ public class BattleCharacterInBattle : IDamagable
     private bool    isDead;
 
     public GameObject   Prefab;
+    public SpawnedCharacter SpawnedCharacter;
 
     public GameObject       CharacterHPBars;
     public RectTransform    CharacterHPs;
@@ -166,7 +167,6 @@ public class BattleCharacterInBattle : IDamagable
     private void UpdateHPBar()
     {
         LayoutGroups.childControlWidth = false;
-
         BattleManager.Instance.UIValueChanger.ChangeCharacterHp((HPEnumCharacter)myIndex);
         LayoutGroups.childControlWidth = true;
     }
