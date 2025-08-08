@@ -53,6 +53,7 @@ public class BattleCharacter : IDamagable
     private int initialLevel;
 
     public bool IsDied;
+    public bool GetBonusAttack; // 보너스 공격 가능 여부
     public bool UsingSkill { get; set; } = false;
 
     public event Action<int> OnHPChanged;
