@@ -1,7 +1,7 @@
 # DiceOfLabyrinth
-가제: 미궁 다이스
+DiceOfLabyrinth : 미궁 다이스
 
-![A_fantasy_game_cover_art_for_Dungeon_Dic-1749807749062](https://github.com/user-attachments/assets/ce5e1e7f-e704-4cc0-8e3c-67152778e568)
+<img width="1920" height="1080" alt="Mobile_image01_1920x1080" src="https://github.com/user-attachments/assets/5fec5e81-3142-4322-b4c5-58c017da56e7" />
 
 
 
@@ -22,7 +22,7 @@
 
 ## 게임 정보
 ### 로비
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/8f99b9bd-d7ba-4615-bf55-b233594f6ee2" />
+<img width="1920" height="1080" alt="Mobile_image02_1920x1080" src="https://github.com/user-attachments/assets/d732c3e0-33e0-4bab-b445-3372506cfd7d" />
 
 > 게임의 중심이 되는 로비화면입니다.   
 > 로비에서 보유영웅 확인/팀 편성/소지 아이템확인/상점/영웅 소환/모험을 선택해서 나갈 수 있습니다.
