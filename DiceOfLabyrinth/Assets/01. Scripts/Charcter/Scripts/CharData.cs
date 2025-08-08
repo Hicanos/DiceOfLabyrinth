@@ -6,12 +6,12 @@ using UnityEngine;
 public class CharData
 {
     /// <summary>
-    /// Key
+    /// Name
     /// </summary>
     public int Key;
 
     /// <summary>
-    /// Key
+    /// Name
     /// </summary>
     public string CharID;
 

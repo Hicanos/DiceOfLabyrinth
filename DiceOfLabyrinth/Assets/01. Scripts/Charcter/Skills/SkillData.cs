@@ -7,12 +7,12 @@ using UnityEngine;
 public class SkillData
 {
     /// <summary>
-    /// Key
+    /// Name
     /// </summary>
     public int Key;
 
     /// <summary>
-    /// Key
+    /// Name
     /// </summary>
     public string SkillID;
 

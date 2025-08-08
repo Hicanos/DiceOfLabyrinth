@@ -7,12 +7,12 @@ using UnityEngine;
 public class CharDiceData
 {
     /// <summary>
-    /// Key
+    /// Name
     /// </summary>
     public int Key;
 
     /// <summary>
-    /// Key
+    /// Name
     /// </summary>
     public string DiceID;
 

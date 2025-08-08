@@ -35,6 +35,7 @@ public class StageInfo
     [SerializeField] private List<ChoiceOptions> choiceOptions;
     [SerializeField] private List<EngravingData> engravingList;
     [SerializeField] private List<ArtifactData> artifactList;
+    [SerializeField] private List<RandomEventData> randomEvents;
 
     // 읽기 전용 프로퍼티들
     public string StageName => stageName;
@@ -52,51 +53,10 @@ public class StageInfo
 
     public List<EngravingData> EngravingList => engravingList;
     public List<ArtifactData> ArtifactList => artifactList;
+    public List<RandomEventData> RandomEvents => randomEvents;
 
 }
 
-[System.Serializable]
-public class NormalPhaseData
-{
-    // Phase 정보 필드들
-    [SerializeField] private string phaseName; 
-    [SerializeField] private EnemyData enemyData;
-    [SerializeField] private Vector3 spawnPosition;
-
-    // 읽기 전용 프로퍼티들
-    public string PhaseName => phaseName;
-    public EnemyData EnemyData => enemyData;
-    public Vector3 SpawnPosition => spawnPosition;
-
-}
-
-[System.Serializable]
-public class ElitePhaseData
-{
-    // Phase 정보 필드들
-    [SerializeField] private string phaseName;
-    [SerializeField] private EnemyData enemyData;
-    [SerializeField] private Vector3 spawnPosition;
-
-    // 읽기 전용 프로퍼티들
-    public string PhaseName => phaseName;
-    public EnemyData EnemyData => enemyData;
-    public Vector3 SpawnPosition => spawnPosition;
-}
-[System.Serializable]
-public class BossPhaseData
-{
-    // 보스 페이즈 정보 필드들
-    [SerializeField] private string bossName;
-    [SerializeField] private string description;
-    [SerializeField] private EnemyData enemyData;
-    [SerializeField] private Vector3 spawnPosition;
-    // 읽기 전용 프로퍼티들
-    public string BossName => bossName;
-    public string Description => description;
-    public EnemyData EnemyData => enemyData;
-    public Vector3 SpawnPosition => spawnPosition;
-}
 
 [System.Serializable]
 public class PlayerFormations
@@ -114,19 +74,6 @@ public class PlayerPositions
     [SerializeField] private Vector3 position;
     public Vector3 Position => position;
 }
-
-[System.Serializable]
-public class EnemySpawnData
-{
-    // 적 스폰 정보 필드들
-    [SerializeField] private EnemyData enemyData;
-    [SerializeField] private Vector3 spawnPosition;
-
-    // 읽기 전용 프로퍼티들
-    public EnemyData EnemyData => enemyData;
-    public Vector3 SpawnPosition => spawnPosition;
-}
-
 [System.Serializable]
 public class ChoiceOptions
 {
