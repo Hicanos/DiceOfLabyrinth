@@ -1,9 +1,6 @@
-﻿using NUnit.Framework;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -146,14 +143,14 @@ public class BattleUIController : MonoBehaviour
     {
         if (backgroundSprite == null)
         {
-            GameObject bgObject = GameObject.FindWithTag("Background");
-            if (bgObject != null)
-            {
-                backgroundSprite = bgObject;
-            }
+            backgroundSprite = GameObject.FindWithTag("Background");
+            
         }
-
-        if (backgroundSprite != null)
+        if (backgroundSprite == null)
+        {
+            return;
+        }
+        else if (backgroundSprite != null)
         {
             var meshRenderer = backgroundSprite.GetComponent<MeshRenderer>();
             if (meshRenderer != null && sprite != null)
