@@ -531,7 +531,22 @@ public class BattleUIController : MonoBehaviour
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby; // 현재 페이즈 상태를 대기 상태로 설정
         // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
-        if (worldMap != null)
+        if (
+    worldMap != null &&
+    chapterData != null &&
+    chapterData.chapterIndex != null &&
+    StageManager.Instance != null &&
+    StageManager.Instance.stageSaveData != null &&
+    StageManager.Instance.stageSaveData.currentChapterIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentChapterIndex < chapterData.chapterIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex != null &&
+    StageManager.Instance.stageSaveData.currentStageIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentStageIndex < chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground != null
+)
         {
             worldMap.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
                 .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground;

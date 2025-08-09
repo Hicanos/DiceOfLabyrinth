@@ -8775,91 +8775,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 596c438eebb5bf042b0ee17da31d690a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1001 &1663403093
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: messagePopup
-      value: 
-      objectReference: {fileID: 7133101760742934324}
-    - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: battleUIController
-      value: 
-      objectReference: {fileID: 3108100227497410637}
-    - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: stageSaveData.currentPhaseIndex
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: stageSaveData.currentPhaseState
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: stageSaveData.currentChapterIndex
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: stageSaveData.artifacts.Array.size
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: stageSaveData.battleCharacters.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -4.1093163
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.2847726
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.01025136
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1574828736202541093, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5584644726373511924, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
-      propertyPath: m_Name
-      value: StageManager
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
 --- !u!1 &1664805648
 GameObject:
   m_ObjectHideFlags: 0
@@ -12461,6 +12376,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 8294358801423020417}
   characterClassTypeImage: {fileID: 7957636853481474234}
+  characterBgImage: {fileID: 0}
   characterElimentTypeImage: {fileID: 6492044435121121722}
   characterUpperImage: {fileID: 3927121413764992490}
   characterSignatureDiceImage: {fileID: 1762811826500229321}
@@ -18597,6 +18513,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 5758472611176066321}
   characterClassTypeImage: {fileID: 6653435092292237888}
+  characterBgImage: {fileID: 0}
   characterElimentTypeImage: {fileID: 8366827931814369571}
   characterUpperImage: {fileID: 6718039413942959871}
   characterSignatureDiceImage: {fileID: 7828503592396566159}
@@ -20171,6 +20088,8 @@ MonoBehaviour:
   - {fileID: 0}
   skillBeforeDescriptionText: {fileID: 0}
   skillAfterDescriptionText: {fileID: 0}
+  activeSkillLevelText: {fileID: 0}
+  passiveSkillLevelText: {fileID: 0}
   skillBeforeLevelText: {fileID: 0}
   skillAfterLevelText: {fileID: 0}
   skillBeforeCostText: {fileID: 0}
@@ -20268,6 +20187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96dc2873b7e79a04081f93db99fab866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  messagePopup: {fileID: 0}
   SSRCharacterIDs: []
   SSRItemIds: []
   SRCharacterIDs: []
@@ -20583,6 +20503,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 2257293336613058688}
   characterClassTypeImage: {fileID: 6182552719248294837}
+  characterBgImage: {fileID: 0}
   characterElimentTypeImage: {fileID: 3046508964040154351}
   characterUpperImage: {fileID: 9102029486535035648}
   characterSignatureDiceImage: {fileID: 5635789553781740952}
@@ -22704,6 +22625,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 7553739249825719420}
   characterClassTypeImage: {fileID: 8636784083746682430}
+  characterBgImage: {fileID: 0}
   characterElimentTypeImage: {fileID: 3403225073119276041}
   characterUpperImage: {fileID: 7542994525317227603}
   characterSignatureDiceImage: {fileID: 4518407733168715434}
@@ -32372,6 +32294,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 4766486611256791901}
   characterClassTypeImage: {fileID: 8325383937914149179}
+  characterBgImage: {fileID: 0}
   characterElimentTypeImage: {fileID: 506567787470916907}
   characterUpperImage: {fileID: 1960908057721614989}
   characterSignatureDiceImage: {fileID: 7987795557525980124}
@@ -40583,6 +40506,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 5066128850861441586}
   characterClassTypeImage: {fileID: 436905821905920624}
+  characterBgImage: {fileID: 0}
   characterElimentTypeImage: {fileID: 7354534257602878386}
   characterUpperImage: {fileID: 1298627405492658038}
   characterSignatureDiceImage: {fileID: 2758499571100961861}
@@ -41154,6 +41078,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 7193453030309511015}
   characterClassTypeImage: {fileID: 6556746859662583499}
+  characterBgImage: {fileID: 0}
   characterElimentTypeImage: {fileID: 8828389334137816559}
   characterUpperImage: {fileID: 2617176984496595256}
   characterSignatureDiceImage: {fileID: 2631723519972681753}
@@ -41903,6 +41828,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 7113226986950073535}
   characterClassTypeImage: {fileID: 8758704571933116734}
+  characterBgImage: {fileID: 0}
   characterElimentTypeImage: {fileID: 7917261106863130610}
   characterUpperImage: {fileID: 5285855401273547719}
   characterSignatureDiceImage: {fileID: 5267331259216790377}
@@ -49486,6 +49412,7 @@ MonoBehaviour:
   yesButton: {fileID: 1083550034401438854}
   noButton: {fileID: 8579120661536319872}
   cgFade: {fileID: 959257661368533167}
+  scrollRect: {fileID: 0}
   fadeIn: 0.25
   fadeOut: 0.2
   popScale: 1.1
@@ -56150,6 +56077,7 @@ MonoBehaviour:
   characterData: {fileID: 0}
   characterNameText: {fileID: 8352324036845436030}
   characterClassTypeImage: {fileID: 8820403729453940799}
+  characterBgImage: {fileID: 0}
   characterElimentTypeImage: {fileID: 8624142159156153017}
   characterUpperImage: {fileID: 731201638605968762}
   characterSignatureDiceImage: {fileID: 5764391841012733824}
@@ -63037,7 +62965,6 @@ SceneRoots:
   - {fileID: 467055058}
   - {fileID: 385736669}
   - {fileID: 8475998016917043442}
-  - {fileID: 1663403093}
   - {fileID: 1196475959208148794}
   - {fileID: 1281065969}
   - {fileID: 429771458}
