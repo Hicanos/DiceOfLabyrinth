@@ -38,14 +38,14 @@ public class BattleEnemyAttack : MonoBehaviour
 
         isEnemyAttacking = true;
         enemySkillData = BattleManager.Instance.Enemy.currentSkill;
-        EnemyAttackTest();
+        SelectTarget();
 
         yield return new WaitForSeconds(tempWaitAttackAnimEnd);
 
         BattleManager.Instance.EndEnemyTurn();
     }
 
-    public void EnemyAttackTest()
+    public void SelectTarget()
     {
         BattleManager battleManager = BattleManager.Instance;
 
@@ -56,7 +56,7 @@ public class BattleEnemyAttack : MonoBehaviour
         {
             EnemySkill skill = enemySkillData.Skills[i];
             int targetCount = skill.TragetCount;
-            int provability = skill.FrontLineProbability;            
+            int provability = skill.FrontLineProbability;
 
             targetIndexTest = targetGetterDictionary[skill.Method](targetCount, provability);
 

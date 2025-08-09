@@ -443,9 +443,9 @@ public class SelectAdventureUIController : MonoBehaviour
     public void OnClickRechargeStaminaButton() // 스태미나 충전 버튼
     {
         Debug.Log("Recharge Stamina Button Clicked");
-        if (!UserDataManager.Instance.UseJewel(50)) // 스태미나 충전 비용이 50 쥬얼이므로, 쥬얼이 부족할 경우
+        if (!UserDataManager.Instance.UseJewel(100)) // 스태미나 충전 비용이 50 쥬얼이므로, 쥬얼이 부족할 경우
         {
-            messagePopup.Open("스태미나를 충전하려면 50 쥬얼이 필요합니다.");
+            messagePopup.Open("스태미나를 충전하려면 100 쥬얼이 필요합니다.");
         }
         else
         { 
@@ -499,9 +499,9 @@ public class SelectAdventureUIController : MonoBehaviour
         int expReward = chapterData.chapterIndex[chapterIndex].stageData.DirectCompleteExpReward;
         int goldReward = chapterData.chapterIndex[chapterIndex].stageData.DirectCompleteGoldReward;
         int potionReward = chapterData.chapterIndex[chapterIndex].stageData.DirectCompletePotionReward;
-        directCompletePotionRewardText.text = $"{potionReward * directCompleteMultiplier}";
-        directCompleteExpRewardText.text = $"{expReward * directCompleteMultiplier}";
-        directCompleteGoldRewardText.text = $"{goldReward * directCompleteMultiplier}";
+        directCompletePotionRewardText.text = $"x {potionReward * directCompleteMultiplier}";
+        directCompleteExpRewardText.text = $"x {expReward * directCompleteMultiplier}";
+        directCompleteGoldRewardText.text = $"x  {goldReward * directCompleteMultiplier}";
     }
 
     private void UpdateStaminaUI() // 스태미나 부족 UI를 업데이트

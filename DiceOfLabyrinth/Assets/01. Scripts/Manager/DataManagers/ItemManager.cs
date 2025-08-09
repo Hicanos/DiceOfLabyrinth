@@ -111,19 +111,39 @@ public class ItemManager
     {
         if (!IsValidItemID(ItemID))
         {
+            Debug.LogWarning($"아이템 ID가 유효하지 않음: {ItemID}");
             return;
         }
-        if (ownedItems.ContainsKey(ItemID))
+        if (ownedItems.ContainsKey(ItemID)) //아이템이 이미 보유 중인 경우
         {
-            ownedItems[ItemID] += Count;
-            if(ownedItems[ItemID] <= 0)
+            // 아이템 소비
+            if (Count <= 0)
             {
-                ownedItems[ItemID] = 0; // 개수가 음수로 내려가지 않도록 방지
-                ownedItems.Remove(ItemID); // 개수가 0이 되면 아이템 제거
-                Debug.Log($"아이템 제거: {ItemID}, 개수가 0이 되어 제거됨");
+                int newCount = ownedItems[ItemID] + Count;
+                if (newCount < 0)
+                {
+                    Debug.LogWarning($"아이템 소비 실패: {ItemID}, 개수가 부족합니다. 현재 개수: {ownedItems[ItemID]}");
+                    return;
+                }
+                else if (newCount == 0)
+                {
+                    ownedItems.Remove(ItemID);
+                    Debug.Log($"아이템 제거: {ItemID}, 개수가 0이 되어 제거됨");
+                    return;
+                }
+                ownedItems[ItemID] = newCount;
+#if UNITY_EDITOR
+                Debug.Log($"아이템 소비: {ItemID}, 소비 개수: {Count}, 남은 개수: {ownedItems[ItemID]}");
+#endif
+                return;
             }
+            // 아이템 획득
+            ownedItems[ItemID] += Count;
+#if UNITY_EDITOR
+            Debug.Log($"아이템 획득: {ItemID}, 추가 개수: {Count}, 총 개수: {ownedItems[ItemID]}");
+#endif
         }
-        else
+        else // 아이템이 보유 중이지 않은 경우
         {
             if (Count <= 0)
             {
@@ -131,10 +151,10 @@ public class ItemManager
                 return;
             }
             ownedItems.Add(ItemID, Count);
-        }
 #if UNITY_EDITOR
-        Debug.Log($"아이템 획득: {ItemID}, 추가 개수: {Count}, 총 개수: {ownedItems[ItemID]}");
+            Debug.Log($"아이템 신규 획득: {ItemID}, 개수: {Count}");
 #endif
+        }
     }
     /// <summary>
     /// 아이템의 ID를 통해 해당 아이템SO를 반환하는 메서드

@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Helios.GUI;
 
 public class RecoveryPopup : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class RecoveryPopup : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] private GameObject shopPopup;
     [SerializeField] private MessagePopup messagePopup;
+    [SerializeField] private AnimationRect animationRect;
 
     [Header("Character Viewers")]
     [SerializeField] private GameObject[] characterViewers;
@@ -105,7 +107,7 @@ public class RecoveryPopup : MonoBehaviour
         }
         if (StageManager.Instance.stageSaveData.manaStone < focusedRecoveryCost)
         {
-            messagePopup.Open($"마나스톤이 부족합니다. 회복을 위해서는 최소 {focusedRecoveryCost}의 마나스톤이 필요합니다.");
+            messagePopup.Open($"마석이 부족합니다. 회복을 위해서는 최소 {focusedRecoveryCost}의 마석이 필요합니다.");
             return;
         }
         var character = StageManager.Instance.stageSaveData.battleCharacters[selectedCharacterIndex];
@@ -128,9 +130,15 @@ public class RecoveryPopup : MonoBehaviour
             messagePopup.Open("회복할 캐릭터가 없습니다.");
             return;
         }
+        // 모든 캐릭터가 죽었거나 풀 체력이면 리턴
+        if (StageManager.Instance.stageSaveData.battleCharacters.TrueForAll(c => c.IsDied || c.CurrentHP >= c.RegularHP))
+        {
+            messagePopup.Open("모든 살아있는 캐릭터가 이미 최대 체력입니다.");
+            return;
+        }
         if (StageManager.Instance.stageSaveData.manaStone < allRecoveryCost)
         {
-            messagePopup.Open($"마나스톤이 부족합니다. 모든 캐릭터를 회복하기 위해서는 최소 {allRecoveryCost}의 마나스톤이 필요합니다.");
+            messagePopup.Open($"마석이 부족합니다. 모든 캐릭터를 회복하기 위해서는 최소 {allRecoveryCost}의 마석이 필요합니다.");
             return;
         }
         foreach (var character in StageManager.Instance.stageSaveData.battleCharacters)
@@ -168,7 +176,7 @@ public class RecoveryPopup : MonoBehaviour
         }
         if (StageManager.Instance.stageSaveData.manaStone < reviveCost)
         {
-            messagePopup.Open($"마나스톤이 부족합니다. 부활을 위해서는 최소 {reviveCost}의 마나스톤이 필요합니다.");
+            messagePopup.Open($"마석이 부족합니다. 부활을 위해서는 최소 {reviveCost}의 마석이 필요합니다.");
             return;
         }
         var character = StageManager.Instance.stageSaveData.battleCharacters[selectedCharacterIndex];
@@ -186,7 +194,21 @@ public class RecoveryPopup : MonoBehaviour
     }
     public void OnClickShop()
     {
-        shopPopup.SetActive(true);
-        gameObject.SetActive(false);
+        if (animationRect.IsAnimating)
+        {
+            return;
+        }
+
+        animationRect.CloseWithCallback(() =>
+        {
+            shopPopup.SetActive(true);
+            gameObject.SetActive(false);
+
+            AnimationRect shopAnim = shopPopup.GetComponent<AnimationRect>();
+            if (shopAnim != null)
+            {
+                shopAnim.PlayAllWithLock();
+            }
+        });
     }
 }

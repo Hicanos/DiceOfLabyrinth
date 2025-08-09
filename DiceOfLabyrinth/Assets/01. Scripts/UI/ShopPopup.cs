@@ -331,7 +331,7 @@ public class ShopPopup : MonoBehaviour
             return; // 유효하지 않은 인덱스면 리턴
         }
         ArtifactData selectedArtifact = selectableArtifacts[selectedArtifactIndexInShopList];
-        if (StageManager.Instance.stageSaveData.manaStone < selectedArtifact.PurchasePrice)
+        if (StageManager.Instance.stageSaveData.manaStone < artifactPurchasePrices[selectedArtifactIndexInShopList])
         {
             messagePopup.Open("마석이 부족합니다.");
             return; // 마석이 부족하면 리턴
@@ -350,7 +350,7 @@ public class ShopPopup : MonoBehaviour
             messagePopup.Open("아티팩트 슬롯이 부족합니다. 슬롯을 비우고 다시 시도해주세요.");
             return; // 빈 슬롯이 없으면 리턴
         }
-        StageManager.Instance.stageSaveData.manaStone -= selectedArtifact.PurchasePrice; // 마석 차감
+        StageManager.Instance.stageSaveData.manaStone -= artifactPurchasePrices[selectedArtifactIndexInShopList]; // 마석 차감
         StageManager.Instance.battleUIController.RefreshManaStoneViewer(); // 마석 뷰어 갱신
         StageManager.Instance.stageSaveData.artifacts[emptySlot] = selectedArtifact; // 빈 슬롯에 아티팩트 추가
         OwnedArtifactRefresh(); // 소유한 아티팩트 갱신
@@ -362,12 +362,22 @@ public class ShopPopup : MonoBehaviour
 
     public void OnClickRecoveryPopupButton()
     {
-        
+        if (animationRect.IsAnimating)
+        {
+            return;
+        }
+
         animationRect.CloseWithCallback(() =>
         {
             gameObject.SetActive(false);
+            recoveryPopup.SetActive(true);
+
+            AnimationRect recoveryAnim = recoveryPopup.GetComponent<AnimationRect>();
+            if (recoveryAnim != null)
+            {
+                recoveryAnim.PlayAllWithLock();
+            }
         });
-        recoveryPopup.SetActive(true);
     }
 
     public void OnClickCloseButton()

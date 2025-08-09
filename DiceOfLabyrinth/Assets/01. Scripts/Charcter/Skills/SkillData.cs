@@ -7,12 +7,12 @@ using UnityEngine;
 public class SkillData
 {
     /// <summary>
-    /// Key
+    /// Name
     /// </summary>
     public int Key;
 
     /// <summary>
-    /// Key
+    /// Name
     /// </summary>
     public string SkillID;
 
@@ -108,6 +108,8 @@ public class SkillData
 
     public bool IsAttacking;
 
+    public List<int> TargetRank = new List<int>(); // 기본값: 빈 리스트
+    public int TargetValue = 0; // 기본값: 0
 }
 public class SkillDataLoader
 {

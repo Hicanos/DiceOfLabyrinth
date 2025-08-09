@@ -65,17 +65,10 @@ public class SkillController
         if (skill is ActiveSO activeSO)
         {
             BattleManager.Instance.SpendCost(activeSO.SkillCost);
-        }        
+        }
 
         if (skill.IsAttacking)
-        {
-            foreach (var target in targets)
-            {
-                int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
-                target.TakeDamage(damage);
-                Debug.Log($"{user.CharNameKr}이(가) {target}에게 {damage}의 피해를 주었습니다. 차후 추가타의 형식으로 구현(boolean)");
-            }
-        }
+            user.GetBonusAttack = true; // 보너스 공격 가능 상태로 설정
         else
         {
             // 버프 적용 로직 등
@@ -86,14 +79,7 @@ public class SkillController
     private static void UseSumOverSkill(BattleCharacter user, SkillSO skill, List<IDamagable> targets)
     {
         if (skill.IsAttacking)
-        {
-            foreach (var target in targets)
-            {
-                int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
-                target.TakeDamage(damage);
-                Debug.Log($"{user.CharNameKr}이(가) {target}에게 {damage}의 피해를 주었습니다. 차후 추가타의 형식으로 구현(boolean)");
-            }
-        }
+           user.GetBonusAttack = true; // 보너스 공격 가능 상태로 설정
         else
         {
             // 버프 적용 로직 등
@@ -104,14 +90,7 @@ public class SkillController
     private static void UseUniqueSignitureSkill(BattleCharacter user, SkillSO skill, List<IDamagable> targets)
     {
         if (skill.IsAttacking)
-        {
-            foreach (var target in targets)
-            {
-                int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
-                target.TakeDamage(damage);
-                Debug.Log($"{user.CharNameKr}이(가) {target}에게 {damage}의 피해를 주었습니다. 차후 추가타의 형식으로 구현(boolean)");
-            }
-        }
+            user.GetBonusAttack = true; // 보너스 공격 가능 상태로 설정
         else
         {
             // 버프 적용 로직 등
@@ -122,14 +101,7 @@ public class SkillController
     private static void UseDeckMaidSkill(BattleCharacter user, SkillSO skill, List<IDamagable> targets)
     {
         if (skill.IsAttacking)
-        {
-            foreach (var target in targets)
-            {
-                int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
-                target.TakeDamage(damage);
-                Debug.Log($"{user.CharNameKr}이(가) {target}에게 {damage}의 피해를 주었습니다. 차후 추가타의 형식으로 구현(boolean)");
-            }
-        }
+            user.GetBonusAttack = true; // 보너스 공격 가능 상태로 설정
         else
         {
             // 버프 적용 로직 등
@@ -140,14 +112,7 @@ public class SkillController
     private static void UseTeamSignitureDeckMaidSkill(BattleCharacter user, SkillSO skill, List<IDamagable> targets)
     {
         if (skill.IsAttacking)
-        {
-            foreach (var target in targets)
-            {
-                int damage = Mathf.RoundToInt(user.CurrentATK * skill.SkillValue);
-                target.TakeDamage(damage);
-                Debug.Log($"{user.CharNameKr}이(가) {target}에게 {damage}의 피해를 주었습니다. 차후 추가타의 형식으로 구현(boolean)");
-            }
-        }
+            user.GetBonusAttack = true; // 보너스 공격 가능 상태로 설정
         else
         {
             // 버프 적용 로직 등

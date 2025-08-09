@@ -13,6 +13,7 @@
 
     public void Exit()
     {
+        BattleManager.Instance.Enemy.PassiveContainer.ActionPassiveEnemyAttack();
         BattleManager.Instance.EnemyAttack.EnemyAttackEnd();
         DiceManager.Instance.ResetSetting();
     }

@@ -53,8 +53,7 @@ public class SpawnedCharacter : MonoBehaviour
 
     public void SkillAttack()
     {
-        // 스킬 사용 시 애니메이션 조정
-        Attack(); // 기본 공격 애니메이션
+        Animator.SetTrigger("UseSkill"); // 공격 애니메이션 트리거 설정
         SoundManager.Instance.PlaySFX(SkillSFX); // 스킬 사운드 재생
     }
 

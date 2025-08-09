@@ -1,9 +1,6 @@
-﻿using NUnit.Framework;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -81,7 +78,7 @@ public class BattleUIController : MonoBehaviour
 
     [Header("BgSprites")]
     [SerializeField] private GameObject backgroundSprite;
-    [SerializeField] private GameObject worldMap;
+    [SerializeField] private Image worldMap;
 
 #if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
     private void Update()
@@ -146,14 +143,14 @@ public class BattleUIController : MonoBehaviour
     {
         if (backgroundSprite == null)
         {
-            GameObject bgObject = GameObject.FindWithTag("Background");
-            if (bgObject != null)
-            {
-                backgroundSprite = bgObject;
-            }
+            backgroundSprite = GameObject.FindWithTag("Background");
+            
         }
-
-        if (backgroundSprite != null)
+        if (backgroundSprite == null)
+        {
+            return;
+        }
+        else if (backgroundSprite != null)
         {
             var meshRenderer = backgroundSprite.GetComponent<MeshRenderer>();
             if (meshRenderer != null && sprite != null)
@@ -283,7 +280,7 @@ public class BattleUIController : MonoBehaviour
         if (InventoryPopup.Instance != null)
             InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         SetBackgroundSprite(chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.
-            stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground);
+            stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].TeamSelect);
 
         int ownedCount = CharacterManager.Instance.OwnedCharacters.Count;
         Transform buttonParent = characterButtons[0].transform.parent;
@@ -309,6 +306,14 @@ public class BattleUIController : MonoBehaviour
             {
                 characterButtons[i].gameObject.SetActive(false);
             }
+        }
+        // 리더 마크 갱신
+        var leader = StageManager.Instance.stageSaveData.leaderCharacter;
+        for (int i = 0; i < 5; i++)
+        {
+            var entry = StageManager.Instance.stageSaveData.entryCharacters[i];
+            bool isLeader = (entry != null && entry == leader);
+            characterPlatforms[i].GetComponent<PlatformClickRelay>().SetAsLeader(isLeader);
         }
         OnClickTeamFormationButton((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 팀 구성 타입에 맞는 버튼 상태 갱신
     }
@@ -377,11 +382,14 @@ public class BattleUIController : MonoBehaviour
                     {
                         StageManager.Instance.stageSaveData.leaderCharacter = characterData;
                         messagePopup.Open($"[{characterData.nameKr}] 캐릭터가 리더로 설정되었습니다.");
+                        // 리더 마크 갱신
+                        for (int j = 0; j < 5; j++)
+                        {
+                            var entry = StageManager.Instance.stageSaveData.entryCharacters[j];
+                            bool isLeader = (entry != null && entry == characterData);
+                            characterPlatforms[j].GetComponent<PlatformClickRelay>().SetAsLeader(isLeader);
+                        }
                     }
-                    //else
-                    //{
-                    //    messagePopup.Open($"[{characterData.nameKr}] 캐릭터가 팀에 추가되었습니다.");
-                    //}
                     break;
                 }
             }
@@ -419,6 +427,13 @@ public class BattleUIController : MonoBehaviour
             return;
         }
         StageManager.Instance.stageSaveData.leaderCharacter = selectedCharacter; // 선택한 캐릭터를 리더로 설정
+        for (int i = 0; i < 5; i++)
+        {
+            if(i == selectedPlatformIndex)
+                characterPlatforms[i].GetComponent <PlatformClickRelay>().SetAsLeader(true); // 선택한 플랫폼을 리더로 설정
+            else
+                characterPlatforms[i].GetComponent<PlatformClickRelay>().SetAsLeader(false); // 나머지 플랫폼은 리더 표시 제거
+        }
         messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
     }
 
@@ -512,6 +527,27 @@ public class BattleUIController : MonoBehaviour
     public void OpenStagePanel(int phaseIndex) // 스테이지 패널을 여는 함수
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby; // 현재 페이즈 상태를 대기 상태로 설정
+        // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
+        if (
+    worldMap != null &&
+    chapterData != null &&
+    chapterData.chapterIndex != null &&
+    StageManager.Instance != null &&
+    StageManager.Instance.stageSaveData != null &&
+    StageManager.Instance.stageSaveData.currentChapterIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentChapterIndex < chapterData.chapterIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex != null &&
+    StageManager.Instance.stageSaveData.currentStageIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentStageIndex < chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground != null
+)
+        {
+            worldMap.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground;
+        }
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(true);
