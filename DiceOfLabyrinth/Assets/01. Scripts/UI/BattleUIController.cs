@@ -77,7 +77,6 @@ public class BattleUIController : MonoBehaviour
     private int selectedPlatformIndex = -1; // 선택된 플랫폼 인덱스
 
     [Header("BgSprites")]
-    [SerializeField] private GameObject backgroundSprite;
     [SerializeField] private Image worldMap;
 
 #if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
@@ -138,26 +137,6 @@ public class BattleUIController : MonoBehaviour
             pausePanel.gameObject.SetActive(true);
             Time.timeScale = 0f;
         }       
-    }
-    public void SetBackgroundSprite(Sprite sprite)
-    {
-        if (backgroundSprite == null)
-        {
-            backgroundSprite = GameObject.FindWithTag("Background");
-            
-        }
-        if (backgroundSprite == null)
-        {
-            return;
-        }
-        else if (backgroundSprite != null)
-        {
-            var meshRenderer = backgroundSprite.GetComponent<MeshRenderer>();
-            if (meshRenderer != null && sprite != null)
-            {
-                meshRenderer.material.mainTexture = sprite.texture;
-            }
-        }
     }
     public void OnClickPerformed(InputAction.CallbackContext context)
     {
@@ -279,7 +258,7 @@ public class BattleUIController : MonoBehaviour
         recoveryPopup.SetActive(false);
         if (InventoryPopup.Instance != null)
             InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
-        SetBackgroundSprite(chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.
+        BackgroundController.Instance.SetBackground(chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.
             stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].TeamSelect);
 
         int ownedCount = CharacterManager.Instance.OwnedCharacters.Count;

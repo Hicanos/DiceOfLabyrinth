@@ -747,21 +747,25 @@ public class StageManager : MonoBehaviour
     private void RefreshRoomBg()
     {
         // 배틀 씬에서 룸 배경을 갱신하는 로직을 구현합니다.
-        // 예시로, 현재 스테이지 인덱스에 따라 배경을 변경할 수 있습니다.
+        Sprite bgSprite = null;
+        var chapter = chapterData.chapterIndex[stageSaveData.currentChapterIndex];
+        var stage = chapter.stageData.stageIndex[stageSaveData.currentStageIndex];
+
         if (stageSaveData.currentPhaseIndex <= 1)
         {
-            // 노멀 룸 배경
-            battleUIController.SetBackgroundSprite(chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].Room12Background);
+            bgSprite = stage.Room12Background;
         }
         else if (stageSaveData.currentPhaseIndex == 2 || stageSaveData.currentPhaseIndex == 3)
         {
-            // 엘리트 룸 배경
-            battleUIController.SetBackgroundSprite(chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].Room34Background);
+            bgSprite = stage.Room34Background;
         }
         else if (stageSaveData.currentPhaseIndex >= 4)
         {
-            // 보스 룸 배경
-            battleUIController.SetBackgroundSprite(chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].BossRoomBackground);
+            bgSprite = stage.BossRoomBackground;
         }
+        if (BackgroundController.Instance != null)
+            BackgroundController.Instance.SetBackground(bgSprite);
+        else
+            Debug.LogWarning("BackgroundController 인스턴스가 존재하지 않습니다.");
     }
 }
