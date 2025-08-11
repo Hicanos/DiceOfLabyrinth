@@ -23,7 +23,11 @@ public class BattleUIController : MonoBehaviour
 
     [Header("Select Item Panel")]
     [SerializeField] private TMP_Text itemTitleText;
+    [SerializeField] private TMP_Text itemNameText;
+    [SerializeField] private TMP_Text artifactSetEffectText;// 아티팩트 세트 효과 설명을 위한 텍스트, 각인 선택시엔 비활성화
     [SerializeField] private TMP_Text itemDescriptionText;
+    [SerializeField] private GameObject artifactSetEffectToolTip; // 아티팩트 세트 효과 설명을 위한 GameObject, 각인 선택시엔 비활성화
+    [SerializeField] private GameObject artifactSetEffectDescription;
     [SerializeField] private int selectIndex = 0; // 선택된 아이템 인덱스, 각인과 아티팩트 선택을 위한 인덱스
     [SerializeField] private EngravingData[] engravingChoices = new EngravingData[3];
     [SerializeField] private ArtifactData[] artifactChoices = new ArtifactData[3];
@@ -52,6 +56,7 @@ public class BattleUIController : MonoBehaviour
 
     [Header("Item Choice Icons")]
     [SerializeField] private GameObject[] itemChoiceIcon = new GameObject[3]; // 아이템 선택 아이콘을 위한 배열
+    [SerializeField] private GameObject[] itemChoiceFrame = new GameObject[3]; // 아이템 선택 프레임을 위한 배열
 
     //[Header("Select Dungeon")]
     //[SerializeField] private TMP_Text selectedChapterText; // 스테이지 선택 패널 제목
@@ -630,20 +635,20 @@ public class BattleUIController : MonoBehaviour
         teamFormationPenel.SetActive(false);
         // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
         if (
-    worldMap != null &&
-    chapterData != null &&
-    chapterData.chapterIndex != null &&
-    StageManager.Instance != null &&
-    StageManager.Instance.stageSaveData != null &&
-    StageManager.Instance.stageSaveData.currentChapterIndex >= 0 &&
-    StageManager.Instance.stageSaveData.currentChapterIndex < chapterData.chapterIndex.Count &&
-    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex] != null &&
-    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData != null &&
-    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex != null &&
-    StageManager.Instance.stageSaveData.currentStageIndex >= 0 &&
-    StageManager.Instance.stageSaveData.currentStageIndex < chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex.Count &&
-    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex] != null &&
-    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground != null
+            worldMap != null &&
+            chapterData != null &&
+            chapterData.chapterIndex != null &&
+            StageManager.Instance != null &&
+            StageManager.Instance.stageSaveData != null &&
+            StageManager.Instance.stageSaveData.currentChapterIndex >= 0 &&
+            StageManager.Instance.stageSaveData.currentChapterIndex < chapterData.chapterIndex.Count &&
+            chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex] != null &&
+            chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData != null &&
+            chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex != null &&
+            StageManager.Instance.stageSaveData.currentStageIndex >= 0 &&
+            StageManager.Instance.stageSaveData.currentStageIndex < chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex.Count &&
+            chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex] != null &&
+            chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground != null
 )
         {
             worldMap.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
@@ -666,6 +671,10 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false);
         }
+        //각인 선택 패널에선 아티팩트 선택용 UI를 비활성화
+        artifactSetEffectText.text = ""; // 아티팩트 세트 효과 텍스트 초기화
+        artifactSetEffectToolTip.SetActive(false);
+        artifactSetEffectDescription.SetActive(false);
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
         OnClickSelectItemNumber(0); // 첫 번째 아이템을 선택한 것으로 초기화
     }
@@ -740,25 +749,26 @@ public class BattleUIController : MonoBehaviour
 
             var iconImage = itemChoiceIcon[i].GetComponent<Image>();
             iconImage.sprite = candidate.Icon;
+            itemChoiceFrame[i].GetComponent<Image>().sprite = candidate.RaritySprite; // 아티팩트의 희귀도에 맞는 프레임 이미지 설정
         }
         selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
         if (
-    worldMap != null &&
-    chapterData != null &&
-    chapterData.chapterIndex != null &&
-    StageManager.Instance != null &&
-    StageManager.Instance.stageSaveData != null &&
-    StageManager.Instance.stageSaveData.currentChapterIndex >= 0 &&
-    StageManager.Instance.stageSaveData.currentChapterIndex < chapterData.chapterIndex.Count &&
-    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex] != null &&
-    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData != null &&
-    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex != null &&
-    StageManager.Instance.stageSaveData.currentStageIndex >= 0 &&
-    StageManager.Instance.stageSaveData.currentStageIndex < chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex.Count &&
-    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex] != null &&
-    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground != null
+            worldMap != null &&
+            chapterData != null &&
+            chapterData.chapterIndex != null &&
+            StageManager.Instance != null &&
+            StageManager.Instance.stageSaveData != null &&
+            StageManager.Instance.stageSaveData.currentChapterIndex >= 0 &&
+            StageManager.Instance.stageSaveData.currentChapterIndex < chapterData.chapterIndex.Count &&
+            chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex] != null &&
+            chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData != null &&
+            chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex != null &&
+            StageManager.Instance.stageSaveData.currentStageIndex >= 0 &&
+            StageManager.Instance.stageSaveData.currentStageIndex < chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex.Count &&
+            chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex] != null &&
+            chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground != null
 )
         {
             worldMap.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
@@ -781,6 +791,10 @@ public class BattleUIController : MonoBehaviour
             if (characterPlatform != null)
                 characterPlatform.SetActive(false); // 캐릭터 플랫폼 비활성화
         }
+        // 아티팩트 선택 패널에선 아티팩트용 UI를 활성화
+        artifactSetEffectText.text = ""; // 아티팩트 세트 효과 텍스트 초기화
+        artifactSetEffectToolTip.SetActive(true); // 아티팩트 세트 효과 설명 활성화
+        artifactSetEffectDescription.SetActive(true); // 아티팩트 세트 효과 설명 활성화
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
         OnClickSelectItemNumber(0); // 첫 번째 아이템을 선택한 것으로 초기화
     }
@@ -793,39 +807,43 @@ public class BattleUIController : MonoBehaviour
             messagePopup.Open("잘못된 선택입니다. 다시 시도해 주세요.");
             return;
         }
-        // 모든 아이콘의 부모 Outline을 비활성화
-        for (int i = 0; i < itemChoiceIcon.Length; i++)
+        
+        for (int i = 0; i < itemChoiceFrame.Length; i++)
         {
-            var parent = itemChoiceIcon[i].transform.parent;
-            if (parent != null)
+            if (itemChoiceFrame[i].GetComponent<CanvasGroup>() == null)
             {
-                var outline = parent.GetComponent<Outline>();
-                if (outline != null)
-                    outline.enabled = false;
+                itemChoiceFrame[i].gameObject.AddComponent<CanvasGroup>(); // CanvasGroup이 없으면 추가
             }
-        }
-
-        // 선택된 아이콘의 부모 Outline만 활성화
-        var selectedParent = itemChoiceIcon[selectIndex].transform.parent;
-        if (selectedParent != null)
-        {
-            var selectedOutline = selectedParent.GetComponent<Outline>();
-            if (selectedOutline != null)
-                selectedOutline.enabled = true;
+            var canvasGroup = itemChoiceFrame[i].GetComponent<CanvasGroup>();
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = (i == selectIndex) ? 1f : 0.5f; // 선택된 아이콘은 1, 나머지는 0.5로 설정
+            }
         }
         switch (StageManager.Instance.stageSaveData.currentPhaseState)
         {
             case StageSaveData.CurrentPhaseState.StartReward:
             case StageSaveData.CurrentPhaseState.EliteEngravingReward:
                 selectedEngraving = engravingChoices[selectIndex];
-                itemTitleText.text = selectedEngraving.name; // 선택된 각인 이름 설정
+                itemNameText.text = selectedEngraving.EngravingName; // 선택된 각인 이름 설정
+                artifactSetEffectText.text = ""; // 아티팩트 세트 효과 텍스트 초기화
                 itemDescriptionText.text = selectedEngraving.Description; // 선택된 각인 설명 설정
                 break;
             case StageSaveData.CurrentPhaseState.NormalReward:
             case StageSaveData.CurrentPhaseState.EliteArtifactReward:
             case StageSaveData.CurrentPhaseState.BossReward:
                 selectedArtifact = artifactChoices[selectIndex];
-                itemTitleText.text = selectedArtifact.name; // 선택된 아티팩트 이름 설정
+                itemNameText.text = selectedArtifact.ArtifactName; // 선택된 아티팩트 이름 설정
+                // 중복 제거를 위해 HashSet 사용
+                var effectNames = new HashSet<string>();
+                artifactSetEffectText.text = "";
+                foreach (var effect in selectedArtifact.SetEffectData)
+                {
+                    if (effect != null && effectNames.Add(effect.EffectName))
+                    {
+                        artifactSetEffectText.text += $"#{effect.EffectName} ";
+                    }
+                }
                 itemDescriptionText.text = selectedArtifact.Description; // 선택된 아티팩트 설명 설정
                 break;
             default:
