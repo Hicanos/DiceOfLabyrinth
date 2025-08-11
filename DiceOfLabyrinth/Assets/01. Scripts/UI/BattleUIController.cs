@@ -1019,7 +1019,7 @@ public class BattleUIController : MonoBehaviour
         }
         blessingPanel.SetActive(StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.BlessingEvent); // 축복 패널 활성화
         cursePanel.SetActive(StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.CurseEvent); // 저주 패널 활성화
-        selectDungeonPanel.SetActive(false);
+        selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(false);
         battlePanel.SetActive(false);

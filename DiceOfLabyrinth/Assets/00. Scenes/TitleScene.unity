@@ -2883,7 +2883,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 660009717}
-  - {fileID: 1834711249}
   m_Father: {fileID: 2027296014}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &98998245
@@ -8623,9 +8622,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1517408037}
-        m_TargetAssemblyTypeName: InventoryPopup, Assembly-CSharp
-        m_MethodName: OnClickArtifactSlot
+      - m_Target: {fileID: 1917097714}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectItemNumber
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -28091,9 +28090,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1517408037}
-        m_TargetAssemblyTypeName: InventoryPopup, Assembly-CSharp
-        m_MethodName: OnClickArtifactSlot
+      - m_Target: {fileID: 1917097714}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectItemNumber
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -28686,6 +28685,10 @@ PrefabInstance:
       propertyPath: battleUIController
       value: 
       objectReference: {fileID: 1917097714}
+    - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
+      propertyPath: stageSaveData.upAndDownNumber
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 252293346350618144, guid: cffc8976b0fa1b34e88757ce69ec5172, type: 3}
       propertyPath: stageSaveData.currentPhaseIndex
       value: 0
@@ -44466,9 +44469,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1517408037}
-        m_TargetAssemblyTypeName: InventoryPopup, Assembly-CSharp
-        m_MethodName: OnClickArtifactSlot
+      - m_Target: {fileID: 1917097714}
+        m_TargetAssemblyTypeName: BattleUIController, Assembly-CSharp
+        m_MethodName: OnClickSelectItemNumber
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -56762,51 +56765,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1828159630}
   m_CullTransparentMesh: 1
---- !u!1 &1834711248
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1834711249}
-  - component: {fileID: 1834711250}
-  m_Layer: 0
-  m_Name: SettingUIController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1834711249
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1834711248}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 98998244}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1834711250
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1834711248}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca51209c465b2424ca82d7ac96e8a5e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  closeBg: {fileID: 0}
 --- !u!1 &1835278670
 GameObject:
   m_ObjectHideFlags: 0
@@ -59257,7 +59215,7 @@ MonoBehaviour:
   messagePopup: {fileID: 572241901}
   pointerPositionAction: {fileID: -6890021935837406570, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   itemTitleText: {fileID: 11250146}
-  itemDescriptionText: {fileID: 1914988075}
+  itemDescriptionText: {fileID: 1945734414}
   selectIndex: 0
   engravingChoices:
   - {fileID: 0}
@@ -59269,16 +59227,16 @@ MonoBehaviour:
   - {fileID: 0}
   selectedEngraving: {fileID: 0}
   selectedArtifact: {fileID: 0}
-  selectDungeonPanel: {fileID: 0}
+  selectFloorPanel: {fileID: 4002655687858665158}
   teamFormationPenel: {fileID: 727752986}
   stagePanel: {fileID: 1471866504}
   battlePanel: {fileID: 736896121}
   victoryPanel: {fileID: 274225043}
   defeatPanel: {fileID: 1543982490}
   selectItemPanel: {fileID: 1578949457}
-  selectChoicePanel: {fileID: 0}
-  blessingPanel: {fileID: 0}
-  cursePanel: {fileID: 0}
+  selectChoicePanel: {fileID: 245217469}
+  blessingPanel: {fileID: 5970558359265483485}
+  cursePanel: {fileID: 3542073736529318888}
   pausePanel: {fileID: 1488530115}
   shopPopup: {fileID: 661604241}
   recoveryPopup: {fileID: 2142293084}
@@ -59313,8 +59271,8 @@ MonoBehaviour:
   - {fileID: 1066786808}
   - {fileID: 682452863}
   selectChoiceIcon:
-  - {fileID: 1222908777}
-  - {fileID: 406134120}
+  - {fileID: 663899882}
+  - {fileID: 1314240500}
   ChoiceOptions:
   - choiceText: 
     description: 
@@ -60683,6 +60641,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1969511883}
   m_CullTransparentMesh: 1
+--- !u!1001 &1971565106
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4398649486991700287, guid: 130b1b8d8a250ed4585057f6db4eba2e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4398649486991700287, guid: 130b1b8d8a250ed4585057f6db4eba2e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4398649486991700287, guid: 130b1b8d8a250ed4585057f6db4eba2e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4398649486991700287, guid: 130b1b8d8a250ed4585057f6db4eba2e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4398649486991700287, guid: 130b1b8d8a250ed4585057f6db4eba2e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4398649486991700287, guid: 130b1b8d8a250ed4585057f6db4eba2e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4398649486991700287, guid: 130b1b8d8a250ed4585057f6db4eba2e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4398649486991700287, guid: 130b1b8d8a250ed4585057f6db4eba2e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4398649486991700287, guid: 130b1b8d8a250ed4585057f6db4eba2e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4398649486991700287, guid: 130b1b8d8a250ed4585057f6db4eba2e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4572727597818359197, guid: 130b1b8d8a250ed4585057f6db4eba2e, type: 3}
+      propertyPath: m_Name
+      value: BattleBackground
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 130b1b8d8a250ed4585057f6db4eba2e, type: 3}
 --- !u!114 &1973632906 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2317669932081475763, guid: 29eab0362afdd10458480837d671c282, type: 3}
@@ -69940,6 +69955,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b8358b8cb287c764aaddf7e9cb25389c, type: 3}
+--- !u!1 &3542073736529318888 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2585428490595183018, guid: b8358b8cb287c764aaddf7e9cb25389c, type: 3}
+  m_PrefabInstance: {fileID: 3542073736529318887}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3601850186373543911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72399,6 +72419,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e993d81cd6a1369449f8190aa71a3c56, type: 3}
+--- !u!1 &5970558359265483485 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6812784108933169457, guid: e993d81cd6a1369449f8190aa71a3c56, type: 3}
+  m_PrefabInstance: {fileID: 5970558359265483484}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6016312288357109389
 RectTransform:
   m_ObjectHideFlags: 0
@@ -73998,3 +74023,4 @@ SceneRoots:
   - {fileID: 981281306}
   - {fileID: 1795584047}
   - {fileID: 1294378493}
+  - {fileID: 1971565106}
