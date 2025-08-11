@@ -31,7 +31,7 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private ArtifactData selectedArtifact;
 
     [Header("Panels")]
-    [SerializeField] private GameObject selectDungeonPanel;
+    [SerializeField] private GameObject selectFloorPanel;
     [SerializeField] private GameObject teamFormationPenel;
     [SerializeField] private GameObject stagePanel;
     [SerializeField] private GameObject battlePanel;
@@ -192,10 +192,10 @@ public class BattleUIController : MonoBehaviour
         RefreshPlatformColors(platformIndex);
     }
 
-    public void OpenSelectDungeonPanel() // 스테이지 선택 패널을 여는 함수
+    public void OpenSelectFloorPanel() // 스테이지 선택 패널을 여는 함수
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.None;
-        selectDungeonPanel.SetActive(true);
+        selectFloorPanel.SetActive(true);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(false);
         battlePanel.SetActive(false);
@@ -221,7 +221,7 @@ public class BattleUIController : MonoBehaviour
         //chapterDescriptionText.text = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].Description;
     }
 
-    public void OnClickDungeonButton(int stageIndex) // 스테이지 선택 버튼 클릭 시 호출되는 함수
+    public void OnClickFloorButton(int stageIndex) // 스테이지 선택 버튼 클릭 시 호출되는 함수
     {
         if (stageIndex < StageManager.Instance.stageSaveData.currentStageIndex) // 스테이지가 이미 클리어되었을 때
         {
@@ -244,7 +244,7 @@ public class BattleUIController : MonoBehaviour
         RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
         //Debug.Log($"[TeamFormation] AcquiredCharacters Count: {CharacterManager.Instance.AcquiredCharacters.Count}");
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.TeamSelect; // 현재 페이즈 상태를 팀 구성으로 설정
-        selectDungeonPanel.SetActive(false);
+        selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(true);
         stagePanel.SetActive(false);
         battlePanel.SetActive(false);
@@ -533,7 +533,7 @@ public class BattleUIController : MonoBehaviour
             worldMap.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
                 .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground;
         }
-        selectDungeonPanel.SetActive(false);
+        selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(true);
         battlePanel.SetActive(false);
@@ -565,7 +565,7 @@ public class BattleUIController : MonoBehaviour
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Battle; // 현재 페이즈 상태를 배틀 상태로 설정
         
-        selectDungeonPanel.SetActive(false);
+        selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(false);
         battlePanel.SetActive(true);
@@ -626,7 +626,7 @@ public class BattleUIController : MonoBehaviour
             iconImage.sprite = candidate.Icon;
         }
 
-        selectDungeonPanel.SetActive(false);
+        selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
         if (
@@ -741,7 +741,7 @@ public class BattleUIController : MonoBehaviour
             var iconImage = itemChoiceIcon[i].GetComponent<Image>();
             iconImage.sprite = candidate.Icon;
         }
-        selectDungeonPanel.SetActive(false);
+        selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
         if (
@@ -933,7 +933,7 @@ public class BattleUIController : MonoBehaviour
             ChoiceOptions[i] = twoSelectChoices[i];
         }
 
-        selectDungeonPanel.SetActive(false);
+        selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
         if (
@@ -1041,7 +1041,7 @@ public class BattleUIController : MonoBehaviour
     public void OpenVictoryPanel() // 승리 패널을 여는 함수
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Battle; // 현재 페이즈 상태를 승리로 설정
-        selectDungeonPanel.SetActive(false);
+        selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(false);
         battlePanel.SetActive(true);
@@ -1066,7 +1066,7 @@ public class BattleUIController : MonoBehaviour
     public void OpenDefeatPanel() // 패배 패널을 여는 함수
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Battle; // 현재 페이즈 상태를 패배로 설정
-        selectDungeonPanel.SetActive(false);
+        selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         stagePanel.SetActive(false);
         battlePanel.SetActive(true);
@@ -1101,7 +1101,7 @@ public class BattleUIController : MonoBehaviour
     public void OpenShopPopup()
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Shop; // 현재 페이즈 상태를 상점으로 설정
-        selectDungeonPanel.SetActive(false);
+        selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
         if (
@@ -1147,7 +1147,7 @@ public class BattleUIController : MonoBehaviour
     public void OpenSelectEquipedArtifactPanel() // 아티팩트 장착 선택 패널을 여는 함수
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.EquipmentArtifact; // 현재 페이즈 상태를 "EquipmentArtifact"로 설정
-        selectDungeonPanel.SetActive(false);
+        selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
         // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
         if (
