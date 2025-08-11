@@ -17,7 +17,4 @@ public class PassiveSO : SkillSO
     public DiceRankingEnum[] TargetRanks; // DeckMaid, TeamSignitureDeckMaid 등에서 사용될 목표 등급, SumOver은 해당없음
 
     public int TargetValue; // 목표치 (SumOver)
-
-
-
-}
+ }
