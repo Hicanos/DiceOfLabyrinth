@@ -1,26 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterInfoButton : AbstractBattleButton
 {
-    static int staticIndex;
-    int index;
-
-    private void OnEnable()
-    {
-        UIManager uIManager = UIManager.Instance;
-        index = staticIndex;
-        staticIndex++;
-        uIManager.BattleUI.Buttons.Add(this);
-    }
-
-    private void OnDisable()
-    {
-        UIManager uIManager = UIManager.Instance;
-        uIManager.BattleUI.Buttons.Remove(this);
-    }
-
+    [SerializeField] int index;
+    [SerializeField] Button button;
+    [SerializeField] RectTransform rectTransform;
     public override void Setting()
     {
+        SetPosition();
     }
 
     public override void OnOffButton(DetailedTurnState state)
@@ -28,10 +16,10 @@ public class CharacterInfoButton : AbstractBattleButton
         switch(state)
         {
             case DetailedTurnState.Roll:
-                gameObject.transform.position = gameObject.transform.position + Vector3.up * 100;
+                button.interactable = false;
                 break;
             case DetailedTurnState.Attack:
-                gameObject.transform.position = gameObject.transform.position - Vector3.up * 100;
+                button.interactable = true;
                 break;
         }
     }
@@ -39,5 +27,17 @@ public class CharacterInfoButton : AbstractBattleButton
     public override void OnPush()
     {
         UIManager.Instance.BattleUI.OpenCharacterInfo(index);
+    }
+
+    private void SetPosition()
+    {
+        Vector3 result;
+
+        Vector3 charVec = BattleManager.Instance.PartyData.Characters[index].Prefab.transform.position;
+        
+        result = Camera.main.WorldToViewportPoint(charVec);
+
+        //Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, charVec);
+        rectTransform.anchoredPosition = result;
     }
 }
