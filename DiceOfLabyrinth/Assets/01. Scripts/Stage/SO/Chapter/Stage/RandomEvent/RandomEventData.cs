@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Text.RegularExpressions; // 정규식 사용을 위한 네임스페이스
 
-[CreateAssetMenu(fileName = "RandomEventData", menuName = "ScriptableObjects/Stages/RandomEventData", order = 1)]
+[CreateAssetMenu(fileName = "randomEventData", menuName = "ScriptableObjects/Stages/randomEventData", order = 1)]
 public class RandomEventData : ScriptableObject
 {
     [SerializeField] private string eventName;
@@ -14,6 +15,35 @@ public class RandomEventData : ScriptableObject
     public EventEffect EventEffect => eventEffect;
     public string Description => description;
     public List<float> Value => value;
+    public static string GetEventDescription(RandomEventData randomEvent)
+    {
+        if (randomEvent == null) return "";
+
+        string result = randomEvent.Description;
+
+        // 1) 일반 값 {value_i}
+        string valuePattern = @"\{value_(\d+)\}";
+        result = Regex.Replace(result, valuePattern, match =>
+        {
+            int index = int.Parse(match.Groups[1].Value);
+            if (index < 0 || index >= randomEvent.Value.Count)
+                return match.Value;
+
+            return randomEvent.Value[index].ToString();
+        });
+
+        // 2) 퍼센트 값 {percentValue_i}
+        string percentPattern = @"\{percentValue_(\d+)\}";
+        result = Regex.Replace(result, percentPattern, match =>
+        {
+            int index = int.Parse(match.Groups[1].Value);
+            if (index < 0 || index >= randomEvent.Value.Count)
+                return match.Value;
+
+            return (randomEvent.Value[index] * 100f).ToString("F1") + "%";
+        });
+        return result;
+    }
 }
 
 public enum EventEffect

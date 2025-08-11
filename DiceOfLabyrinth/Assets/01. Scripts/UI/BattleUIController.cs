@@ -38,7 +38,9 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private GameObject victoryPanel;
     [SerializeField] private GameObject defeatPanel;
     [SerializeField] private GameObject selectItemPanel;
-    [SerializeField] private GameObject selectEventPanel;
+    [SerializeField] private GameObject selectChoicePanel;
+    [SerializeField] private GameObject blessingPanel;
+    [SerializeField] private GameObject cursePanel;
 
     [Header("Pause Panel")]
     [SerializeField] private PausePanel pausePanel;
@@ -77,7 +79,6 @@ public class BattleUIController : MonoBehaviour
     private int selectedPlatformIndex = -1; // 선택된 플랫폼 인덱스
 
     [Header("BgSprites")]
-    [SerializeField] private GameObject backgroundSprite;
     [SerializeField] private Image worldMap;
 
 #if UNITY_EDITOR // 에디터에서만 디버그 키 입력을 처리합니다.
@@ -138,26 +139,6 @@ public class BattleUIController : MonoBehaviour
             pausePanel.gameObject.SetActive(true);
             Time.timeScale = 0f;
         }       
-    }
-    public void SetBackgroundSprite(Sprite sprite)
-    {
-        if (backgroundSprite == null)
-        {
-            backgroundSprite = GameObject.FindWithTag("Background");
-            
-        }
-        if (backgroundSprite == null)
-        {
-            return;
-        }
-        else if (backgroundSprite != null)
-        {
-            var meshRenderer = backgroundSprite.GetComponent<MeshRenderer>();
-            if (meshRenderer != null && sprite != null)
-            {
-                meshRenderer.material.mainTexture = sprite.texture;
-            }
-        }
     }
     public void OnClickPerformed(InputAction.CallbackContext context)
     {
@@ -221,11 +202,13 @@ public class BattleUIController : MonoBehaviour
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
+        blessingPanel.SetActive(false);
+        cursePanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
         if(InventoryPopup.Instance != null)
             InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
-        selectEventPanel.SetActive(false);
+        selectChoicePanel.SetActive(false);
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -267,8 +250,10 @@ public class BattleUIController : MonoBehaviour
         battlePanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
+        blessingPanel.SetActive(false);
+        cursePanel.SetActive(false);
         selectItemPanel.SetActive(false);
-        selectEventPanel.SetActive(false);
+        selectChoicePanel.SetActive(false);
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
         foreach (var characterPlatform in characterPlatforms)
         {
@@ -279,7 +264,7 @@ public class BattleUIController : MonoBehaviour
         recoveryPopup.SetActive(false);
         if (InventoryPopup.Instance != null)
             InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
-        SetBackgroundSprite(chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.
+        BackgroundController.Instance.SetBackground(chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.
             stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].TeamSelect);
 
         int ownedCount = CharacterManager.Instance.OwnedCharacters.Count;
@@ -555,7 +540,9 @@ public class BattleUIController : MonoBehaviour
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
-        selectEventPanel.SetActive(false);
+        selectChoicePanel.SetActive(false);
+        blessingPanel.SetActive(false);
+        cursePanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
         if (InventoryPopup.Instance != null)
@@ -585,7 +572,9 @@ public class BattleUIController : MonoBehaviour
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
-        selectEventPanel.SetActive(false);
+        selectChoicePanel.SetActive(false);
+        blessingPanel.SetActive(false);
+        cursePanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
         if (InventoryPopup.Instance != null)
@@ -639,12 +628,35 @@ public class BattleUIController : MonoBehaviour
 
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
+        // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
+        if (
+    worldMap != null &&
+    chapterData != null &&
+    chapterData.chapterIndex != null &&
+    StageManager.Instance != null &&
+    StageManager.Instance.stageSaveData != null &&
+    StageManager.Instance.stageSaveData.currentChapterIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentChapterIndex < chapterData.chapterIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex != null &&
+    StageManager.Instance.stageSaveData.currentStageIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentStageIndex < chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground != null
+)
+        {
+            worldMap.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground;
+        }
         stagePanel.SetActive(true);
         battlePanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(true);
-        selectEventPanel.SetActive(false);
+        selectChoicePanel.SetActive(false);
+        blessingPanel.SetActive(false);
+        cursePanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
         if (InventoryPopup.Instance != null)
@@ -731,13 +743,36 @@ public class BattleUIController : MonoBehaviour
         }
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
+        // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
+        if (
+    worldMap != null &&
+    chapterData != null &&
+    chapterData.chapterIndex != null &&
+    StageManager.Instance != null &&
+    StageManager.Instance.stageSaveData != null &&
+    StageManager.Instance.stageSaveData.currentChapterIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentChapterIndex < chapterData.chapterIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex != null &&
+    StageManager.Instance.stageSaveData.currentStageIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentStageIndex < chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground != null
+)
+        {
+            worldMap.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground;
+        }
         stagePanel.SetActive(true);
         battlePanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(true);
-        selectEventPanel.SetActive(false);
+        selectChoicePanel.SetActive(false);
         shopPopup.SetActive(false);
+        blessingPanel.SetActive(false);
+        cursePanel.SetActive(false);
         recoveryPopup.SetActive(false);
         if (InventoryPopup.Instance != null)
             InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
@@ -866,11 +901,11 @@ public class BattleUIController : MonoBehaviour
         }
     }
 
-    public void OpenSelectChoicePanel() // 선택지 이벤트 패널을 여는 함수
+    public void OpenSelectChoicePanel() // 선택지 선택지 패널을 여는 함수
     {
-        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.SelectChoice; // 현재 페이즈 상태를 선택지 이벤트로 설정
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.SelectChoice; // 현재 페이즈 상태를 선택지로 설정
         var stageSelectChoices = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
-            .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ChoiceOptions; // 현재 스테이지의 선택지 목록을 가져옴\
+            .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].ChoiceOptions; // 현재 스테이지의 선택지 목록을 가져옴
                                                                                                         // 노말/엘리트 클리어 카운트 2 이상이면 해당 선택지 제외
         int normalCount = StageManager.Instance.stageSaveData.normalStageCompleteCount;
         int eliteCount = StageManager.Instance.stageSaveData.eliteStageCompleteCount;
@@ -900,16 +935,39 @@ public class BattleUIController : MonoBehaviour
 
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
+        // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
+        if (
+    worldMap != null &&
+    chapterData != null &&
+    chapterData.chapterIndex != null &&
+    StageManager.Instance != null &&
+    StageManager.Instance.stageSaveData != null &&
+    StageManager.Instance.stageSaveData.currentChapterIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentChapterIndex < chapterData.chapterIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex != null &&
+    StageManager.Instance.stageSaveData.currentStageIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentStageIndex < chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground != null
+)
+        {
+            worldMap.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground;
+        }
         stagePanel.SetActive(true);
         battlePanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
+        blessingPanel.SetActive(false);
+        cursePanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
         if (InventoryPopup.Instance != null)
             InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
-        selectEventPanel.SetActive(true); // 선택지 이벤트 패널 활성화
+        selectChoicePanel.SetActive(true); // 선택지 이벤트 패널 활성화
         foreach (var characterPlatform in characterPlatforms)
         {
             if (characterPlatform != null)
@@ -930,8 +988,9 @@ public class BattleUIController : MonoBehaviour
         switch (selectedChoice.ChoiceText)
         {
             case "이벤트":
-                messagePopup.Open("이벤트는 아직 구현이 안되었습니다");
-                return; // 이벤트는 아직 구현되지 않았으므로 경고 메시지 표시
+                //messagePopup.Open("이벤트는 아직 구현이 안되었습니다");
+                OpenEventPanel(); // 이벤트 패널 열기
+                return;
             case "노말":
                 messagePopup.Open("선택지 노말이 선택되었습니다.");
                 StageManager.Instance.selectNormalEnemy();
@@ -948,6 +1007,37 @@ public class BattleUIController : MonoBehaviour
             ChoiceOptions[i] = null; // 선택된 선택지 옵션을 null로 설정하여 중복 선택 방지
     }
 
+    public void OpenEventPanel() // 이벤트 패널을 여는 함수 이벤트 패널의 종류는 축복과 저주 중 하나이므로 그것을 결정 후 그에 맞는 패널을 염
+    {
+        //페이즈 스테이트가 축복또는 저주가 아닐 경우 랜덤으로 둘 중 하나 결정
+        if(StageManager.Instance.stageSaveData.currentPhaseState != StageSaveData.CurrentPhaseState.BlessingEvent &&
+           StageManager.Instance.stageSaveData.currentPhaseState != StageSaveData.CurrentPhaseState.CurseEvent)
+        {
+            StageManager.Instance.stageSaveData.currentPhaseState = Random.Range(0, 2) == 0 ? 
+                StageSaveData.CurrentPhaseState.BlessingEvent : StageSaveData.CurrentPhaseState.CurseEvent;
+            StageManager.Instance.stageSaveData.UpOrDown = 0; // 업 또는 다운 초기화
+        }
+        blessingPanel.SetActive(StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.BlessingEvent); // 축복 패널 활성화
+        cursePanel.SetActive(StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.CurseEvent); // 저주 패널 활성화
+        selectDungeonPanel.SetActive(false);
+        teamFormationPenel.SetActive(false);
+        stagePanel.SetActive(false);
+        battlePanel.SetActive(false);
+        victoryPanel.SetActive(false);
+        defeatPanel.SetActive(false);
+        selectItemPanel.SetActive(false);
+        selectChoicePanel.SetActive(false);
+        shopPopup.SetActive(false);
+        recoveryPopup.SetActive(false);
+        if (InventoryPopup.Instance != null)
+            InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
+        foreach (var characterPlatform in characterPlatforms)
+            {
+            if (characterPlatform != null)
+                characterPlatform.SetActive(false); // 캐릭터 플랫폼 비활성화
+        }
+    }
+
     public void OpenVictoryPanel() // 승리 패널을 여는 함수
     {
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Battle; // 현재 페이즈 상태를 승리로 설정
@@ -958,7 +1048,9 @@ public class BattleUIController : MonoBehaviour
         victoryPanel.SetActive(true); // 승리 패널 활성화
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
-        selectEventPanel.SetActive(false);
+        selectChoicePanel.SetActive(false);
+        blessingPanel.SetActive(false);
+        cursePanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
         if (InventoryPopup.Instance != null)
@@ -981,7 +1073,9 @@ public class BattleUIController : MonoBehaviour
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(true); // 패배 패널 활성화
         selectItemPanel.SetActive(false);
-        selectEventPanel.SetActive(false);
+        selectChoicePanel.SetActive(false);
+        blessingPanel.SetActive(false);
+        cursePanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
         if (InventoryPopup.Instance != null)
@@ -1009,12 +1103,35 @@ public class BattleUIController : MonoBehaviour
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Shop; // 현재 페이즈 상태를 상점으로 설정
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
-        stagePanel.SetActive(false);
+        // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
+        if (
+    worldMap != null &&
+    chapterData != null &&
+    chapterData.chapterIndex != null &&
+    StageManager.Instance != null &&
+    StageManager.Instance.stageSaveData != null &&
+    StageManager.Instance.stageSaveData.currentChapterIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentChapterIndex < chapterData.chapterIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex != null &&
+    StageManager.Instance.stageSaveData.currentStageIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentStageIndex < chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground != null
+)
+        {
+            worldMap.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground;
+        }
+        stagePanel.SetActive(true);
         battlePanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
-        selectEventPanel.SetActive(false);
+        selectChoicePanel.SetActive(false);
+        blessingPanel.SetActive(false);
+        cursePanel.SetActive(false);
         shopPopup.SetActive(true);
         recoveryPopup.SetActive(false);
         if (InventoryPopup.Instance != null)
@@ -1032,12 +1149,35 @@ public class BattleUIController : MonoBehaviour
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.EquipmentArtifact; // 현재 페이즈 상태를 "EquipmentArtifact"로 설정
         selectDungeonPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
+        // 스테이지 데이터에서 현재 스테이지에 맞는 월드맵 배경을 설정
+        if (
+    worldMap != null &&
+    chapterData != null &&
+    chapterData.chapterIndex != null &&
+    StageManager.Instance != null &&
+    StageManager.Instance.stageSaveData != null &&
+    StageManager.Instance.stageSaveData.currentChapterIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentChapterIndex < chapterData.chapterIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex != null &&
+    StageManager.Instance.stageSaveData.currentStageIndex >= 0 &&
+    StageManager.Instance.stageSaveData.currentStageIndex < chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex.Count &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex] != null &&
+    chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground != null
+)
+        {
+            worldMap.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
+                .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].WorldMapBackground;
+        }
         stagePanel.SetActive(true);
         battlePanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         selectItemPanel.SetActive(false);
-        selectEventPanel.SetActive(false);
+        selectChoicePanel.SetActive(false);
+        blessingPanel.SetActive(false);
+        cursePanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
 

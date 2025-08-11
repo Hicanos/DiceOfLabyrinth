@@ -131,7 +131,13 @@ public class PublicUIController : MonoBehaviour
 
     public void OnClickBackButton()
     {
-        if(CharacterUIController.Instance.gameObject.activeSelf && CharacterUIController.Instance.characterInfoPopup.activeSelf && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "CharacterScene")
+        if (CharacterUIController.Instance != null &&
+            CharacterUIController.Instance.gameObject != null &&
+            CharacterUIController.Instance.characterInfoPopup != null &&
+            CharacterUIController.Instance.characterListPopup != null &&
+            CharacterUIController.Instance.gameObject.activeSelf &&
+            CharacterUIController.Instance.characterInfoPopup.activeSelf &&
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "CharacterScene")
         {
             // 캐릭터 정보 팝업이 열려있을 때는 팝업을 닫고 리스트 팝업을 연다
             CharacterUIController.Instance.characterInfoPopup.SetActive(false);

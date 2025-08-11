@@ -19,6 +19,8 @@ public class StageSaveData
         TeamSelect,
         StartReward,
         SelectChoice,
+        BlessingEvent,
+        CurseEvent,
         Standby,
         Battle,
         NormalReward,
@@ -42,6 +44,7 @@ public class StageSaveData
     public List<ArtifactData> artifacts = new List<ArtifactData>(12);// 아티팩트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<EngravingData> engravings = new List<EngravingData>(3); // 최대 3개 제한, 각인 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
     public List<ArtifactData> equipedArtifacts = new List<ArtifactData>(4); // 현재 장착된 아티팩트 목록
+    public List<RandomEventData> selectedRandomEvents = new List<RandomEventData>(4); // 랜덤 이벤트 목록, 스테이지 내에서만 쓰이는 재화, 스테이지를 벗어나면 초기화됩니다.
 
     [Header("Stage Characters")]
     public List<CharacterSO> entryCharacters = new List<CharacterSO>(5); // 플레이어 캐릭터 목록, 플레이어 보유 캐릭터 중 5명을 선택하여 스테이지에 진입합니다.
@@ -53,6 +56,10 @@ public class StageSaveData
     public int savedExpReward; // 스테이지에서 획득한 경험치 보상, 스테이지 종료시 정산합니다.
     public int savedGoldReward; // 스테이지에서 획득한 골드 보상, 스테이지 종료시 정산합니다.
     public int savedPotionReward; // 스테이지에서 획득한 보석 보상, 스테이지 종료시 정산합니다.
+    [Header("Event States")]
+    [Range(-1,1)] public int UpOrDown; // 업앤다운 이벤트 상태, -1은 다운, 0은 선택되지 않은 상태, 1은 업
+    [Range (1,7)] public int upAndDownNumber; // 업앤다운 숫자, 1~6까지의 다이스 넘버
+    public RandomEventData randomEventData; // 랜덤 이벤트 데이터
 
 
     public List<ChapterStates> chapterStates = new List<ChapterStates>();
@@ -96,6 +103,8 @@ public class StageSaveData
             battleCharacters.Add(null);
         while (battleCharacters.Count > 5)
             battleCharacters.RemoveAt(battleCharacters.Count - 1); // 전투 캐릭터 목록 크기를 5로 고정
+        while (selectedRandomEvents.Count < 4) // 랜덤 이벤트 목록 크기를 4로 고정
+            selectedRandomEvents.Add(null);
         for (int i = 0; i < 12; i++)
             artifacts[i] = null;
         for (int i = 0; i < 3; i++)
@@ -105,6 +114,8 @@ public class StageSaveData
         leaderCharacter = null;
         for (int i = 0; i < battleCharacters.Count; i++)
             battleCharacters[i] = null;
+        for (int i = 0; i < selectedRandomEvents.Count; i++)
+            selectedRandomEvents[i] = null;
         selectedEnemy = null;
         normalStageCompleteCount = 0;
         eliteStageCompleteCount = 0;
@@ -247,6 +258,10 @@ public class StageManager : MonoBehaviour
                     return;
                 case StageSaveData.CurrentPhaseState.SelectChoice:
                     battleUIController.OpenSelectChoicePanel(); // 선택지 상태에 해당하는 UI를 엽니다.
+                    return;
+                case StageSaveData.CurrentPhaseState.BlessingEvent:
+                case StageSaveData.CurrentPhaseState.CurseEvent:
+                    battleUIController.OpenEventPanel(); // 이벤트 상태에 해당하는 UI를 엽니다.
                     return;
                 default:
                     messagePopup.Open($"Unknown choice state: {stageSaveData.currentPhaseState}\n" +
@@ -747,21 +762,25 @@ public class StageManager : MonoBehaviour
     private void RefreshRoomBg()
     {
         // 배틀 씬에서 룸 배경을 갱신하는 로직을 구현합니다.
-        // 예시로, 현재 스테이지 인덱스에 따라 배경을 변경할 수 있습니다.
+        Sprite bgSprite = null;
+        var chapter = chapterData.chapterIndex[stageSaveData.currentChapterIndex];
+        var stage = chapter.stageData.stageIndex[stageSaveData.currentStageIndex];
+
         if (stageSaveData.currentPhaseIndex <= 1)
         {
-            // 노멀 룸 배경
-            battleUIController.SetBackgroundSprite(chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].Room12Background);
+            bgSprite = stage.Room12Background;
         }
         else if (stageSaveData.currentPhaseIndex == 2 || stageSaveData.currentPhaseIndex == 3)
         {
-            // 엘리트 룸 배경
-            battleUIController.SetBackgroundSprite(chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].Room34Background);
+            bgSprite = stage.Room34Background;
         }
         else if (stageSaveData.currentPhaseIndex >= 4)
         {
-            // 보스 룸 배경
-            battleUIController.SetBackgroundSprite(chapterData.chapterIndex[stageSaveData.currentChapterIndex].stageData.stageIndex[stageSaveData.currentStageIndex].BossRoomBackground);
+            bgSprite = stage.BossRoomBackground;
         }
+        if (BackgroundController.Instance != null)
+            BackgroundController.Instance.SetBackground(bgSprite);
+        else
+            Debug.LogWarning("BackgroundController 인스턴스가 존재하지 않습니다.");
     }
 }
