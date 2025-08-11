@@ -29,15 +29,14 @@ public class EnemyPatternContainer : MonoBehaviour
 
     public void GetPassive()
     {
-        BattleManager battleManager = BattleManager.Instance;
         EnemyPassiveMaker enemyPassiveMaker = new EnemyPassiveMaker();
 
-        List<int> Indexes = battleManager.Enemy.Data.PassiveSkills;
+        enemyPassiveMaker.MakeSkill();
+    }
 
-        for(int i = 0; i < Indexes.Count; i++)
-        {
-            enemyPassiveMaker.MakePassive(enemyPassiveDatas[Indexes[i]]);
-        }
+    public SOEnemyPassive GetPassiveSO(int index)
+    {
+        return enemyPassiveDatas[index];
     }
 
     public string GetSkillNameText()

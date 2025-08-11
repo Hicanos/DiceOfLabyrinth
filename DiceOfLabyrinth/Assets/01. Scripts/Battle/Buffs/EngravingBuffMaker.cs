@@ -24,9 +24,9 @@ public enum EffectLocationEnum
     TurnEnd
 }
 
-public class EngravingBuffMaker
+public class EngravingBuffMaker : ISkillMaker, ISkillLocationMaker
 {        
-    public void MakeEngravingBuff()
+    public void MakeSkill()
     {
         List<EngravingData> engravings = BattleManager.Instance.PartyData.Engravings;
         Action<IBuff> addBuffAction;
@@ -41,41 +41,41 @@ public class EngravingBuffMaker
             {
                 condition = engravings[i].DamageConditions[j];
 
-                buff = new EngravingBuff(GetConditionType(condition), condition, GetEffectAction(condition));
+                buff = new EngravingBuff(GetCondition((int)condition.ConditionType), condition, GetEffect((int)condition.EffectType));
 
-                addBuffAction = GetEffectLocation(condition);
+                addBuffAction = GetEffectLocation((int)condition.EffectLocation);
                 addBuffAction?.Invoke(buff);
             }
         }
     }
 
-    public Func<DamageCondition, bool> GetConditionType(DamageCondition condition)
+    public Func<float, bool> GetCondition(int enumIndex)
     {
-        Func<DamageCondition,bool> conditionFunc;
+        Func<float,bool> conditionFunc;
 
-        switch (condition.ConditionType)
+        switch (enumIndex)
         {
-            case ConditionTypeEnum.CorrectDiceRank:
-                return conditionFunc = new Func<DamageCondition, bool>(CorrectDiceRankCondition);
-            case ConditionTypeEnum.SameDiceRankAsPreviousTurn:
-                return conditionFunc = new Func<DamageCondition, bool>(SameDiceRankAsPreviousTurnCondition);
-            case ConditionTypeEnum.AttackInTurn:
-                return conditionFunc = new Func<DamageCondition, bool>(AttackInTurnCondition);
-            case ConditionTypeEnum.KillInTurn:
-                return conditionFunc = new Func<DamageCondition, bool>(KillInTurnCondition);
+            case (int)ConditionTypeEnum.CorrectDiceRank:
+                return conditionFunc = new Func<float, bool>(CorrectDiceRankCondition);
+            case (int)ConditionTypeEnum.SameDiceRankAsPreviousTurn:
+                return conditionFunc = new Func<float, bool>(SameDiceRankAsPreviousTurnCondition);
+            case (int)ConditionTypeEnum.AttackInTurn:
+                return conditionFunc = new Func<float, bool>(AttackInTurnCondition);
+            case (int)ConditionTypeEnum.KillInTurn:
+                return conditionFunc = new Func<float, bool>(KillInTurnCondition);
             default:
-                return conditionFunc = new Func<DamageCondition, bool>(DefaultCondition);
+                return conditionFunc = new Func<float, bool>(DefaultCondition);
         }
     }
 
     #region 조건 판별 메서드
-    private bool CorrectDiceRankCondition(DamageCondition condition)
+    private bool CorrectDiceRankCondition(float value)
     {
-        if (DiceManager.Instance.DiceRank == condition.ConditionRank) return true;
+        if ((int)DiceManager.Instance.DiceRank == (int)value) return true;
         else { return false; }
     }
 
-    private bool SameDiceRankAsPreviousTurnCondition(DamageCondition condition)
+    private bool SameDiceRankAsPreviousTurnCondition(float value)
     {
         BattleManager battleManager = BattleManager.Instance;
         DiceManager diceManager = DiceManager.Instance;
@@ -87,27 +87,27 @@ public class EngravingBuffMaker
         return false;
     }
 
-    private bool AttackInTurnCondition(DamageCondition condition)
+    private bool AttackInTurnCondition(float value)
     {
-        if(BattleManager.Instance.BattleTurn == condition.ConditionValue) return true;
+        if(BattleManager.Instance.BattleTurn == value) return true;
         else return false;
     }
 
-    private bool KillInTurnCondition(DamageCondition condition)
+    private bool KillInTurnCondition(float value)
     {
-        if (BattleManager.Instance.IsWon && BattleManager.Instance.BattleTurn == condition.ConditionValue) return true;
+        if (BattleManager.Instance.IsWon && BattleManager.Instance.BattleTurn == value) return true;
         else return false;
     }
 
-    private bool DefaultCondition(DamageCondition condition)
+    private bool DefaultCondition(float value)
     {
         return true;
     }
     #endregion
 
-    public Action<DamageCondition> GetEffectAction(DamageCondition condition)
+    public Action<float> GetEffect(int enumIndex)
     {
-        switch (condition.EffectType)
+        switch ((EffectTypeEnum)enumIndex)
         {
             case EffectTypeEnum.AdditionalDamage:
                 return AdditionalDamageAction;
@@ -120,22 +120,22 @@ public class EngravingBuffMaker
         }
     }
 
-    private void AdditionalDamageAction(DamageCondition condition)
+    private void AdditionalDamageAction(float value)
     {
-        BattleManager.Instance.EngravingAdditionalStatus.AdditionalDamage += condition.EffectValue;
+        BattleManager.Instance.EngravingAdditionalStatus.AdditionalDamage += value;
     }
-    private void AdditionalRollAction(DamageCondition condition)
+    private void AdditionalRollAction(float value)
     {
-        BattleManager.Instance.EngravingAdditionalStatus.AdditionalRoll += condition.EffectValue;
+        BattleManager.Instance.EngravingAdditionalStatus.AdditionalRoll += value;
     }
-    private void AdditionalStone(DamageCondition condition)
+    private void AdditionalStone(float value)
     {
-        BattleManager.Instance.EngravingAdditionalStatus.AdditionalStone += condition.EffectValue;
+        BattleManager.Instance.EngravingAdditionalStatus.AdditionalStone += value;
     }
 
-    private Action<IBuff> GetEffectLocation(DamageCondition condition)
+    public Action<IBuff> GetEffectLocation(int enumIndex)
     {
-        switch (condition.EffectLocation)
+        switch ((EffectLocationEnum)enumIndex)
         {
             case EffectLocationEnum.CharacterAttack:
                 return BattleManager.Instance.EngravingBuffs.AddBuffsCallbackCharacterAttack;

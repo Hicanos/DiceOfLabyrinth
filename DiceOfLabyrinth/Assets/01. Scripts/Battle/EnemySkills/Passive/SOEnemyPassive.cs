@@ -41,10 +41,12 @@ public class SOEnemyPassive : ScriptableObject
 public class EnemyPassiveEffectData
 {
     public EnemyPassiveEffectEnum EffectType;
-    public int EffectValue;
+    public float EffectValue;
 
     public EnemyPassiveConditionEnum ConditionType;
-    public int ConditionValue;
+    public float ConditionValue;
 
     public int UseCount;
+
+    public string Description;
 }
