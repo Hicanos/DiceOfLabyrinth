@@ -207,7 +207,7 @@ public class StageManager : MonoBehaviour
         else if (stageSaveData.currentStageIndex == -1 || stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.None) // 던전 선택 상태
         {
             battleUIController.RefreshManaStoneViewer();
-            battleUIController.OpenSelectDungeonPanel(); // 스테이지 선택 UI를 엽니다.
+            battleUIController.OpenSelectFloorPanel(); // 스테이지 선택 UI를 엽니다.
             return;
         }
         else if (stageSaveData.currentPhaseIndex >= 0 || stageSaveData.currentPhaseIndex <= 4) // 현재 선택지 상태가 비어있지 않은 경우
@@ -429,7 +429,7 @@ public class StageManager : MonoBehaviour
             stageSaveData.currentStageIndex = stageIndex + 1; // 다음 스테이지로 진행
             //StageManager.Instance.stageSaveData.chapterStates[StageManager.Instance.stageSaveData.currentChapterIndex].stageStates[stageIndex].isUnLocked = true; // 다음 스테이지 잠금 해제
             stageSaveData.ResetStageProgress(); // 스테이지 진행 상태 초기화
-            battleUIController.OpenSelectDungeonPanel(); // 스테이지 선택 UI를 엽니다.
+            battleUIController.OpenSelectFloorPanel(); // 스테이지 선택 UI를 엽니다.
         }
         else
         {
