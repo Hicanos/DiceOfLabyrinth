@@ -181,21 +181,9 @@ public class BlessingPanel : MonoBehaviour
                 }
             break;
         }
-        StartCoroutine(RollDiceAnimation(determinedDiceNumber));
-
-        UIManager.Instance.messagePopup.Open(
-            $"주사위를 굴렸습니다! 눈금은 {determinedDiceNumber}입니다.\n{conditionText.text}",
-            onYes: () => OnDiceRollComplete(randomEventData)
-        );
-        // 주사위 굴린 후 처리 로직
-        //StageManager.Instance.stageSaveData.UpOrDown = 0; // 주사위 굴린 후 초기화
-        //StageManager.Instance.stageSaveData.upAndDownNumber = 0; // 주사위 눈금 초기화
-        //StageManager.Instance.stageSaveData.randomEventData = null; // 랜덤 이벤트 데이터 초기화
-        //StageManager.Instance.stageSaveData.currentPhaseIndex++;
-        //StageManager.Instance.battleUIController.OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex);
-        // 이 로직들은 메세지 팝업 이후 처리될 예정
+        StartCoroutine(RollDiceAnimation(determinedDiceNumber, randomEventData));
     }
-    private IEnumerator RollDiceAnimation(int determinedDiceNumber)
+    private IEnumerator RollDiceAnimation(int determinedDiceNumber, RandomEventData randomEventData)
     {
         // 주사위 선택 이미지 활성화
         diceSelection.gameObject.SetActive(true);
@@ -243,7 +231,11 @@ public class BlessingPanel : MonoBehaviour
         diceSelection.sprite = selectedDiceImage[determinedDiceNumber - 1];
         // 주사위 선택 이미지 비활성화
         yield return new WaitForSeconds(1f);
-        diceSelection.gameObject.SetActive(false);
+
+        UIManager.Instance.messagePopup.Open(
+            $"주사위를 굴렸습니다! 눈금은 {determinedDiceNumber}입니다.\n{conditionText.text}",
+            onYes: () => OnDiceRollComplete(randomEventData)
+        );
     }
 
     private void OnDiceRollComplete(RandomEventData randomEvent)

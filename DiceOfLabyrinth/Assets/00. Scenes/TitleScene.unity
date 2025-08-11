@@ -33192,6 +33192,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1163139611}
   m_CullTransparentMesh: 1
+--- !u!114 &1168238284 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5548177808111114507, guid: e993d81cd6a1369449f8190aa71a3c56, type: 3}
+  m_PrefabInstance: {fileID: 5970558359265483484}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1174369922
 GameObject:
   m_ObjectHideFlags: 0
@@ -59191,11 +59202,6 @@ MonoBehaviour:
   characters: {fileID: 1978533074}
   patternDisplayer: {fileID: 1517849693}
   battleLog: {fileID: 736896106}
-  char1InfoButton: {fileID: 0}
-  char2InfoButton: {fileID: 0}
-  char3InfoButton: {fileID: 0}
-  char4InfoButton: {fileID: 0}
-  char5InfoButton: {fileID: 0}
   cost: {fileID: 736896119}
   rank: {fileID: 736896112}
   reRoll: {fileID: 736896111}
@@ -72390,6 +72396,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -100
       objectReference: {fileID: 0}
+    - target: {fileID: 6338888711743215971, guid: e993d81cd6a1369449f8190aa71a3c56, type: 3}
+      propertyPath: diceSelection
+      value: 
+      objectReference: {fileID: 1168238284}
     - target: {fileID: 6812784108933169457, guid: e993d81cd6a1369449f8190aa71a3c56, type: 3}
       propertyPath: m_Name
       value: Panel - Blessing Event
