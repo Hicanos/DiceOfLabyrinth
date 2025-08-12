@@ -16,11 +16,14 @@ public class StaticDataManager : MonoBehaviour
     [SerializeField] private List<EngravingData> engravings;
     // 인스펙터에서 할당하는 적 SO 리스트
     [SerializeField] private List<EnemyData> enemies;
+    // 랜덤 이벤트 SO 리스트 (인스펙터에서 할당)
+    [SerializeField] private List<RandomEventData> randomEvents;
 
     // 이름(string)으로 SO를 빠르게 찾기 위한 딕셔너리
     private Dictionary<string, ArtifactData> artifactDict = new Dictionary<string, ArtifactData>();
     private Dictionary<string, EngravingData> engravingDict = new Dictionary<string, EngravingData>();
     private Dictionary<string, EnemyData> enemyDict = new Dictionary<string, EnemyData>();
+    private Dictionary<string, RandomEventData> randomEventDict = new Dictionary<string, RandomEventData>();
 
     private void Awake()
     {
@@ -55,6 +58,14 @@ public class StaticDataManager : MonoBehaviour
         foreach (var so in enemies)
             if (so != null && !string.IsNullOrEmpty(so.EnemyName))
                 enemyDict[so.EnemyName] = so;
+
+        randomEventDict.Clear();
+        if (randomEvents != null)
+        {
+            foreach (var so in randomEvents)
+                if (so != null && !string.IsNullOrEmpty(so.EventName))
+                    randomEventDict[so.EventName] = so;
+        }
     }
 
     /// <summary>
@@ -72,6 +83,11 @@ public class StaticDataManager : MonoBehaviour
     /// </summary>
     public EnemyData GetEnemy(string name) =>
         enemyDict.TryGetValue(name, out var so) ? so : null;
+    /// <summary>
+    /// 이름(string)으로 랜덤 이벤트 SO를 반환
+    /// </summary>
+    public RandomEventData GetRandomEvent(string name) =>
+        randomEventDict.TryGetValue(name, out var so) ? so : null;
 
     /// <summary>
     /// 전체 아티팩트 SO 리스트 반환
