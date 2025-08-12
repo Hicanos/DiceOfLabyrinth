@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using TMPro; 
-using System.Text.RegularExpressions;
+using TMPro;
 using System.Collections;
 using System.Linq;
-using Unity.VisualScripting;
 using DG.Tweening;
 
 public class BlessingPanel : MonoBehaviour
@@ -240,7 +238,7 @@ public class BlessingPanel : MonoBehaviour
 
     private void OnDiceRollComplete(RandomEventData randomEvent)
     {
-        DOTween.Sequence().AppendInterval(0.25f); // 애니메이션 대기 시간
+        DOTween.Sequence().AppendInterval(0.50f); // 애니메이션 대기 시간
 
         if (randomEvent == null)
         {
@@ -272,7 +270,11 @@ public class BlessingPanel : MonoBehaviour
                 }
             }
         }
-            // 주사위 굴린 후 처리 로직
-            StageManager.Instance.battleUIController.OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex);
+        // 주사위 굴린 후 처리 로직
+        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby;
+        StageManager.Instance.stageSaveData.UpOrDown = 0; // 주사위 굴린 후 초기화
+        StageManager.Instance.stageSaveData.randomEventData = null; // 랜덤 이벤트 데이터 초기화
+        StageManager.Instance.stageSaveData.currentPhaseIndex++;
+        StageManager.Instance.battleUIController.OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex);
     }
 }
