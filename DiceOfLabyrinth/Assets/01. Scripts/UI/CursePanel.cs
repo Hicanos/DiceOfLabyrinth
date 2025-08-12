@@ -117,12 +117,6 @@ public class CursePanel : MonoBehaviour
             randomEventData = blessings[Random.Range(0, blessings.Count)];
         }
 
-        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby;
-        StageManager.Instance.stageSaveData.UpOrDown = 0;
-        StageManager.Instance.stageSaveData.upAndDownNumber = 0;
-        StageManager.Instance.stageSaveData.randomEventData = null;
-        StageManager.Instance.stageSaveData.currentPhaseIndex++;
-
         while (StageManager.Instance.stageSaveData.selectedRandomEvents.Count < 4)
         {
             StageManager.Instance.stageSaveData.selectedRandomEvents.Add(null);

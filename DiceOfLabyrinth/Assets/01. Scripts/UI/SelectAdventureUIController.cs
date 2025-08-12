@@ -241,14 +241,15 @@ public class SelectAdventureUIController : MonoBehaviour
                 () =>
                 {
                     messagePopup.Close();
-                    //DOTween.Sequence()
-                    //    .AppendInterval(0.25f) // fadeOut 시간만큼 대기
-                    //    .AppendCallback(() => {
+                    DOTween.Sequence()
+                        .AppendInterval(0.25f) // fadeOut 시간만큼 대기
+                        .AppendCallback(() =>
+                        {
                             messagePopup.Open("진행 중이던 챕터를 정산하시겠습니까? ...",
                                 () => { StageManager.Instance.EndChapterEarly(chapterIndex); },
                                 () => messagePopup.Close()
                             );
-                        //});
+                        });
                 }
                 );
                 return;
