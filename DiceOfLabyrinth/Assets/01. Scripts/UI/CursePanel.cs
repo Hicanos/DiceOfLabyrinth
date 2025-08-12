@@ -218,36 +218,58 @@ public class CursePanel : MonoBehaviour
 
         if (randomEvent == null)
         {
-            UIManager.Instance.messagePopup.Open("이벤트 실패: 아무 일도 일어나지 않았습니다.");
-        }
-        else if (randomEvent.EventType == RandomEventType.Curse)
-        {
-            UIManager.Instance.messagePopup.Open($"저주 이벤트 발생: {randomEvent.EventName}\n{RandomEventData.GetEventDescription(randomEvent)}");
-            for (int i = 0; i < StageManager.Instance.stageSaveData.selectedRandomEvents.Count; i++)
-            {
-                if (StageManager.Instance.stageSaveData.selectedRandomEvents[i] == null)
-                {
-                    StageManager.Instance.stageSaveData.selectedRandomEvents[i] = randomEvent;
-                    break;
+            UIManager.Instance.messagePopup.Open(
+                "이벤트 실패: 아무 일도 일어나지 않았습니다.",
+                onYes: () => {
+                    StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby;
+                    StageManager.Instance.stageSaveData.UpOrDown = 0;
+                    StageManager.Instance.stageSaveData.randomEventData = null;
+                    StageManager.Instance.stageSaveData.currentPhaseIndex++;
+                    StageManager.Instance.battleUIController.OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex);
                 }
-            }
+            );
         }
         else if (randomEvent.EventType == RandomEventType.Blessing)
         {
-            UIManager.Instance.messagePopup.Open($"축복 이벤트 발생: {randomEvent.EventName}\n{RandomEventData.GetEventDescription(randomEvent)}");
-            for (int i = 0; i < StageManager.Instance.stageSaveData.selectedRandomEvents.Count; i++)
-            {
-                if (StageManager.Instance.stageSaveData.selectedRandomEvents[i] == null)
-                {
-                    StageManager.Instance.stageSaveData.selectedRandomEvents[i] = randomEvent;
-                    break;
+            UIManager.Instance.messagePopup.Open(
+                $"축복 이벤트 발생: {randomEvent.EventName}\n{RandomEventData.GetEventDescription(randomEvent)}",
+                onYes: () => {
+                    for (int i = 0; i < StageManager.Instance.stageSaveData.selectedRandomEvents.Count; i++)
+                    {
+                        if (StageManager.Instance.stageSaveData.selectedRandomEvents[i] == null)
+                        {
+                            StageManager.Instance.stageSaveData.selectedRandomEvents[i] = randomEvent;
+                            break;
+                        }
+                    }
+                    StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby;
+                    StageManager.Instance.stageSaveData.UpOrDown = 0;
+                    StageManager.Instance.stageSaveData.randomEventData = null;
+                    StageManager.Instance.stageSaveData.currentPhaseIndex++;
+                    StageManager.Instance.battleUIController.OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex);
                 }
-            }
+            );
         }
-        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby;
-        StageManager.Instance.stageSaveData.UpOrDown = 0;
-        StageManager.Instance.stageSaveData.randomEventData = null;
-        StageManager.Instance.stageSaveData.currentPhaseIndex++;
-        StageManager.Instance.battleUIController.OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex);
+        else if (randomEvent.EventType == RandomEventType.Curse)
+        {
+            UIManager.Instance.messagePopup.Open(
+                $"저주 이벤트 발생: {randomEvent.EventName}\n{RandomEventData.GetEventDescription(randomEvent)}",
+                onYes: () => {
+                    for (int i = 0; i < StageManager.Instance.stageSaveData.selectedRandomEvents.Count; i++)
+                    {
+                        if (StageManager.Instance.stageSaveData.selectedRandomEvents[i] == null)
+                        {
+                            StageManager.Instance.stageSaveData.selectedRandomEvents[i] = randomEvent;
+                            break;
+                        }
+                    }
+                    StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby;
+                    StageManager.Instance.stageSaveData.UpOrDown = 0;
+                    StageManager.Instance.stageSaveData.randomEventData = null;
+                    StageManager.Instance.stageSaveData.currentPhaseIndex++;
+                    StageManager.Instance.battleUIController.OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex);
+                }
+            );
+        }
     }
 }

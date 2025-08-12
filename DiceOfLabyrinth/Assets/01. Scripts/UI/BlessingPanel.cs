@@ -230,43 +230,62 @@ public class BlessingPanel : MonoBehaviour
 
     private void OnDiceRollComplete(RandomEventData randomEvent)
     {
-        DOTween.Sequence().AppendInterval(0.50f); // 애니메이션 대기 시간
+        DOTween.Sequence().AppendInterval(0.50f);
 
         if (randomEvent == null)
         {
-            UIManager.Instance.messagePopup.Open("이벤트 실패: 아무 일도 일어나지 않았습니다.");
+            UIManager.Instance.messagePopup.Open(
+                "이벤트 실패: 아무 일도 일어나지 않았습니다.",
+                onYes: () => {
+                    StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby;
+                    StageManager.Instance.stageSaveData.UpOrDown = 0;
+                    StageManager.Instance.stageSaveData.randomEventData = null;
+                    StageManager.Instance.stageSaveData.currentPhaseIndex++;
+                    StageManager.Instance.battleUIController.OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex);
+                }
+            );
         }
         else if (randomEvent.EventType == RandomEventType.Blessing)
         {
-            UIManager.Instance.messagePopup.Open($"축복 이벤트 발생: {randomEvent.EventName}\n{RandomEventData.GetEventDescription(randomEvent)}");
-            // 축복 이벤트 처리 로직
-            for (int i = 0; i < StageManager.Instance.stageSaveData.selectedRandomEvents.Count; i++)
-            {
-                if (StageManager.Instance.stageSaveData.selectedRandomEvents[i] == null)
-                {
-                    StageManager.Instance.stageSaveData.selectedRandomEvents[i] = randomEvent;
-                    break;
+            UIManager.Instance.messagePopup.Open(
+                $"축복 이벤트 발생: {randomEvent.EventName}\n{RandomEventData.GetEventDescription(randomEvent)}",
+                onYes: () => {
+                    for (int i = 0; i < StageManager.Instance.stageSaveData.selectedRandomEvents.Count; i++)
+                    {
+                        if (StageManager.Instance.stageSaveData.selectedRandomEvents[i] == null)
+                        {
+                            StageManager.Instance.stageSaveData.selectedRandomEvents[i] = randomEvent;
+                            break;
+                        }
+                    }
+                    StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby;
+                    StageManager.Instance.stageSaveData.UpOrDown = 0;
+                    StageManager.Instance.stageSaveData.randomEventData = null;
+                    StageManager.Instance.stageSaveData.currentPhaseIndex++;
+                    StageManager.Instance.battleUIController.OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex);
                 }
-            }
+            );
         }
         else if (randomEvent.EventType == RandomEventType.Curse)
         {
-            UIManager.Instance.messagePopup.Open($"저주 이벤트 발생: {randomEvent.EventName}\n{RandomEventData.GetEventDescription(randomEvent)}");
-            // 저주 이벤트 처리 로직
-            for (int i = 0; i < StageManager.Instance.stageSaveData.selectedRandomEvents.Count; i++)
-            {
-                if (StageManager.Instance.stageSaveData.selectedRandomEvents[i] == null)
-                {
-                    StageManager.Instance.stageSaveData.selectedRandomEvents[i] = randomEvent;
-                    break;
+            UIManager.Instance.messagePopup.Open(
+                $"저주 이벤트 발생: {randomEvent.EventName}\n{RandomEventData.GetEventDescription(randomEvent)}",
+                onYes: () => {
+                    for (int i = 0; i < StageManager.Instance.stageSaveData.selectedRandomEvents.Count; i++)
+                    {
+                        if (StageManager.Instance.stageSaveData.selectedRandomEvents[i] == null)
+                        {
+                            StageManager.Instance.stageSaveData.selectedRandomEvents[i] = randomEvent;
+                            break;
+                        }
+                    }
+                    StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby;
+                    StageManager.Instance.stageSaveData.UpOrDown = 0;
+                    StageManager.Instance.stageSaveData.randomEventData = null;
+                    StageManager.Instance.stageSaveData.currentPhaseIndex++;
+                    StageManager.Instance.battleUIController.OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex);
                 }
-            }
+            );
         }
-        // 주사위 굴린 후 처리 로직
-        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby;
-        StageManager.Instance.stageSaveData.UpOrDown = 0; // 주사위 굴린 후 초기화
-        StageManager.Instance.stageSaveData.randomEventData = null; // 랜덤 이벤트 데이터 초기화
-        StageManager.Instance.stageSaveData.currentPhaseIndex++;
-        StageManager.Instance.battleUIController.OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex);
     }
 }
