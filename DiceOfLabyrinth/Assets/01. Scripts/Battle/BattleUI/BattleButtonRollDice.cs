@@ -19,6 +19,7 @@ public class BattleButtonRollDice : AbstractBattleButton
         {
             case DetailedTurnState.Enter:
                 ChangeEndTurnToRoll();
+                ChangeRollUI();
                 rollButton.interactable = true;
                 break;
             case DetailedTurnState.Roll:
@@ -67,8 +68,7 @@ public class BattleButtonRollDice : AbstractBattleButton
                 characterPrefab.GetComponent<SpawnedCharacter>().PrepareAttack();
             }
 
-            string st = $"({diceManager.RollRemain.ToString()})";
-            battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.Reroll, st);
+            ChangeRollUI();
             diceManager.DiceHolding.GetFixedList();
             
             battleManager.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.Roll);
@@ -79,6 +79,12 @@ public class BattleButtonRollDice : AbstractBattleButton
             battleManager.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.EndTurn);
             battleManager.EndPlayerTurn();
         }
+    }
+
+    private void ChangeRollUI()
+    {
+        string st = $"({DiceManager.Instance.RollRemain.ToString()})";
+        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.Reroll, st);
     }
 
     private void ChangeRollToEndTurn()
