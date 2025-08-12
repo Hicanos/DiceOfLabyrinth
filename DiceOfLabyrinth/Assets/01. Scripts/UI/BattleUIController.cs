@@ -904,7 +904,7 @@ public class BattleUIController : MonoBehaviour
             }
             else if (StageManager.Instance.stageSaveData.currentPhaseIndex == 5) // 페이즈 5는 보스 룸
             {
-                messagePopup.Open("보스가 등장했습니다! 입장할래?",
+                messagePopup.Open("보스가 등장했습니다! 입장하시겠습니까?",
                 () => StageManager.Instance.selectBossEnemy(),
                 () => messagePopup.Close());
             }

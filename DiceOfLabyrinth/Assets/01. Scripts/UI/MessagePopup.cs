@@ -19,13 +19,13 @@ public class MessagePopup : MonoBehaviour
 
     private Action _onYes, _onNo;
 
-    private void Awake()
-    {
-        if (!cgFade)
-        {
-            cgFade = GetComponent<CanvasGroup>();
-        }
-    }
+    //private void Awake()
+    //{
+    //    if (!cgFade)
+    //    {
+    //        cgFade = GetComponent<CanvasGroup>();
+    //    }
+    //}
 
     public void Open(string msg = null, Action onYes = null, Action onNo = null)
     {
@@ -58,13 +58,13 @@ public class MessagePopup : MonoBehaviour
 
         ResetScrollPosition();
 
-#if DOTWEEN
-        cgFade.alpha = 0;
-        cgFade.DOFade(1, fadeIn);
+//#if DOTWEEN
+//        cgFade.alpha = 0;
+//        cgFade.DOFade(1, fadeIn);
 
-        transform.localScale = Vector3.one * popScale;
-        transform.DOScale(1, fadeIn).SetEase(Ease.OutBack);
-#endif
+//        transform.localScale = Vector3.one * popScale;
+//        transform.DOScale(1, fadeIn).SetEase(Ease.OutBack);
+//#endif
     }
 
     private void ResetScrollPosition()
@@ -89,11 +89,11 @@ public class MessagePopup : MonoBehaviour
 
     public void Close()
     {
-#if DOTWEEN
-        cgFade.DOFade(0, fadeOut).OnComplete(() => gameObject.SetActive(false));
-#else
+        //#if DOTWEEN
+        //        cgFade.DOFade(0, fadeOut).OnComplete(() => gameObject.SetActive(false));
+        //#else
         gameObject.SetActive(false);
-#endif
+//#endif
         _onYes = _onNo = null;
     }
 }
