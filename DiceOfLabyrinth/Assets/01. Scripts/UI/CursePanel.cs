@@ -13,7 +13,7 @@ public class CursePanel : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] private Image[] characterButtons = new Image[5];
     [SerializeField] private Image[] characterIcons = new Image[5];
-    [SerializeField] private Image[] characterFrames = new Image[5];
+    [SerializeField] private Image[] characterElimentBgs = new Image[5];
     [SerializeField] private Image[] characterDices = new Image[5];
     [SerializeField] private TMP_Text conditionText; // 저주 조건 텍스트
     [SerializeField] private Image diceSelection; // 주사위 선택 이미지
@@ -64,7 +64,7 @@ public class CursePanel : MonoBehaviour
         for (int i = 0; i < characterButtons.Length; i++)
         {
             characterIcons[i].sprite = StageManager.Instance.stageSaveData.battleCharacters[i].CharacterData.icon;
-            characterFrames[i].sprite = StageManager.Instance.stageSaveData.battleCharacters[i].CharacterData.BackGroundIcon;
+            characterElimentBgs[i].sprite = StageManager.Instance.stageSaveData.battleCharacters[i].CharacterData.BackGroundIcon;
             characterDices[i].sprite = StageManager.Instance.stageSaveData.battleCharacters[i].CharacterData.DiceNumIcon;
         }
     }
@@ -93,14 +93,6 @@ public class CursePanel : MonoBehaviour
         conditionText.text = defaultText
             .Replace("{DiceNumber}", diceNumberText)
             .Replace("{UpAndDownText}", upAndDownText);
-    }
-
-    public void OnClickSelectCharacter(int index)
-    {
-        if (index < 0 || index >= characterButtons.Length)
-            return;
-        selectedCharacterIndex = index;
-        UpdateCharacterSelection();
     }
 
     public void OnClickDiceRollButton()
