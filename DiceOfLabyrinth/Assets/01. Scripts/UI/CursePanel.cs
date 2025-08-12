@@ -214,35 +214,7 @@ public class CursePanel : MonoBehaviour
 
     private void OnDiceRollComplete(RandomEventData randomEvent)
     {
-        DOTween.Sequence().AppendInterval(0.50f);
-
-        if (randomEvent == null)
-        {
-            UIManager.Instance.messagePopup.Open(
-                "이벤트 실패: 아무 일도 일어나지 않았습니다.",
-                onYes: () => StartCoroutine(ShowStagePanelWithDelay())
-            );
-        }
-        else if (randomEvent.EventType == RandomEventType.Blessing)
-        {
-            UIManager.Instance.messagePopup.Open(
-                $"축복 이벤트 발생: {randomEvent.EventName}\n{RandomEventData.GetEventDescription(randomEvent)}",
-                onYes: () => StartCoroutine(ShowStagePanelWithDelay(randomEvent))
-            );
-        }
-        else if (randomEvent.EventType == RandomEventType.Curse)
-        {
-            UIManager.Instance.messagePopup.Open(
-                $"저주 이벤트 발생: {randomEvent.EventName}\n{RandomEventData.GetEventDescription(randomEvent)}",
-                onYes: () => StartCoroutine(ShowStagePanelWithDelay(randomEvent))
-            );
-        }
-    }
-
-    private IEnumerator ShowStagePanelWithDelay(RandomEventData randomEvent = null)
-    {
-        yield return null; // 한 프레임 대기
-
+        // 1. 데이터 처리 즉시
         if (randomEvent != null)
         {
             for (int i = 0; i < StageManager.Instance.stageSaveData.selectedRandomEvents.Count; i++)
@@ -259,5 +231,30 @@ public class CursePanel : MonoBehaviour
         StageManager.Instance.stageSaveData.randomEventData = null;
         StageManager.Instance.stageSaveData.currentPhaseIndex++;
         StageManager.Instance.battleUIController.OpenStagePanel(StageManager.Instance.stageSaveData.currentPhaseIndex);
+
+        // 2. 메시지 팝업 예약 (UIManager 등 항상 활성화된 곳에서 실행)
+        UIManager.Instance.StartCoroutine(ShowResultPopupAfterStagePanel(randomEvent));
+    }
+
+    private IEnumerator ShowResultPopupAfterStagePanel(RandomEventData randomEvent)
+    {
+        yield return null; // 한 프레임 대기(또는 yield return new WaitForSeconds(0.1f);)
+
+        if (randomEvent == null)
+        {
+            UIManager.Instance.messagePopup.Open("이벤트 실패: 아무 일도 일어나지 않았습니다.");
+        }
+        else if (randomEvent.EventType == RandomEventType.Blessing)
+        {
+            UIManager.Instance.messagePopup.Open(
+                $"축복 이벤트 발생: {randomEvent.EventName}\n{RandomEventData.GetEventDescription(randomEvent)}"
+            );
+        }
+        else if (randomEvent.EventType == RandomEventType.Curse)
+        {
+            UIManager.Instance.messagePopup.Open(
+                $"저주 이벤트 발생: {randomEvent.EventName}\n{RandomEventData.GetEventDescription(randomEvent)}"
+            );
+        }
     }
 }
