@@ -234,7 +234,7 @@ public class BattleManager : MonoBehaviour
 
         cost = Mathf.Clamp(cost + iNum, 0, MaxCost);
         currentCost = cost;
-        string st = $"{currentCost} / {MaxCost}";
+        string st = $"{currentCost}/{MaxCost}";
         UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, st);
     }
 
@@ -248,7 +248,7 @@ public class BattleManager : MonoBehaviour
         }
         cost = Mathf.Clamp(cost - iNum, 0, MaxCost);
         currentCost = cost;
-        string st = $"{currentCost} / {MaxCost}";
+        string st = $"{currentCost}/{MaxCost}";
         UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, st);
         ArtifactBuffs.ActionSpendCost();
     }    
