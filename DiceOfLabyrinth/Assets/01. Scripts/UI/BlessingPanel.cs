@@ -127,11 +127,6 @@ public class BlessingPanel : MonoBehaviour
         //    var randomEventData = riskAndReturns[Random.Range(0, riskAndReturns.Count)];
         //} // RiskAndReturn 이벤트는 현재 구현되지 않음
 
-        StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Standby;
-        StageManager.Instance.stageSaveData.UpOrDown = 0; // 주사위 굴린 후 초기화
-        StageManager.Instance.stageSaveData.upAndDownNumber = 0; // 주사위 눈금 초기화
-        StageManager.Instance.stageSaveData.randomEventData = null; // 랜덤 이벤트 데이터 초기화
-        StageManager.Instance.stageSaveData.currentPhaseIndex++;
 
         // 셀렉티드랜덤이벤트 리스트 크기 맞추기
         while (StageManager.Instance.stageSaveData.selectedRandomEvents.Count < 4)
