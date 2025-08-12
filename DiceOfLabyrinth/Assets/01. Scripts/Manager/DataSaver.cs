@@ -138,6 +138,7 @@ public class DataSaver
         public List<BattleCharacterData> battleCharacters = new List<BattleCharacterData>(5);
         public string selectedEnemyID;
         public List<ChapterStates> chapterStates = new List<ChapterStates>();
+        public List<string> selectedRandomEventNames = new List<string>(4); // 추가: 선택된 랜덤 이벤트 이름 저장
 
         // 역직렬화용 기본 생성자
         public StageData() { }
@@ -167,6 +168,7 @@ public class DataSaver
             battleCharacters = saveData.battleCharacters?.Select(bc => new BattleCharacterData(bc)).ToList() ?? new List<BattleCharacterData>();
             selectedEnemyID = saveData.selectedEnemy != null ? saveData.selectedEnemy.name : null;
             chapterStates = saveData.chapterStates != null ? new List<ChapterStates>(saveData.chapterStates) : new List<ChapterStates>();
+            selectedRandomEventNames = saveData.selectedRandomEvents?.Select(e => e != null ? e.EventName : null).ToList() ?? new List<string>(new string[4]);
         }
 
         // StageData → StageSaveData 변환 (string → SO 복원)
@@ -224,6 +226,9 @@ public class DataSaver
                 : null;
 
             saveData.chapterStates = new List<ChapterStates>(chapterStates);
+            saveData.selectedRandomEvents = selectedRandomEventNames
+                .Select(name => string.IsNullOrEmpty(name) ? null : StaticDataManager.Instance.GetRandomEvent(name))
+                .ToList();
             return saveData;
         }
     }
@@ -289,6 +294,13 @@ public class DataSaver
             target.chapterStates.RemoveAt(target.chapterStates.Count - 1);
         for (int i = 0; i < source.chapterStates.Count; i++)
             target.chapterStates[i] = source.chapterStates[i];
+
+        while (target.selectedRandomEvents.Count < source.selectedRandomEvents.Count)
+            target.selectedRandomEvents.Add(null);
+        while (target.selectedRandomEvents.Count > source.selectedRandomEvents.Count)
+            target.selectedRandomEvents.RemoveAt(target.selectedRandomEvents.Count - 1);
+        for (int i = 0; i < source.selectedRandomEvents.Count; i++)
+            target.selectedRandomEvents[i] = source.selectedRandomEvents[i];
     }
 
     [Serializable]
@@ -653,6 +665,8 @@ public class DataSaver
             SaveData.stageData.battleCharacters = new List<BattleCharacterData>();
         if (SaveData.stageData.chapterStates == null)
             SaveData.stageData.chapterStates = new List<ChapterStates>();
+        if (SaveData.stageData.selectedRandomEventNames == null || SaveData.stageData.selectedRandomEventNames.Count != 4)
+            SaveData.stageData.selectedRandomEventNames = new List<string>(new string[4]);
     }
 
 
