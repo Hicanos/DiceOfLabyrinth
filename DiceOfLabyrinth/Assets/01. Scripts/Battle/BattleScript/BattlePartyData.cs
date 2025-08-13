@@ -84,9 +84,7 @@ public class BattlePartyData
         else
         {
             DeadIndex.Add(index);
-        }
-
-        battleManager.ArtifactBuffs.ActionCharacterDie();
+        }        
 
         if (FrontLine.Contains<int>(index))
         {
@@ -96,6 +94,8 @@ public class BattlePartyData
         {
             BackLine.Remove(index);
         }
+
+        battleManager.ArtifactBuffs.ActionCharacterDie();
 
         if (isAllDead)
         {
@@ -119,13 +119,11 @@ public class BattlePartyData
         {
             FrontLine.Add(index);
             FrontLine.Sort();
-            characters[index].Revive();
         }
         else if (index > frontLineNum)
         {
             BackLine.Add(index);
             BackLine.Sort();
-            characters[index].Revive();
         }
     }
 

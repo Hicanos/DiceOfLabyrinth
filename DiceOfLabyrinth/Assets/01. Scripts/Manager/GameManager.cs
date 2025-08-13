@@ -30,17 +30,17 @@ public class GameManager : MonoBehaviour
     private IEnumerator Start()
     {
         while (UserDataManager.Instance == null)
-            yield return null; // UserDataManager가 생성될 때까지 대기
-
-        // StageManager.Instance가 생성될 때까지 대기
-        while (StageManager.Instance == null)
-            yield return null;
-
+           yield return null; // UserDataManager가 생성될 때까지 대기
+           
         // 캐릭터 SO 로드 대기
         yield return CharacterManager.Instance.LoadAllCharactersAsync();
 
         // 아이템 SO 로드 대기
         yield return ItemManager.Instance.LoadAllItemSOs();
+
+        // StageManager.Instance가 생성될 때까지 대기
+        while (StageManager.Instance == null)
+            yield return null;
 
         // 튜토리얼 매니저 생성대기
         while (TutorialManager.Instance == null)

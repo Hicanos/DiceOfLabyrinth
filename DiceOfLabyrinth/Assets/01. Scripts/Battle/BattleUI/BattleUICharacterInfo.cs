@@ -16,12 +16,13 @@ public class BattleUICharacterInfo : MonoBehaviour
     {
         BattleCharacterInBattle character = BattleManager.Instance.PartyData.Characters[index];
 
+        portrait.sprite = character.character.CharacterData.icon;
         textName.text = character.CharNameKr;
-        textPosition.text = "포지션";
+        textPosition.text = character.character.CharacterData.classType.ToString();
         textAtk.text = character.CurrentATK.ToString();
         textDef.text = character.CurrentDEF.ToString();
-        //textHP.text = character.MaxHP.ToString();
-        //textCNo.text = character.CharacterData.charDiceData.CignatureNo.ToString();
+        textHP.text = character.MaxHP.ToString();
+        textCNo.text = character.character.CharacterData.charDiceData.CignatureNo.ToString();
     }
 
     public void OnClickClosePanel()

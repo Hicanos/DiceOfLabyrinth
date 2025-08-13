@@ -4,14 +4,15 @@
     {
         UIManager uIManager = UIManager.Instance;
         DiceManager diceManager = DiceManager.Instance;
+        BattleManager battleManager = BattleManager.Instance;
 
         uIManager.BattleUI.BattleUILog.MakeLogPool();
         uIManager.BattleUI.battleCanvas.worldCamera = diceManager.DiceCamera;
         diceManager.LoadDiceData();
         InputManager.Instance.BattleInputStart();
-        BattleManager.Instance.EnterBattleSettings();
+        battleManager.EnterBattleSettings();
         diceManager.DiceSettingForBattle();
-        BattleManager.Instance.Enemy.PassiveContainer.ActionPassiveBattleStart();
+        battleManager.Enemy.PassiveContainer.ActionPassiveBattleStart();
         AbstractButtonSetting();
     }
     public void BattleUpdate()

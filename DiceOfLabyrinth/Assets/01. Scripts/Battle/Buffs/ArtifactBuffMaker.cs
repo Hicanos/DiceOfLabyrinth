@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public enum ArtifactEffectTypeEnum
 {
@@ -41,14 +41,13 @@ public enum ArtifactCallBackLocation
     SpendCost,
 }
 
-public class ArtifactBuffMaker
+public class ArtifactBuffMaker : ISkillMaker, ISkillLocationMaker
 {
-    public void MakeArtifactBuff()
+    public void MakeSkill()
     {
         List<ArtifactData> artifacts = BattleManager.Instance.PartyData.Artifacts;
         ArtifactDetailData detailData;
         Action<IBuff> AddBuffAction;
-
         for (int i = 0; i < artifacts.Count; i++)
         {
             if (artifacts[i] == null) return;
@@ -57,197 +56,200 @@ public class ArtifactBuffMaker
             {
                 detailData = new ArtifactDetailData(artifacts[i].ArtifactEffects[j]);                                
 
-                IBuff buff = new ArtifactBuffUpdate(detailData, GetArtifactCondition(detailData), GetEffectAction(detailData));
+                IBuff buff = new ArtifactBuffUpdate(detailData, GetCondition((int)detailData.ConditionType), GetEffect((int)detailData.EffectType));
 
-                AddBuffAction = GetCallBackLocationAction(detailData);
+                AddBuffAction = GetEffectLocation((int)detailData.CallBackLocation);
                 AddBuffAction?.Invoke(buff);
             }
         }
     }
 
-    private Func<ArtifactDetailData, bool> GetArtifactCondition(ArtifactDetailData data)
+    public Func<float, bool> GetCondition(int enumIndex)
     {
-        switch (data.ConditionType)
+        switch (enumIndex)
         {
-            case ArtifactConditionTypeEnum.PlayerTurnStartNum:
-                return new Func<ArtifactDetailData, bool>(PlayerTurnStartNumCondition);
-            case ArtifactConditionTypeEnum.PlayerTurnEndNum:
-                return new Func<ArtifactDetailData, bool>(PlayerTurnEndNumCondition);
-            case ArtifactConditionTypeEnum.DiceSignitureCount:
-                return new Func<ArtifactDetailData, bool>(DiceSignitureCountCondition);
-            case ArtifactConditionTypeEnum.Chace:
-                return new Func<ArtifactDetailData, bool>(ChanceCondition);
-            case ArtifactConditionTypeEnum.IsBoss:
-                return new Func<ArtifactDetailData, bool>(IsBossCondition);
-            case ArtifactConditionTypeEnum.CostSpendAmount:
-                return new Func<ArtifactDetailData, bool>(CostSpendAmountCondition);
+            case (int)ArtifactConditionTypeEnum.PlayerTurnStartNum:
+                return new Func<float, bool>(PlayerTurnStartNumCondition);
+            case (int)ArtifactConditionTypeEnum.PlayerTurnEndNum:
+                return new Func<float, bool>(PlayerTurnEndNumCondition);
+            case (int)ArtifactConditionTypeEnum.DiceSignitureCount:
+                return new Func<float, bool>(DiceSignitureCountCondition);
+            case (int)ArtifactConditionTypeEnum.Chace:
+                return new Func<float, bool>(ChanceCondition);
+            case (int)ArtifactConditionTypeEnum.IsBoss:
+                return new Func<float, bool>(IsBossCondition);
+            case (int)ArtifactConditionTypeEnum.CostSpendAmount:
+                return new Func<float, bool>(CostSpendAmountCondition);
             default:
-                return new Func<ArtifactDetailData, bool>(DefaultCondition);
+                return new Func<float, bool>(DefaultCondition);
         }
     }
 
     #region 조건 판별 메서드
-    private bool DefaultCondition(ArtifactDetailData data)
+    private bool DefaultCondition(float value)
     {
         return true;
     }
 
-    private bool PlayerTurnStartNumCondition(ArtifactDetailData data)
+    private bool PlayerTurnStartNumCondition(float value)
     {
-        if (BattleManager.Instance.CurrentDetailedState == DetailedTurnState.Enter && BattleManager.Instance.BattleTurn == data.ConditionValue) return true;
+        if (BattleManager.Instance.CurrentDetailedState == DetailedTurnState.Enter && BattleManager.Instance.BattleTurn == value) return true;
         else return false;
     }
 
-    private bool PlayerTurnEndNumCondition(ArtifactDetailData data)
+    private bool PlayerTurnEndNumCondition(float value)
     {
         if (BattleManager.Instance.CurrentDetailedState == DetailedTurnState.EndTurn) return true;
         else return false;
     }
 
-    private bool DiceSignitureCountCondition(ArtifactDetailData data)
+    private bool DiceSignitureCountCondition(float value)
     {
         if (DiceManager.Instance.SignitureAmount > 0) return true;
         else return false;
     }
 
-    private bool ChanceCondition(ArtifactDetailData data)
+    private bool ChanceCondition(float value)
     {
         int iNum = UnityEngine.Random.Range(1, 101);
-        if (iNum <= data.ConditionValue) return true;
+        if (iNum <= value) return true;
         else return false;
     }
 
-    private bool IsBossCondition(ArtifactDetailData data)
+    private bool IsBossCondition(float value)
     {
         if (BattleManager.Instance.IsBoss) return true;
         else return false;
     }
-    private bool CostSpendAmountCondition(ArtifactDetailData data)
+    private bool CostSpendAmountCondition(float value)
     {
-        if (BattleManager.Instance.CostSpendedInTurn >= data.ConditionValue) return true;
+        if (BattleManager.Instance.CostSpendedInTurn >= value) return true;
         else return false;
     }
     #endregion
 
-    private Action<ArtifactDetailData> GetEffectAction(ArtifactDetailData data)
+    public Action<float> GetEffect(int enumIndex)
     {
-        switch (data.EffectType)
+        switch ((ArtifactEffectTypeEnum)enumIndex)
         {
             case ArtifactEffectTypeEnum.AdditionalDamage:
-                return new Action<ArtifactDetailData>(AdditionalDamageAction);
+                return new Action<float>(AdditionalDamageAction);
             case ArtifactEffectTypeEnum.AdditionalElementDamage:
-                return new Action<ArtifactDetailData>(AdditionalElementDamageAction);
+                return new Action<float>(AdditionalElementDamageAction);
             case ArtifactEffectTypeEnum.AdditionalRoll:
-                return new Action<ArtifactDetailData>(AdditionalRollAction);            
+                return new Action<float>(AdditionalRollAction);            
             case ArtifactEffectTypeEnum.AdditionalMaxCost:
-                return new Action<ArtifactDetailData>(AdditionalMaxCostAction);
+                return new Action<float>(AdditionalMaxCostAction);
             case ArtifactEffectTypeEnum.AdditionalStone:
-                return new Action<ArtifactDetailData>(AdditionalStoneAction);
+                return new Action<float>(AdditionalStoneAction);
             case ArtifactEffectTypeEnum.AdditionalAttack:
-                return new Action<ArtifactDetailData>(AdditionalAttackAction);
+                return new Action<float>(AdditionalAttackAction);
             case ArtifactEffectTypeEnum.AdditionalSIgniture:
-                return new Action<ArtifactDetailData>(AdditionalSignitureAction);
+                return new Action<float>(AdditionalSignitureAction);
             case ArtifactEffectTypeEnum.AdditionalStatusWithSignitureCount:
-                return new Action<ArtifactDetailData>(AdditionalStatusWithSignitureCountAction);
+                return new Action<float>(AdditionalStatusWithSignitureCountAction);
             case ArtifactEffectTypeEnum.HealHPRatio:
-                return new Action<ArtifactDetailData>(HealHPRatioAction);
+                return new Action<float>(HealHPRatioAction);
             case ArtifactEffectTypeEnum.GetCost:
-                return new Action<ArtifactDetailData>(GetCostAction);
+                return new Action<float>(GetCostAction);
             case ArtifactEffectTypeEnum.EnemyDebuff:
-                return new Action<ArtifactDetailData>(EnemyDebuffAction);
+                return new Action<float>(EnemyDebuffAction);
             case ArtifactEffectTypeEnum.RemoveDebuff:
-                return new Action<ArtifactDetailData>(RemoveDebuffAction);
+                return new Action<float>(RemoveDebuffAction);
             case ArtifactEffectTypeEnum.GetBarrier:
-                return new Action<ArtifactDetailData>(GetBarrierAction);
+                return new Action<float>(GetBarrierAction);
             case ArtifactEffectTypeEnum.CharacterRevive:
-                return new Action<ArtifactDetailData>(CharacterReviveAction);
+                return new Action<float>(CharacterReviveAction);
             case ArtifactEffectTypeEnum.AdditionalAttackCount:
-                return new Action<ArtifactDetailData>(AdditionalAttackCountAction);
+                return new Action<float>(AdditionalAttackCountAction);
             default:
-                return new Action<ArtifactDetailData>(DefaultAction);
+                return new Action<float>(DefaultAction);
         }
     }
 
     #region 액션 메서드
-    private void DefaultAction(ArtifactDetailData data)
+    private void DefaultAction(float value)
     {
         Debug.Log("Can't find ArtifactEffectType");
     }
-    private void AdditionalDamageAction(ArtifactDetailData data)
+    private void AdditionalDamageAction(float value)
     {
-        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalDamage += data.EffectValue;
+        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalDamage += value;
     }
-    private void AdditionalElementDamageAction(ArtifactDetailData data)
+    private void AdditionalElementDamageAction(float value)
     {
-        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalElementDamage += data.EffectValue;
+        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalElementDamage += value;
     }
-    private void AdditionalRollAction(ArtifactDetailData data)
+    private void AdditionalRollAction(float value)
     {
-        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalRoll += data.EffectValue;
+        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalRoll += value;
     }
-    private void AdditionalMaxCostAction(ArtifactDetailData data)
+    private void AdditionalMaxCostAction(float value)
     {
-        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalMaxCost += data.EffectValue;
+        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalMaxCost += value;
     }
-    private void AdditionalStoneAction(ArtifactDetailData data)
+    private void AdditionalStoneAction(float value)
     {
-        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalStone += data.EffectValue;
+        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalStone += value;
     }
-    private void AdditionalAttackAction(ArtifactDetailData data)
+    private void AdditionalAttackAction(float value)
     {
-        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalAttack += data.EffectValue;
+        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalAttack += value;
     }
-    private void AdditionalSignitureAction(ArtifactDetailData data)
+    private void AdditionalSignitureAction(float value)
     {
-        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalSIgniture += data.EffectValue;
+        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalSIgniture += value;
     }    
-    private void AdditionalStatusWithSignitureCountAction(ArtifactDetailData data)
+    private void AdditionalStatusWithSignitureCountAction(float value)
     {
-        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalSIgniture += data.EffectValue * DiceManager.Instance.SignitureAmount;
+        BattleManager.Instance.ArtifactAdditionalStatus.AdditionalSIgniture += value * DiceManager.Instance.SignitureAmount;
     }
-    private void HealHPRatioAction(ArtifactDetailData data)
+    private void HealHPRatioAction(float value)
     {
         BattleCharacterInBattle[] characters = BattleManager.Instance.PartyData.Characters;
         for (int i = 0; i < characters.Length; i++)
         {
             if(characters[i].IsDead) continue;
 
-            float healAmount = characters[i].MaxHP * data.EffectValue;
+            float healAmount = characters[i].MaxHP * value;
             characters[i].Heal((int)healAmount);
         }        
     }
-    private void GetCostAction(ArtifactDetailData data)
+    private void GetCostAction(float value)
     {
-        BattleManager.Instance.GetCost((int)data.EffectValue);
+        BattleManager.Instance.GetCost((int)value);
     }
-    private void EnemyDebuffAction(ArtifactDetailData data)
+    private void EnemyDebuffAction(float value)
     {
         Debug.Log("디버프 아티펙트 활성");
     }
-    private void RemoveDebuffAction(ArtifactDetailData data)
+    private void RemoveDebuffAction(float value)
     {
         Debug.Log("디버프 제거 아티펙트 활성");
     }
-    private void GetBarrierAction(ArtifactDetailData data)
+    private void GetBarrierAction(float value)
     {
-        BattleManager.Instance.PartyData.CharacterGetBarrier(data.EffectValue);
+        BattleManager.Instance.PartyData.CharacterGetBarrier(value);
     }
-    private void CharacterReviveAction(ArtifactDetailData data)
+    private void CharacterReviveAction(float value)
     {
         BattlePartyData partyData = BattleManager.Instance.PartyData;
-
-        partyData.Characters[partyData.CurrentDeadIndex].Revive();
+        BattleCharacterInBattle character = partyData.Characters[partyData.CurrentDeadIndex];
         Debug.Log("부활 아티펙트 활성");
+
+        character.Revive();
+        float amount = character.MaxHP * value;
+        character.Heal((int)amount);
     }
-    private void AdditionalAttackCountAction(ArtifactDetailData data)
+    private void AdditionalAttackCountAction(float value)
     {
-        BattleManager.Instance.PartyData.Characters[0].GetAttackCount((int)data.EffectValue);
+        BattleManager.Instance.PartyData.Characters[0].GetAttackCount((int)value);
     }
     #endregion
 
-    public Action<IBuff> GetCallBackLocationAction(ArtifactDetailData data)
+    public Action<IBuff> GetEffectLocation(int enumIndex)
     {
-        switch(data.CallBackLocation)
+        switch((ArtifactCallBackLocation)enumIndex)
         {
             case ArtifactCallBackLocation.TurnEnter:
                 return BattleManager.Instance.ArtifactBuffs.AddbuffsCallbackTurnEnter;
@@ -328,7 +330,7 @@ public class ArtifactDetailData
                 Init(ArtifactConditionTypeEnum.CostSpendAmount, 10, ArtifactEffectTypeEnum.GetCost, data.Value, ArtifactCallBackLocation.SpendCost);
                 break;
             case ArtifactEffectData.EffectType.ReviveWhenDie:
-                Init(ArtifactConditionTypeEnum.Chace, 60, ArtifactEffectTypeEnum.CharacterRevive, data.Value, ArtifactCallBackLocation.CharacterDie);
+                Init(ArtifactConditionTypeEnum.None, 1, ArtifactEffectTypeEnum.CharacterRevive, data.Value, ArtifactCallBackLocation.CharacterDie);
                 break;
             case ArtifactEffectData.EffectType.GenerateBarrier:
                 Init(ArtifactConditionTypeEnum.None, 1, ArtifactEffectTypeEnum.GetBarrier, data.Value, ArtifactCallBackLocation.CharacterHit);

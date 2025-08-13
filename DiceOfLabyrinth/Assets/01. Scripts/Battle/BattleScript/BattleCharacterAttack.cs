@@ -44,7 +44,7 @@ public class BattleCharacterAttack : MonoBehaviour
         GameObject characterPrefab;
         SpawnedCharacter spawnedCharacter;
 
-        int monsterDef = battleManager.Enemy.Data.Def;
+        int monsterDef;
         int characterAtk;
         int damage;
         float penetration;
@@ -61,6 +61,7 @@ public class BattleCharacterAttack : MonoBehaviour
             penetration = battleCharacters[i].CurrentPenetration;
             elementDamage = JudgeElementSuperiority(battleCharacters[i].character.CharacterData, battleManager.Enemy.Data);
 
+            monsterDef = battleManager.Enemy.CurrentDef;
             damage = CalculateDamage(characterAtk, monsterDef, penetration, elementDamage, diceWeighting);
 
             for (int j = 0; j < battleCharacters[i].AttackCount; j++)
@@ -142,7 +143,7 @@ public class BattleCharacterAttack : MonoBehaviour
         Debug.Log($"{characterAtk} * (100 / {monsterDef} * (1 - {penetration} + 100)) * (1 + {artifactAddAtk} + {elementDamage} + {additionalElementDamage}) * ({(int)diceWeighting} * {engravingAddAtk})\nEngrving :  + {engravingAddAtk}\nArtifact :  + {artifactAddAtk}\nElement :  + {additionalElementDamage}");
         damage = Mathf.Clamp(damage, 0, damage);
 
-        if (TutorialManager.Instance.isGameTutorialCompleted == false) damage /= 8;
+        if (TutorialManager.Instance.isGameTutorialCompleted == false) damage = 20;
         return (int)damage;
     }
 }

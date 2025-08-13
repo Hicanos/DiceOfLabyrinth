@@ -8,16 +8,16 @@ public interface IBuff
 
 public class EngravingBuff : IBuff
 {
-    public Func<DamageCondition, bool> JudgeCondition;
+    public Func<float, bool> JudgeCondition;
     public DamageCondition Condition;
     public EffectTypeEnum EffectType;
     public float EffectValue;
     public int MaxBuffDuration;
     private int buffDuration;
-    private Action<DamageCondition> effectAction;
+    private Action<float> effectAction;
     public bool isActive;
 
-    public EngravingBuff(Func<DamageCondition, bool> jungeCondition, DamageCondition condition, Action<DamageCondition> effectAction)
+    public EngravingBuff(Func<float, bool> jungeCondition, DamageCondition condition, Action<float> effectAction)
     {
         JudgeCondition = jungeCondition;
         Condition = condition;
@@ -30,11 +30,11 @@ public class EngravingBuff : IBuff
 
     public void Action()
     {
-        if (JudgeCondition != null && JudgeCondition(Condition))
+        if (JudgeCondition != null && JudgeCondition(Condition.ConditionValue))
         {
             isActive = true;
             buffDuration = MaxBuffDuration;
-            effectAction?.Invoke(Condition);
+            effectAction?.Invoke(EffectValue);
         }
     }
 
@@ -43,7 +43,7 @@ public class EngravingBuff : IBuff
         buffDuration--;
 
         if (buffDuration == 0 && isActive)
-        {            
+        {
             switch (EffectType)
             {
                 case EffectTypeEnum.AdditionalDamage:

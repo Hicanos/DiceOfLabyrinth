@@ -236,13 +236,15 @@ public class SelectAdventureUIController : MonoBehaviour
                     scarceStaminaPanel.SetActive(false);
                     SceneManagerEx.Instance.LoadScene("BattleScene"); // 배틀 씬으로 이동
                     StageManager.Instance.RestoreStageState();
+                    messagePopup.Close(); // 팝업 닫기
                 }, // 확인(Yes) 버튼 클릭 시
                 () =>
                 {
                     messagePopup.Close();
                     DOTween.Sequence()
                         .AppendInterval(0.25f) // fadeOut 시간만큼 대기
-                        .AppendCallback(() => {
+                        .AppendCallback(() =>
+                        {
                             messagePopup.Open("진행 중이던 챕터를 정산하시겠습니까? ...",
                                 () => { StageManager.Instance.EndChapterEarly(chapterIndex); },
                                 () => messagePopup.Close()

@@ -52,11 +52,11 @@ public class BattleManager : MonoBehaviour
     public IBattleTurnState I_FinishBattleState;
     public BattleStatePlayerTurn BattlePlayerTurnState;
 
-    public EngravingBuffMaker EngravingBuffMaker = new EngravingBuffMaker();
+    public ISkillMaker EngravingBuffMaker = new EngravingBuffMaker();
     public EngravingBuffContainer EngravingBuffs = new EngravingBuffContainer();
     public EngravingAdditionalStatus EngravingAdditionalStatus;
 
-    public ArtifactBuffMaker ArtifactBuffMaker = new ArtifactBuffMaker();
+    public ISkillMaker ArtifactBuffMaker = new ArtifactBuffMaker();
     public ArtifactBuffContainer ArtifactBuffs = new ArtifactBuffContainer();
     public ArtifactAdditionalStatus ArtifactAdditionalStatus;
 
@@ -91,6 +91,8 @@ public class BattleManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (InputManager.Instance == null) return;
+
         InputManager.Instance.BattleInputEnd();
     }
 
@@ -115,10 +117,24 @@ public class BattleManager : MonoBehaviour
         StateMachine.ChangeState(I_EnterBattleState);
     }
 
+    private void GetStartData(BattleStartData data) //start시 호출되도록
+    {
+        Enemy = new BattleEnemy(data.selectedEnemy);
+
+        PartyData = new BattlePartyData(data.battleCharacters, data.artifacts, data.engravings);
+
+        manastoneAmount = data.manaStone;
+    }
+
+    private void CheckDataChanged()
+    {
+
+    }
+
     public void EnterBattleSettings()
     {
-        EngravingBuffMaker.MakeEngravingBuff();
-        ArtifactBuffMaker.MakeArtifactBuff();
+        EngravingBuffMaker.MakeSkill();
+        ArtifactBuffMaker.MakeSkill();
         BattleSpawner.SpawnCharacters();
         BattleSpawner.SpawnEnemy();
 
@@ -154,21 +170,7 @@ public class BattleManager : MonoBehaviour
 
         PartyData = null;
         InBattleStage = false;
-    }
-
-    private void GetStartData(BattleStartData data) //start시 호출되도록
-    {
-        Enemy = new BattleEnemy(data.selectedEnemy);
-
-        PartyData = new BattlePartyData(data.battleCharacters, data.artifacts, data.engravings);
-        
-        manastoneAmount = data.manaStone;
-    }
-
-    private void CheckDataChanged()
-    {
-
-    }
+    }        
 
     public void EndBattle(bool isWon = true)
     {
@@ -205,6 +207,13 @@ public class BattleManager : MonoBehaviour
         }
     }    
 
+    //public void ChangeState()
+    //{
+    //    IBattleTurnState state;
+
+    //    StateMachine.ChangeState(state);
+    //}
+
     public void EndPlayerTurn()
     {
         StateMachine.ChangeState(I_EnemyTurnState);
@@ -225,7 +234,7 @@ public class BattleManager : MonoBehaviour
 
         cost = Mathf.Clamp(cost + iNum, 0, MaxCost);
         currentCost = cost;
-        string st = $"{currentCost} / {MaxCost}";
+        string st = $"{currentCost}/{MaxCost}";
         UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, st);
     }
 
@@ -239,7 +248,7 @@ public class BattleManager : MonoBehaviour
         }
         cost = Mathf.Clamp(cost - iNum, 0, MaxCost);
         currentCost = cost;
-        string st = $"{currentCost} / {MaxCost}";
+        string st = $"{currentCost}/{MaxCost}";
         UIValueChanger.ChangeUIText(BattleTextUIEnum.Cost, st);
         ArtifactBuffs.ActionSpendCost();
     }    
@@ -359,12 +368,12 @@ public class BattleEnemy : IDamagable
         BattleManager.Instance.EndBattle();
     }
 
-    public void GetBarrier(int value)
+    public void GetBarrier(float value)
     {
         isBarrierOn = true;
-        int amount = MaxHP * value / 100;
+        float amount = MaxHP * value;
 
-        currentBarrier += amount;
+        currentBarrier += (int)amount;
 
         UpdateHPBar();
     }

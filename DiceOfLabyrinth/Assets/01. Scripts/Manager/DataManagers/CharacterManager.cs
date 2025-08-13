@@ -42,12 +42,30 @@ public class CharacterManager
     public async Task LoadAllCharactersAsync()
     {
         handles.Clear();
-        var handle = Addressables.LoadAssetsAsync<CharacterSO>("CharacterSO", null);
-        handles.Add(handle);
-        await handle.Task;
-        AllCharacters = handle.Result.ToDictionary(c => c.charID, c => c);
-        IsLoaded = true;
-        LoadOwnedCharactersFromData();
+        int retryCount = 0;
+        const int maxRetry = 10;
+        while (retryCount < maxRetry)
+        {
+            var handle = Addressables.LoadAssetsAsync<CharacterSO>("CharacterSO", null);
+            handles.Add(handle);
+            await handle.Task;
+
+            if (handle.Status == AsyncOperationStatus.Succeeded && handle.Result != null)
+            {
+                AllCharacters = handle.Result.ToDictionary(c => c.charID, c => c);
+                IsLoaded = true;
+                LoadOwnedCharactersFromData();
+                Debug.Log($"모든 캐릭터 SO 로드됨: {AllCharacters.Count}개");
+                return;
+            }
+
+            Debug.LogWarning($"CharacterSO Addressables 로드 실패: {retryCount + 1}번째 시도");
+            AllCharacters.Clear();
+            IsLoaded = false;
+            await Task.Delay(500);
+            retryCount++;
+        }
+        Debug.LogError("CharacterSO Addressables 로드 최종 실패");
     }
 
     public void ReleaseAllCharacters()

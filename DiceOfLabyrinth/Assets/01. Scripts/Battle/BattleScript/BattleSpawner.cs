@@ -50,7 +50,7 @@ public class BattleSpawner : MonoBehaviour
         curFormationVec = formationVec[(int)battleManager.PartyData.CurrentFormationType].formationVec;
 
         GameObject go;
-        SpawnedCharacter spawnedCharacter;
+        //SpawnedCharacter spawnedCharacter;
 
         for (int i = 0; i < numFIve; i++)
         {
