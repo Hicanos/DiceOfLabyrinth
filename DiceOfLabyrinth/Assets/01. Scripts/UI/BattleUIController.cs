@@ -58,10 +58,11 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private GameObject[] itemChoiceIcon = new GameObject[3]; // 아이템 선택 아이콘을 위한 배열
     [SerializeField] private GameObject[] itemChoiceFrame = new GameObject[3]; // 아이템 선택 프레임을 위한 배열
 
-    //[Header("Select Dungeon")]
-    //[SerializeField] private TMP_Text selectedChapterText; // 스테이지 선택 패널 제목
-    //[SerializeField] private Image chapterIcon; // 스테이지 선택 패널 아이콘
-    //[SerializeField] private TMP_Text chapterDescriptionText; // 스테이지 선택 패널 설명
+    [Header("Select Floor")]
+    [SerializeField] private TMP_Text selectedFloorText; // 스테이지 선택 층수
+    [SerializeField] private Image floorBossIcon; // 스테이지 선택 보스 아이콘
+    [SerializeField] private Image floorBossElementIcon; // 스테이지 선택 아이콘 엘리먼트 타입
+    [SerializeField] private TMP_Text floorBossNameText; // 스테이지 선택 보스 이름
 
     [Header("Team Formation")]
     [SerializeField] private SelectedTeamFormation selectedTeamFormation; // 선택된 팀 구성
@@ -211,7 +212,7 @@ public class BattleUIController : MonoBehaviour
         cursePanel.SetActive(false);
         shopPopup.SetActive(false);
         recoveryPopup.SetActive(false);
-        if(InventoryPopup.Instance != null)
+        if (InventoryPopup.Instance != null)
             InventoryPopup.Instance.OnClickCloseButton(); // 인벤토리 팝업 닫기
         selectChoicePanel.SetActive(false);
         foreach (var characterPlatform in characterPlatforms)
@@ -221,9 +222,22 @@ public class BattleUIController : MonoBehaviour
         }
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
         // 선택된 스테이지 정보 업데이트
-        //selectedChapterText.text = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].ChapterName;
-        //chapterIcon.sprite = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].Image;
-        //chapterDescriptionText.text = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].Description;
+        selectedFloorText.text = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].StageName; // 현재 스테이지 이름 설정
+        // 보스는 스테이지 인덱스 3이하는 가디언, 4는 로드
+        if (StageManager.Instance.stageSaveData.currentStageIndex < 3)
+        {
+            EnemyData guardianEnemy = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].Enemies.Find(x => x.Type == EnemyData.EnemyType.Guardian);
+            floorBossIcon.sprite = guardianEnemy.EnemyIcon; // 가디언 아이콘 설정
+            floorBossElementIcon.sprite = guardianEnemy.GetElementIcon();
+            floorBossNameText.text = guardianEnemy.EnemyName; // 가디언 이름 설정
+        }
+        else if (StageManager.Instance.stageSaveData.currentStageIndex == 4)
+        {
+            EnemyData lordEnemy = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].Enemies.Find(x => x.Type == EnemyData.EnemyType.Lord);
+            floorBossIcon.sprite = lordEnemy.EnemyIcon; // 로드 아이콘 설정
+            floorBossElementIcon.sprite = lordEnemy.GetElementIcon();
+            floorBossNameText.text = lordEnemy.EnemyName; // 로드 이름 설정
+        }
     }
 
     public void OnClickFloorButton(int stageIndex) // 스테이지 선택 버튼 클릭 시 호출되는 함수
