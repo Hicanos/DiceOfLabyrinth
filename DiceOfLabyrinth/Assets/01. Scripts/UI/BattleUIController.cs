@@ -222,16 +222,16 @@ public class BattleUIController : MonoBehaviour
         }
         SoundManager.Instance.PlayBGM(SoundManager.SoundType.BGM_Dungeon); // 배틀 배경음악 재생
         // 선택된 스테이지 정보 업데이트
-        selectedFloorText.text = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].StageName; // 현재 스테이지 이름 설정
-        // 보스는 스테이지 인덱스 3이하는 가디언, 4는 로드
-        if (StageManager.Instance.stageSaveData.currentStageIndex < 3)
+        selectedFloorText.text = $"{StageManager.Instance.stageSaveData.currentPhaseIndex + 1}층"; // 현재 페이즈 인덱스에 1을 더하여 층수 표시
+        // 보스는 페이즈 인덱스 3이하는 가디언, 4는 로드
+        if (StageManager.Instance.stageSaveData.currentPhaseIndex < 3)
         {
             EnemyData guardianEnemy = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].Enemies.Find(x => x.Type == EnemyData.EnemyType.Guardian);
             floorBossIcon.sprite = guardianEnemy.EnemyIcon; // 가디언 아이콘 설정
             floorBossElementIcon.sprite = guardianEnemy.GetElementIcon();
             floorBossNameText.text = guardianEnemy.EnemyName; // 가디언 이름 설정
         }
-        else if (StageManager.Instance.stageSaveData.currentStageIndex == 4)
+        else if (StageManager.Instance.stageSaveData.currentPhaseIndex >= 4)
         {
             EnemyData lordEnemy = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex].stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].Enemies.Find(x => x.Type == EnemyData.EnemyType.Lord);
             floorBossIcon.sprite = lordEnemy.EnemyIcon; // 로드 아이콘 설정
