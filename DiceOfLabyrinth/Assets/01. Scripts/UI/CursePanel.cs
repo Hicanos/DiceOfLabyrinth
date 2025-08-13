@@ -99,7 +99,8 @@ public class CursePanel : MonoBehaviour
     {
         int determinedDiceNumber = Random.Range(1, 7);
         RandomEventData randomEventData = null;
-        // 현재의 저주 상태에 따라 랜덤한 이벤트를 스테이지 데이터에서 하나 결정
+
+        // 이벤트 데이터 추출
         if (StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.CurseEvent)
         {
             var curses = StageManager.Instance.chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
@@ -117,43 +118,22 @@ public class CursePanel : MonoBehaviour
             randomEventData = blessings[Random.Range(0, blessings.Count)];
         }
 
-        while (StageManager.Instance.stageSaveData.selectedRandomEvents.Count < 4)
-        {
-            StageManager.Instance.stageSaveData.selectedRandomEvents.Add(null);
-        }
-        while (StageManager.Instance.stageSaveData.selectedRandomEvents.Count > 4)
-        {
-            StageManager.Instance.stageSaveData.selectedRandomEvents.RemoveAt(StageManager.Instance.stageSaveData.selectedRandomEvents.Count - 1);
-        }
+        // 성공/실패 판정
+        bool isSuccess = false;
         switch (StageManager.Instance.stageSaveData.UpOrDown)
         {
             case 1: // 높다면
-                if (determinedDiceNumber >= StageManager.Instance.stageSaveData.upAndDownNumber)
-                {
-                    for (int i = 0; i < StageManager.Instance.stageSaveData.selectedRandomEvents.Count; i++)
-                    {
-                        if (StageManager.Instance.stageSaveData.selectedRandomEvents[i] == null)
-                        {
-                            StageManager.Instance.stageSaveData.selectedRandomEvents[i] = randomEventData;
-                            break;
-                        }
-                    }
-                }
+                isSuccess = determinedDiceNumber >= StageManager.Instance.stageSaveData.upAndDownNumber;
                 break;
             case -1: // 낮다면
-                if (determinedDiceNumber <= StageManager.Instance.stageSaveData.upAndDownNumber)
-                {
-                    for (int i = 0; i < StageManager.Instance.stageSaveData.selectedRandomEvents.Count; i++)
-                    {
-                        if (StageManager.Instance.stageSaveData.selectedRandomEvents[i] == null)
-                        {
-                            StageManager.Instance.stageSaveData.selectedRandomEvents[i] = randomEventData;
-                            break;
-                        }
-                    }
-                }
+                isSuccess = determinedDiceNumber <= StageManager.Instance.stageSaveData.upAndDownNumber;
                 break;
         }
+        if (!isSuccess)
+        {
+            randomEventData = null;
+        }
+
         StartCoroutine(RollDiceAnimation(determinedDiceNumber, randomEventData));
     }
 
