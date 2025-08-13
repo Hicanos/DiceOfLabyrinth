@@ -121,14 +121,16 @@ public class BattleManager : MonoBehaviour
     {
         Enemy = new BattleEnemy(data.selectedEnemy);
 
-        PartyData = new BattlePartyData(data.battleCharacters, data.artifacts, data.engravings);
+        if(PartyData == null)
+        {
+            PartyData = new BattlePartyData(data.battleCharacters, data.artifacts, data.engravings);
+        }
+        else
+        {
+            PartyData.UpdatePartyData(data.battleCharacters, data.artifacts, data.engravings);
+        }
 
         manastoneAmount = data.manaStone;
-    }
-
-    private void CheckDataChanged()
-    {
-
     }
 
     public void EnterBattleSettings()
@@ -165,10 +167,10 @@ public class BattleManager : MonoBehaviour
         Debug.Log("익시트 스테이지");
         IsBattle = false;
         InputManager.Instance.BattleInputEnd();
-        BattleSpawner.DestroyCharacters();
-        BattleSpawner.DestroyDices();
+        //BattleSpawner.DestroyCharacters();
+        BattleSpawner.CharacterDeActive();
+        //BattleSpawner.DestroyDices();
 
-        PartyData = null;
         InBattleStage = false;
     }        
 
@@ -344,7 +346,6 @@ public class BattleEnemy : IDamagable
 
     private void TakeDamageHP(int damage)
     {
-        Debug.Log("TakeDamageHP");
         currentHP = Mathf.Clamp(currentHP - damage, 0, currentMaxHP);
 
         PassiveContainer.ActionPassiveEnemyHit();

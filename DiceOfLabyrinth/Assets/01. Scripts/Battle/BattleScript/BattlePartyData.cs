@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 public class BattlePartyData
@@ -32,10 +33,12 @@ public class BattlePartyData
     public int CurrentDeadIndex => currentDeadIndex;
     public int CurrentHitDamage => currentHitDamage;
 
+    private int[] charKeys = new int[numFive] {-1,-1,-1,-1,-1};
+
     public BattlePartyData(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> engravings)
     {
         battleManager = BattleManager.Instance;
-        BattleCharacterInBattle.index = 0;        
+        BattleCharacterInBattle.index = 0;
 
         this.artifacts = artifacts; this.engravings = engravings;
 
@@ -61,6 +64,53 @@ public class BattlePartyData
         for (int i = 0; i < numFive; i++)
         {
             this.characters[i] = new BattleCharacterInBattle(characters[i], this);
+            charKeys[i] = characters[i].CharacterData.key;
+        }
+    }
+
+    public void UpdatePartyData(List<BattleCharacter> characters, List<ArtifactData> artifacts, List<EngravingData> engravings)
+    {
+        BattleCharacterInBattle.index = 0;
+        UnityEngine.Debug.Log("업데이트 파티데이터");
+        this.artifacts = artifacts; this.engravings = engravings;
+
+        CurrentFormationType = StageManager.Instance.stageSaveData.currentFormationType;
+        frontLineNum = (int)CurrentFormationType;
+
+        for (int i = 0; i < frontLineNum + 1; i++)
+        {
+            FrontLine.Add(i);
+        }
+        for (int i = frontLineNum + 1; i < numFive; i++)
+        {
+            BackLine.Add(i);
+        }
+
+        defaultCharacters = characters;
+
+        for (int i = 0; i < numFive; i++)
+        {
+            if (CheckCharChanged(i, characters[i].CharacterData.key))
+            {
+                this.characters[i] = new BattleCharacterInBattle(characters[i], this);
+                charKeys[i] = characters[i].CharacterData.key;
+            }
+            else
+            {
+                this.characters[i].UpdateCharacterData(characters[i]);
+            }
+        }
+    }
+
+    private bool CheckCharChanged(int index, int newKey)
+    {
+        if(charKeys[index] == newKey)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
         }
     }
 

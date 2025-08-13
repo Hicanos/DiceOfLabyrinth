@@ -112,7 +112,7 @@ public class DiceManager : MonoBehaviour
         {
             CharDiceData diceData = BattleManager.Instance.PartyData.Characters[i].character.CharacterData.charDiceData;
 
-            Dices[i] = diceContainer.transform.GetChild(i).gameObject;
+            //Dices[i] = diceContainer.transform.GetChild(i).gameObject;
             dicesDatas[i] = Dices[i].GetComponent<DiceMy>();
             signitureArr[i] = diceData.CignatureNo;
             
@@ -123,7 +123,7 @@ public class DiceManager : MonoBehaviour
             faceProbability[i, 4] = faceProbability[i, 3] + diceData.FaceProbability5;
             faceProbability[i, 5] = faceProbability[i, 4] + diceData.FaceProbability6;
 
-            FakeDices[i] = fakeDiceContainer.transform.GetChild(i).gameObject;
+            //FakeDices[i] = fakeDiceContainer.transform.GetChild(i).gameObject;
             FakeDices[i].SetActive(false);
         }
         GoDefaultPositionDice();
