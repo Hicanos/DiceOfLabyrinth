@@ -245,8 +245,7 @@ public class BattleUIController : MonoBehaviour
     public void OpenTeamFormationPanel()
     {
         RefreshTeamFormationButton(); // 팀 구성 버튼 상태 갱신
-        PlatformManager.Instance.SetPlatformPosition(); // 플랫폼 위치 설정
-        RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
+        PlatformManager.Instance.SetPlatformAndCharacters(); // 플랫폼과 캐릭터를 설정
         //Debug.Log($"[TeamFormation] AcquiredCharacters Count: {CharacterManager.Instance.AcquiredCharacters.Count}");
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.TeamSelect; // 현재 페이즈 상태를 팀 구성으로 설정
         selectFloorPanel.SetActive(false);
@@ -296,14 +295,6 @@ public class BattleUIController : MonoBehaviour
             {
                 characterButtons[i].gameObject.SetActive(false);
             }
-        }
-        // 리더 마크 갱신
-        var leader = StageManager.Instance.stageSaveData.leaderCharacter;
-        for (int i = 0; i < 5; i++)
-        {
-            var entry = StageManager.Instance.stageSaveData.entryCharacters[i];
-            bool isLeader = (entry != null && entry == leader);
-            characterPlatforms[i].GetComponent<PlatformClickRelay>().SetAsLeader(isLeader);
         }
         OnClickTeamFormationButton((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 팀 구성 타입에 맞는 버튼 상태 갱신
     }
@@ -372,27 +363,20 @@ public class BattleUIController : MonoBehaviour
                     {
                         StageManager.Instance.stageSaveData.leaderCharacter = characterData;
                         messagePopup.Open($"[{characterData.nameKr}] 캐릭터가 리더로 설정되었습니다.");
-                        // 리더 마크 갱신
-                        for (int j = 0; j < 5; j++)
-                        {
-                            var entry = StageManager.Instance.stageSaveData.entryCharacters[j];
-                            bool isLeader = (entry != null && entry == characterData);
-                            characterPlatforms[j].GetComponent<PlatformClickRelay>().SetAsLeader(isLeader);
-                        }
                     }
                     break;
                 }
             }
         }
         // 선택된 캐릭터를 월드에 스폰하는 리프레시 함수 호출
-        RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 스폰된 캐릭터 갱신
+        PlatformManager.Instance.SetPlatformAndCharacters(); // 스폰된 캐릭터 갱신
     }
 
     public void OnClickTeamFormationButton(int formationIndex) // 팀 구성 버튼 클릭 시 호출되는 함수
     {
         selectedTeamFormation = (SelectedTeamFormation)formationIndex; // 선택된 팀 구성 설정
         StageManager.Instance.stageSaveData.currentFormationType = StageSaveData.CurrentFormationType.FormationA + formationIndex; // 현재 팀 구성 타입 설정
-        PlatformManager.Instance.SetPlatformPosition(); // 플랫폼 위치 설정
+        PlatformManager.Instance.SetPlatformAndCharacters(); // 플랫폼과 캐릭터를 설정
         RefreshTeamFormationButton();
     }
 
@@ -417,13 +401,10 @@ public class BattleUIController : MonoBehaviour
             return;
         }
         StageManager.Instance.stageSaveData.leaderCharacter = selectedCharacter; // 선택한 캐릭터를 리더로 설정
-        for (int i = 0; i < 5; i++)
-        {
-            if(i == selectedPlatformIndex)
-                characterPlatforms[i].GetComponent <PlatformClickRelay>().SetAsLeader(true); // 선택한 플랫폼을 리더로 설정
-            else
-                characterPlatforms[i].GetComponent<PlatformClickRelay>().SetAsLeader(false); // 나머지 플랫폼은 리더 표시 제거
-        }
+
+        // 리더 마크 갱신은 PlatformManager에서 일괄 처리
+        PlatformManager.Instance.SetPlatformAndCharacters();
+
         messagePopup.Open($"[{selectedCharacter.nameKr}] 캐릭터가 리더로 설정되었습니다.");
     }
 
@@ -460,7 +441,7 @@ public class BattleUIController : MonoBehaviour
             {
                 StageManager.Instance.stageSaveData.entryCharacters[i] = null;
             }
-            DeleteSpawnedCharacters(); // 월드에 스폰된 캐릭터 제거
+            PlatformManager.Instance.DeactivateAllCharacters(); // 모든 캐릭터 비활성화
             switch (StageManager.Instance.stageSaveData.currentPhaseState)
             {
                 case StageSaveData.CurrentPhaseState.TeamSelect:
@@ -478,31 +459,6 @@ public class BattleUIController : MonoBehaviour
         }
     }
 
-    private void RefreshSpawnedCharacters(int formationIndex) // 월드에 스폰된 캐릭터를 갱신하는 함수
-    {
-        DeleteSpawnedCharacters(); // 기존에 스폰된 캐릭터 제거
-        for (int i = 0; i < StageManager.Instance.stageSaveData.entryCharacters.Count; i++)
-        {
-            Vector3 spawnPoint = chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
-                .stageData.PlayerFormations[formationIndex].PlayerPositions[i].Position;
-
-            // 캐릭터 스폰
-            if (StageManager.Instance.stageSaveData.entryCharacters[i] != null)
-            {
-                GameObject battleCharacterObject = StageManager.Instance.stageSaveData.entryCharacters[i].charBattlePrefab;
-                GameObject spawnedCharacter = Instantiate(battleCharacterObject, spawnPoint, Quaternion.identity);
-            }
-        }
-    }
-    private void DeleteSpawnedCharacters() // 월드에 스폰된 캐릭터를 제거하는 함수
-    {
-        var characters = FindObjectsByType<SpawnedCharacter>(FindObjectsInactive.Include, FindObjectsSortMode.None); // 현재 씬에 있는 모든 SpawnedCharacter를 찾아서
-        foreach (var character in characters)
-        {
-            Destroy(character.gameObject); // 제거
-        }
-    }
-
     private void RefreshTeamFormationButton() // 팀 구성 버튼 상태를 갱신하는 함수
     {
         for (int i = 0; i < teamFormationIcons.Length; i++)
@@ -511,7 +467,7 @@ public class BattleUIController : MonoBehaviour
         }
         for (int i = 0; i < characterPlatforms.Length; i++)
         {
-            RefreshSpawnedCharacters((int)StageManager.Instance.stageSaveData.currentFormationType); // 현재 스폰된 캐릭터들을 갱신
+            PlatformManager.Instance.SetPlatformAndCharacters(); // 플랫폼과 캐릭터를 설정
         }
     }
     public void OpenStagePanel(int phaseIndex) // 스테이지 패널을 여는 함수
