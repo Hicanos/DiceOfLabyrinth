@@ -169,7 +169,7 @@ public class BattleManager : MonoBehaviour
         IsBattle = false;
         InputManager.Instance.BattleInputEnd();
         //BattleSpawner.DestroyCharacters();
-        BattleSpawner.CharacterDeActive();
+        
         //BattleSpawner.DestroyDices();
 
         InBattleStage = false;

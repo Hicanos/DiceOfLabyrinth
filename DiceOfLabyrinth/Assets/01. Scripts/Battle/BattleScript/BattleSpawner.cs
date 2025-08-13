@@ -1,8 +1,8 @@
-﻿using PredictedDice;
+﻿using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using PredictedDice;
 
 public class BattleSpawner : MonoBehaviour
 {
@@ -16,6 +16,9 @@ public class BattleSpawner : MonoBehaviour
     public List<FormationVector> formationVec;
     [SerializeField] Vector3 enemyVec;
     private Vector3[] curFormationVec;
+    public Vector3[] DancePosition;
+    public Vector3[] DanceRotation;
+    private const int defaultRotationY = 120;
 
     IEnumerator enumeratorSpawn;
 
@@ -64,6 +67,7 @@ public class BattleSpawner : MonoBehaviour
         characters[i].Prefab = go;
         characters[i].SpawnedCharacter = go.GetComponent<SpawnedCharacter>();
         characters[i].SpawnedCharacter.SetCharacterID(characters[i].character.CharacterData.charID);
+        characters[i].CharRotationObject = go.GetComponentInChildren<Animator>().gameObject;
 
         DestroyDice(i);
         SpawnDice(characters[i], i);
@@ -101,6 +105,7 @@ public class BattleSpawner : MonoBehaviour
     private void CharacterActive(int i)
     {
         battleManager.PartyData.Characters[i].Prefab.SetActive(true);
+        battleManager.PartyData.Characters[i].CharRotationObject.transform.rotation = Quaternion.Euler(0, defaultRotationY, 0);
     }
 
     private void CharacterActive()
@@ -227,12 +232,12 @@ public class BattleSpawner : MonoBehaviour
         battleManager.BattleUIHP.SpawnCharacterHP();
     }
 
-    public void DeactiveCharacterHP(BattlePartyData partyData)
+    public void DeactiveCharacterHP(BattleCharacterInBattle[] characters)
     {
         for (int i = 0; i < numFIve; i++)
         {
-            partyData.Characters[i].LayoutGroups.childControlWidth = true;
-            partyData.Characters[i].CharacterHPs.gameObject.SetActive(false);
+            characters[i].LayoutGroups.childControlWidth = true;
+            characters[i].CharacterHPBars.gameObject.SetActive(false);
         }
     }
 
@@ -240,7 +245,7 @@ public class BattleSpawner : MonoBehaviour
     {
         for (int i = 0; i < numFIve; i++)
         {
-            partyData.Characters[i].CharacterHPs.gameObject.SetActive(true);
+            partyData.Characters[i].CharacterHPBars.gameObject.SetActive(true);
         }
     }
 

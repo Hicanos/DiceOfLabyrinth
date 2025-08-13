@@ -74,10 +74,11 @@ public class SpawnedCharacter : MonoBehaviour
 
     public void Victory()
     {
+        Animator.SetBool("AttackIdle", false); // 공격 준비 애니메이션 해제
         Animator.SetBool("Victory", true); // 승리 애니메이션 설정
     }
     public void Defeat()
-    {
+    {        
         Animator.SetBool("Defeat", true); // 패배 애니메이션 설정
     }
 }

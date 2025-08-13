@@ -1014,6 +1014,7 @@ public class BattleUIController : MonoBehaviour
 
     public void OpenVictoryPanel() // 승리 패널을 여는 함수
     {
+        DanceTime.Dance(true);
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Battle; // 현재 페이즈 상태를 승리로 설정
         selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
@@ -1039,6 +1040,7 @@ public class BattleUIController : MonoBehaviour
 
     public void OpenDefeatPanel() // 패배 패널을 여는 함수
     {
+        DanceTime.Dance(false);
         StageManager.Instance.stageSaveData.currentPhaseState = StageSaveData.CurrentPhaseState.Battle; // 현재 페이즈 상태를 패배로 설정
         selectFloorPanel.SetActive(false);
         teamFormationPenel.SetActive(false);
@@ -1064,11 +1066,13 @@ public class BattleUIController : MonoBehaviour
 
     public void OnClickVictoryNextButton() // 승리 패널에서 다음 버튼 클릭 시 호출되는 함수
     {
+        DanceTime.StopDance();
         StageManager.Instance.RoomClear(StageManager.Instance.stageSaveData.selectedEnemy); // 현재 룸 클리어 처리
     }
 
     public void OnClickDefeatNextButton() // 패배 패널에서 다음 버튼 클릭 시 호출되는 함수
     {
+        DanceTime.StopDance();
         StageManager.Instance.EndChapterEarly(StageManager.Instance.stageSaveData.currentChapterIndex); // 현재 챕터 패배 처리
     }
 

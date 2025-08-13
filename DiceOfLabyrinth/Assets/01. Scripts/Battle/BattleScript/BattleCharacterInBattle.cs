@@ -28,6 +28,7 @@ public class BattleCharacterInBattle : IDamagable
 
     public GameObject   Prefab;
     public SpawnedCharacter SpawnedCharacter;
+    public GameObject CharRotationObject;
 
     public GameObject       CharacterHPBars;
     public RectTransform    CharacterHPs;
@@ -78,7 +79,7 @@ public class BattleCharacterInBattle : IDamagable
         currentCritDamage   = character.CurrentCritDamage;
         currentPenetration  = character.CurrentPenetration;
         isCharChanged = true;
-
+        
         if (character.IsDied == true)
         {
             isDead = true;
@@ -108,6 +109,7 @@ public class BattleCharacterInBattle : IDamagable
 
     public void TakeDamage(int damage)
     {
+        SpawnedCharacter.GetDamage();
         if (isBarrierOn)
         {
             TakeDamageBarrier(damage);
@@ -163,13 +165,14 @@ public class BattleCharacterInBattle : IDamagable
     public void Revive()
     {
         isDead = false;
-
+        SpawnedCharacter.Revive();
         partyData.CharacterRevive(myIndex);
     }
 
     private void Dead()
     {
         isDead = true;
+        SpawnedCharacter.Die();
         UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(CharNameKr);
         partyData.CharacterDead(myIndex);
     }
