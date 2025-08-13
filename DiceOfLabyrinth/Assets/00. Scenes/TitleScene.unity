@@ -13643,6 +13643,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 502953617}
   m_CullTransparentMesh: 1
+--- !u!114 &511611887 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1322255009236216827, guid: 7361384692583a142b714b5eefa49269, type: 3}
+  m_PrefabInstance: {fileID: 736896103}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 596c438eebb5bf042b0ee17da31d690a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &512504476
 GameObject:
   m_ObjectHideFlags: 0
@@ -39342,7 +39353,7 @@ GameObject:
   - component: {fileID: 1294378493}
   - component: {fileID: 1294378494}
   m_Layer: 0
-  m_Name: PlatformAndCharacterContainer
+  m_Name: PlatformManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39386,7 +39397,6 @@ MonoBehaviour:
   - {fileID: 39416328}
   - {fileID: 1812555362}
   - {fileID: 1860751689}
-  platformAndCharacterContainer: {fileID: 1294378493}
 --- !u!1 &1299297148
 GameObject:
   m_ObjectHideFlags: 0
@@ -44689,6 +44699,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1438830000}
   m_CullTransparentMesh: 1
+--- !u!114 &1439023748 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1216709437247656449, guid: 7361384692583a142b714b5eefa49269, type: 3}
+  m_PrefabInstance: {fileID: 736896103}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 596c438eebb5bf042b0ee17da31d690a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1441720243 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7172762957233716942, guid: 18d7dac27c081aa4a9d5c25271142ff9, type: 3}
@@ -53101,6 +53122,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1701601210}
   m_CullTransparentMesh: 1
+--- !u!114 &1702106793 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8360007010181020172, guid: 7361384692583a142b714b5eefa49269, type: 3}
+  m_PrefabInstance: {fileID: 736896103}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1702283193
 GameObject:
   m_ObjectHideFlags: 0
@@ -55275,6 +55307,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1755659223}
   m_CullTransparentMesh: 1
+--- !u!114 &1756911778 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9124972666038617410, guid: 7361384692583a142b714b5eefa49269, type: 3}
+  m_PrefabInstance: {fileID: 736896103}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 596c438eebb5bf042b0ee17da31d690a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1759856884
 GameObject:
   m_ObjectHideFlags: 0
@@ -57566,6 +57609,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1835278670}
   m_CullTransparentMesh: 1
+--- !u!114 &1835567425 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6137866303162523932, guid: 7361384692583a142b714b5eefa49269, type: 3}
+  m_PrefabInstance: {fileID: 736896103}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 596c438eebb5bf042b0ee17da31d690a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1837629757
 GameObject:
   m_ObjectHideFlags: 0
@@ -59848,17 +59902,17 @@ MonoBehaviour:
   tempPauseButton: {fileID: 1418431960}
   diceBackboard: {fileID: 736896110}
   roll: {fileID: 736896120}
-  char1: {fileID: 0}
-  char2: {fileID: 0}
-  char3: {fileID: 0}
-  char4: {fileID: 0}
-  char5: {fileID: 0}
+  char1: {fileID: 1756911778}
+  char2: {fileID: 1835567425}
+  char3: {fileID: 2121259147}
+  char4: {fileID: 1439023748}
+  char5: {fileID: 511611887}
   characters: {fileID: 1978533074}
   patternDisplayer: {fileID: 1517849693}
   battleLog: {fileID: 736896106}
   cost: {fileID: 736896119}
   rank: {fileID: 736896112}
-  reRoll: {fileID: 0}
+  reRoll: {fileID: 1702106793}
 --- !u!114 &1917097714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66133,6 +66187,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2112883161}
   m_CullTransparentMesh: 1
+--- !u!114 &2121259147 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6247583237610968350, guid: 7361384692583a142b714b5eefa49269, type: 3}
+  m_PrefabInstance: {fileID: 736896103}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 596c438eebb5bf042b0ee17da31d690a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2133568487
 GameObject:
   m_ObjectHideFlags: 0

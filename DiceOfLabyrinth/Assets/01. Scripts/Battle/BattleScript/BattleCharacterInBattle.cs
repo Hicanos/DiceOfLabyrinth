@@ -135,7 +135,7 @@ public class BattleCharacterInBattle : IDamagable
 
     public void Heal(int amount)
     {        
-        Mathf.Clamp(currentHP + amount, currentHP, maxHP);
+        currentHP = Mathf.Clamp(currentHP + amount, currentHP, maxHP);
 
         UpdateHPBar();
     }

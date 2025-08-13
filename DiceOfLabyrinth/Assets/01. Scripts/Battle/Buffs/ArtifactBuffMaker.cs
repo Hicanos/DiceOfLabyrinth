@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public enum ArtifactEffectTypeEnum
 {
@@ -49,7 +48,6 @@ public class ArtifactBuffMaker : ISkillMaker, ISkillLocationMaker
         List<ArtifactData> artifacts = BattleManager.Instance.PartyData.Artifacts;
         ArtifactDetailData detailData;
         Action<IBuff> AddBuffAction;
-
         for (int i = 0; i < artifacts.Count; i++)
         {
             if (artifacts[i] == null) return;
@@ -236,9 +234,12 @@ public class ArtifactBuffMaker : ISkillMaker, ISkillLocationMaker
     private void CharacterReviveAction(float value)
     {
         BattlePartyData partyData = BattleManager.Instance.PartyData;
-
-        partyData.Characters[partyData.CurrentDeadIndex].Revive();
+        BattleCharacterInBattle character = partyData.Characters[partyData.CurrentDeadIndex];
         Debug.Log("부활 아티펙트 활성");
+
+        character.Revive();
+        float amount = character.MaxHP * value;
+        character.Heal((int)amount);
     }
     private void AdditionalAttackCountAction(float value)
     {
@@ -329,7 +330,7 @@ public class ArtifactDetailData
                 Init(ArtifactConditionTypeEnum.CostSpendAmount, 10, ArtifactEffectTypeEnum.GetCost, data.Value, ArtifactCallBackLocation.SpendCost);
                 break;
             case ArtifactEffectData.EffectType.ReviveWhenDie:
-                Init(ArtifactConditionTypeEnum.Chace, 60, ArtifactEffectTypeEnum.CharacterRevive, data.Value, ArtifactCallBackLocation.CharacterDie);
+                Init(ArtifactConditionTypeEnum.None, 1, ArtifactEffectTypeEnum.CharacterRevive, data.Value, ArtifactCallBackLocation.CharacterDie);
                 break;
             case ArtifactEffectData.EffectType.GenerateBarrier:
                 Init(ArtifactConditionTypeEnum.None, 1, ArtifactEffectTypeEnum.GetBarrier, data.Value, ArtifactCallBackLocation.CharacterHit);

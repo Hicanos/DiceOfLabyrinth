@@ -111,6 +111,7 @@ public class BlessingPanel : MonoBehaviour
             randomEventData = curses[Random.Range(0, curses.Count)];
         }
         else if (StageManager.Instance.stageSaveData.currentPhaseState == StageSaveData.CurrentPhaseState.BlessingEvent)
+        while (StageManager.Instance.stageSaveData.selectedRandomEvents.Count < 4)
         {
             var blessings = StageManager.Instance.chapterData.chapterIndex[StageManager.Instance.stageSaveData.currentChapterIndex]
                 .stageData.stageIndex[StageManager.Instance.stageSaveData.currentStageIndex].RandomEvents

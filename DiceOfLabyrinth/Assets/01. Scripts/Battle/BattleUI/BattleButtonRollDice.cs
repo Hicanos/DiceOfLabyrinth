@@ -19,6 +19,7 @@ public class BattleButtonRollDice : AbstractBattleButton
         {
             case DetailedTurnState.Enter:
                 ChangeEndTurnToRoll();
+                ChangeRollUI();
                 rollButton.interactable = true;
                 break;
             case DetailedTurnState.Roll:
@@ -67,7 +68,7 @@ public class BattleButtonRollDice : AbstractBattleButton
                 characterPrefab.GetComponent<SpawnedCharacter>().PrepareAttack();
             }
 
-            battleManager.UIValueChanger.ChangeUIText(BattleTextUIEnum.Reroll, diceManager.RollRemain.ToString());
+            ChangeRollUI();
             diceManager.DiceHolding.GetFixedList();
             
             battleManager.BattlePlayerTurnState.ChangeDetailedTurnState(DetailedTurnState.Roll);
@@ -80,15 +81,21 @@ public class BattleButtonRollDice : AbstractBattleButton
         }
     }
 
+    private void ChangeRollUI()
+    {
+        string st = $"({DiceManager.Instance.RollRemain.ToString()})";
+        BattleManager.Instance.UIValueChanger.ChangeUIText(BattleTextUIEnum.Reroll, st);
+    }
+
     private void ChangeRollToEndTurn()
     {
         isRollOver = true;
-        text.text = "End Turn";
+        text.text = "턴 종료";
     }
 
     private void ChangeEndTurnToRoll()
     {
         isRollOver = false;
-        text.text = "Roll";
+        text.text = "굴리기";
     }
 }
