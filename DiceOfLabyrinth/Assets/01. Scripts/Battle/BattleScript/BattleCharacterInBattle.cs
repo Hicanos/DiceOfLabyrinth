@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
+[Serializable]
 public class BattleCharacterInBattle : IDamagable
 {
     public static int index; // 전투 종료 후 index를 0으로 초기화 해야함

@@ -39,7 +39,7 @@ public class BattleManager : MonoBehaviour
 
     public BattleEnemy Enemy;
     public BattlePartyData PartyData;
-
+    [field:SerializeField] BattleCharacterInBattle[] BattleCHaracterTest;
     public BattleCharacterAttack CharacterAttack;
     public BattleEnemyAttack EnemyAttack;
     public EnemyPatternContainer EnemyPatternContainer;    
@@ -145,6 +145,7 @@ public class BattleManager : MonoBehaviour
         IsBattle = true;
         InBattleStage = true;
         IsStageClear = false;
+        BattleCHaracterTest = PartyData.Characters;
     }
 
     public void FinishBattleSetting()

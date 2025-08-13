@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 public class BattlePartyData
 {
     const int numFive = 5;
     BattleManager battleManager;
-
+    
     private List<BattleCharacter> defaultCharacters;
     private BattleCharacterInBattle[] characters;
     private List<ArtifactData> artifacts;
@@ -92,6 +91,7 @@ public class BattlePartyData
         {
             if (CheckCharChanged(i, characters[i].CharacterData.key))
             {
+                BattleManager.Instance.BattleSpawner.DestoryCharacter(i);
                 this.characters[i] = new BattleCharacterInBattle(characters[i], this);
                 charKeys[i] = characters[i].CharacterData.key;
             }

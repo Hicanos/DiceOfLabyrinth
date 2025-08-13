@@ -30,13 +30,12 @@ public class BattleSpawner : MonoBehaviour
     {
         battleManager = BattleManager.Instance;
         //CharacterSpawn();
-
         for (int i = 0; i < numFIve; i++)
         {
-            if (BattleManager.Instance.PartyData.Characters[i].IsCharChanged)
+            if (battleManager.PartyData.Characters[i].IsCharChanged)
             {
                 Debug.Log(11);
-                DestoryCharacter(i);
+                //DestoryCharacter(i);
                 CharacterSpawn(i);
             }
             else
@@ -129,9 +128,15 @@ public class BattleSpawner : MonoBehaviour
         }
     }
 
-    private void DestoryCharacter(int index)
+    public void DestoryCharacter(int index)
     {
-        Destroy(BattleManager.Instance.PartyData.Characters[index].Prefab);
+        if (battleManager.PartyData.Characters[index].Prefab != null)
+        {
+            GameObject go;
+            go = battleManager.PartyData.Characters[index].Prefab;
+            go.SetActive(true);
+            Destroy(go);
+        }
     }
 
     public void DestroyCharacters()
