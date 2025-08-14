@@ -48,6 +48,7 @@ public class EnemyData: ScriptableObject
     [SerializeField] private List<int> activeSkills; // 액티브 스킬 인덱스 리스트
     [SerializeField] private List<int> passiveSkills; // 패시브 스킬 인덱스 리스트
     [SerializeField] private Quaternion enemySpawnRotation; // 적 스폰 회전값
+    [SerializeField] private Sprite enemyIcon; // 적 아이콘
 
     public string EnemyName => enemyName;
     public int EnemyLevel => (StageManager.Instance.stageSaveData.currentStageIndex + 1) * ((StageManager.Instance.stageSaveData.currentChapterIndex)/2 + 1) * 10; // 현재 스테이지 인덱스에 따라 레벨 계산, 챕터 인덱스에 따라 보정
@@ -59,6 +60,7 @@ public class EnemyData: ScriptableObject
     public List<int> ActiveSkills => activeSkills;
     public List<int> PassiveSkills => passiveSkills;
     public Quaternion EnemySpawnRotation => enemySpawnRotation;
+    public Sprite EnemyIcon => enemyIcon;
 
     // 기초값
     public int BaseMaxHp => baseMaxHp;
@@ -72,4 +74,9 @@ public class EnemyData: ScriptableObject
     public int MaxHp => baseMaxHp + hpPerLevel * (EnemyLevel - 1);
     public int Atk => baseAtk + atkPerLevel * (EnemyLevel - 1);
     public int Def => baseDef + defPerLevel * (EnemyLevel - 1);
+
+    public Sprite GetElementIcon()
+    {
+        return UIManager.Instance.elementIconTable.GetIcon(this.Attribute);
+    }
 }
