@@ -96,7 +96,7 @@ public class BattleSpawner : MonoBehaviour
             characters[i].SpawnedCharacter.SetCharacterID(characters[i].character.CharacterData.charID);
             
         }
-        SpawnDice(characters);
+        //SpawnDice(characters);
         enumeratorSpawn = CharacterSpawnCoroutine();
         StartCoroutine(enumeratorSpawn);
     }
@@ -264,8 +264,11 @@ public class BattleSpawner : MonoBehaviour
         fakeDice.SetActive(false);
         fakeDice.layer = fakeDiceLayer;
 
+        dice.GetComponent<DiceMy>().SetIndex(index);
+        fakeDice.GetComponent<DiceMy>().SetIndex(index);
         DiceManager.Instance.Dices[index] = dice;
         DiceManager.Instance.FakeDices[index] = fakeDice;
+
     }
 
     private void SpawnDice(BattleCharacterInBattle[] characters)
