@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     public PublicUIController publicUIController { get; private set; }
     public BattleUI BattleUI;
     public MessagePopup messagePopup;
+    public ElementIconTable elementIconTable;
     private void Awake()
     {
         if (Instance == null)

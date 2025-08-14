@@ -1,8 +1,8 @@
-﻿using PredictedDice;
+﻿using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using PredictedDice;
 
 public class BattleSpawner : MonoBehaviour
 {
@@ -16,6 +16,9 @@ public class BattleSpawner : MonoBehaviour
     public List<FormationVector> formationVec;
     [SerializeField] Vector3 enemyVec;
     private Vector3[] curFormationVec;
+    public Vector3[] DancePosition;
+    public Vector3[] DanceRotation;
+    private const int defaultRotationY = 120;
 
     IEnumerator enumeratorSpawn;
 
@@ -25,17 +28,49 @@ public class BattleSpawner : MonoBehaviour
     [SerializeField] Transform fakeDiceContainer;
     [SerializeField] int diceLayer;
     [SerializeField] int fakeDiceLayer;
+
     public void SpawnCharacters()
     {
-        CharacterSpawn();
-        //if (BattleManager.Instance.InBattleStage == false)
-        //{
-        //    CharacterSpawn();
-        //}
-        //else
-        //{
-        //    CharacterActive();
-        //}
+        battleManager = BattleManager.Instance;
+        //CharacterSpawn();
+        for (int i = 0; i < numFIve; i++)
+        {
+            if (battleManager.PartyData.Characters[i].IsCharChanged)
+            {
+                Debug.Log(11);
+                //DestoryCharacter(i);
+                CharacterSpawn(i);
+            }
+            else
+            {
+                Debug.Log(22);
+                CharacterActive(i);
+            }
+        }
+
+        isPreparing = true;
+        enumeratorSpawn = CharacterSpawnCoroutine();
+        StartCoroutine(enumeratorSpawn);
+    }
+
+    private void CharacterSpawn(int i)
+    {
+        
+        BattleCharacterInBattle[] characters = battleManager.PartyData.Characters;
+
+        curFormationVec = formationVec[(int)battleManager.PartyData.CurrentFormationType].formationVec;
+
+        GameObject go;
+
+        go = Instantiate(characters[i].character.CharacterData.charBattlePrefab, curFormationVec[i] - spawnDetach, Quaternion.identity, characterContainer);
+
+        characters[i].Prefab = go;
+        characters[i].SpawnedCharacter = go.GetComponent<SpawnedCharacter>();
+        characters[i].SpawnedCharacter.SetCharacterID(characters[i].character.CharacterData.charID);
+        characters[i].CharRotationObject = go.GetComponentInChildren<Animator>().gameObject;
+
+        DestroyDice(i);
+        SpawnDice(characters[i], i);
     }
 
     private void CharacterSpawn()
@@ -61,35 +96,53 @@ public class BattleSpawner : MonoBehaviour
             characters[i].SpawnedCharacter.SetCharacterID(characters[i].character.CharacterData.charID);
             
         }
-        SpawnDice(characters);
+        //SpawnDice(characters);
         enumeratorSpawn = CharacterSpawnCoroutine();
         StartCoroutine(enumeratorSpawn);
     }
 
-    //private void CharacterActive()
-    //{
-    //    isPreparing = true;
-    //    isActive = true;
 
-    //    for (int i = 0; i < numFIve; i++)
-    //    {
-    //        battleManager.PartyData.Characters[i].Prefab.SetActive(true);
-    //    }
+    private void CharacterActive(int i)
+    {
+        battleManager.PartyData.Characters[i].Prefab.SetActive(true);
+        battleManager.PartyData.Characters[i].CharRotationObject.transform.rotation = Quaternion.Euler(0, defaultRotationY, 0);
+    }
 
-    //    enumeratorSpawn = CharacterSpawnCoroutine();
-    //    StartCoroutine(enumeratorSpawn);
-    //}
+    private void CharacterActive()
+    {
+        isPreparing = true;
+        isActive = true;
 
-    //public void CharacterDeActive()
-    //{
-    //    GameObject go;
-    //    for (int i = 0; i < numFIve; i++)
-    //    {
-    //        go = battleManager.PartyData.Characters[i].Prefab;
-    //        go.SetActive(false);
-    //        go.transform.localPosition = curFormationVec[i] - spawnDetach;
-    //    }
-    //}
+        for (int i = 0; i < numFIve; i++)
+        {
+            battleManager.PartyData.Characters[i].Prefab.SetActive(true);
+        }
+
+        enumeratorSpawn = CharacterSpawnCoroutine();
+        StartCoroutine(enumeratorSpawn);
+    }
+
+    public void CharacterDeActive()
+    {
+        GameObject go;
+        for (int i = 0; i < numFIve; i++)
+        {
+            go = battleManager.PartyData.Characters[i].Prefab;
+            go.SetActive(false);
+            go.transform.localPosition = curFormationVec[i] - spawnDetach;
+        }
+    }
+
+    public void DestoryCharacter(int index)
+    {
+        if (battleManager.PartyData.Characters[index].Prefab != null)
+        {
+            GameObject go;
+            go = battleManager.PartyData.Characters[index].Prefab;
+            go.SetActive(true);
+            Destroy(go);
+        }
+    }
 
     public void DestroyCharacters()
     {
@@ -179,12 +232,12 @@ public class BattleSpawner : MonoBehaviour
         battleManager.BattleUIHP.SpawnCharacterHP();
     }
 
-    public void DeactiveCharacterHP(BattlePartyData partyData)
+    public void DeactiveCharacterHP(BattleCharacterInBattle[] characters)
     {
         for (int i = 0; i < numFIve; i++)
         {
-            partyData.Characters[i].LayoutGroups.childControlWidth = true;
-            partyData.Characters[i].CharacterHPs.gameObject.SetActive(false);
+            characters[i].LayoutGroups.childControlWidth = true;
+            characters[i].CharacterHPBars.gameObject.SetActive(false);
         }
     }
 
@@ -192,8 +245,30 @@ public class BattleSpawner : MonoBehaviour
     {
         for (int i = 0; i < numFIve; i++)
         {
-            partyData.Characters[i].CharacterHPs.gameObject.SetActive(true);
+            partyData.Characters[i].CharacterHPBars.gameObject.SetActive(true);
         }
+    }
+
+    private void SpawnDice(BattleCharacterInBattle character, int index)
+    {
+        GameObject go;
+        GameObject dice;
+        GameObject fakeDice;
+
+        go = character.character.CharacterData.charDicePrefab;
+        dice = Instantiate(go, diceContainer);
+        fakeDice = Instantiate(go, fakeDiceContainer).gameObject;
+
+        dice.layer = diceLayer;
+        DiceManager.Instance.RollDiceSynced.diceAndOutcomeArray[index].dice = dice.GetComponent<Dice>();
+        fakeDice.SetActive(false);
+        fakeDice.layer = fakeDiceLayer;
+
+        dice.GetComponent<DiceMy>().SetIndex(index);
+        fakeDice.GetComponent<DiceMy>().SetIndex(index);
+        DiceManager.Instance.Dices[index] = dice;
+        DiceManager.Instance.FakeDices[index] = fakeDice;
+
     }
 
     private void SpawnDice(BattleCharacterInBattle[] characters)
@@ -219,6 +294,15 @@ public class BattleSpawner : MonoBehaviour
         }
 
         //UIManager.Instance.BattleUI.FakeDiceHolding.SpawnFakeDices(character);
+    }
+
+    public void DestroyDice(int index)
+    {
+        if(DiceManager.Instance.Dices[index] != null)
+        {
+            Destroy(diceContainer.GetChild(index).gameObject);
+            Destroy(fakeDiceContainer.GetChild(index).gameObject);
+        }
     }
 
     public void DestroyDices()

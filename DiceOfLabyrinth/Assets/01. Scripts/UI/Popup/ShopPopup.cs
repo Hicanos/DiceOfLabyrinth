@@ -86,7 +86,31 @@ public class ShopPopup : MonoBehaviour
         selectedArtifactIndexInShopList = -1; // 초기화
         OwnedArtifactRefresh(); //소유한 아티팩트 갱신
         //exceptedArtifacts.Clear(); // 상점에서 제외할 아티팩트 목록 초기화, // 현재는 사용하지 않음
-        ShopArtifactRefresh(); //상점 아티팩트 갱신
+        if (selectableArtifacts == null || selectableArtifacts.Count == 0)
+        {
+            ShopArtifactRefresh();
+        }
+        else
+        {
+            // 기존 재고로 UI만 갱신
+            for (int i = 0; i < shopArtifactViewers.Count; i++)
+            {
+                if (i < selectableArtifacts.Count)
+                {
+                    ArtifactData artifact = selectableArtifacts[i];
+                    shopArtifactViewers[i].SetActive(true);
+                    shopArtifactViewerNameText[i].text = artifact.ArtifactName;
+                    purchasePriceText[i].text = $"{artifactPurchasePrices[i]}";
+                    shopArtifactViewerIcons[i].GetComponent<UnityEngine.UI.Image>().sprite = artifact.Icon;
+                    shopArtifactViewerRarities[i].GetComponent<UnityEngine.UI.Image>().sprite = artifact.RaritySprite;
+                }
+                else
+                {
+                    if (shopArtifactViewers[i] != null)
+                        shopArtifactViewers[i].SetActive(false);
+                }
+            }
+        }
         resetCost = baseResetCost;
         ResetButtonRefresh();
     }
@@ -385,6 +409,10 @@ public class ShopPopup : MonoBehaviour
         animationRect.CloseWithCallback(() =>
         {
             gameObject.SetActive(false);
+            selectableArtifacts.Clear();
+            for (int i = 0; i < artifactPurchasePrices.Length; i++)
+                artifactPurchasePrices[i] = 0;
+
             StageManager.Instance.stageSaveData.currentPhaseIndex = 5;
             StageManager.Instance.battleUIController.OpenStagePanel(5); // 스테이지 패널 열기
         });

@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
+[Serializable]
 public class BattleCharacterInBattle : IDamagable
 {
-    public static int index; //전투 종료 후 index를 0으로 초기화 해야함
+    public static int index; // 전투 종료 후 index를 0으로 초기화 해야함
 
     private string  charNameKr;
     private string  charNameEn;
@@ -17,14 +19,16 @@ public class BattleCharacterInBattle : IDamagable
     private float   currentCritDamage;
     private float   currentPenetration;
 
-    private int     myIndex;
+    private int     myIndex; // 순서상의 인덱스, 캐릭터 고유의 인덱스 X
     private int     defaultAttackCount;
     private int     additionalAttackCount;
     private bool    isBarrierOn;
     private bool    isDead;
+    private bool    isCharChanged;
 
     public GameObject   Prefab;
     public SpawnedCharacter SpawnedCharacter;
+    public GameObject CharRotationObject;
 
     public GameObject       CharacterHPBars;
     public RectTransform    CharacterHPs;
@@ -49,14 +53,19 @@ public class BattleCharacterInBattle : IDamagable
     public int      AttackCount => defaultAttackCount + additionalAttackCount;
     public bool     IsDead => isDead;
     public bool     IsBarrierOn => isBarrierOn;
+    public bool     IsCharChanged => isCharChanged;
     #endregion
 
     public BattleCharacterInBattle(BattleCharacter character, BattlePartyData partyData)
     {
         myIndex = index;
         index++;
+        Debug.Log("캐릭터 생성");
+        if(this.partyData == null)
+        {
+            this.partyData = partyData;
+        }
 
-        this.partyData = partyData;
         this.character = character;
         defaultAttackCount = 1;
 
@@ -69,7 +78,8 @@ public class BattleCharacterInBattle : IDamagable
         currentCritChance   = character.CurrentCritChance;
         currentCritDamage   = character.CurrentCritDamage;
         currentPenetration  = character.CurrentPenetration;
-
+        isCharChanged = true;
+        
         if (character.IsDied == true)
         {
             isDead = true;
@@ -85,7 +95,8 @@ public class BattleCharacterInBattle : IDamagable
         currentCritChance = character.CurrentCritChance;
         currentCritDamage = character.CurrentCritDamage;
         currentPenetration = character.CurrentPenetration;
-
+        isCharChanged = false;
+        Debug.Log("캐릭터 업데이트");
         if (isDead == false && character.IsDied == true)
         {
             Dead();
@@ -98,6 +109,7 @@ public class BattleCharacterInBattle : IDamagable
 
     public void TakeDamage(int damage)
     {
+        SpawnedCharacter.GetDamage();
         if (isBarrierOn)
         {
             TakeDamageBarrier(damage);
@@ -153,13 +165,14 @@ public class BattleCharacterInBattle : IDamagable
     public void Revive()
     {
         isDead = false;
-
+        SpawnedCharacter.Revive();
         partyData.CharacterRevive(myIndex);
     }
 
     private void Dead()
     {
         isDead = true;
+        SpawnedCharacter.Die();
         UIManager.Instance.BattleUI.BattleUILog.WriteBattleLog(CharNameKr);
         partyData.CharacterDead(myIndex);
     }

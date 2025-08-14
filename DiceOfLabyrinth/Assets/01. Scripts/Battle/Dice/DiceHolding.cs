@@ -52,7 +52,7 @@ public class DiceHolding : MonoBehaviour
             if (hit.collider.TryGetComponent(out dice))
             {
                 dice = hit.collider.gameObject.GetComponent<DiceMy>();
-                dice.SetIndex();
+                //dice.SetIndex();
                 //Debug.Log("실릭트");
                 DiceFixed(dice);
             }

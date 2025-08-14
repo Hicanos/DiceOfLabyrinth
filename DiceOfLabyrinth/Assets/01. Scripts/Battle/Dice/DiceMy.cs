@@ -2,10 +2,10 @@
 
 public class DiceMy : MonoBehaviour
 {
-    public int MyIndex { get; private set; }
+    public int MyIndex;
 
-    public void SetIndex() //맵 입장시 실행하면 될듯
+    public void SetIndex(int index)
     {
-        MyIndex = transform.GetSiblingIndex();
+        MyIndex = index;
     }    
 }
