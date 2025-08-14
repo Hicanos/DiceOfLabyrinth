@@ -82,8 +82,8 @@ public class PublicUIController : MonoBehaviour
                 stamina.SetActive(false);
                 gold.SetActive(true);
                 jewel.SetActive(true);
-                settingButton.SetActive(true);
-                homeButton.SetActive(false);
+                settingButton.SetActive(false);
+                homeButton.SetActive(true);
                 sceneBackButton.SetActive(false);
                 break;
 
@@ -91,8 +91,8 @@ public class PublicUIController : MonoBehaviour
                 stamina.SetActive(false);
                 gold.SetActive(true);
                 jewel.SetActive(true);
-                settingButton.SetActive(true);
-                homeButton.SetActive(false);
+                settingButton.SetActive(false);
+                homeButton.SetActive(true);
                 sceneBackButton.SetActive(false);
                 break;
 
@@ -100,8 +100,8 @@ public class PublicUIController : MonoBehaviour
                 stamina.SetActive(false);
                 gold.SetActive(true);
                 jewel.SetActive(true);
-                settingButton.SetActive(true);
-                homeButton.SetActive(false);
+                settingButton.SetActive(false);
+                homeButton.SetActive(true);
                 sceneBackButton.SetActive(true);
                 break;
 
